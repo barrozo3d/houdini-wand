@@ -74,6 +74,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/intro-to-vops---houdini-beginner-tutorial.md
 
+
+### VOPS 02 - Random & Noise - Houdini Beginner Tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=mORz1y05T7E
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vops-02---random-noise---houdini-beginner-tutorial.md
+
 ---
 
 ## Tag Reference
