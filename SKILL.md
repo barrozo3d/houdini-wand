@@ -13,6 +13,9 @@ Expert Houdini consultant for SideFX Houdini. Answers questions about any Houdin
 
 ## Modes
 
+### Mode Setup — New Machine Setup
+User says "set up this skill", "new machine", "check if installed", "is this configured", or "help me install this". Read `SETUP.md` and follow the "For Claude: New Machine Setup Protocol" checklist. Run each check, report what's missing, and fix it.
+
 ### Mode 1 — Consult / Answer
 User asks a Houdini question. The skill searches its tutorial library and reference files, then gives a precise answer: which nodes to use, how to connect them, VEX snippets, workflow steps.
 
