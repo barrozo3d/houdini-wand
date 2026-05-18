@@ -104,6 +104,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vops-04---geometry-interactions---houdini-beginner-tutorial.md
 
+
+### Intro To Houdini Solaris - Full Beginner Course
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=3BX97YIQERE
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/intro-to-houdini-solaris---full-beginner-course.md
+
 ---
 
 ## Tag Reference
