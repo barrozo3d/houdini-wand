@@ -126,58 +126,65 @@ for pt in geo.points():
 
 ## Mode 3: Ingest Tutorial
 
-### For YouTube / Web URLs — run ingest.py:
+**Both steps happen automatically** when the user says "ingest this: [URL]".
+Do NOT wait to be asked for step 2 — run it immediately after step 1 completes.
+
+### Step 1 — Data collection (run ingest.py)
+
 ```bash
 python C:/Users/KABUM/.claude/skills/houdini-wand/ingest.py "[URL]"
 ```
 
-### For book chapters / pasted content:
-1. Save the content as a new file in `tutorials/`
-2. Fill in the Structured Notes manually
-3. Add entry to `tutorials/INDEX.md`
-4. Commit and push:
+This runs without any API calls. It:
+- Downloads audio and transcribes with Whisper
+- Parses YouTube chapters
+- Downloads low-quality video and extracts one frame per chapter
+- Saves `tutorials/<slug>.md` with raw transcript + frame paths
+- Saves frames to `tutorials/frames/<slug>/` (local only, not in git)
+- Updates `INDEX.md` with a pending stub
+- Commits and pushes raw data to GitHub
+
+The script prints the tutorial file path and frames directory at the end.
+
+### Step 2 — Extraction (done by Claude Code immediately after)
+
+After ingest.py completes, run the full extraction pass without being asked:
+
+1. **Read the tutorial file** printed by ingest.py (e.g. `tutorials/my-tutorial.md`)
+2. **Read each frame** listed in the Raw Data section using the Read tool — the Read tool supports images, so `Read("tutorials/frames/slug/frame_000.jpg")` shows the actual frame
+3. **Analyze each frame**: identify which Houdini editor/pane is shown, list exact node types, parameter values, VEX code, viewport content
+4. **Fill in ALL Structured Notes** (replace every `[PENDING EXTRACTION]`):
+   - **Core Technique** — one sentence, the main Houdini technique
+   - **Summary** — 2-3 sentences, what the viewer learns and the end result
+   - **Key Steps** — 5-10 steps with exact node type names, SOP/DOP context, VEX snippets
+   - **Houdini Nodes / VEX / Settings** — all nodes, VEX functions, and parameter values
+   - **Difficulty** — Beginner / Intermediate / Advanced / Expert
+   - **Houdini Version** — from transcript or frames; "Not specified" if unclear
+   - **Tags** — from the approved tag pool in the Key Rules section
+5. **Update frontmatter**: set `houdini_version:`, `tags:`, `extraction_status: complete`
+6. **Find related tutorials**: scan `INDEX.md` for entries sharing 2+ tags, add cross-links in `## Related Tutorials`
+7. **Update INDEX.md entry**: replace `[PENDING]` fields with real version, tags, and summary
+8. **Commit and push**:
 ```bash
 cd C:/Users/KABUM/.claude/skills/houdini-wand
-git add tutorials/
-git commit -m "ingest: [title]"
+git add tutorials/<slug>.md tutorials/INDEX.md
+git commit -m "extract: [tutorial title]"
 git push
 ```
 
-### Extraction Pass (MANDATORY after every ingest)
+### For book chapters / pasted content:
+Create a new file in `tutorials/` manually with the content, add a pending entry to INDEX.md, then follow Step 2 above.
 
-After saving, always fill in the **Structured Notes** section:
-
-```markdown
-### Core Technique
-[One sentence: what is the main Houdini technique taught?]
-
-### Key Steps
-1. [Specific step with node/parameter names]
-2. [...]
-(5–10 steps, be specific)
-
-### Houdini Nodes / VEX / Settings
-- [Node or function name]
-- [...]
-
-### Difficulty
-[Beginner / Intermediate / Advanced / Expert]
-
-### Houdini Version
-[Version if mentioned, otherwise "Not specified"]
-
-### Tags
-[space-separated hashtags from the tag list]
+### Approved tag pool
 ```
-
-Then update `INDEX.md` entry and push:
-```bash
-git add tutorials/
-git commit -m "extract: [title]"
-git push
+vex, sop, dop, lop, cop, chop, top, pdg,
+pyro, flip, rbd, vellum, cloth, particles, volumes,
+curves, attributes, procedural, instancing, simulation,
+rendering, karma, mantra, redshift, solaris, usd,
+hda, python, wrangler, vop, modelling, rigging, animation, compositing,
+beginner, intermediate, advanced, expert,
+houdini-19, houdini-20, houdini-21
 ```
-
-**Rule: never leave `[To be extracted]` placeholders in a file.**
 
 ---
 
