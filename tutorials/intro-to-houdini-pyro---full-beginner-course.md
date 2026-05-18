@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=m8w2OND3rH0
 author: Voxyde VFX
 ingested: 2026-05-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20–H21 (Pyro Burst Source available)"
+tags: ["pyro", "fire", "smoke", "simulation", "dop", "vdb", "sourcing", "micro-solvers", "collision", "explosion", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-pyro---full-beginner-course/
 frame_count: 15
 ---
@@ -103,27 +103,57 @@ frame_count: 15
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Full Houdini Pyro simulation pipeline — sourcing density, velocity, temperature, divergence, and flame fields through the Pyro solver, then shaping the sim with micro-solvers (turbulence, disturbance, shredding, wind, gas damp), collisions, and efficient scatter-based sourcing for production setups.
 
 ### Summary
-[PENDING EXTRACTION]
+A 145-minute comprehensive beginner Pyro course by Voxyde VFX. Starts with a single fog-volume density source and systematically adds each field: velocity (noise-driven and wind), temperature (drives buoyancy and combustion), divergence (expansion/explosion scale), and flame. Explains the critical naming relationship between VDB names and Pyro solver target fields. Covers all Shape tab micro-solvers, resolution/OpenCL workflow, collision geometry, and finishes with efficient scatter + Attribute VOP sourcing and the Pyro Burst Source node for explosions.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create Geo container → step inside → add **Pyro solver** node
+2. Create **Sphere** SOP → set type to polygon, increase frequency, set uniform scale to ~3 (scale is critical for pyro stability)
+3. Drop **VDB from Polygons** → enable Fog VDB, disable Distance VDB → set VDB Name to `density`
+4. In Pyro solver Sourcing tab: Source Volume = `density`, Target Field = `density` — names must match exactly
+5. For each additional field (temperature, divergence, velocity): duplicate the VDB-from-polygons chain → rename VDB Name → change noise offset in `volumenoisefog` for variety → add a new source entry in the Pyro solver with matching source/target names
+6. Velocity sourcing: use **Constant** VOP (float3 e.g. 0,1,0 for upward wind) → **Multiply Constant** to scale → add to velocity field; use **Set** operation (not Add) to prevent vector accumulation each frame
+7. Divergence: set Source Scale 10–100 for expansion effects; very high values (100+) create explosion-like outbursts
+8. Shape tab micro-solvers: **Buoyancy** 0.1–1.0 for upward rise; **Wind** for directional push; **Turbulence** for large swirls (control Swirl Size); **Disturbance** for high-frequency detail on top; **Shredding** (disturbance-variant that preserves speed magnitude); **Gas Damp** to reduce velocity over time
+9. Resolution workflow: keep Voxel Size high (0.1+) during iteration; lower to 0.02 for final sim; enable **OpenCL** for GPU acceleration; use Velocity Voxel Scale > 1 to trade velocity detail for speed
+10. Collisions: create Box SOP → Transform → connect to **second input** of Pyro solver; enable **Deforming Geometry** in Collision tab for animated colliders
+11. Efficient sourcing: **Scatter** on sphere → **Attribute VOP** (create density/temperature/velocity/divergence point attributes with turbulent noise, different offsets) → **Volume Rasterize Attributes** to convert all attributes to VDB volumes simultaneously
+12. **Pyro Burst Source** node (newer, H20+): auto-generates density/temperature/burn attributes; points spawn and expand over ~5 frames with varying noise scale — ideal for explosions; connect directly to Pyro solver sources
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `pyrosolver` DOP — Sourcing tab: source/target name pairing; Shape tab: all micro-solvers; Output tab: export fields for rendering
+- `vdbfrompolygons` SOP — Fog VDB: ON; Distance VDB: OFF; VDB Name: `density` / `temperature` / `divergence` (must match target field name in pyrosolver)
+- Source Volume entry — Source Volume: matches VDB name; Target Field: built-in pyro field name; Operation: **Add** for density/temperature (accumulate), **Set** for velocity (overwrite)
+- `volumenoisefog` SOP — adjust Offset for each field to get different noise patterns
+- `constant` VOP — Type: 3 floats; Value e.g. (0,1,0) for upward wind
+- `multiplyconstant` VOP — scale vector magnitude
+- Buoyancy: 0.1–1.0; default pushes sim upward
+- Turbulence — Strength (macro swirls), Swirl Size (scale of noise); leave Roughness/Pulse Length at defaults
+- Disturbance — high-frequency noise; can use Control Field (density/flame) to constrain effect spatially
+- Shredding — same controls as Disturbance; keeps speed magnitude consistent while adding directional variation
+- Gas Damp — reduces velocity magnitude each frame; useful to remove residual motion
+- Voxel Size — 0.1+ for testing, 0.02 for final; lower = more detail, longer sim time
+- Velocity Voxel Scale — >1.0 for faster sim at cost of velocity resolution
+- OpenCL — enable for GPU sim acceleration
+- `scatter` SOP — Total Count: increase to fill surface densely
+- `attribvop` → `turbulentnoise` VOP (different Offset per attribute) → drives density/temperature/velocity/divergence attributes per point
+- `volumerasterizeattributes` SOP — converts all point attributes to VDB volumes in one node
+- `pyroburstsource` SOP — Newer node; display as Points or Lit Sphere to preview; auto-sets burn attribute color per-point; ideal starting point for explosion sourcing
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H20–H21 (Pyro Burst Source requires H20+; core Pyro workflow applies H18+)
 
 ### Tags
-[PENDING EXTRACTION]
+#pyro #fire #smoke #simulation #dop #vdb #sourcing #micro-solvers #collision #explosion #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Intro To Houdini for VFX - Beginner Course](./intro-to-houdini-for-vfx---beginner-course.md) — #sop #dop #vop #vex #attributes #particles #simulation #beginner
+- [Intro To Houdini Particles - Full Beginner Course](./intro-to-houdini-particles---full-beginner-course.md) — #dop #sop #vop #particles #simulation #attributes #procedural
+- [Intro To Houdini Volumes - Beginner Course](./intro-to-houdini-volumes---beginner-course.md) — #sop #vop #vdb #simulation #procedural

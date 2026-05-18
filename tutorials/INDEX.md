@@ -59,9 +59,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=m8w2OND3rH0
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H20–H21 (Pyro Burst Source requires H20+; core workflow H18+)
+- **Tags:** #pyro #fire #smoke #simulation #dop #vdb #sourcing #micro-solvers #collision #explosion #beginner
+- **Summary:** 145-minute comprehensive Pyro beginner course. Covers all fields (density, velocity, temperature, divergence, flame), all Shape tab micro-solvers (turbulence, disturbance, shredding, wind, gas damp), collisions, resolution/OpenCL workflow, and efficient scatter-based sourcing with the Pyro Burst Source node for explosions.
 - **File:** tutorials/intro-to-houdini-pyro---full-beginner-course.md
 
 
