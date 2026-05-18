@@ -84,6 +84,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vops-02---random-noise---houdini-beginner-tutorial.md
 
+
+### VOPS 03 - Vector Operations - Houdini Beginner Tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=oT6qzs-Vffk
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vops-03---vector-operations---houdini-beginner-tutorial.md
+
 ---
 
 ## Tag Reference
