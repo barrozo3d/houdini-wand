@@ -144,6 +144,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-solaris-tutorial---rendering-multiple-rops-together.md
 
+
+### Improve Solaris Performance - Houdini Tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=QfWUzrfsDaY
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/improve-solaris-performance---houdini-tutorial.md
+
 ---
 
 ## Tag Reference
