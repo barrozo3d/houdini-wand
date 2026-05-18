@@ -54,6 +54,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** A 2-hour course covering all core Houdini volume concepts: fog VDB vs SDF distance fields, Volume VOP for per-voxel manipulation with named bind/bind-export, scalar vs vector velocity fields, curve-based velocity volumes, and two methods for converting particle clouds to renderable volumes (vdbfromparticles vs volumerasterizeattributes).
 - **File:** tutorials/intro-to-houdini-volumes---beginner-course.md
 
+
+### Intro To Houdini Pyro - Full Beginner Course
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=m8w2OND3rH0
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/intro-to-houdini-pyro---full-beginner-course.md
+
 ---
 
 ## Tag Reference
