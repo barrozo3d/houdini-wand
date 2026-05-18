@@ -205,6 +205,11 @@ git push
 5. **Extraction is mandatory** — never leave placeholders after ingesting
 6. **VEX over VOPs** — default to wrangles for code answers unless VOPs are specifically requested
 7. **Cite reference files** — tell the user which `references/` file you drew from
+8. **Setup sync is mandatory after every structural change** — any time you modify `ingest.py`, add a dependency, change a model name, add a CLI flag, rename a file or directory, or change any configuration that affects how the skill is installed or run, you MUST update all three setup files in the same commit:
+   - `requirements.txt` — add/remove/update the pip package
+   - `setup.ps1` — reflect the new install step or config change
+   - `SETUP.md` — update the relevant step, troubleshooting entry, or reference table
+   Never commit a structural change without syncing the setup pack. The rule: **if a user on a fresh machine would need to do something different to get the skill working, the setup files must reflect that.**
 
 ---
 
