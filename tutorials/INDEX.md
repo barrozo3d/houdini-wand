@@ -44,6 +44,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/intro-to-houdini-particles---full-beginner-course.md
 
+
+### Intro To Houdini Volumes - Beginner Course
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=wR0SDptfygg
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/intro-to-houdini-volumes---beginner-course.md
+
 ---
 
 ## Tag Reference
