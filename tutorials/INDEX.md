@@ -114,6 +114,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/intro-to-houdini-solaris---full-beginner-course.md
 
+
+### Houdini Tutorial - Simple Disintegration FX
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=O2F1Qzl22oU
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-tutorial---simple-disintegration-fx.md
+
 ---
 
 ## Tag Reference
