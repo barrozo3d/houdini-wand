@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=JbxNElzALrM
 author: Voxyde VFX
 ingested: 2026-05-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19-H21 UI)"
+tags: ["sop", "dop", "vop", "vex", "attributes", "particles", "simulation", "wrangler", "procedural", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-for-vfx---beginner-course/
 frame_count: 19
 ---
@@ -123,27 +123,62 @@ frame_count: 19
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Complete Houdini VFX foundation: the SOP → Attribute VOP → VEX Wrangle → DOP simulation pipeline, built around the concept that everything in Houdini is an attribute manipulated per point.
 
 ### Summary
-[PENDING EXTRACTION]
+A 2-hour beginner course covering everything needed to start creating VFX in Houdini from zero. Progresses from UI navigation and basic SOP geometry through the attributes system, Attribute VOPs, VEX wrangles, and DOP simulation networks. Ends with an overview of all major solver types (Pyro, FLIP, Vellum, RBD) and noise-driven per-frame deformation inside a SOP Solver.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Focus on the 3 essential panes only: Scene View (viewport), OBJ network (geometry), Parameters panel — close everything else
+2. Navigate context networks: OBJ = geometry creation, MAT = materials, OUT = render settings; Tab to add nodes, Alt+LMB drag to duplicate
+3. Connect SOPs in a chain; press **R** to set the display flag (blue circle) on any node to preview its result
+4. Create attributes with `attribcreate` SOP — set Name (case-sensitive), Class (point/prim/vertex/detail), Type (float/vector/int), and Value; the attribute flows downstream to all connected nodes
+5. Modify float attributes with `attribadjustfloat`; modify vector attributes (like position P) with `attribadjustvector`; use Operation → Noise for organic variation
+6. Enter `attribvop` (double-click) — the master node replacing all individual attribute nodes; add `turbulentnoise` VOP, set Signature to 3D for vector output, feed through an `add` VOP back into P
+7. Mask per-point operations inside `attribvop` using a `compare` VOP (e.g. Condition: Greater Than 0) — returns 0/1 bool, use as multiply factor
+8. Write VEX in `attribwrangle` for the same results with less setup — `@P.y += 2;` moves geometry up; `@` prefix reads/writes any attribute
+9. Create a `dopnet`, enter it, add `popnet` and feed source geometry into input — particles (points) spawn per frame; `popsolver` drives the simulation
+10. Choose the right solver: `popsolver` (particles), `flipsolver` (water), `pyrosolver` (smoke/fire), `rbdsolver` (rigid body collapse), `vellumsolver` (cloth/soft body)
+11. Add `attribvop` inside a SOP Solver for per-frame noise deformation — use `curlurlnoise` VOP for fluid-like motion; reset sim when timeline bar turns orange
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `box` SOP — base geometry primitive
+- `color` SOP — adds Cd attribute; R key sets display flag
+- `transform` SOP — translate/rotate/scale
+- `attribcreate` SOP — Name: any string (case-sensitive); Class: point; Type: float/vector/int; Value: initial value
+- `attribadjustfloat` SOP — Attribute name; Operation: Set/Add/Multiply/Noise
+- `attribadjustvector` SOP — Attribute: P (position) or V (velocity); Operation: Direction and Length + Noise
+- `attribvop` SOP — double-click to enter VOP network; P flows in/out; most important SOP in Houdini
+- `turbulentnoise` VOP — Signature: 3D (vector); Element Size, Roughness, Amplitude; right-click → Create Input Parameters to expose to top level
+- `add` VOP — adds two vectors; use to offset P by noise
+- `compare` VOP — Condition: Greater Than; returns bool 0/1; use as per-point mask
+- `attribwrangle` SOP — VEX code: `@P.y += 2;` (move up); `@` prefix accesses any attribute; same as attribvop but code-based
+- `platonicsolids` SOP — Solid Type: Dodecahedron; Radius: 3
+- `subdivide` SOP — Algorithm: OpenSubdiv; Depth: 3–5 for dense point clouds
+- `dopnet` — DOP network container; step inside to build simulations
+- `popnet` — particle network inside DOP; connect geometry to input
+- `popsolver` — particle simulation engine; controls velocity, forces, lifetime
+- `flipsolver` — water/liquid simulation
+- `pyrosolver` — smoke and fire simulation
+- `rbdsolver` / `rbdpackedobject` — rigid body destruction/collapse
+- `vellumsolver` — cloth, soft body, granular simulation
+- `curlurlnoise` VOP — mimics fluid motion; lower Amplitude + Frequency for smoke-like results
+- **R** — set display flag on selected node
+- **Ctrl+B** — maximize any pane to fullscreen
+- **Shift+drag node** — moves node and all upstream nodes together
+- **Ctrl+MMB** — reset parameter to default value
+- **Alt+LMB drag** — duplicate object in OBJ network
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+#sop #dop #vop #vex #attributes #particles #simulation #wrangler #procedural #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet — first tutorial in the library.

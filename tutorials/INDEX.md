@@ -29,9 +29,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=JbxNElzALrM
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #dop #vop #vex #attributes #particles #simulation #wrangler #procedural #beginner
+- **Summary:** A 2-hour beginner course covering everything needed to start creating VFX in Houdini from zero. Progresses from UI navigation and basic SOP geometry through attributes, Attribute VOPs, VEX wrangles, and DOP simulation networks, ending with an overview of all major solver types (Pyro, FLIP, Vellum, RBD) and noise-driven per-frame deformation inside a SOP Solver.
 - **File:** tutorials/intro-to-houdini-for-vfx---beginner-course.md
 
 ---
