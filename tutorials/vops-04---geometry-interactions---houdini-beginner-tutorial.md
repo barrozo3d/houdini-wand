@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=qDtKmbCDn3k
 author: Voxyde VFX
 ingested: 2026-05-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: ["vop", "sop", "attributes", "geometry", "procedural", "intermediate", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/vops-04---geometry-interactions---houdini-beginner-tutorial/
 frame_count: 0
 ---
@@ -52,27 +52,48 @@ frame_count: 0
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Cross-geometry attribute transfer inside `attribvop`: six methods for making geometries interact — `importpointattrib`, `nearpoint`, `findattribval`, `minpos`/`xyzdist`/`primuv`, `intersect`, and `pcopen`/`pcfilter` — each suited to different geometry types (primitive vs point-only) and use cases.
 
 ### Summary
-[PENDING EXTRACTION]
+A 44-minute tutorial on one of the most critical VFX skills: making two geometries communicate and transfer attributes inside a VOP network. Covers `importpointattrib` for reading a specific point's attribute from a second geometry, `nearpoint` for finding the closest point index, `findattribval` for searching by attribute value, `minpos` for snapping points to the nearest surface position on a primitive-based mesh, `xyzdist` and `primuv` for measuring primitive-level distances and UVs, `intersect` for ray-surface collision checks, and `pcopen`/`pcfilter` for radius-based point cloud queries on point-only geometry. Essential for morphing effects, particle attraction to meshes, and SOP-level proximity masking.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Set up `attribvop` with two geometry inputs: input 1 = points being modified (first input), input 2 = reference geometry (second input); inside VOPs, use Op:input[1] path to reference the second geometry
+2. Use `importpointattrib` VOP: Op Path = input[1]; Point Number = constant(0) or from nearpoint; Attribute = "P" or any custom attribute; returns that attribute's value for the specified point
+3. Use `nearpoint` VOP to find closest point index: Op Path = input[1]; Position = current P; returns the integer point number of the closest point in the second geometry — chain into `importpointattrib` Point Number for dynamic per-point lookup
+4. Use `findattribval` VOP to search for a specific attribute value across geometry and return the first matching point number — useful when organizing geometry by ID rather than proximity
+5. Use `minpos` VOP (Minimum Position): Op Path = input[1]; Position = P; returns the closest position on any **primitive** of the second geometry; use output position as a target in `mix` or as a displacement direction via `subtract` + `normalize`
+6. Pair `xyzdist` with `primuv` + `prim` attribute to sample primitive attributes at the closest surface point: `xyzdist` returns prim number + UV; feed into `primuv` to interpolate per-primitive attribute values at that exact surface location
+7. Use `intersect` VOP for ray-surface collision: Origin = current P; Direction = normalized direction vector; Op Path = surface geometry; returns hit position and hit prim — more robust than minpos on non-flat surfaces; ideal for projecting points onto complex meshes
+8. Use `pcopen` + `pcfilter` for point-cloud (primitive-less) queries: `pcopen` opens a point cloud from Op Path with a search radius around P; `pcfilter` averages or fetches attributes from all points within that radius — works on scattered points without primitives; increase scatter density for smoother results
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `attribvop` SOP — two inputs: geometry to modify (input 0) + reference geometry (input 1); Op Path inside VOPs: `op:../[nodename]` or `opinput:1`
+- `importpointattrib` VOP — Op Path: reference geometry; Point Number: integer (from nearpoint or constant); Attribute: "P", "v", or custom name; returns attribute value
+- `nearpoint` VOP — Op Path: reference geometry; Position: P; returns integer point number of nearest point
+- `findattribval` VOP — Op Path; Attribute class/name; Value to find; returns first matching point number
+- `minpos` VOP — Op Path: primitive-based geometry; Position: P; returns closest position on any primitive; fast but unreliable on non-flat complex surfaces
+- `xyzdist` VOP — Op Path; Position: P; returns float distance + prim number + UV; pair with `primuv` for attribute interpolation on surface
+- `primuv` VOP — Op Path; Primitive number + UV from xyzdist; Attribute: any prim attribute; returns interpolated value at surface point
+- `intersect` VOP — Op Path: surface geometry; Origin: P; Direction: normalized vector; returns hit P, hit N, hit prim; reliable on complex meshes
+- `pcopen` VOP — Op Path: point-only geometry; Position: P; Max Points; Search Radius; opens a point cloud handle
+- `pcfilter` VOP — takes pcopen handle; Channel: "P" or any attribute; returns averaged value within search radius
+- `mix` VOP — Bias 0–1; blend between two positions (current P and target P) to visualize morph effect
+- `scatter` SOP — Total Count: increase for denser point clouds, needed for accurate pcopen results
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+#vop #sop #attributes #geometry #procedural #beginner #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Intro to VOPS - Houdini Beginner Tutorial](./intro-to-vops---houdini-beginner-tutorial.md) — #vop #sop #attributes #math #beginner
+- [VOPS 02 - Random & Noise - Houdini Beginner Tutorial](./vops-02---random-noise---houdini-beginner-tutorial.md) — #vop #noise #random #attributes #beginner
+- [VOPS 03 - Vector Operations - Houdini Beginner Tutorial](./vops-03---vector-operations---houdini-beginner-tutorial.md) — #vop #vectors #math #attributes #beginner
+- [Intro To Houdini Particles - Full Beginner Course](./intro-to-houdini-particles---full-beginner-course.md) — #dop #sop #vop #particles #simulation #attributes

@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=oT6qzs-Vffk
 author: Voxyde VFX
 ingested: 2026-05-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: ["vop", "sop", "vectors", "math", "attributes", "procedural", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/vops-03---vector-operations---houdini-beginner-tutorial/
 frame_count: 0
 ---
@@ -44,27 +44,46 @@ frame_count: 0
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Core vector math operations inside `attribvop`: subtract to build direction vectors, normalize to unit-length, length for distance, cross product for perpendicular vectors, dot product for angle-based masks, and reflect for bounce directions — the mathematical foundation for controlling any simulation movement in Houdini.
 
 ### Summary
-[PENDING EXTRACTION]
+A 31-minute focused tutorial on vector math as used in VFX simulations. Covers creating direction vectors by subtracting positions, normalizing them to unit length, computing lengths/distances, and visualizing vectors via the N (normal) attribute with point normal display. Explains the cross product (result perpendicular to two input vectors) and dot product (returns -1 to 1 based on angle between vectors, usable as a facing mask). Concludes with the reflect VOP for bouncing vectors off a surface plane — directly applicable to particle collision redirects and secondary effects.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create a test vector with a `constant` VOP (type: trifloat) and wire it into N — toggle on Point Normal Display in the viewport to visualize the vector direction per-point
+2. Build a direction vector: use `subtract` VOP — wire a target position (constant or another P) into input 1 and the current P into input 2; result is a vector pointing from current point toward the target
+3. Normalize the direction vector with `normalize` VOP — always normalize before using a vector as velocity or N, otherwise length affects strength unpredictably
+4. Compute distance with `length` VOP — wire the subtracted (unnormalized) vector; returns a scalar distance; use with `fit` to remap into a mask based on proximity
+5. Cross product: `cross` VOP — two vector inputs; output is perpendicular to both; use to generate stable up-vectors or tangents in custom orientation systems (e.g. generating a third axis from two known axes)
+6. Dot product: `dot` VOP — two vector inputs; output is a float from -1 to 1; wire N (surface normal) and an upward constant {0,1,0} to create a top-facing mask; feed through `fit` (source -1 to 1, dest 0 to 1) for a clean 0–1 gradient usable as a displacement or color mask
+7. Reflect: `reflect` VOP — input 1: incoming direction vector; input 2: surface normal (the "mirror plane"); output: reflected direction; useful for secondary particle directions after collision
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `attribvop` SOP — Run Over: Points; normal display toggled on for vector visualization
+- `constant` VOP — Type: trifloat (vector); set X/Y/Z to define a static direction; wire into N to visualize
+- `subtract` VOP — input 1: target position; input 2: current P; output: direction vector from P toward target
+- `normalize` VOP — input: any vector; output: unit-length vector (length = 1); essential before using as velocity or N
+- `length` VOP — input: vector; output: float distance; use with `fit` to create proximity-based masks
+- `cross` VOP — two vector inputs; output: vector perpendicular to both (right-hand rule); Signature: vector
+- `dot` VOP — two vector inputs; output: float -1 to 1; -1 = opposite, 0 = perpendicular, 1 = same direction
+- `fit` VOP — remap dot product (-1 to 1) to (0 to 1) for use as a facing mask
+- `reflect` VOP — input 1: incoming vector; input 2: plane normal; output: reflected vector; useful for bounce effects
+- `scatter` SOP — generates point cloud from geometry for per-point normal tests
+- **Point Normal Display** — viewport toggle (N display button) to show N vectors as lines from each point
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+#vop #sop #vectors #math #attributes #procedural #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Intro to VOPS - Houdini Beginner Tutorial](./intro-to-vops---houdini-beginner-tutorial.md) — #vop #sop #attributes #math #beginner
+- [VOPS 02 - Random & Noise - Houdini Beginner Tutorial](./vops-02---random-noise---houdini-beginner-tutorial.md) — #vop #noise #random #attributes #beginner
+- [VOPS 04 - Geometry Interactions - Houdini Beginner Tutorial](./vops-04---geometry-interactions---houdini-beginner-tutorial.md) — #vop #attributes #geometry #beginner
+- [Intro To Houdini for VFX - Beginner Course](./intro-to-houdini-for-vfx---beginner-course.md) — #sop #dop #vop #vex #attributes #beginner

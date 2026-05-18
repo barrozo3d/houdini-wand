@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=3BX97YIQERE
 author: Voxyde VFX
 ingested: 2026-05-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H20–H21 UI)"
+tags: ["lop", "solaris", "usd", "rendering", "karma", "lighting", "materialx", "instancing", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-solaris---full-beginner-course/
 frame_count: 0
 ---
@@ -55,7 +55,7 @@ frame_count: 0
 
 
 ### Instancer [88:56]
-**Transcript:** Instensor and the Instensor will be a very familiar workflow if you are used to working at the  sub-level with the copy to points node so it's sort of like the sub-version but we have more options  when it comes to the Instensor and in general it's really powerful and you can easily scatter  millions of polygons across your scene and have the scene running pretty smoothly so let's go ahead  maybe we can just ignore our scene that we have here and I'll just drop down the Instensor node  and just like the copy to points we have two inputs over here only in the case for copy to points  we have our geometry that we want to scatter on the left and the template points on the right  and in the case for the Instensor the right input is actually where we are going to place the  geometry that we want to instance and the left input is basically for us to plug into our scene so  basically if I have this scene over here and I want to add some instances I can plug this pretty  much wherever I want of course this depends on how you set up your scene but I can just plug this  over here for example and now this will error out because we actually need our points that we want  to use as our scatter p...
+**Transcript:** Instensor and the Instensor will be a very familiar workflow if you are used to working at the  sub-level with the copy to points node so it's sort of like the sub-version but we have more options  when it comes to the Instensor and in general it's really powerful and you can easily scatter  millions of polygons across your scene and have the scene running pretty smoothly so let's go ahead  maybe we can just ignore our scene that we have here and I'll just drop down the Instensor node  and just like the copy to points we have two inputs over here only in the case for copy to points  we have our geometry that we want to scatter on the left and the template points on the right  and in the case for the Instensor the right input is actually where we are going to place the  geometry that we want to instance and the left input is basically for us to plug into our scene so  basically if I have this scene over here and I want to add some instances I can plug this pretty  much wherever we want of course this depends on how you set up your scene but I can just plug this  over here for example and now this will error out because we actually need our points that we want  to use as our scatter p...
 
 
 ### Layout LOP [100:53]
@@ -104,27 +104,56 @@ frame_count: 0
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Complete Houdini Solaris / LOP pipeline: building and rendering USD-based scenes using `sublayer`/`sopimport`, `componentbuilder`, `materiallibrary` (MaterialX/Karma), `instancer`, Karma Physical Sky + XPU render settings, `karmafogbox`, and AOVs — built toward a full magical forest shot constructed entirely inside Houdini.
 
 ### Summary
-[PENDING EXTRACTION]
+A 4.5-hour comprehensive Solaris beginner course covering the complete LOP (Lighting Operator) workflow from USD scene graph fundamentals to final Karma XPU render. Part 1 covers all key ingredients in isolation: USD scene graph concepts, importing SOP geometry via `sopimport`, stage assembly and the Stage Manager, MaterialX-based Karma material authoring inside a `materiallibrary`, the `componentbuilder` for self-contained asset packaging, light types (Karma Physical Sky, spot, area, dome/HDRI), volumetric fog via `karmafogbox`, `instancer` LOP for scattering millions of instances, and the `layout` LOP. Part 2 builds a complete magical forest scene entirely in Houdini using the `Labs Tree Trunk Generator`, grass curves, component geometry variants with seed-based procedural variation, particle simulations imported into Solaris via `sopimport`, and final Karma XPU render settings with AOVs.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Understand USD / scene graph: Solaris = LOP context; geometry is organized as prims at paths (e.g. `/assets/hero`); the scene graph panel shows all USD prims; everything is non-destructive and additive
+2. Import SOP geometry into Solaris with `sopimport` LOP: set SOP Path to the OBJ container and the out null; set Path Prefix to organize in scene graph (e.g. `/assets/`); geometry appears in the Solaris viewport
+3. Transform objects with the `edit` LOP: press S to select objects in viewport; T/R/E for translate/rotate/scale; edits are stored non-destructively in the edit node and can be disabled without losing upstream data
+4. Assign materials: drop `materiallibrary` LOP → double-click inside → drop `karma material builder` → step inside for MaterialX shader network → set Base Color, Roughness, Metallic; assign to prims via the material library's assign material settings
+5. Use `componentbuilder` LOP for self-contained USD assets: auto-creates `componentgeometry` (SOP geo input), `componentmaterial` (auto-assigns material), and `componentoutput`; rename in the output node; export to .usd file for reuse; add `componentgeometryvariants` for seed-based procedural variants
+6. Add lighting: drop `karmaphysicalsky` LOP (sun + sky HDRI combined); Solar Altitude = sun height; Solar Azimuth = sun rotation; Angular Size = shadow sharpness; add `spherelight`, `disklight`, `rectlight` for area lights; use **Light Mixer** panel to control all lights
+7. Enable volumetric light scattering: add `karmafogbox` LOP after camera; scale to contain entire scene; all lights automatically scatter through the volume
+8. Scatter instances: `instancer` LOP — left input = scene, right input = prototype USD asset (via `reference` LOP); add a `sop create` inside the instancer and generate scatter points from SOP geometry; use the `N`, `scale`, and `orient` attributes on points to control instance orientation and scale; supports millions of instances at interactive speed
+9. Build procedural assets for the scene: grass using `line` + `resample` + `bend` SOPs inside a `componentgeometry`; trees using `Labs Tree Trunk Generator`; all assets packaged as USD via `componentbuilder` and exported to .usd
+10. Set up Karma XPU render: `karmarendersettings` LOP — set Camera; Resolution; Render Engine: XPU; Path Trace Samples: 64–256; add AOVs (beauty, diffuse, specular, depth) for compositing; `renderproduct` LOP for file output paths
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `sopimport` LOP — SOP Path: `/obj/container/outnull`; Path Prefix: `/assets/hero`; brings SOP geometry into the USD stage
+- `subcreate` LOP — creates a USD prim at a specified path; use for organizing empty scopes
+- `edit` LOP — non-destructive transform; S to select in viewport; T/R/E for translate/rotate/scale
+- `materiallibrary` LOP — container for Karma/Redshift/Arnold materials; double-click to enter
+- `karma material builder` LOP — MaterialX-based shader; Base Color, Roughness, Metallic, Normal inputs
+- `componentbuilder` LOP — all-in-one asset packaging node: componentgeometry + componentmaterial + componentoutput
+- `componentgeometry` LOP — SOP geometry input for the component builder; high-res mesh goes to output 0, proxy to output 1
+- `componentgeometryvariants` LOP — Source Mode: Number; Variant Count; Seed parameter inside componentgeometry drives variation
+- `karmaphysicalsky` LOP — Solar Altitude; Solar Azimuth; Angular Size (shadow sharpness)
+- `karmafogbox` LOP — Uniform Scale; must contain all scene objects; enables volumetric light scattering
+- `instancer` LOP — left input: scene; right input: prototype prims; uses N/orient/scale point attributes; extremely efficient for millions of instances
+- `reference` LOP — File Path: .usd asset; use to load external component builder exports as instancer prototypes
+- `layout` LOP — Layout Asset Gallery for painting assets; alternative to instancer; less recommended by instructor
+- `karmarendersettings` LOP — Camera; Resolution; Render Engine: CPU or XPU; Path Trace Samples; AOVs tab
+- **Stage Manager** panel — tree view of entire USD scene graph; select/organize/filter prims
+- **Light Mixer** panel — non-destructive per-light intensity/exposure control
+- **S** — select prim in Solaris viewport
+- **T/R/E** — translate/rotate/scale selected prim
+- **U** — go up one level in the LOP network
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H20–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+#lop #solaris #usd #rendering #karma #lighting #materialx #instancing #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini Solaris Tutorial - Rendering Multiple ROPS Together](./houdini-solaris-tutorial---rendering-multiple-rops-together.md) — #lop #solaris #rendering #karma #top
+- [Improve Solaris Performance - Houdini Tutorial](./improve-solaris-performance---houdini-tutorial.md) — #lop #solaris #usd #rendering #performance
+- [Intro To Houdini for VFX - Beginner Course](./intro-to-houdini-for-vfx---beginner-course.md) — #sop #dop #vop #vex #attributes #beginner

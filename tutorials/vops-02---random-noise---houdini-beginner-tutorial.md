@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=mORz1y05T7E
 author: Voxyde VFX
 ingested: 2026-05-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: ["vop", "sop", "noise", "random", "attributes", "procedural", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/vops-02---random-noise---houdini-beginner-tutorial/
 frame_count: 0
 ---
@@ -35,7 +35,7 @@ frame_count: 0
 
 
 ### Curl Noise [24:21]
-**Transcript:** this flow noise and I will do a curl noise and I will plug the result of this vector to vector 4  inside our pause and when I do this we can see that this the inputs here switch from green to yellow  so it automatically got set to a signature 4D noise so this is also something worth knowing and I will  set the noise type here to simplex which is going to be my favorite one and I'll get rid of  this connection and let's add this and I'll actually get rid of this turbulent noise and let's  add our curl noise so this is again sort of similar to the flow noise and by having this 4D input  we can see that we also have animation so the same rules will apply here as I change the frequency  I can decrease the speed here if I set the fourth component to a lower value so we can do something  like this we can see I'm not sure how noticeable this is in the viewport let's maybe set this  to a point display if I play the animation we have these straight points that are flying around  our geometry and this is because of this step size here by default this is a very very low value  so if I just increase this a bit to maybe a value of 0.01 we can see that this actually got rid  of that flickering s...
+**Transcript:** this flow noise and I will do a curl noise and I will plug the result of this vector to vector 4  inside our pause and when I do this we can see that this the inputs here switch from green to yellow  so it automatically got set to a signature 4D noise so this is also something worth knowing and I will  set the noise type here to simplex which is going to be my favorite one and I'll get rid  of this connection and let's add this and I'll actually get rid of this turbulent noise and let's  add our curl noise so this is again sort of similar to the flow noise and by having this 4D input  we can see that we also have animation so the same rules will apply here as I change the frequency  I can decrease the speed here if I set the fourth component to a lower value so we can do something  like this we can see I'm not sure how noticeable this is in the viewport let's maybe set this  to a point display if I play the animation we have these straight points that are flying around  our geometry and this is because of this step size here by default this is a very very low value  so if I just increase this a bit to maybe a value of 0.01 we can see that this actually got rid  of that flickering s...
 
 
 ### Worley Noise [28:09]
@@ -52,27 +52,48 @@ frame_count: 0
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Mastering noise and randomness inside `attribvop`: the `random`, `turbulentnoise`, `aanoise` (anti-aliased flow noise), `curlnoise`, `worleynoise`, and `relbbox` (relative bounding box) VOPs — the toolkit for adding organic variation to any attribute in VFX.
 
 ### Summary
-[PENDING EXTRACTION]
+A 46-minute beginner tutorial dedicated to noise and randomness in Houdini VOPs. Covers the `random` VOP using point number as seed for per-point color or value variation, then progresses through five noise types: turbulent noise (classic workhorse, 1D–3D signatures), anti-aliased flow noise (directional-free animation via a flow input), curl noise (divergence-free fluid-like motion with 4D simplex), Worley noise (cellular Voronoi patterns using distance methods), and finally the `relbbox` (relative bounding box) node for mapping object extents to a clean 0–1 gradient useful for masking effects.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Use `random` VOP inside `attribvop` — feed point number (@ptnum) or primitive number as the seed input; outputs a 0–1 value per point; change Signature for float (1D) or vector (3D) output; use for per-point color randomization (→ Cd)
+2. For Gaussian (bell-curve) distribution, use `random` with Gaussian type — values cluster around 0.5 instead of spreading uniformly; useful for natural variation
+3. Use `turbulentnoise` VOP — feed P into position input; Signature: 1D for scalar, 3D for vector; key parameters: Frequency (pattern scale), Amplitude (strength), Roughness (detail), Turbulence (octaves); output → Cd for preview or add to P for displacement
+4. To animate turbulent noise directionally: increment offset in X/Y/Z using `$T * speed` — creates sliding motion; not suitable for directionless evolution
+5. Switch to `aanoise` (anti-aliased flow noise) for directionless animation: set Signature to 3D; wire `global` → time into the **Flow** input; adjust **Flow Rate** to control evolution speed — noise evolves organically without sliding
+6. Use `curlnoise` VOP for fluid-like swirling motion: feed a `vectovec4` (vector to vector4, with `$T` as the 4th component) into the position input — this enables 4D animation; set Noise Type to Simplex; increase **Step Size** (e.g. 0.01) to fix flickering; reduce Amplitude for subtle motion
+7. Use `worleynoise` VOP for cellular patterns: feed P → position; choose distance method (Euclidean, Manhattan); first output = closest cell distance → Cd or displacement mask; multiple outputs available for F1, F2 distances
+8. Use `relbbox` (Relative Bounding Box) VOP — no inputs required; automatically reads geometry bounds; outputs X, Y, Z values mapped to 0–1 range across the object's bounding box; use the Y output as a vertical gradient mask to blend effects from top to bottom
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `attribvop` SOP — container for all VOP operations; run over Points
+- `random` VOP — Seed input: @ptnum or @primnum; Type: Uniform or Gaussian; Signature: 1D (float) or 3D (vector); output → Cd or any float attribute
+- `turbulentnoise` VOP — Signature: 1D/3D; Frequency; Amplitude; Roughness; Turbulence (octaves); Position input: P; use Offset to animate (directional only)
+- `aanoise` VOP (Anti-aliased Flow Noise) — Signature: 3D; Flow input: connect time for direction-free animation; Flow Rate: controls evolution speed (higher = faster); otherwise same params as turbulentnoise
+- `curlnoise` VOP — Noise Type: Simplex (recommended); Position: vectovec4 with time as W; Step Size: ~0.01 to remove flickering; 4D input enables temporal animation; output is divergence-free velocity vector
+- `vectovec4` VOP — converts vector + float (time) into a 4D vector for curlnoise position input
+- `worleynoise` VOP — Position: P; Distance Method: Euclidean/Manhattan; Outputs: F1 distance, F2 distance, cell color; use first output for cellular mask
+- `relbbox` VOP — no inputs; reads current geometry's bounding box; outputs X/Y/Z in 0–1 range; use Y output as vertical gradient mask
+- `switch` SOP — Switch Input: 0 = grid, 1 = sphere; use to toggle test geometry
+- `scatter` SOP — Q to toggle on/off; Total Count: increase for denser point tests
+- **Q** — toggle node bypass (enable/disable) in viewport
+- **D** — display options; Background: Dark/Light for better contrast in viewport
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+#vop #sop #noise #random #attributes #procedural #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Intro to VOPS - Houdini Beginner Tutorial](./intro-to-vops---houdini-beginner-tutorial.md) — #vop #sop #attributes #math #beginner
+- [VOPS 03 - Vector Operations - Houdini Beginner Tutorial](./vops-03---vector-operations---houdini-beginner-tutorial.md) — #vop #vectors #math #attributes #beginner
+- [VOPS 04 - Geometry Interactions - Houdini Beginner Tutorial](./vops-04---geometry-interactions---houdini-beginner-tutorial.md) — #vop #attributes #geometry #beginner
+- [Intro To Houdini for VFX - Beginner Course](./intro-to-houdini-for-vfx---beginner-course.md) — #sop #dop #vop #vex #attributes #beginner

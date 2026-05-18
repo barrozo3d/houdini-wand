@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Kx3CJJei_Vs
 author: Voxyde VFX
 ingested: 2026-05-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: ["vop", "sop", "attributes", "math", "noise", "procedural", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-vops---houdini-beginner-tutorial/
 frame_count: 0
 ---
@@ -52,27 +52,54 @@ frame_count: 0
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+VOP network fundamentals inside `attribvop`: building procedural attribute manipulation networks using math VOPs, the `fitrange` (fit range) ramp node, displacement along normals, and trigonometric functions — all as per-point operations on any geometry.
 
 ### Summary
-[PENDING EXTRACTION]
+A 59-minute beginner tutorial covering the core VOP math nodes used daily in Houdini VFX work. Starts with the `attribvop` and its variants (point/primitive/vertex/volume VOP), then walks through add/subtract/multiply, parameter promotion to expose controls at the geometry level, displacement along normals using the `displacealongn` VOP, the `fit` (fit range) node for remapping values, the `ramp` VOP for gradient control, `complement` and `negate` for value inversion, and finally `sin`/`cos` for cyclic procedural patterns. Companion to the VOPs 02–04 series.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Enter `attribvop` (double-click) — it runs operations per-point, per-primitive, per-vertex, or per-voxel depending on the "Run Over" setting; all variants are essentially the same node with a different iteration class
+2. Use `add`, `subtract`, `multiply`, `divide` VOPs to combine float and vector values; wire time (`$T` or `global` VOP → time output) into position components to animate geometry procedurally
+3. Promote any VOP parameter to the top level: middle-mouse-click the input → "Promote Parameter"; rename via the parameter's Label field to get clean interface controls (e.g. "Speed X", "Speed Y")
+4. Displace geometry along normals: use `displacealongn` VOP — wire P into position input and its output into P; increase Displacement Amount to push points outward along N
+5. Add a `turbulentnoise` VOP and feed its output through `multiply` before adding to P — use Element Size and Amplitude to control scale and strength
+6. Use `vectofloat` (vector to float) to split P into X/Y/Z components; pick one axis (e.g. Z) and feed it into `fit` (Fit Range) — set Source Min/Max to match geometry bounds (e.g. -5 to 5) and Dest Min/Max to 0–1 to create a gradient mask
+7. Feed the `fit` output into a `ramp` VOP for fine curve control; multiply the ramp result against noise amplitude to blend effect from zero to full across the geometry
+8. Use `complement` VOP (= 1 minus x) or a second `fit` with remapped Dest values (1→0) to invert ramp direction
+9. Use `negate` VOP to flip sign (multiply by -1); use `abs` for absolute value; use `floor`/`ceil` for quantization effects
+10. For cyclic patterns: extract X from position via `vectofloat`, feed into `sin` VOP — outputs a -1 to 1 wave; multiply by amplitude and plug into Cd or P.y for a sine wave displacement
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `attribvop` SOP — "Run Over": Points/Primitives/Vertices/Volume; enter with double-click; P and N wired in/out automatically
+- `add` VOP — adds two floats or vectors; use to offset position
+- `multiply` VOP — scales a value; promote input 2 → expose as parameter (e.g. "Speed Y")
+- `subtract` VOP — difference between two values
+- `global` VOP — provides time ($T), frame, P, N, Cd etc. as outputs inside attribvop
+- `displacealongn` VOP — Displacement: any float; pushes points along their N vector; outputs displaced P
+- `turbulentnoise` VOP — Signature: 1D or 3D; Element Size; Roughness; Amplitude; plug P into position input
+- `vectofloat` VOP — splits a vector into X, Y, Z float components
+- `fit` VOP — Source Min/Max: input range; Dest Min/Max: output range; remaps any value to 0–1 or custom range
+- `ramp` VOP — curve-based remapping of 0–1 values; plug fit output in; outputs shaped 0–1 mask
+- `complement` VOP — computes 1 minus x; reverses a 0–1 ramp
+- `negate` VOP — multiplies by -1; inverts sign of any value
+- `sin` / `cos` VOP — trigonometric; input: float (e.g. P.x scaled by frequency); output: cyclic -1 to 1 float
+- `constant` VOP — inline float/vector/int literal; middle-mouse-click input to promote inline
+- **Middle-mouse-click input → Promote Parameter** — exposes VOP parameter to geometry-level HDA interface
+- **Shift+W** — toggle wireframe overlay in viewport
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+#vop #sop #attributes #math #noise #procedural #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Intro To Houdini for VFX - Beginner Course](./intro-to-houdini-for-vfx---beginner-course.md) — #sop #dop #vop #vex #attributes #beginner
+- [VOPS 02 - Random & Noise - Houdini Beginner Tutorial](./vops-02---random-noise---houdini-beginner-tutorial.md) — #vop #noise #random #attributes #beginner
+- [VOPS 03 - Vector Operations - Houdini Beginner Tutorial](./vops-03---vector-operations---houdini-beginner-tutorial.md) — #vop #vectors #math #attributes #beginner
+- [VOPS 04 - Geometry Interactions - Houdini Beginner Tutorial](./vops-04---geometry-interactions---houdini-beginner-tutorial.md) — #vop #attributes #geometry #beginner

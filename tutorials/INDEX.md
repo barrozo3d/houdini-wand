@@ -69,9 +69,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Kx3CJJei_Vs
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #vop #sop #attributes #math #noise #procedural #beginner
+- **Summary:** A 59-minute beginner tutorial covering core VOP math nodes used daily in Houdini VFX work: the `attribvop` and its variants, add/subtract/multiply, parameter promotion, displacement along normals (`displacealongn`), fit range remapping, ramp gradients, complement/negate for value inversion, and sine/cosine for cyclic procedural patterns.
 - **File:** tutorials/intro-to-vops---houdini-beginner-tutorial.md
 
 
@@ -79,9 +79,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=mORz1y05T7E
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #vop #sop #noise #random #attributes #procedural #beginner
+- **Summary:** A 46-minute beginner tutorial dedicated to noise and randomness in Houdini VOPs: the `random` VOP (uniform and Gaussian), `turbulentnoise`, `aanoise` (anti-aliased flow noise for directionless animation), `curlnoise` (fluid-like swirling with 4D simplex), `worleynoise` (cellular Voronoi patterns), and the `relbbox` (relative bounding box) VOP for object-space gradient masks.
 - **File:** tutorials/vops-02---random-noise---houdini-beginner-tutorial.md
 
 
@@ -89,9 +89,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=oT6qzs-Vffk
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #vop #sop #vectors #math #attributes #procedural #beginner
+- **Summary:** A 31-minute focused tutorial on vector math as used in VFX simulations: creating direction vectors via `subtract` + `normalize`, computing distances with `length`, cross product for perpendicular vectors, dot product for angle-based facing masks (-1 to 1), and the `reflect` VOP for bounce direction calculations — the mathematical foundation for controlling any simulation movement.
 - **File:** tutorials/vops-03---vector-operations---houdini-beginner-tutorial.md
 
 
@@ -99,9 +99,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=qDtKmbCDn3k
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #vop #sop #attributes #geometry #procedural #beginner #intermediate
+- **Summary:** A 44-minute tutorial on cross-geometry attribute transfer inside `attribvop`: six methods for making geometries communicate — `importpointattrib`, `nearpoint`, `findattribval`, `minpos`/`xyzdist`/`primuv` for primitive-based surfaces, `intersect` for ray-surface collision, and `pcopen`/`pcfilter` for radius-based point cloud queries. Essential for morphing effects and particle attraction to meshes.
 - **File:** tutorials/vops-04---geometry-interactions---houdini-beginner-tutorial.md
 
 
@@ -109,9 +109,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=3BX97YIQERE
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H20–H21 UI)
+- **Tags:** #lop #solaris #usd #rendering #karma #lighting #materialx #instancing #beginner
+- **Summary:** A 4.5-hour comprehensive Solaris beginner course covering the complete LOP workflow: USD scene graph, `sopimport`, Stage Manager, MaterialX Karma material authoring, `componentbuilder` for USD asset packaging, light types (Karma Physical Sky, area, dome), `karmafogbox` for volumetric lighting, `instancer` LOP for scattering millions of instances, and a complete magical forest shot built entirely in Houdini with Karma XPU render and AOVs.
 - **File:** tutorials/intro-to-houdini-solaris---full-beginner-course.md
 
 
@@ -119,9 +119,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=O2F1Qzl22oU
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #dop #vop #particles #attributes #vfx #destruction #intermediate
+- **Summary:** A 21-minute tutorial building a geometry disintegration effect entirely in SOPs: `remesh` for uniform triangle density, a noise-driven `dissolve` attribute animated over time as a deletion threshold, `blast` SOP to progressively delete geometry, and a `popnet` with curl noise to emit and animate dust particles at the dissolve boundary — no complex DOP setup required.
 - **File:** tutorials/houdini-tutorial---simple-disintegration-fx.md
 
 
@@ -129,9 +129,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=aQQeEOlHqjQ
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 21
+- **Tags:** #dop #sop #mpm #grains #simulation #vfx #rendering #karma #intermediate #h21
+- **Summary:** A 50-minute Houdini 21 tutorial on the MPM (Material Point Method) solver for snow simulation: snowball source with layered `mountain` noise, MPM DOP setup with snow stiffness/cohesion/friction parameters, efficient `.bgeo.sc` disk caching via `filecache`, secondary particle spray simulation driven by high-velocity particle extraction, and full Karma XPU rendering and compositing with AOVs.
 - **File:** tutorials/houdini-21-tutorial---mpm-snowball.md
 
 
@@ -139,9 +139,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=qg3OFz4JZs4
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H20–H21 UI)
+- **Tags:** #lop #solaris #rendering #karma #top #pipeline #beginner
+- **Summary:** A quick 1.5-minute tip tutorial showing how to batch-render multiple Karma/Solaris ROP outputs (character, blast, particles, rain, water) simultaneously using a TOP network with `ropfetch` nodes — one per render element — with "node by node" cook order and frame batching to eliminate manual sequential rendering.
 - **File:** tutorials/houdini-solaris-tutorial---rendering-multiple-rops-together.md
 
 
@@ -149,9 +149,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=QfWUzrfsDaY
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H20–H21 UI)
+- **Tags:** #lop #solaris #usd #rendering #karma #performance #pipeline #intermediate
+- **Summary:** A 23-minute practical tutorial covering strategies to keep the Houdini Solaris viewport fast: always bake simulations (RBD, Vellum, particles, animated characters) to `.bgeo.sc` or USD caches via `filecache` before `sopimport`, use the `instancer` LOP with pre-exported USD assets instead of live SOP instancing, and use `configurelayer` proxy geometry for viewport speed while keeping render-res for final output.
 - **File:** tutorials/improve-solaris-performance---houdini-tutorial.md
 
 
@@ -159,9 +159,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=RRmvyQu39-4
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #dop #sop #pyro #smoke #volumes #vdb #simulation #vfx #intermediate
+- **Summary:** A 27-minute tutorial on achieving a wispy cigarette/incense smoke aesthetic using the Houdini Pyro solver: starting from the `configure pyro` shelf preset with a small sphere emitter, tuning Density Dissipation, Buoyancy, Turbulence, Shredding, and Disturbance micro-solvers for thin tendrils instead of dense smoke, and applying a volume shader in Karma/Mantra for the final look.
 - **File:** tutorials/houdini-tutorial---wispy-smoke.md
 
 ---
