@@ -94,6 +94,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vops-03---vector-operations---houdini-beginner-tutorial.md
 
+
+### VOPS 04 - Geometry Interactions - Houdini Beginner Tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=qDtKmbCDn3k
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vops-04---geometry-interactions---houdini-beginner-tutorial.md
+
 ---
 
 ## Tag Reference
