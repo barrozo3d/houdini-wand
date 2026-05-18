@@ -124,6 +124,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-tutorial---simple-disintegration-fx.md
 
+
+### Houdini 21 Tutorial - MPM Snowball
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=aQQeEOlHqjQ
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-21-tutorial---mpm-snowball.md
+
 ---
 
 ## Tag Reference
