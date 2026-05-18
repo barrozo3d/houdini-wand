@@ -154,6 +154,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/improve-solaris-performance---houdini-tutorial.md
 
+
+### Houdini Tutorial - Wispy Smoke
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=RRmvyQu39-4
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-tutorial---wispy-smoke.md
+
 ---
 
 ## Tag Reference
