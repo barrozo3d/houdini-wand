@@ -34,6 +34,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** A 2-hour beginner course covering everything needed to start creating VFX in Houdini from zero. Progresses from UI navigation and basic SOP geometry through attributes, Attribute VOPs, VEX wrangles, and DOP simulation networks, ending with an overview of all major solver types (Pyro, FLIP, Vellum, RBD) and noise-driven per-frame deformation inside a SOP Solver.
 - **File:** tutorials/intro-to-houdini-for-vfx---beginner-course.md
 
+
+### Intro To Houdini Particles - Full Beginner Course
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=94YAomHfMbw
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/intro-to-houdini-particles---full-beginner-course.md
+
 ---
 
 ## Tag Reference
