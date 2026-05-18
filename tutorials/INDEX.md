@@ -134,6 +134,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-21-tutorial---mpm-snowball.md
 
+
+### Houdini Solaris Tutorial - Rendering Multiple ROPS Together
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=qg3OFz4JZs4
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-solaris-tutorial---rendering-multiple-rops-together.md
+
 ---
 
 ## Tag Reference
