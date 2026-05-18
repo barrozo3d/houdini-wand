@@ -25,7 +25,14 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 
 ## Entries
 
-*(Empty — add your first entry by saying "ingest this: [URL]")*
+### Intro To Houdini for VFX - Beginner Course
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=JbxNElzALrM
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/intro-to-houdini-for-vfx---beginner-course.md
 
 ---
 
