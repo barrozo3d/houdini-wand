@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=94YAomHfMbw
 author: Voxyde VFX
 ingested: 2026-05-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: ["dop", "sop", "vop", "particles", "simulation", "attributes", "wrangler", "procedural", "intermediate"]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-particles---full-beginner-course/
 frame_count: 8
 ---
@@ -68,27 +68,53 @@ frame_count: 8
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Professional Houdini particle workflow inside DOPs: POP network setup with Geometry VOP for per-point custom velocity control, sourcing strategies, attribute inheritance from animated geometry, interpolated source, and collision detection.
 
 ### Summary
-[PENDING EXTRACTION]
+A 2-hour course on Houdini particle simulations from Voxyde VFX, pitched at beginners but covering production-level techniques. Covers the full DOP particle pipeline: popnet/popsource/popsolver setup, custom velocity via Geometry VOP (rather than pre-built POP forces), multiple sourcing types, attribute inheritance, interpolate source for animated geometry, and static/moving collisions. Strongly emphasizes the VOP-first workflow over using shelf presets.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create geometry container → step inside → build source geo (sphere, torus, grid, circle) → `scatter` SOP if needed for point distribution; disable Relaxation and Max Point Limit
+2. Add `popnet` → step inside → connect source geometry to `popsource` input; `popsolver` drives the simulation at each frame
+3. Build custom velocity in `geometryvop` (at sub-level inside DOP): `bind` P → `subvector` with goal null position → `normalize` → `bind export` V — particles now seek the goal point
+4. `popaxisforce` for tornado/swirl — must set Radius to encompass particle cloud or it has no effect; preview at 120fps
+5. Control emission in `popsource` → Birth tab: Emission Type (Scatter onto Surfaces / All Points / Continuous); `$FF` expression in Seed for per-frame variation; Birth Rate for density
+6. Inherit source velocity: build `attribvop` before DOP → subtract P from origin `{0,0,0}` → store as `v` attribute → DOP inherits it automatically via Attributes tab in `popsource`
+7. Animated source: use `testgeometry_craig`, isolate piece with S+Delete, `unpack` SOP (required for packed geo), feed into `popsource` → Birth tab → enable **Interpolate Source** to sub-frame interpolate positions
+8. Add `staticobject` node in DOP for static collision geometry; `rbdpackedobject` for animated colliders; `popbounce` controls Elasticity and Friction inside the POP network
+9. `pointvelocity` SOP alternative: Initialization → Set to Value + Direction; enable **Curl Noise** tab with Scale/Swirl Size for organic motion without manual VOPs
+10. Convert particle cloud to volume: `vdbfromparticles` (Particle Radius Scale, Minimum Radius in Voxels) or feed into pyro solver as emission source
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `popnet` / `popsolver` / `popsource` — core DOP particle system container and engine
+- `popsource` → Birth tab: Emission Type (Scatter onto Surfaces / All Points / Continuous); `$FF` seed; Interpolate Source checkbox
+- `geometryvop` (inside DOP sub-level) — per-point attribute VOP running on particle points each frame
+- `bind` VOP — reads named attribute (P, V, age, etc.) from points; Name must match exactly
+- `bind export` VOP — writes modified value back; Export: Always
+- `subvector` VOP — subtraction: P - goal_position = direction vector toward goal
+- `normalize` VOP — makes direction vector unit length for consistent speed
+- `popaxisforce` — Axis Force inside POP network; Radius must cover geometry; creates swirl
+- `popbounce` — Elasticity, Friction parameters; handles collision response
+- `staticobject` DOP — static collision geometry; requires collision representation
+- `rbdpackedobject` DOP — animated/moving collision geometry
+- `scatter` SOP — Total Count: 50–1000; Relaxation: off; Max Point Limit: off
+- `attribcreate` SOP — Name: v; Type: Vector; Value: velocity vector before entering DOP
+- `pointvelocity` SOP — Initialization: Set to Value; Direction: 0,1,0; Curl Noise: Scale, Swirl Size, Grain
+- `unpack` SOP — required to unpack packed/instanced geometry before use as particle source
+- `null` SOP renamed "goal" — position reference for directional velocity target
+- `vdbfromparticles` SOP — Particle Radius Scale; Minimum Radius in Voxels; Fog VDB or SDF
+- `$FF` expression — frame-dependent seed for per-frame scatter variation
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (labeled beginner, contains production-level techniques)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+#dop #sop #vop #particles #simulation #attributes #wrangler #procedural #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Intro To Houdini for VFX - Beginner Course](./intro-to-houdini-for-vfx---beginner-course.md) — #dop #sop #vop #attributes #simulation #procedural

@@ -39,9 +39,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=94YAomHfMbw
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #dop #sop #vop #particles #simulation #attributes #wrangler #procedural #intermediate
+- **Summary:** A 2-hour course on Houdini particle simulations covering the full DOP particle pipeline: popnet/popsource/popsolver setup, custom velocity via Geometry VOP, multiple sourcing types, attribute inheritance, interpolate source for animated geometry, and static/moving collisions. Emphasizes building proper VOP-based workflows over shelf presets.
 - **File:** tutorials/intro-to-houdini-particles---full-beginner-course.md
 
 
@@ -49,9 +49,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=wR0SDptfygg
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #vop #volumes #simulation #procedural #vdb #intermediate
+- **Summary:** A 2-hour course covering all core Houdini volume concepts: fog VDB vs SDF distance fields, Volume VOP for per-voxel manipulation with named bind/bind-export, scalar vs vector velocity fields, curve-based velocity volumes, and two methods for converting particle clouds to renderable volumes (vdbfromparticles vs volumerasterizeattributes).
 - **File:** tutorials/intro-to-houdini-volumes---beginner-course.md
 
 ---

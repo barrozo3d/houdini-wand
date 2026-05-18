@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=wR0SDptfygg
 author: Voxyde VFX
 ingested: 2026-05-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: ["sop", "vop", "volumes", "simulation", "procedural", "vdb", "intermediate"]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-volumes---beginner-course/
 frame_count: 0
 ---
@@ -88,27 +88,53 @@ frame_count: 0
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini volumes foundation: VDB types (fog vs SDF), Volume VOP for per-voxel manipulation with named bind/bind-export, scalar vs vector fields, velocity volumes, and converting geometry/particles to volumes.
 
 ### Summary
-[PENDING EXTRACTION]
+A 2-hour course covering all core Houdini volume concepts from Voxyde VFX. Explains standard volumes vs VDBs, fog density volumes vs SDF distance fields, and how to manipulate them with Volume VOP (the per-voxel equivalent of Attribute VOP). Covers multiple volume fields per object, scalar vs vector fields for velocity, curve-based velocity volumes, and two methods for converting particle clouds to renderable volumes.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create `volume` SOP → set Component 1 value to 1 to make it visible in viewport; or use `vdbfrompolygons` to convert mesh to VDB
+2. Understand VDB types: **Fog VDB** stores density (float 0–1, visible where > 0); **Distance VDB / SDF** stores signed distance to surface (negative inside, positive outside)
+3. `vdbfrompolygons` → enable Fog VDB checkbox OR Distance VDB checkbox; Division Size controls resolution (0.025–0.05 typical); smaller = more voxels
+4. Add `volumevop` → step inside → runs per-voxel unlike `attribvop`; use `bind` (Name: "density") to read, `bind export` (Name: "density", Export: Always) to write back
+5. Fade density by height: `relativetoboundingbox` VOP → `vectortofloat` (take middle Y output) → connect directly to density bind export
+6. Multiple volumes in one object: change Name in `bind export` to different strings ("density", "temperature"); `volumevisualization` SOP maps field names to Smoke/Emission channels with ramp remapping
+7. Displace SDF with noise: `bind` surface → `turbulentnoise` (Simplex, source min −0.5 max +0.5) → `fitrange` for controlled intensity → `add` to surface → `bind export` surface
+8. Create velocity vector field: `vdb` SOP (empty) + `vdbactivate` to set bounds; in `volumevop` → `bind export` vel (Type: 3-float vector) → `constant` (3-float) + `turbulentnoise` (3D signature) → `add` → export
+9. Curve-based velocity: `curve` + `resample` SOP → `attribvop` to bake tangent as velocity per point → `volumerasterizeattributes` to stamp points into volume field
+10. Convert particles to volume: `vdbfromparticles` for SDF/fog sphere blobs; `volumerasterizeattributes` for higher-quality fog (requires `density` attribute on points, value 1)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `volume` SOP — Component 1 Value: 1 to display; sets initial voxel density
+- `vdbfrompolygons` — Fog VDB: enable; Distance VDB: enable for SDF; Division Size: 0.025–0.05
+- `volumevop` — runs per-voxel on named field; no domain options (unlike attribvop)
+- `bind` VOP — Name: exact volume field name ("density"/"surface"/"vel"); reads value per voxel
+- `bind export` VOP — Export: Always; writes back to named volume field; same as bind with export flag
+- `relativetoboundingbox` VOP — returns 0–1 value per axis of object bounding box
+- `vectortofloat` VOP — splits XYZ vector; middle output = Y axis (height)
+- `turbulentnoise` VOP — Signature: 3D for vector output; Simplex type; Element Size, Roughness, Amplitude
+- `fitrange` VOP — Source Min/Max: −0.5/+0.5 for Simplex; Destination controls displacement strength
+- `cellularnoise` VOP — alternative pattern for SDF shapes
+- `volumevisualization` SOP — Smoke field: "density"; Emission field: "temperature"; ramp remapping
+- `volumenoisefog` SOP — preset noise on volumes; Operation: Multiply; Remap Ramp enabled
+- `vdb` SOP — creates empty named VDB; pair with `vdbactivate` for bounds
+- `vdbactivate` SOP — sets active region of empty volume; used to define velocity field extent
+- `curve` SOP + `resample` SOP — creates point-based curve path for velocity stamping
+- `vdbfromparticles` SOP — Particle Radius Scale; Minimum Radius in Voxels; Fog or SDF output
+- `volumerasterizeattributes` SOP — Voxel Size; Particle Scale; requires `density` attribute (value 1) on points
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+#sop #vop #volumes #simulation #procedural #vdb #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Intro To Houdini for VFX - Beginner Course](./intro-to-houdini-for-vfx---beginner-course.md) — #sop #vop #procedural
+- [Intro To Houdini Particles - Full Beginner Course](./intro-to-houdini-particles---full-beginner-course.md) — #sop #vop #simulation #procedural

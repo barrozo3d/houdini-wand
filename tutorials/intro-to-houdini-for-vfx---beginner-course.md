@@ -181,4 +181,5 @@ Not specified (H19–H21 UI)
 ---
 
 ## Related Tutorials
-None yet — first tutorial in the library.
+- [Intro To Houdini Particles - Full Beginner Course](./intro-to-houdini-particles---full-beginner-course.md) — #dop #sop #vop #particles #simulation #attributes #procedural
+- [Intro To Houdini Volumes - Beginner Course](./intro-to-houdini-volumes---beginner-course.md) — #sop #vop #simulation #procedural
