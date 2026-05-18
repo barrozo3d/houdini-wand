@@ -64,6 +64,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/intro-to-houdini-pyro---full-beginner-course.md
 
+
+### Intro to VOPS - Houdini Beginner Tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Kx3CJJei_Vs
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/intro-to-vops---houdini-beginner-tutorial.md
+
 ---
 
 ## Tag Reference
