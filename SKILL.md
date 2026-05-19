@@ -203,11 +203,32 @@ houdini-19, houdini-20, houdini-21
 
 ---
 
+## Auto-Changelog Rule (Mode 0 — Version Check)
+
+**Trigger:** At the start of every consultation (Mode 1), before answering, run this check.
+
+**Steps:**
+1. Read `references/version-tracker.md`
+2. Check `last_checked` date
+3. If `last_checked` is **more than 7 days ago**:
+   a. Fetch `https://www.sidefx.com/docs/houdini/news/index.html`
+   b. Check if any version links appear that are NOT in the Known Versions table
+   c. If new version found: fetch its sub-pages (kinefx, model, solaris, karma, pyro, rbd, vex, copernicus, engine, viewport) and create `references/release-notes-hXX.md`
+   d. Update `version-tracker.md` — add new version row, update `last_checked` to today
+   e. Commit and push: `git commit -m "update: release notes H[version] ingested"`
+4. If no new version found: just update `last_checked` in `version-tracker.md`
+
+**Why this matters:** Houdini ships major versions with new nodes, deprecated workflows, and renamed parameters. Without version awareness, recommendations may be outdated.
+
+**Skip the check if:** The user is clearly in a hurry or the conversation indicates urgency — do not add latency for a quick VEX question. Use judgment.
+
+---
+
 ## Key Rules
 
 1. **Always check INDEX.md first** — cite the source if it's in the library
 2. **Never invent node names** — use only confirmed Houdini node names
-3. **Version-check** — features differ significantly across H19 / H20 / H21
+3. **Version-check** — features differ significantly across H19 / H20 / H21; check `references/version-tracker.md` to know what's current
 4. **Context-first** — always state which network context the answer applies to
 5. **Extraction is mandatory** — never leave placeholders after ingesting
 6. **VEX over VOPs** — default to wrangles for code answers unless VOPs are specifically requested
@@ -230,4 +251,8 @@ houdini-19, houdini-20, houdini-21
 | `render-pipeline.md` | Karma XPU/CPU, Mantra, Redshift, MaterialX, USD/Solaris |
 | `houdini-workflow.md` | Contexts, HDAs, network patterns, project structure |
 | `python-houdini.md` | hou module API, shelf tools, Python nodes, callbacks |
+| `foundations-overview.md` | **Core concepts** from Houdini Foundations book (H19.5): workspace, nodes, attributes, modeling, simulation, VEX, HDAs, pipeline |
+| `release-notes-h21.md` | **H21 release notes** — KineFX/APEX, Copernicus cables, Solaris Adobe USD, Karma XPU shader blending, new SOPs, VEX functions |
+| `release-notes-h20-5.md` | **H20.5 release notes** — Copernicus introduction, APEX Script, layered animation, new VEX functions |
+| `version-tracker.md` | **Version state** — last changelog check date, known versions, URL patterns for auto-update |
 | `tutorials/INDEX.md` | All ingested tutorials and book excerpts |
