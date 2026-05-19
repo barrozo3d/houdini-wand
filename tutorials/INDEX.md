@@ -169,9 +169,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=041qemBc_1Q
 - **Author:** Pixel In The Frame
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21
+- **Tags:** #particles #dop #sop #vex #instancing #simulation #rendering #karma #lop #solaris #beginner #houdini-21
+- **Summary:** 165-minute comprehensive beginner course covering every major POP node in H21: POP Source (scatter/all-points/location emission), all force nodes (Force, Wind, Drag, Axis Force, Curve Force, Attract, Interact, Advect by Volume), collisions (POP Collision Detect + Static Object with deforming geo), particle lifecycle (Color, Group, Awaken, Kill, Replicate), orient/spin, VEX inside POP VOP and POP Wrangle (curl noise on velocity), SOP-level instancing via Copy to Points, LOP-level USD instancing with Karma motion blur, and a final project combining RBD simulation with Pyro volume sourcing rendered in Karma.
+- **File:** tutorials/introduction-to-particles-in-houdini-21-full-beginner-course-2026.md
 - **File:** tutorials/introduction-to-particles-in-houdini-21-full-beginner-course-2026.md
 
 ---
