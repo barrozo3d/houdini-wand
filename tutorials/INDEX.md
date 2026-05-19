@@ -164,6 +164,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** A 27-minute tutorial on achieving a wispy cigarette/incense smoke aesthetic using the Houdini Pyro solver: starting from the `configure pyro` shelf preset with a small sphere emitter, tuning Density Dissipation, Buoyancy, Turbulence, Shredding, and Disturbance micro-solvers for thin tendrils instead of dense smoke, and applying a volume shader in Karma/Mantra for the final look.
 - **File:** tutorials/houdini-tutorial---wispy-smoke.md
 
+
+### Introduction to Particles in Houdini 21 [FULL Beginner Course 2026]
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=041qemBc_1Q
+- **Author:** Pixel In The Frame
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/introduction-to-particles-in-houdini-21-full-beginner-course-2026.md
+
 ---
 
 ## Tag Reference
