@@ -216,23 +216,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/grain-vortex-in-houdini-tutorial.md
 
 
-### Houdini Tutorial | Creating Realistic Waterfall Simulation (Step-by-Step)
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=eYqxarTsOrE
-- **Author:** Daily Course
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step.md
-
-
 ### Houdini Tutorial: Make Any Geometry Knitted
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=mTnQji8a8nw
 - **Author:** PolygonCGI
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H20–H21 UI)
+- **Tags:** #sop #vop #modelling #procedural #curves #attributes #rendering #redshift #advanced
+- **Summary:** 27-minute advanced tutorial wrapping a procedural knit stitch pattern onto any geometry using a UV-space projection trick (`attribswap` P ↔ UV). Builds stitch tile from scratch, tiles it in 2D UV space via VEX, projects back to 3D surface, adds fiber variation with `curlnoise`/`sweep`, transfers texture color via `attribfrommap`, and renders with Redshift hair shader.
 - **File:** tutorials/houdini-tutorial-make-any-geometry-knitted.md
 
 ---

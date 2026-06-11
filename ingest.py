@@ -27,6 +27,10 @@ import sys, os, re, json, subprocess, tempfile, shutil, argparse
 from datetime import datetime
 from pathlib import Path
 
+# Ensure stdout handles Unicode on Windows (cp1252 default breaks non-ASCII titles)
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
 # ── Configuration ─────────────────────────────────────────────────────────────
 
 SKILL_DIR     = Path(__file__).parent
