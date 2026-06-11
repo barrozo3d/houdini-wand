@@ -276,13 +276,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/tutorial-glass-tiles.md
 
 
-### [Урок] Стеклянная Плитка
+### [Урок] Стеклянная Плитка (Glass Tile — RU, Extended)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=-s-AnXgjw-o
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #modelling #procedural #instancing #attributes #animation #rendering #redshift #intermediate
+- **Summary:** 32-minute Russian-language extended Glass Tiles tutorial — same `box`/`polyextrude`/`subdivide`/`copytopoints` base, plus per-tile rotation animation via `attribtransfer` driving `orient` quaternion attribute. Produces animated wave of rotating glass tiles with glowing light-trail aesthetic.
 - **File:** tutorials/урок-стеклянная-плитка.md
 
 ---
