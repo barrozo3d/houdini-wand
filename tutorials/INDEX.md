@@ -250,19 +250,19 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=mOKs6Dht5Mw
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #dop #sop #vex #particles #simulation #rendering #intermediate
+- **Summary:** 17-minute Part 2 refining the Heavy Chic sim: noise masked by `Cd` (stationary particles unaffected), B-spline gamma ramp on `Cd`, point separation 0.01→0.004 scaling count to 11M, `filecache` for disk playback, final golden luxury particle cloud render.
 - **File:** tutorials/tutorial-heavy-chic-part-2.md
 
 
-### [Урок] Тяжелый Люкс. Часть 2.
+### [Урок] Тяжелый Люкс. Часть 2. (Heavy Lux Part 2 — RU)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=UrDkzEXDdLM
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #dop #sop #vex #particles #simulation #rendering #intermediate
+- **Summary:** 22-minute Russian-language Part 2 completing Heavy Lux: turbulent noise (freq 1.7, "Add to" blend), float-type B-spline ramp for sharper contrast, `filecache` with `$F4` frame naming, final luxury golden-fabric particle render.
 - **File:** tutorials/урок-тяжелый-люкс-часть-2.md
 
 
@@ -270,9 +270,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Ps6ZOKEdDos
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #modelling #procedural #instancing #rendering #redshift #intermediate
+- **Summary:** 25-minute tutorial building a procedural glass tile wall: single tile from `box` + `polyextrude` + `subdivide` (crease, 2 div) for glass-quality bevels, distributed on a 128×128 point grid via `copytopoints`, per-tile randomization, Redshift glass/refraction shader.
 - **File:** tutorials/tutorial-glass-tiles.md
 
 ---

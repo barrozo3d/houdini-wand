@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Ps6ZOKEdDos
 author: Alexander Eskin
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [sop, modelling, procedural, instancing, rendering, redshift, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-glass-tiles/
 frame_count: 4
 ---
@@ -33,27 +33,45 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedural glass/mosaic tile wall: single tile built from `box` + `polyextrude` + `subdivide` (crease mode, 2 divisions), oriented by coloring a reference primitive, distributed on a 128×128 point grid via `copytopoints`, with per-tile attribute variation for luxury glass refraction rendering in Redshift.
 
 ### Summary
-[PENDING EXTRACTION]
+A 25-minute tutorial by Alexander Eskin building a procedural glass tile wall for luxury brand rendering. A single tile is modeled from a `box` (0.1 × 0.5), one primitive colored red for orientation reference, then `polyextrude` + `subdivide` with crease (2 divisions) for smooth beveled edges needed for glass refraction. Tiles are distributed on a 128×128 point grid (size 10, height 2.5, YZ plane, points-only mode) via `copytopoints` with per-instance scaling. Final render uses Redshift with glass/refraction shader.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Geo node → `box` SOP — size 0.1 × 0.5; this is the single tile unit
+2. Color primitive 5 red (`primitive` SOP or `attribwrangle`) — orientation reference to know which face is front
+3. `polyextrude` — extrude primitive 4 by a small amount; insert face by a fair amount for beveled profile
+4. `subdivide` SOP — **crease mode**, 2 divisions → smooth beveled tile shape (critical for glass refraction)
+5. Tile is complete. Pivot/clean attributes as needed
+6. `grid` SOP — size 10, height 2.5, YZ plane; **points only** mode (no polygons); 128×128 points
+7. `copytopoints` SOP — copy tile to grid points; enable **"Pack and Instance"** option
+8. Scale instances down to fit grid spacing (tiles are huge initially)
+9. Per-tile attribute variation via `attribwrangle` — randomize rotation, `pscale`, or `orient` per point
+10. Redshift material — glass shader with refraction; enable subdivision in Redshift object settings
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `box` SOP — size 0.1 × 0.5
+- `primitive` SOP or `attribwrangle` — color primitive 5 red for orientation
+- `polyextrude` SOP — extrude primitive 4+5; insert offset for bevel
+- `subdivide` SOP — crease mode, 2 divisions
+- `grid` SOP — size 10 × 2.5, YZ plane, 128×128 rows/cols, **points only**
+- `copytopoints` SOP — Pack and Instance enabled
+- `attribwrangle` — per-tile scale/rotation randomization
+- Redshift glass shader — refraction + subdivision
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, modelling, procedural, instancing, rendering, redshift, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[model-a-procedural-flower-houdini-tutorial]] — similar copytopoints distribution approach
+- [[houdini-tutorial-make-any-geometry-knitted]] — procedural pattern distribution on geometry
+- [[houdini-uv-unwrapping-fundamentals]] — UV prep for textured tile rendering
