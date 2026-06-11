@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=uztbmUElafA
 author: Alexander Eskin
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [sop, rendering, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-pink-bubble-part-2/
 frame_count: 4
 ---
@@ -33,27 +33,39 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Octane render setup for pink bubble spheres: separate SOP geometry into OBJ-level nodes (bubble base, big bubbles, small bubbles) via `objectmerge`, camera (Z=6, square aspect, adjusted focal length), Octane glass/refraction shader for transparent spheres.
 
 ### Summary
-[PENDING EXTRACTION]
+A 10-minute English Octane render tutorial (Part 2). Separates the bubble geometry into 3 OBJ nodes (bubble_base/outer sphere, big bubbles, small bubbles); source node stays green/unrendered. `objectmerge` pulls geo into each orange/rendered node. Camera positioned at Z=6, square aspect ratio (not 16:9), adjusted focal length. Octane chosen specifically for quality glass refraction rendering of the sphere-in-sphere setup.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create 3 OBJ geo nodes: bubble_base (outer sphere), big_bubbles, small_bubbles — color orange
+2. Keep source node green (not rendered)
+3. `objectmerge` inside each node — pull geometry from SOP source
+4. Camera: Z translation = **6**, square aspect ratio (not 16:9), adjust focal length
+5. Create null for camera target
+6. Octane render target — add Octane glass/SSS shaders per element
+7. Light source (required for Octane — no light = black)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- OBJ geo nodes — orange (rendered): bubble_base, big_bubbles, small_bubbles
+- `objectmerge` SOP — import geo from source node
+- Camera — Z: 6; aspect: square; adjust focal length
+- Octane render target
+- Octane glass shader — refraction for spheres
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, rendering, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[урок-розовые-пузыри-часть-2]] — Russian companion (same content, 15 min)
+- [[tutorial-pink-bubble-part-1]] — Part 1 (geometry prerequisite)
+- [[урок-стеклянный-пончик]] — Octane glass/refraction material context

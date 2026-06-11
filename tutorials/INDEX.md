@@ -366,13 +366,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/tutorial-pink-bubble-part-1.md
 
 
-### [Урок] Розовые Пузыри. Часть 2.
+### [Урок] Розовые Пузыри. Часть 2. (Pink Bubbles Part 2 — RU)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=faWPP0UPcU0
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #rendering #intermediate
+- **Summary:** 15-minute Russian Part 2 — Octane render/material for pink bubbles: export elements, `subdivide` with "roll" (not crease), Octane camera + 3 shaders (Ground/Bubble/Bubble Main), circular light (required — no light = black render), position ~(5,5.6,5).
 - **File:** tutorials/урок-розовые-пузыри-часть-2.md
 
 
@@ -380,9 +380,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=uztbmUElafA
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #rendering #intermediate
+- **Summary:** 10-minute English companion to Pink Bubbles Part 2 RU — Octane render/material setup; see [[урок-розовые-пузыри-часть-2]] for full details.
 - **File:** tutorials/tutorial-pink-bubble-part-2.md
 
 ---
