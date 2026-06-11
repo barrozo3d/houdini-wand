@@ -205,6 +205,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-uv-unwrapping-fundamentals.md
 
+
+### Grain vortex in Houdini tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=8fcfu6gmzUQ
+- **Author:** raphaël
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/grain-vortex-in-houdini-tutorial.md
+
 ---
 
 ## Tag Reference
