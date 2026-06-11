@@ -265,6 +265,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/урок-тяжелый-люкс-часть-2.md
 
+
+### [Tutorial] Glass Tiles
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Ps6ZOKEdDos
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tutorial-glass-tiles.md
+
 ---
 
 ## Tag Reference
