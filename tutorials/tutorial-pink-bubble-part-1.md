@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ypJL4PXxQpg
 author: Alexander Eskin
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [sop, vop, vdb, particles, instancing, simulation, procedural, rendering, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-pink-bubble-part-1/
 frame_count: 4
 ---
@@ -33,27 +33,46 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+English companion to Pink Bubbles Pt1 RU — same sphere→VDB→scatter→peak workflow with exact parameters: sphere scale 2, freq 64, fog VDB with decreased voxel size, 65 scatter points, `pscale` 0.1 varied by `attribadjust` noise multiply (offset 1.3). Two branches: ripple surface solver + scatter. Rendered with Octane (vs Redshift in the Russian version).
 
 ### Summary
-[PENDING EXTRACTION]
+A 25-minute English tutorial (Part 1) building pink bubbles inside a sphere, rendered with Octane. Sphere (scale 2, polygon, freq 64) → `peak` to shrink → `vdbfrompolygons` (fog type, reduced voxel size) → `scatter` 65 pts → `pscale` 0.1 → `attribadjust` float, multiply by noise (offset 1.3) for size variation → second `attribadjust` float to set minimum size. Viewport preview via `gl_sphere_points`. Two-branch setup: Branch 1 = ripple surface solver (Part 2), Branch 2 = scatter points.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Geo node "bubble_source" → `sphere` SOP — scale 2, polygon, frequency 64
+2. Split into 2 branches: **Branch 1** (ripple/surface wave) + **Branch 2** (bubble scatter)
+3. Branch 2: `peak` SOP — shrink sphere slightly to prevent scatter from hitting exterior wall
+4. `vdbfrompolygons` — type: **from distance to fog** (fog VDB); decrease voxel size for resolution
+5. `scatter` SOP — **65 points**
+6. `attribcreate` — `pscale` = **0.1**
+7. `attribwrangle` — `i@gl_sphere_points = 1` for viewport preview
+8. `attribadjust` float — attribute: `pscale`, operation: **multiply**, pattern: **noise**, element size offset: **1.3** → larger/smaller bubble variation
+9. Second `attribadjust` — decrease minimum size (clamp small bubbles)
+10. Continue to Part 2 for ripple surface solver + Octane render
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `sphere` SOP — scale 2, polygon, frequency 64
+- `peak` SOP — slight inward offset
+- `vdbfrompolygons` — from distance to fog; decreased voxel size
+- `scatter` SOP — 65 points
+- `attribcreate` — `pscale` = 0.1
+- `attribwrangle` — `i@gl_sphere_points = 1`
+- `attribadjust` float — multiply pscale by noise, element size offset 1.3
+- Second `attribadjust` — minimum size clamp
+- Octane render (Part 2)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, vop, vdb, particles, instancing, simulation, procedural, rendering, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[урок-розовые-пузыри-часть-1]] — Russian companion (same technique)
+- [[tutorial-purple-sponge]] — similar VDB + scatter + pscale pipeline
+- [[model-a-procedural-flower-houdini-tutorial]] — peak SOP usage

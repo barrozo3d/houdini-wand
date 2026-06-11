@@ -360,9 +360,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ypJL4PXxQpg
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #vop #vdb #particles #instancing #simulation #procedural #rendering #intermediate
+- **Summary:** 25-minute English companion to Pink Bubbles Pt1 RU: sphere (scale 2, freq 64) → `peak` → fog VDB → scatter 65 pts → `pscale` 0.1 → `attribadjust` noise multiply (offset 1.3) for size variation. Two branches: scatter + ripple surface. Octane render.
 - **File:** tutorials/tutorial-pink-bubble-part-1.md
 
 ---
