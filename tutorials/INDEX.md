@@ -236,23 +236,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/houdini-tutorial-make-any-geometry-knitted.md
 
 
-### [Урок] Тяжелый Люкс. Часть 1.
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=gsrHHeYadZ0
-- **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/урок-тяжелый-люкс-часть-1.md
-
-
 ### [Tutorial] Heavy Chic. Part 1.
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fjVERoS2olY
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #dop #sop #vex #particles #simulation #intermediate
+- **Summary:** 24-minute English tutorial (Part 1) building a "Heavy Chic" luxury particle effect for social media at 30 FPS. Key technique: `$F==1` expression in popsource locks count at exactly 100,000 particles. `popwind` velocity 6 + noise for uneven behavior. Produces falling silk curtain / rising crystal formations.
 - **File:** tutorials/tutorial-heavy-chic-part-1.md
 
 ---
