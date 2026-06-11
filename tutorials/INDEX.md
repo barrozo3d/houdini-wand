@@ -295,6 +295,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 43-minute Russian-language tutorial building procedural woven fabric geometry purely in SOPs via VEX harmonic math (no Vellum). Z-axis line (2000 pts) → `resample`/`curveu` → `attribwrangle` applies `sin(curveu * freq)` to Y/X positions. Frequency ~100–200 creates fabric loops; parameters promoted as sliders.
 - **File:** tutorials/урок-мягкая-ткань.md
 
+
+### [Tutorial] Soft Weave
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Ohj4ag8DZRo
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tutorial-soft-weave.md
+
 ---
 
 ## Tag Reference
