@@ -196,6 +196,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/model-a-procedural-flower-houdini-tutorial.md
 
 
+### Houdini Tutorial | Creating Realistic Waterfall Simulation (Step-by-Step)
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=eYqxarTsOrE
+- **Author:** VFX Grace
+- **Houdini Version:** Not specified (H20–H21 UI)
+- **Tags:** #flip #dop #sop #simulation #volumes #vdb #rendering #advanced
+- **Summary:** 151-minute comprehensive FLIP waterfall tutorial: reference analysis, velocity-sourced emitter, collision geometry, white water/foam solver with quality comparison, manual particle-to-mesh conversion, sub-mesh point cleanup, water shader, and full Karma/Mantra render + composite pipeline. Discusses FPS effect on water dynamics (60 FPS used).
+- **File:** tutorials/houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step.md
+
+
 ### Grain Vortex in Houdini Tutorial
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=8fcfu6gmzUQ

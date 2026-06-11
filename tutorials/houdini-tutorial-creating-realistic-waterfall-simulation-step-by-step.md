@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=eYqxarTsOrE
 author: Daily Course
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H20–H21 UI)"
+tags: [flip, dop, sop, simulation, volumes, vdb, rendering, intermediate, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step/
 frame_count: 4
 ---
@@ -33,27 +33,47 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+FLIP fluid waterfall simulation: reference-driven setup, velocity-sourced emitter, white water/foam generation, manual particle-to-mesh conversion for clean surface output, water material, and full render/composite pipeline — with explicit discussion of how FPS affects water dynamics (60 FPS used).
 
 ### Summary
-[PENDING EXTRACTION]
+A 151-minute comprehensive waterfall tutorial covering the complete FLIP pipeline from reference to final composite. Includes: reference analysis of real waterfall characteristics, cliff geometry modeling, FLIP source with initial velocity, higher sim resolution for foam detail (side-by-side comparison shown), white water solver tuning, manual particle-to-mesh conversion and cleanup of scattered sub-mesh points, water shader/material setup, and Karma/Mantra rendering with compositing. Authored by VFX Grace.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Reference analysis — identify key waterfall characteristics (turbulence, foam zones, flow speed) before building
+2. Model cliff/waterfall collision geometry in SOPs
+3. `flipsource` SOP — set up FLIP emitter from source geometry; add initial velocity to emitter matching expected fall speed
+4. FLIP DOP network — `flipsolver`, `staticobject` (cliff collision), tune substeps for 60 FPS; note: dynamics change significantly between 30 and 60 FPS
+5. Increase sim resolution for foam detail — compare lower vs higher res (frame 001 shows clear quality difference)
+6. White water: `whitewastersource` SOP → `whitewaterSolver` DOP — tune emission thresholds for curvature, speed, and vorticity
+7. Particle-to-mesh conversion — `particlefluidtosurface` or VDB from particles → `vdbsmooth` → `convertvdb` to polygons
+8. Clean up scattered sub-mesh points (identified in frame 002) using `blast` or attribute-based deletion
+9. Water material — refraction + subsurface scattering shader (Karma MaterialX or Mantra VEX)
+10. Render + composite with AOVs
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `flipsource` SOP — velocity-sourced emitter
+- `flipobject` DOP
+- `flipsolver` DOP — substeps tuned for 60 FPS; resolution key for foam quality
+- `staticobject` DOP — cliff collision geometry
+- `whitewastersource` SOP
+- `whitewaterSolver` DOP — curvature/speed/vorticity emission thresholds
+- `particlefluidtosurface` SOP — particle to mesh conversion
+- `vdbfromparticles` SOP + `vdbsmooth` + `convertvdb` — alternative mesh path
+- `blast` SOP — remove scattered sub-mesh artifact points
+- Karma/Mantra water shader — refraction + subsurface
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H20–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+flip, dop, sop, simulation, volumes, vdb, rendering, intermediate, advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[intro-to-houdini-volumes---beginner-course]] — VDB and volume fundamentals prerequisite
+- [[intro-to-houdini-pyro---full-beginner-course]] — DOP solver workflow parallels
+- [[intro-to-houdini-solaris---full-beginner-course]] — Karma rendering pipeline used in this tutorial
