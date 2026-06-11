@@ -275,6 +275,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 25-minute tutorial building a procedural glass tile wall: single tile from `box` + `polyextrude` + `subdivide` (crease, 2 div) for glass-quality bevels, distributed on a 128×128 point grid via `copytopoints`, per-tile randomization, Redshift glass/refraction shader.
 - **File:** tutorials/tutorial-glass-tiles.md
 
+
+### [Урок] Стеклянная Плитка
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=-s-AnXgjw-o
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/урок-стеклянная-плитка.md
+
 ---
 
 ## Tag Reference
