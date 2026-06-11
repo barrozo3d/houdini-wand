@@ -304,34 +304,53 @@ def resolve_epic_url(url):
     Epic Games community pages (dev.epicgames.com) embed YouTube videos but
     block yt-dlp directly (Cloudflare + CSRF). Auto-resolve by extracting the
     readable slug from the URL and searching YouTube for the first match.
+
+    WARNING: YouTube search can return the wrong video. Always verify the
+    resolved title and channel in the output. If wrong, re-run with the
+    correct YouTube URL directly, or pass --youtube-url <url>.
     """
     from urllib.parse import urlparse
     path = urlparse(url).path.rstrip('/')
     segments = [s for s in path.split('/') if s]
-    # Use the last path segment — it's the human-readable slug like
-    # "creating-performant-metahuman-characters-in-unreal-engine"
     slug = segments[-1] if segments else ""
-    # Fall back to second-to-last if last segment looks like an ID (short, no hyphens)
     if len(slug) < 10 and len(segments) >= 2:
         slug = segments[-2]
     search_terms = slug.replace('-', ' ').strip()
     print(f"      Epic Games URL detected.")
     print(f"      Searching YouTube for: {search_terms}")
+
+    # Fetch video ID, title, uploader, and duration for verification
     result = subprocess.run(
         [sys.executable, "-m", "yt_dlp",
          f"ytsearch1:{search_terms}",
-         "--get-id", "--skip-download", "--no-playlist", "--quiet"],
+         "--print", "%(id)s|||%(title)s|||%(uploader)s|||%(duration_string)s",
+         "--skip-download", "--no-playlist", "--quiet"],
         capture_output=True, text=True
     )
     if result.returncode == 0 and result.stdout.strip():
-        video_id = result.stdout.strip().split('\n')[0]
+        line = result.stdout.strip().split('\n')[0]
+        parts = line.split('|||')
+        video_id    = parts[0] if len(parts) > 0 else ""
+        found_title = parts[1] if len(parts) > 1 else "Unknown"
+        found_chan   = parts[2] if len(parts) > 2 else "Unknown"
+        found_dur    = parts[3] if len(parts) > 3 else "?"
         youtube_url = f"https://www.youtube.com/watch?v={video_id}"
-        print(f"      Resolved to: {youtube_url}")
+        print(f"")
+        print(f"      ┌─ EPIC → YOUTUBE RESOLUTION ──────────────────────────┐")
+        print(f"      │ Title   : {found_title[:54]}")
+        print(f"      │ Channel : {found_chan[:54]}")
+        print(f"      │ Duration: {found_dur}")
+        print(f"      │ URL     : {youtube_url}")
+        print(f"      └──────────────────────────────────────────────────────┘")
+        print(f"      ⚠  If this is the WRONG video, cancel now (Ctrl+C)")
+        print(f"         and re-run with the correct YouTube URL directly,")
+        print(f"         or use: --youtube-url https://www.youtube.com/watch?v=CORRECT_ID")
+        print(f"")
         return youtube_url
     raise RuntimeError(
         f"Could not find a YouTube match for Epic URL.\n"
         f"Search terms used: '{search_terms}'\n"
-        f"Try passing the YouTube URL directly instead."
+        f"Pass the correct YouTube URL directly instead."
     )
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -343,11 +362,17 @@ def main():
                         choices=["tiny", "base", "small", "medium", "large"])
     parser.add_argument("--skip-video", action="store_true",
                         help="Skip video download and frame extraction")
+    parser.add_argument("--youtube-url", default=None,
+                        help="Override Epic URL auto-resolution with a known YouTube URL")
     args = parser.parse_args()
 
     # Auto-resolve Epic Games community pages to their YouTube equivalent
     if "dev.epicgames.com" in args.url:
-        args.url = resolve_epic_url(args.url)
+        if args.youtube_url:
+            print(f"      Epic Games URL detected — using provided YouTube override.")
+            args.url = args.youtube_url
+        else:
+            args.url = resolve_epic_url(args.url)
 
     has_ffmpeg, has_whisper = check_prerequisites()
     is_yt = "youtube.com" in args.url or "youtu.be" in args.url
