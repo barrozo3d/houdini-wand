@@ -300,9 +300,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Ohj4ag8DZRo
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #vex #procedural #curves #attributes #modelling #intermediate
+- **Summary:** 36-minute English companion to "Мягкая Ткань" — procedural weave via VEX: Y=`sin(curveu*freq)`, X=`sin(curveu*freq/2)` (halved X frequency creates interlocking weave pattern, not parallel waves). ch() sliders for amplitude/frequency per axis. No simulation required.
 - **File:** tutorials/tutorial-soft-weave.md
 
 ---
