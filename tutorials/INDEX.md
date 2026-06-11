@@ -205,6 +205,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 25-minute tutorial building a vortex grain animation with Megascans rocks: `polyreduce` proxy workflow for fast Bullet RBD sim, custom vortex force field, initial shape arrangement (smiley face), and high-poly copy-back post-sim for rendering.
 - **File:** tutorials/grain-vortex-in-houdini-tutorial.md
 
+
+### Houdini Tutorial | Creating Realistic Waterfall Simulation (Step-by-Step)
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=eYqxarTsOrE
+- **Author:** Daily Course
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step.md
+
 ---
 
 ## Tag Reference
