@@ -415,6 +415,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 34-minute Russian Part 2 adding FLIP droplets to the lipstick: scatter on trimmed rear-half only (optimization), pscale 0.03 + noise variation (scale 2) + random minimum, FLIP solver for droplet surface sim.
 - **File:** tutorials/урок-помада-часть-2-flip-sim.md
 
+
+### [Tutorial] Lipstick. Part 2. Flip Sim
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=T1OTnyioFrA
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tutorial-lipstick-part-2-flip-sim.md
+
 ---
 
 ## Tag Reference
