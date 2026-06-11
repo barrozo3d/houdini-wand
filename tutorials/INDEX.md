@@ -196,23 +196,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/model-a-procedural-flower-houdini-tutorial.md
 
 
-### Houdini UV Unwrapping Fundamentals
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=cguHzZ9L87g
-- **Author:** Mat Sola - Learn Destruction FX in Houdini & UE5
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/houdini-uv-unwrapping-fundamentals.md
-
-
-### Grain vortex in Houdini tutorial
+### Grain Vortex in Houdini Tutorial
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=8fcfu6gmzUQ
 - **Author:** raphaël
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H20–H21 UI)
+- **Tags:** #dop #sop #rbd #simulation #instancing #procedural #intermediate
+- **Summary:** 25-minute tutorial building a vortex grain animation with Megascans rocks: `polyreduce` proxy workflow for fast Bullet RBD sim, custom vortex force field, initial shape arrangement (smiley face), and high-poly copy-back post-sim for rendering.
 - **File:** tutorials/grain-vortex-in-houdini-tutorial.md
 
 ---
