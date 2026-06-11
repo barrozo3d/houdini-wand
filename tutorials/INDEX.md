@@ -395,6 +395,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/урок-помада-часть-1-моделирование.md
 
+
+### [Tutorial] Lipstick. Part 1. Modeling
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Zqle_HOS7Jg
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tutorial-lipstick-part-1-modeling.md
+
 ---
 
 ## Tag Reference
