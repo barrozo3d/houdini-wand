@@ -335,6 +335,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/урок-стеклянный-пончик.md
 
+
+### [Tutorial] Glass Donut
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=j5Ew_6-W8DE
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tutorial-glass-donut.md
+
 ---
 
 ## Tag Reference
