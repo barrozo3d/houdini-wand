@@ -175,6 +175,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/introduction-to-particles-in-houdini-21-full-beginner-course-2026.md
 - **File:** tutorials/introduction-to-particles-in-houdini-21-full-beginner-course-2026.md
 
+
+### Model a Procedural Flower | Houdini Tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=pIp3cYSBZc4
+- **Author:** Fifo
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/model-a-procedural-flower-houdini-tutorial.md
+
 ---
 
 ## Tag Reference
