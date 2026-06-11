@@ -225,6 +225,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step.md
 
+
+### Houdini Tutorial: Make Any Geometry Knitted
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=mTnQji8a8nw
+- **Author:** PolygonCGI
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-tutorial-make-any-geometry-knitted.md
+
 ---
 
 ## Tag Reference
