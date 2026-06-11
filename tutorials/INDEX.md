@@ -315,6 +315,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 32-minute Russian-language tutorial recreating a sponge/foam effect (inspired by Max Shulgi on Instagram): box + noise displacement → `pointsfromvolume` interior scatter → `rest` attribute for coloring → `pscale` control. Final blue-teal wet sponge render with porous cavities.
 - **File:** tutorials/урок-губка.md
 
+
+### [Tutorial] Purple Sponge
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=O5cFGKp0n_A
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tutorial-purple-sponge.md
+
 ---
 
 ## Tag Reference
