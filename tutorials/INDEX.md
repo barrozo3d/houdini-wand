@@ -445,6 +445,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 22-minute Russian Part 3 (longer than 14-min EN companion): Octane camera "shot_010" + render target (half res, specular depth 4, Cryptomatte), red lipstick + water droplet Octane shaders, area+HDRI lighting. Final render: professional red lipstick with water droplets product shot.
 - **File:** tutorials/урок-помада-часть-3-рендер.md
 
+
+### Rain Effect in houdini | Houdini Tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Yi0ATGFthqk
+- **Author:** Fx Guru
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/rain-effect-in-houdini-houdini-tutorial.md
+
 ---
 
 ## Tag Reference
