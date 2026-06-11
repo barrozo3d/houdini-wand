@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=pIp3cYSBZc4
 author: Fifo
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H20–H21 UI)"
+tags: [sop, dop, vop, vellum, modelling, procedural, curves, attributes, simulation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/model-a-procedural-flower-houdini-tutorial/
 frame_count: 10
 ---
@@ -78,27 +78,62 @@ frame_count: 10
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedural flower system using phyllotaxis (golden angle 137.518°) to spiral-distribute blossoms along a curve-based stem, with VOP cross-product for correct copy orientation, animated blend shapes for bloom, and Vellum cloth constraints to resolve petal intersections.
 
 ### Summary
-[PENDING EXTRACTION]
+A 38-minute SOP tutorial building a fully procedural and animated flower. Covers: curve-based stem with `resample` and `sweep`, blossom modeling with `blendshape` for open/closed states, implementing the golden angle in a VOP `crossproduct` for phyllotaxis spiral alignment, `copytopoints` with time-offset `pscale` ramp for staged blooming, and a Vellum cloth solver with pin constraints to naturally push overlapping petals apart.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. `curve` SOP — draw S-curve for stem in front view
+2. `transform` — scale up ×4; `resample` with "Subdivision Curve" mode for smooth interpolation
+3. Apply `curveu` attribute (runs 0→1 along curve) for later ramp-based distribution
+4. `sweep` SOP — give stem a circular cross-section; animate stem sway in VOP over time
+5. Model blossom separately: `box` → `blast` one face → `polyextrude` selected edges → `subdivide` → `smooth`; duplicate network for closed and open states
+6. `blendshape` SOP — animate between closed and open states over 120 frames
+7. VOP `crossproduct` between stem tangent (N) and a world axis → perpendicular normal; rotate each blossom copy by `ptnum × 137.518°` for golden-angle spiral
+8. `copytopoints` — copy blossom geometry to stem points; `pscale` ramp from `curveu` + time offset for staged bloom
+9. `peak` SOP — push blossoms outward from stem ~0.06 along normals
+10. Uncheck "Recompute Point Normals" on `peak` to preserve orientation
+11. Vellum: `vellumconstraints` (cloth type) + pin "attach" group at blossom base; `vellumconstraintproperty` — stretch stiffness 10, bend stiffness 0.001, small stretch length scale
+12. `vellumsolver` DOP — run sim to naturally push intersecting petals apart
+13. `groupexpand` — expand attach group 8 iterations for smooth pinning
+14. `subdivide` + `polyextrude` (thickness 0.01 both directions) for final petal geometry
+15. Point wrangle: `i@id = @ptnum;` — create unique ID per point for downstream control
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `curve` SOP
+- `resample` SOP — Subdivision Curve mode, small max segment length
+- `transform` SOP — uniform scale ×4
+- `sweep` SOP
+- `blendshape` SOP — blend value 0→1 over 120 frames
+- `groupbyrange` SOP — isolate first point of primitive
+- `attribvop` / `attribwrangle` — `curveu` attribute, `pscale` ramp
+- VOP `crossproduct` — perpendicular vector from tangent + world axis
+- VOP `parameter` node — type: vector, name: "cross_vector"
+- `copytopoints` SOP
+- `peak` SOP — distance ~0.06 along normals; uncheck Recompute Point Normals
+- `add` SOP — keep points only
+- `vellumconstraints` — cloth constraint type
+- `vellumconstraintproperty` — stretch stiffness: 10, bend stiffness: 0.001
+- `vellumsolver` DOP
+- `groupexpand` SOP — 8 iterations
+- `blast` SOP
+- `subdivide` SOP
+- `polyextrude` SOP — thickness 0.01, both directions
+- Point wrangle: `i@id = @ptnum;`
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H20–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, dop, vop, vellum, modelling, procedural, curves, attributes, simulation, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[vops-03---vector-operations---houdini-beginner-tutorial]] — VOP cross product and vector math foundation
+- [[vops-04---geometry-interactions---houdini-beginner-tutorial]] — Geometry attribute transfer and VOP geometry interactions
+- [[intro-to-houdini-for-vfx---beginner-course]] — SOP/DOP/VOP foundational workflow

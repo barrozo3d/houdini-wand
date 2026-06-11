@@ -180,9 +180,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pIp3cYSBZc4
 - **Author:** Fifo
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H20–H21 UI)
+- **Tags:** #sop #dop #vop #vellum #modelling #procedural #curves #attributes #simulation #intermediate
+- **Summary:** 38-minute tutorial building a fully procedural animated flower: curve-based stem with `resample`/`sweep`, blossom modeled with `blendshape` for open/closed states, phyllotaxis golden angle (137.518°) distribution via VOP cross product, `copytopoints` with time-offset pscale ramp for staged bloom, and Vellum cloth constraints to resolve petal intersections naturally.
 - **File:** tutorials/model-a-procedural-flower-houdini-tutorial.md
 
 ---
