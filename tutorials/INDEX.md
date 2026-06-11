@@ -306,13 +306,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/tutorial-soft-weave.md
 
 
-### [Урок] Губка
+### [Урок] Губка (Sponge — RU)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=cQd2YXWiQ4k
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #vop #vdb #procedural #volumes #modelling #rendering #intermediate
+- **Summary:** 32-minute Russian-language tutorial recreating a sponge/foam effect (inspired by Max Shulgi on Instagram): box + noise displacement → `pointsfromvolume` interior scatter → `rest` attribute for coloring → `pscale` control. Final blue-teal wet sponge render with porous cavities.
 - **File:** tutorials/урок-губка.md
 
 ---
