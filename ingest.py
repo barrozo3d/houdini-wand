@@ -297,6 +297,43 @@ def fetch_article(url):
             "description": text[:8000], "duration": 0,
             "webpage_url": url, "chapters": []}
 
+# ── Epic Games community URL resolver ─────────────────────────────────────────
+
+def resolve_epic_url(url):
+    """
+    Epic Games community pages (dev.epicgames.com) embed YouTube videos but
+    block yt-dlp directly (Cloudflare + CSRF). Auto-resolve by extracting the
+    readable slug from the URL and searching YouTube for the first match.
+    """
+    from urllib.parse import urlparse
+    path = urlparse(url).path.rstrip('/')
+    segments = [s for s in path.split('/') if s]
+    # Use the last path segment — it's the human-readable slug like
+    # "creating-performant-metahuman-characters-in-unreal-engine"
+    slug = segments[-1] if segments else ""
+    # Fall back to second-to-last if last segment looks like an ID (short, no hyphens)
+    if len(slug) < 10 and len(segments) >= 2:
+        slug = segments[-2]
+    search_terms = slug.replace('-', ' ').strip()
+    print(f"      Epic Games URL detected.")
+    print(f"      Searching YouTube for: {search_terms}")
+    result = subprocess.run(
+        [sys.executable, "-m", "yt_dlp",
+         f"ytsearch1:{search_terms}",
+         "--get-id", "--skip-download", "--no-playlist", "--quiet"],
+        capture_output=True, text=True
+    )
+    if result.returncode == 0 and result.stdout.strip():
+        video_id = result.stdout.strip().split('\n')[0]
+        youtube_url = f"https://www.youtube.com/watch?v={video_id}"
+        print(f"      Resolved to: {youtube_url}")
+        return youtube_url
+    raise RuntimeError(
+        f"Could not find a YouTube match for Epic URL.\n"
+        f"Search terms used: '{search_terms}'\n"
+        f"Try passing the YouTube URL directly instead."
+    )
+
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
@@ -307,6 +344,10 @@ def main():
     parser.add_argument("--skip-video", action="store_true",
                         help="Skip video download and frame extraction")
     args = parser.parse_args()
+
+    # Auto-resolve Epic Games community pages to their YouTube equivalent
+    if "dev.epicgames.com" in args.url:
+        args.url = resolve_epic_url(args.url)
 
     has_ffmpeg, has_whisper = check_prerequisites()
     is_yt = "youtube.com" in args.url or "youtu.be" in args.url

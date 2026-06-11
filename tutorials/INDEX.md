@@ -456,15 +456,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/rain-effect-in-houdini-houdini-tutorial.md
 
 
-### Creating Performant MetaHuman Characters in Unreal Engine | Unreal Fest Bali 2025
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=tTgMafRAM7A
-- **Author:** Unreal Engine
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/creating-performant-metahuman-characters-in-unreal-engine-unreal-fest-bali-2025.md
-
 ---
 
 ## Tag Reference
