@@ -435,6 +435,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 14-minute lipstick Octane rendering setup (Part 3): export geo elements, Octane camera, create shaders for lipstick body/metal/plastic/droplets, lighting with area/HDRI, final product render.
 - **File:** tutorials/tutorial-lipstick-part-3-rendering.md
 
+
+### [Урок] Помада. Часть 3. Рендер
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=pcHSG38zTJg
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/урок-помада-часть-3-рендер.md
+
 ---
 
 ## Tag Reference
