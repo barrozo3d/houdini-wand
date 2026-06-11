@@ -345,6 +345,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 13-minute English companion to Glass Donut RU — same aanoise flow loop technique; see [[урок-стеклянный-пончик]] for full extraction.
 - **File:** tutorials/tutorial-glass-donut.md
 
+
+### [Урок] Розовые Пузыри. Часть 1.
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=alOGxWIIwTk
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/урок-розовые-пузыри-часть-1.md
+
 ---
 
 ## Tag Reference
