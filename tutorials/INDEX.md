@@ -285,6 +285,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 32-minute Russian-language extended Glass Tiles tutorial — same `box`/`polyextrude`/`subdivide`/`copytopoints` base, plus per-tile rotation animation via `attribtransfer` driving `orient` quaternion attribute. Produces animated wave of rotating glass tiles with glowing light-trail aesthetic.
 - **File:** tutorials/урок-стеклянная-плитка.md
 
+
+### [Урок] Мягкая Ткань
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Ju8pDlzR3vM
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/урок-мягкая-ткань.md
+
 ---
 
 ## Tag Reference
