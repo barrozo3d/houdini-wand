@@ -286,13 +286,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/урок-стеклянная-плитка.md
 
 
-### [Урок] Мягкая Ткань
+### [Урок] Мягкая Ткань (Soft Fabric/Weaving — RU)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Ju8pDlzR3vM
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #vex #procedural #curves #attributes #modelling #intermediate
+- **Summary:** 43-minute Russian-language tutorial building procedural woven fabric geometry purely in SOPs via VEX harmonic math (no Vellum). Z-axis line (2000 pts) → `resample`/`curveu` → `attribwrangle` applies `sin(curveu * freq)` to Y/X positions. Frequency ~100–200 creates fabric loops; parameters promoted as sliders.
 - **File:** tutorials/урок-мягкая-ткань.md
 
 ---
