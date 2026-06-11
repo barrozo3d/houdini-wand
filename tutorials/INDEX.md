@@ -255,6 +255,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/tutorial-heavy-chic-part-2.md
 
+
+### [Урок] Тяжелый Люкс. Часть 2.
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=UrDkzEXDdLM
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/урок-тяжелый-люкс-часть-2.md
+
 ---
 
 ## Tag Reference
