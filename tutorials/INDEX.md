@@ -455,6 +455,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 33-minute beginner rain tutorial: `grid` emitter (All Points, scale 6) → `popgravity` for falling rain → life expectancy control → VDB particle-to-mesh conversion → secondary splash POP sim at impact. Full pipeline from particles to renderable mesh.
 - **File:** tutorials/rain-effect-in-houdini-houdini-tutorial.md
 
+
+### Creating Performant MetaHuman Characters in Unreal Engine | Unreal Fest Bali 2025
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=tTgMafRAM7A
+- **Author:** Unreal Engine
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/creating-performant-metahuman-characters-in-unreal-engine-unreal-fest-bali-2025.md
+
 ---
 
 ## Tag Reference
