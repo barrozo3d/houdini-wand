@@ -2,11 +2,11 @@
 title: Houdini UV Unwrapping Fundamentals
 source: YouTube
 url: https://www.youtube.com/watch?v=cguHzZ9L87g
-author: Mat Sola - Learn Destruction FX in Houdini & UE5
+author: Mat Sola
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H20–H21 UI)"
+tags: [sop, modelling, uv, procedural, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-uv-unwrapping-fundamentals/
 frame_count: 4
 ---
@@ -33,27 +33,42 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A 7-step (Step 0 through Step 6) UV unwrapping workflow for any geometry type in Houdini — covering geometry preparation, projection, seam definition, flattening, packing, visualization, and export.
 
 ### Summary
-[PENDING EXTRACTION]
+A 65-minute comprehensive UV fundamentals course by Mat Sola covering a complete reusable workflow: geometry cleanup as a prerequisite, UV projection methods, seam cutting via edge groups, `uvpeel`/`uvunwrap` for flattening, `uvlayout` for packing, `uvquickshade` for visualization in the viewport UV editor, and export-ready UV output. Demonstrated on both hard-surface and soft/organic models (human head mesh visible in frames).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Step 0 — Geometry prep**: ensure mesh has no open holes, duplicate faces, or non-manifold errors; use `clean` SOP or `polyDoctor` to validate
+2. **Step 1 — UV Projection**: `uvproject` SOP — choose projection type (planar, cylindrical, spherical) per region; set axis and scale to fit geometry
+3. **Step 2 — Define seams**: select seam edges manually or via `edgegroup`; use `polysplit` to mark cuts; these drive `uvpeel` seam inputs
+4. **Step 3 — Flatten**: `uvpeel` SOP — input seam edges group; flattens islands with minimal distortion; alternative: `uvunwrap` for automatic seam detection
+5. **Step 4 — Pack and organize**: `uvlayout` SOP — packs all UV islands into 0–1 space; adjust padding, scale, and resolution settings
+6. **Step 5 — Visualize**: open UV viewport (press space → UV editor); use `uvquickshade` SOP with a checkerboard texture to check for stretching and distortion
+7. **Step 6 — Export**: wire into `rop_geometry` or `filecache`; standard `.obj` / `.fbx` export carries UVs; can also pass directly to LOPs for USD pipeline
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `uvproject` SOP — projection type: Planar/Cylindrical/Spherical; Axis parameter
+- `edgegroup` or manual edge selection — seam definition
+- `polysplit` SOP — optional seam cutting
+- `uvpeel` SOP — seam input group; flattening method
+- `uvunwrap` SOP — automatic seam detection alternative
+- `uvlayout` SOP — padding, scale, resolution; packs all islands into 0–1 UV space
+- `uvquickshade` SOP — checkerboard visualization shader
+- `clean` SOP — geometry validation; remove duplicate faces, fix normals
+- UV Viewport editor — Space bar in viewport → UV display mode
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H20–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, modelling, uv, procedural, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[intro-to-houdini-for-vfx---beginner-course]] — SOP geometry fundamentals prerequisite
+- [[improve-solaris-performance---houdini-tutorial]] — Pipeline context where UV-ready assets are exported to USD/Solaris

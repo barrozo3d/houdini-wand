@@ -176,6 +176,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/introduction-to-particles-in-houdini-21-full-beginner-course-2026.md
 
 
+### Houdini UV Unwrapping Fundamentals
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=cguHzZ9L87g
+- **Author:** Mat Sola
+- **Houdini Version:** Not specified (H20–H21 UI)
+- **Tags:** #sop #modelling #uv #procedural #intermediate
+- **Summary:** 65-minute comprehensive UV workflow: geometry prep, projection (`uvproject`), seam cutting via edge groups, flattening with `uvpeel`/`uvunwrap`, island packing with `uvlayout`, checkerboard visualization via `uvquickshade`, and export. Covers both hard-surface and organic models.
+- **File:** tutorials/houdini-uv-unwrapping-fundamentals.md
+
+
 ### Model a Procedural Flower | Houdini Tutorial
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pIp3cYSBZc4
