@@ -386,13 +386,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/tutorial-pink-bubble-part-2.md
 
 
-### [Урок] Помада. Часть 1. Моделирование
+### [Урок] Помада. Часть 1. Моделирование (Lipstick Pt1 Modeling — RU)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fMNkSvAwIFk
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #modelling #procedural #intermediate
+- **Summary:** 15-minute Russian product modeling (Part 1): lipstick profile curve → `revolve` (8–12 div) → `subdivide` → `fuse` → rotated `box` boolean for angled top cut (~5–6°) → `trace` SOP for brand logo from texture.
 - **File:** tutorials/урок-помада-часть-1-моделирование.md
 
 
@@ -400,9 +400,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Zqle_HOS7Jg
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #modelling #procedural #intermediate
+- **Summary:** 18-minute English companion to Lipstick Pt1 RU — same revolve/subdivide/boolean workflow; see [[урок-помада-часть-1-моделирование]] for full extraction.
 - **File:** tutorials/tutorial-lipstick-part-1-modeling.md
 
 ---

@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Zqle_HOS7Jg
 author: Alexander Eskin
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [sop, modelling, procedural, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-lipstick-part-1-modeling/
 frame_count: 4
 ---
@@ -33,27 +33,45 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+English companion to Lipstick Pt1 RU — same workflow with exact angles: front-view profile curve → `revolve` → clip top first (prevents overlap) → `subdivide` (4 subdivisions for logo field) → `fuse` → `box` boolean rotated **~55°** for angled tip cut → `trace` SOP for logo.
 
 ### Summary
-[PENDING EXTRACTION]
+An 18-minute English modeling tutorial by Alexander Eskin building a lipstick for product visualization. Front-view `curve` (polygon) → `revolve`; clip top before revolve to prevent overlap. `subdivide` with **4 divisions** (important for the logo emboss field later) → `fuse`. Boolean cut: `box` stretched + rotated ~55° around the cutting axis, then 90° around Y → creates the characteristic angled lipstick tip (adjust by eye). `trace` SOP for brand logo (UVs disabled during modeling).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Geo node "lipstick_geo_source" → switch to front view → `curve` SOP (polygon) → draw lipstick profile
+2. Enable grid snapping → adjust profile points
+3. Clip/trim the top of the curve to prevent revolve overlap
+4. `revolve` SOP — revolve the profile around Y axis
+5. `subdivide` SOP — **4 divisions** (required for logo area resolution later)
+6. `fuse` SOP — clean up pinched top vertices
+7. `box` SOP → `transform` — rotate ~**55°** for angled cut plane; then 90° around Y axis to align
+8. `boolean` SOP — subtract box → creates angled lipstick tip
+9. `trace` SOP — project logo from image file; disable UVs temporarily during setup
+10. Continue to Part 2 for materials/rendering
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `curve` SOP — polygon type, front view profile
+- `revolve` SOP — around Y axis
+- `clip` SOP — trim top before revolving (prevents overlap)
+- `subdivide` SOP — **4 divisions** (for logo detail)
+- `fuse` SOP — clean top vertex
+- `box` SOP + `transform` — rotate **~55°** + 90° Y
+- `boolean` SOP — subtract for angled tip
+- `trace` SOP — logo from image
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, modelling, procedural, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[урок-помада-часть-1-моделирование]] — Russian companion (same technique)
+- [[houdini-uv-unwrapping-fundamentals]] — UV workflow for product texturing
+- [[tutorial-glass-tiles]] — product visualization rendering context
