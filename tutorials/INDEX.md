@@ -320,19 +320,19 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=O5cFGKp0n_A
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #dop #vdb #volumes #vellum #particles #simulation #rendering #intermediate
+- **Summary:** 29-minute English sponge tutorial: box → `vdbfrompolygons` + `cloudnoise` → `pointsfromvolume` (400k pts, sep 0.07, pscale 0.5) → noise wrangle (freq 15, amp 0.05) → Vellum Grains sim; pscale copied from source to fix grain size.
 - **File:** tutorials/tutorial-purple-sponge.md
 
 
-### [Урок] Стеклянный Пончик
+### [Урок] Стеклянный Пончик (Glass Donut — RU)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=HkMJWwyqo-I
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #vop #modelling #animation #rendering #redshift #intermediate
+- **Summary:** 13-minute Russian glass donut: torus + `aanoise` flow noise animated 0→1 over frames 1–299 for seamless loop (not 300 to avoid duplicate frame). `polyextrude` thickness 0.05, Redshift glass shader. Key: flow parameter enables perfect noise cycle.
 - **File:** tutorials/урок-стеклянный-пончик.md
 
 
@@ -340,9 +340,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=j5Ew_6-W8DE
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #vop #modelling #animation #rendering #redshift #intermediate
+- **Summary:** 13-minute English companion to Glass Donut RU — same aanoise flow loop technique; see [[урок-стеклянный-пончик]] for full extraction.
 - **File:** tutorials/tutorial-glass-donut.md
 
 ---

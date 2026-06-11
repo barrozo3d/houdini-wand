@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=j5Ew_6-W8DE
 author: Alexander Eskin
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [sop, vop, modelling, animation, rendering, redshift, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-glass-donut/
 frame_count: 4
 ---
@@ -33,27 +33,40 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+English companion to Glass Donut RU — same `aanoise` flow loop technique with specific parameter values: torus (X orientation, rows 400, cols 800), roughness 0.6, octaves 4, frequency 4, amplitude 0.025. Seamless loop: promote `flow`, animate 0→1 linear with **end key at frame 301** (not 300) to prevent frame 1 and frame 300 having identical noise.
 
 ### Summary
-[PENDING EXTRACTION]
+A 13-minute English tutorial confirming the Glass Donut workflow with exact parameter values. Torus (X, size 0.5×0.15, 400 rows × 800 cols) + `aanoise` added to position (roughness 0.6, octaves 4, frequency 4, amplitude 0.025). Promote `flow` parameter (mandatory — can't keyframe inside VOP). Animate flow 0→1 linear; place end keyframe at frame **301** so frame 300 in a 300-frame loop never coincides with the start value. `polyextrude` for thickness + Redshift glass.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Geo node → `torus` SOP — orientation X, size 0.5 × 0.15, rows **400**, columns **800**
+2. `attribvop` or mountain — apply `aanoise` (anti-aliased flow noise), add to position
+3. Noise params: roughness **0.6**, octaves **4**, frequency **4**, amplitude **0.025**
+4. **Promote `flow` parameter** to node interface (required to keyframe it)
+5. Keyframe `flow`: frame 1 = 0, frame **301** = 1, linear interpolation
+6. Why 301: frame 300 in a 300-frame loop plays before the key, never matching frame 1 → seamless
+7. `polyextrude` SOP — add thickness for glass geometry
+8. Redshift glass shader + render
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `torus` SOP — X orientation, 0.5 × 0.15, 400 rows, 800 cols
+- `attribvop` — `aanoise` added to P; roughness 0.6, octaves 4, freq 4, amplitude 0.025
+- `flow` parameter promoted — keyframe: 0 at frame 1, **1 at frame 301** (linear)
+- `polyextrude` SOP
+- Redshift glass shader
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, vop, modelling, animation, rendering, redshift, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[урок-стеклянный-пончик]] — Russian companion with full extraction
+- [[vops-02---random-noise---houdini-beginner-tutorial]] — aanoise and flow noise fundamentals
+- [[tutorial-glass-tiles]] — Redshift glass material context

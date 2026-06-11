@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=O5cFGKp0n_A
 author: Alexander Eskin
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [sop, dop, vdb, volumes, vellum, particles, simulation, rendering, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-purple-sponge/
 frame_count: 4
 ---
@@ -33,27 +33,53 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Sponge/foam effect using VDB pipeline: box → `vdbfrompolygons` → `cloudnoise` displacement → `pointsfromvolume` (400k points) → secondary noise wrangle (freq 15, amp 0.05) → **Vellum Grains** simulation for the soft organic feel. `pscale` copied from source to grains to fix size. English companion to "Губка".
 
 ### Summary
-[PENDING EXTRACTION]
+A 29-minute English tutorial by Alexander Eskin (inspired by Mark's Instagram work) building a purple sponge effect. The pipeline is more complete than the Russian version: box converted to fog VDB via `vdbfrompolygons` + `cloudnoise` default settings → `pointsfromvolume` scatter (400k points, separation 0.07) → secondary noise (Y-component, freq 15, amplitude × 0.05) for organic shape variation → bounding region group + blast to clean below Y=0 → Vellum Grains simulation with `pscale` copied from source. Frame 003 confirms a fluffy dark foam/sponge render.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Geo node "points_source" → `box` SOP — size 0.7 × 0.15; move to origin
+2. `vdbfrompolygons` SOP — convert box to VDB (polygon → fog VDB)
+3. `cloudnoise` VOP or `volumeVOP` — apply default cloud noise settings to the fog
+4. `pointsfromvolume` SOP — point separation **0.07**, ~400,000 points; add `pscale` attribute **0.5**
+5. `attribwrangle` — viewport GL preview: `i@gl_sphere_points = 1;` (optional)
+6. Create group — bounding region (0.5 to 2); `blast` — keep group only; delete points below Y=0
+7. `attribwrangle` — secondary noise on position:
+```vex
+vector noise_vec = noise(v@P * 15.0);  // freq 15
+float component = noise_vec.x;         // get Y-axis component
+v@P.y += component * 0.05;            // amplitude 0.05
+```
+8. Create **Vellum Grains** DOP — grains initially appear huge; copy `pscale` from source points via `attribcopy` to fix size
+9. Vellum Grains solver — simulate soft organic grain structure
+10. Render with subsurface/SSS material for sponge-like appearance
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `box` SOP — 0.7 × 0.15
+- `vdbfrompolygons` SOP — fog VDB conversion
+- `cloudnoise` — default settings on fog volume
+- `pointsfromvolume` SOP — separation: 0.07; ~400k points; `pscale`: 0.5
+- `attribwrangle` — `gl_sphere_points` for viewport preview
+- `group` SOP — bounding region 0.5–2
+- `blast` SOP — keep group; delete below Y=0
+- Noise wrangle — vector noise, freq 15, Y-component, amplitude × 0.05
+- `vellumgrains` / Vellum Grains DOP
+- `attribcopy` — copy `pscale` from source to grains
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, dop, vdb, volumes, vellum, particles, simulation, rendering, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[урок-губка]] — Russian companion (simpler pipeline, no Vellum)
+- [[intro-to-houdini-volumes---beginner-course]] — fog VDB foundations
+- [[houdini-21-tutorial---mpm-snowball]] — similar soft-particle simulation approach
+- [[intro-to-houdini-for-vfx---beginner-course]] — Vellum solver overview
