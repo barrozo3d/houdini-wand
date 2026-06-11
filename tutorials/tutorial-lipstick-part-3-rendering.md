@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=6V7Y5aBmjo4
 author: Alexander Eskin
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [sop, rendering, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-lipstick-part-3-rendering/
 frame_count: 4
 ---
@@ -33,27 +33,42 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Octane render setup for the lipstick product visualization: separate OBJ nodes (body, droplets, large droplets with water material), Octane camera (half res), render target (path tracing, spectre depth 24, max samples 200, adaptive), Cryptomatte AOV by material. Background material = no specular, matte.
 
 ### Summary
-[PENDING EXTRACTION]
+A 14-minute Octane rendering tutorial (Part 3 of Lipstick series). Sets up geo nodes: lipstick body, droplets, large droplets (water material). Octane camera "shot_10_output" at half resolution. Octane render target "render_target_010" — path tracing, spectre depth 24, max samples 200, adaptive sampling enabled. No deep image, no environment texture initially (render starts black until lights added). Cryptomatte AOV by material node name. Background shader: no specular weight, diffuse only. IPR opened with shortcut 1.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Assign large droplets material: **water** shader
+2. Octane camera: name "shot_10_output"; **half resolution**; order focus on; image A still mapping
+3. Octane render target "render_target_010": path tracing, spectre depth **24**, max samples **200**, adaptive enabled; no deep image; no environment; no denoiser; no post processing
+4. AOV: **Cryptomatte by material node name** (essential for comp)
+5. Background material: no specular weight; diffuse/matte
+6. Open IPR with shortcut 1 — initially black (no lights yet)
+7. Add HDRI environment + area lights for lipstick material response
+8. Build lipstick body shader (metal cap, plastic body, wax tip), droplet glass/SSS shader
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- OBJ geo nodes: lipstick body, droplets, large_droplets
+- Large droplets: Octane water shader
+- Octane camera: half resolution, order focus, A still mapping
+- Octane render target: path tracing; spectre depth 24; max samples 200; adaptive
+- AOV: Cryptomatte (by material node name)
+- Background shader: no specular, diffuse
+- IPR shortcut: 1
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, rendering, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[tutorial-lipstick-part-2-flip-sim]] — Part 2 (FLIP droplets prerequisite)
+- [[tutorial-pink-bubble-part-2]] — Octane render setup comparison
+- [[урок-розовые-пузыри-часть-2]] — Similar Octane workflow

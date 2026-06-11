@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=T1OTnyioFrA
 author: Alexander Eskin
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [sop, dop, flip, simulation, particles, vdb, modelling, intermediate, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-lipstick-part-2-flip-sim/
 frame_count: 4
 ---
@@ -33,27 +33,50 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+English companion to Lipstick FLIP Sim RU — adds crucial detail: THREE separate scatter passes (tiny ~55pts, medium, big ~100/10 pts) merged for realistic multi-scale droplet distribution. VDB convert → clip to frontal half → `pscale` 0.03 + `attribadjust` random (mean 0.2) + noise multiply per tier.
 
 ### Summary
-[PENDING EXTRACTION]
+A 26-minute English FLIP droplet tutorial (Part 2) with key production insight: three separate scatter passes at different scales — tiny (density scale ~55), medium, and big (~100 scattered, ~10 largest) — merged together for realistic droplet size distribution on the lipstick. Each pass gets `pscale` = 0.03 base + `attribadjust` random (multiply, mean 0.2) + noise multiply (smaller element size). Uses VDB roundtrip for clean surface, two clip planes to restrict to frontal visible area only.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Geo node → `objectmerge` lipstick from Part 1 → `vdbfrompolygons` (higher res) → convert back to polygons → recompute `normals`
+2. **Clip 1**: remove bottom part
+3. **Clip 2**: remove ZX back half (only simulate visible front)
+4. **Three scatter tiers** (merge all at end):
+   - **Tiny**: `scatter` density scale ~55 → `pscale` 0.03 → `attribadjust` random multiply (mean 0.2) + noise multiply
+   - **Medium**: `scatter` ~medium density → same pscale variation
+   - **Big**: `scatter` ~100 pts, with ~10 largest → larger pscale base
+5. `merge` all three tiers into single point cloud
+6. FLIP DOP — use merged points as FLIP source; `flipsolver` with surface tension
+7. Cache → render as liquid
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `objectmerge` SOP
+- `vdbfrompolygons` SOP — higher resolution
+- `convertvdb` SOP — back to polygons
+- `normal` SOP — recompute normals
+- Two `clip` SOPs — front half + remove bottom
+- Three `scatter` SOPs — tiny (~55 density scale), medium, big (~100/10)
+- `attribcreate` — `pscale` = 0.03 per tier
+- `attribadjust` — multiply by random, mean value 0.2
+- Second `attribadjust` — multiply by noise (smaller element size)
+- `merge` SOP — combine all three tiers
+- FLIP DOP — surface tension for droplet cohesion
+- `filecache` SOP
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, dop, flip, simulation, particles, vdb, modelling, intermediate, advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[урок-помада-часть-2-flip-sim]] — Russian companion (35 min)
+- [[tutorial-lipstick-part-1-modeling]] — Part 1 (modeling prerequisite)
+- [[houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step]] — FLIP fundamentals
+- [[tutorial-purple-sponge]] — VDB + scatter workflow

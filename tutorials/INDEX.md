@@ -420,9 +420,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=T1OTnyioFrA
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #dop #flip #simulation #particles #vdb #modelling #advanced
+- **Summary:** 26-minute English FLIP droplet tutorial: VDB convert → clip to frontal half → THREE scatter tiers (tiny/medium/big, merged) for realistic distribution → pscale 0.03 + attribadjust random (mean 0.2) + noise multiply per tier → FLIP solver with surface tension.
 - **File:** tutorials/tutorial-lipstick-part-2-flip-sim.md
 
 
@@ -430,9 +430,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=6V7Y5aBmjo4
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #rendering #intermediate
+- **Summary:** 14-minute lipstick Octane rendering setup (Part 3): export geo elements, Octane camera, create shaders for lipstick body/metal/plastic/droplets, lighting with area/HDRI, final product render.
 - **File:** tutorials/tutorial-lipstick-part-3-rendering.md
 
 ---
