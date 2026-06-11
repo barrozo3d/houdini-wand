@@ -346,14 +346,24 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/tutorial-glass-donut.md
 
 
-### [Урок] Розовые Пузыри. Часть 1.
+### [Урок] Розовые Пузыри. Часть 1. (Pink Bubbles Part 1 — RU)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=alOGxWIIwTk
+- **Author:** Alexander Eskin
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #vop #vdb #particles #instancing #simulation #procedural #intermediate
+- **Summary:** 30-minute Russian Part 1 building pink bubbles inside a large sphere. Sphere → `vdbfrompolygons` → scatter 65 pts → noise-varied pscale → `peak` along normals by pscale (each bubble sits on inner surface at its own radius). Two-stream: inner bubbles + surface wave (Part 2).
+- **File:** tutorials/урок-розовые-пузыри-часть-1.md
+
+
+### [Tutorial] Pink Bubble. Part 1.
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ypJL4PXxQpg
 - **Author:** Alexander Eskin
 - **Houdini Version:** [PENDING]
 - **Tags:** [PENDING]
 - **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/урок-розовые-пузыри-часть-1.md
+- **File:** tutorials/tutorial-pink-bubble-part-1.md
 
 ---
 
