@@ -425,6 +425,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/tutorial-lipstick-part-2-flip-sim.md
 
+
+### [Tutorial] Lipstick. Part 3. Rendering
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=6V7Y5aBmjo4
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tutorial-lipstick-part-3-rendering.md
+
 ---
 
 ## Tag Reference
