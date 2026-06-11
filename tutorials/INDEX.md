@@ -216,6 +216,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/grain-vortex-in-houdini-tutorial.md
 
 
+### [Урок] Тяжелый Люкс. Часть 1. (Heavy Lux — Luxury Particle Effect, Part 1)
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=gsrHHeYadZ0
+- **Author:** Alexander Eskin
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #dop #sop #vex #particles #simulation #intermediate
+- **Summary:** 29-minute Russian-language tutorial (Part 1) on building a dense luxury glitter/dust particle effect for brand advertising (Dior logo shown in final render). POP network with All Points emission from 10k-point grid, stable birth rate, wind velocity 6 with VEX mask control using `windgroupraw`, and Cd-based color variation.
+- **File:** tutorials/урок-тяжелый-люкс-часть-1.md
+
+
 ### Houdini Tutorial: Make Any Geometry Knitted
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=mTnQji8a8nw
@@ -234,6 +244,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** [PENDING]
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/урок-тяжелый-люкс-часть-1.md
+
+
+### [Tutorial] Heavy Chic. Part 1.
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=fjVERoS2olY
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tutorial-heavy-chic-part-1.md
 
 ---
 
