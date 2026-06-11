@@ -436,13 +436,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/tutorial-lipstick-part-3-rendering.md
 
 
-### [Урок] Помада. Часть 3. Рендер
+### [Урок] Помада. Часть 3. Рендер (Lipstick Pt3 Render — RU)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pcHSG38zTJg
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #rendering #intermediate
+- **Summary:** 22-minute Russian Part 3 (longer than 14-min EN companion): Octane camera "shot_010" + render target (half res, specular depth 4, Cryptomatte), red lipstick + water droplet Octane shaders, area+HDRI lighting. Final render: professional red lipstick with water droplets product shot.
 - **File:** tutorials/урок-помада-часть-3-рендер.md
 
 ---
