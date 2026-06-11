@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=H17o8w-CFUM
 author: Alexander Eskin
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [sop, dop, flip, simulation, particles, vdb, modelling, intermediate, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/урок-помада-часть-2-flip-sim/
 frame_count: 4
 ---
@@ -33,27 +33,45 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+FLIP droplet simulation for lipstick product visualization: scatter points on trimmed lipstick surface (back half only — optimization), `pscale` 0.03 with noise variation via `attribvop`, FLIP sim drives droplet flow. Russian-language Part 2 of Lipstick series.
 
 ### Summary
-[PENDING EXTRACTION]
+A 34-minute Russian-language tutorial (Part 2) adding FLIP fluid droplets to the modeled lipstick from Part 1. Creates a "lipstick_droplets" geo node, scatters points on the lipstick surface (density ~0.8), trims to the visible rear half only (front half excluded — don't simulate what can't be seen). `pscale` attribute set to 0.03 with `attribvop` noise variation (scale 2) + random float for size range. FLIP simulation drives the droplet behavior on the lipstick surface.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. New geo node "lipstick_droplets" → `objectmerge` the lipstick geometry from Part 1
+2. `scatter` SOP — density ~0.8 on lipstick surface; 355 relax iterations
+3. Trim to **back half only**: clip/blast front face + bottom portion (~5 units) — saves simulation time for non-visible geometry
+4. `attribcreate` — `pscale` = **0.03** (base droplet size)
+5. `attribvop` — noise float, scale 2 → multiply `pscale` for size variation
+6. Second `attribvop` — random float, set minimum value to increase minimum droplet size
+7. FLIP fluid DOP network — scatter points as FLIP source; `flipsolver`
+8. Configure surface tension for droplet behavior on lipstick surface
+9. Cache sim; render with liquid/water material
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `objectmerge` SOP — pull lipstick geometry from Part 1 node
+- `scatter` SOP — density 0.8; 355 relax iterations
+- `clip` or `blast` — remove front half + bottom (visible rear only)
+- `attribcreate` — `pscale` = 0.03
+- `attribvop` — noise float, scale 2; multiply `pscale`
+- `attribvop` — random float; minimum size clamp
+- FLIP DOP — `flipsolver`, surface tension for droplet clinging
+- `filecache` — cache the sim
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, dop, flip, simulation, particles, vdb, modelling, intermediate, advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[урок-помада-часть-1-моделирование]] — Part 1 (modeling prerequisite)
+- [[tutorial-lipstick-part-1-modeling]] — English Part 1 companion
+- [[houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step]] — FLIP fluid fundamentals
+- [[tutorial-purple-sponge]] — similar scatter + pscale noise workflow

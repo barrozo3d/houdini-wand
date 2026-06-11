@@ -406,13 +406,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/tutorial-lipstick-part-1-modeling.md
 
 
-### [Урок] Помада. Часть 2. Flip Sim
+### [Урок] Помада. Часть 2. Flip Sim (Lipstick Pt2 FLIP Droplets — RU)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=H17o8w-CFUM
 - **Author:** Alexander Eskin
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #sop #dop #flip #simulation #particles #vdb #modelling #advanced
+- **Summary:** 34-minute Russian Part 2 adding FLIP droplets to the lipstick: scatter on trimmed rear-half only (optimization), pscale 0.03 + noise variation (scale 2) + random minimum, FLIP solver for droplet surface sim.
 - **File:** tutorials/урок-помада-часть-2-flip-sim.md
 
 ---
