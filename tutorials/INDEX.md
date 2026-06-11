@@ -385,6 +385,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 10-minute English companion to Pink Bubbles Part 2 RU — Octane render/material setup; see [[урок-розовые-пузыри-часть-2]] for full details.
 - **File:** tutorials/tutorial-pink-bubble-part-2.md
 
+
+### [Урок] Помада. Часть 1. Моделирование
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=fMNkSvAwIFk
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/урок-помада-часть-1-моделирование.md
+
 ---
 
 ## Tag Reference
