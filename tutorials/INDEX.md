@@ -365,6 +365,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 25-minute English companion to Pink Bubbles Pt1 RU: sphere (scale 2, freq 64) → `peak` → fog VDB → scatter 65 pts → `pscale` 0.1 → `attribadjust` noise multiply (offset 1.3) for size variation. Two branches: scatter + ripple surface. Octane render.
 - **File:** tutorials/tutorial-pink-bubble-part-1.md
 
+
+### [Урок] Розовые Пузыри. Часть 2.
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=faWPP0UPcU0
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/урок-розовые-пузыри-часть-2.md
+
 ---
 
 ## Tag Reference
