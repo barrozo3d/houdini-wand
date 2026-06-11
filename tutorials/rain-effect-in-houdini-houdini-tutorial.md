@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Yi0ATGFthqk
 author: Fx Guru
 ingested: 2026-06-11
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H19–H21 UI)"
+tags: [dop, sop, particles, simulation, volumes, vdb, rendering, beginner, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/rain-effect-in-houdini-houdini-tutorial/
 frame_count: 4
 ---
@@ -33,27 +33,46 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Rain effect using POP particle network: `grid` SOP as rain emitter (All Points), `popgravity` for falling motion, life expectancy control, particle-to-mesh conversion via VDB, with secondary splash particles at impact. Beginner-accessible pipeline.
 
 ### Summary
-[PENDING EXTRACTION]
+A 33-minute beginner rain effect tutorial by Fx Guru (Arbaaj). A `grid` SOP scaled to match a target geometry (scale 6) serves as the rain emitter — All Points emission from the grid via `popsource` creates dense rain columns. `popgravity` drives particles downward. Life expectancy controls rain density. Particles converted to mesh via VDB for rendering. Secondary splash effect simulated at impact point (frame 003: fountain-like splash spray). Rendered in Mantra/Karma or Redshift.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Geo node → target geometry (face/object, scale ~5, transform into position)
+2. `grid` SOP — scale to match object (scale 6); this is the rain emitter plane
+3. `popnet` DOP → dive inside
+4. `popsource` — Emission Type: **All Points** from grid → dense rain column
+5. `popgravity` — enable gravity → particles fall straight down
+6. Life expectancy parameter — control rain density and particle lifespan
+7. Toggle real-time playback to preview particle flow
+8. Particle to mesh: `vdbfromparticles` SOP → `convertvdb` SOP → polygon mesh
+9. Secondary splash: new `popnet` with `popbounce` or custom velocity at collision point → splash spray particles
+10. Render with water/glass material in Mantra/Karma
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `grid` SOP — scale 6 (rain emitter plane)
+- `popnet` DOP
+- `popsource` — All Points emission from grid
+- `popgravity` — standard gravity downward
+- Life expectancy — particle density control
+- `vdbfromparticles` SOP — convert particles to VDB volume
+- `convertvdb` SOP — VDB to polygon mesh
+- Secondary `popnet` — splash at impact with `popbounce`
+- Mantra/Karma water shader
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (H19–H21 UI)
 
 ### Tags
-[PENDING EXTRACTION]
+dop, sop, particles, simulation, volumes, vdb, rendering, beginner, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[intro-to-houdini-particles---full-beginner-course]] — Full POP particle pipeline foundation
+- [[intro-to-houdini-volumes---beginner-course]] — VDB from particles conversion
+- [[houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step]] — Advanced liquid/FLIP approach to similar effect

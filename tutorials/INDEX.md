@@ -446,13 +446,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/урок-помада-часть-3-рендер.md
 
 
-### Rain Effect in houdini | Houdini Tutorial
+### Rain Effect in Houdini | Houdini Tutorial
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Yi0ATGFthqk
-- **Author:** Fx Guru
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Fx Guru (Arbaaj)
+- **Houdini Version:** Not specified (H19–H21 UI)
+- **Tags:** #dop #sop #particles #simulation #volumes #vdb #rendering #beginner #intermediate
+- **Summary:** 33-minute beginner rain tutorial: `grid` emitter (All Points, scale 6) → `popgravity` for falling rain → life expectancy control → VDB particle-to-mesh conversion → secondary splash POP sim at impact. Full pipeline from particles to renderable mesh.
 - **File:** tutorials/rain-effect-in-houdini-houdini-tutorial.md
 
 ---
