@@ -375,6 +375,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/урок-розовые-пузыри-часть-2.md
 
+
+### [Tutorial] Pink Bubble. Part 2.
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=uztbmUElafA
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tutorial-pink-bubble-part-2.md
+
 ---
 
 ## Tag Reference
