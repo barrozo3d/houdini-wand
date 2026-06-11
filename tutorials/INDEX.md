@@ -225,6 +225,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 27-minute advanced tutorial wrapping a procedural knit stitch pattern onto any geometry using a UV-space projection trick (`attribswap` P ↔ UV). Builds stitch tile from scratch, tiles it in 2D UV space via VEX, projects back to 3D surface, adds fiber variation with `curlnoise`/`sweep`, transfers texture color via `attribfrommap`, and renders with Redshift hair shader.
 - **File:** tutorials/houdini-tutorial-make-any-geometry-knitted.md
 
+
+### [Урок] Тяжелый Люкс. Часть 1.
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=gsrHHeYadZ0
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/урок-тяжелый-люкс-часть-1.md
+
 ---
 
 ## Tag Reference
