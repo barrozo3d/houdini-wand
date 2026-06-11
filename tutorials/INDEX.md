@@ -405,6 +405,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** 18-minute English companion to Lipstick Pt1 RU — same revolve/subdivide/boolean workflow; see [[урок-помада-часть-1-моделирование]] for full extraction.
 - **File:** tutorials/tutorial-lipstick-part-1-modeling.md
 
+
+### [Урок] Помада. Часть 2. Flip Sim
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=H17o8w-CFUM
+- **Author:** Alexander Eskin
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/урок-помада-часть-2-flip-sim.md
+
 ---
 
 ## Tag Reference
