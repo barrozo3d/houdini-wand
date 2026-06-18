@@ -676,6 +676,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-growth-with-kinefx-and-the-labs-tree-tools.md
 
+
+### Scientific Phenomena in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=g-EDNX2uaXo
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/scientific-phenomena-in-houdini.md
+
 ---
 
 ## Tag Reference
