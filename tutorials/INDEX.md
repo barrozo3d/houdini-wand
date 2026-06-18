@@ -786,6 +786,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/noise.md
 
+
+### BUILD YOUR BRAIN – Cell division in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=EE1wuXaI8wI
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/build-your-brain-cell-division-in-houdini.md
+
 ---
 
 ## Tag Reference
