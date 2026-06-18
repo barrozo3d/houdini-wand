@@ -626,6 +626,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/art-directing-cloth-in-houdini.md
 
+
+### MOPs: Motion Operators for Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=pqGY2M2VBQo
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/mops-motion-operators-for-houdini.md
+
 ---
 
 ## Tag Reference
