@@ -656,6 +656,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/history-of-houdini-systems.md
 
+
+### Maths for Artists
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=krZVhZFvAo0
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/maths-for-artists.md
+
 ---
 
 ## Tag Reference
