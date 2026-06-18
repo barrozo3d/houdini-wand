@@ -726,6 +726,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/from-c4d-to-houdini.md
 
+
+### Houdini FX in Unreal
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=RDiA2R47Wzo
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-fx-in-unreal.md
+
 ---
 
 ## Tag Reference
