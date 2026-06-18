@@ -466,6 +466,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/tuna-can-procedural-modeling-and-rig-with-kinefx.md
 
+
+### Mechanical rigging in Houdini - Attaching custom controls
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=7J-hDF0H6ck
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/mechanical-rigging-in-houdini---attaching-custom-controls.md
+
 ---
 
 ## Tag Reference
