@@ -766,6 +766,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/magical-fx.md
 
+
+### Working with Scientific Datasets in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=GRUGv5ydLFQ
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/working-with-scientific-datasets-in-houdini.md
+
 ---
 
 ## Tag Reference
