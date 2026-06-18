@@ -536,6 +536,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/experimental-motion---the-sop-solver.md
 
+
+### Yan Paul Dubbelman | Procedural Nature | Procedural Living Plants
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=xjf_mQKI3R8
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/yan-paul-dubbelman-procedural-nature-procedural-living-plants.md
+
 ---
 
 ## Tag Reference
