@@ -486,6 +486,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/yan-paul-dubbelman-procedural-nature-high-quality-custom-leaves.md
 
+
+### MOPs: Motion Operators for Houdini Part 3
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=q_aD6sza6gA
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/mops-motion-operators-for-houdini-part-3.md
+
 ---
 
 ## Tag Reference
