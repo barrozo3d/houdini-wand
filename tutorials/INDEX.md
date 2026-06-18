@@ -696,6 +696,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/visualizing-protein-data-bank-information.md
 
+
+### Effective TD
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=c9qw6hVstEA
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/effective-td.md
+
 ---
 
 ## Tag Reference
