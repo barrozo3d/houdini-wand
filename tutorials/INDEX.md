@@ -796,6 +796,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/build-your-brain-cell-division-in-houdini.md
 
+
+### Character Design and Modeling
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=4tJmvGrhxA4
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/character-design-and-modeling.md
+
 ---
 
 ## Tag Reference
