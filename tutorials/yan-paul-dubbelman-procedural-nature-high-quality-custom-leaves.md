@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=d3pMfIsvAyQ
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["procedural", "nature", "leaves", "copernicus", "textures", "instancing", "unreal-engine", "modeling", "organic", "vegetation"]
+extraction_status: complete
 frames_dir: tutorials/frames/yan-paul-dubbelman-procedural-nature-high-quality-custom-leaves/
 frame_count: 25
 ---
@@ -33,27 +33,45 @@ frame_count: 25
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedurally generating high-quality leaf models with optimized poly counts and using Houdini's Copernicus system to generate textures for those leaves — balancing visual quality against geometry weight for use in instancing, Unreal Engine, and rendering.
 
 ### Summary
-[PENDING EXTRACTION]
+Yan Paul Dubbelman presents a 100-minute session on building high-quality leaf models procedurally in Houdini, with a focus on quality/weight balance for production. The session has two main parts: building the procedural leaf model generators (optimized geometry), then using Houdini's new Copernicus system to generate textures that can be applied to even low-resolution geometry. The resulting assets are suitable for instancing at scale, use in Unreal Engine for interactive scenes, or traditional offline rendering. Dubbelman's characteristic approach emphasizes making tools that are efficient, beautiful, and easy to iterate on.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Analyze the structural patterns of real leaves — venation, margin shape, surface variation
+2. Build a procedural leaf shape generator in SOPs using curves and surfaces
+3. Add procedural variation parameters for leaf shape (size, curvature, tip shape)
+4. Optimize geometry for efficient instancing — low poly count, clean topology
+5. Set up Houdini's Copernicus system (node-based texture compositing)
+6. Generate leaf texture maps in Copernicus — color, roughness, opacity, normal
+7. Apply generated textures to both high and low-resolution geometry variants
+8. Instance leaves across a scene and test in rendering context
+9. Export assets for Unreal Engine use if needed
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Curve SOP (leaf profile)
+- Skin / Loft SOP (leaf surface)
+- PolyBevel SOP
+- Attribute Wrangle (leaf shape variation)
+- Copernicus (node-based texture compositing system)
+- Instance SOP / Copy to Points SOP
+- Houdini Engine (Unreal export)
+- Material network (texture application)
+- VEX: fit(), smooth(), noise() for variation
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+procedural, nature, leaves, copernicus, textures, instancing, unreal-engine, modeling, organic, vegetation
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Yan Paul Dubbelman | Procedural Nature | Procedural Living Plants](yan-paul-dubbelman-procedural-nature-procedural-living-plants.md) — companion session by same author on building complete procedural plants
+- [Experimental Motion - CHOPS](experimental-motion---chops.md) — also by Yan Paul Dubbelman; CHOPs for organic motion applied to the plants built in these sessions
+- [Procedural Growth with KineFX and the Labs Tree Tools](procedural-growth-with-kinefx-and-the-labs-tree-tools.md) — related procedural vegetation creation with rigging and animation
