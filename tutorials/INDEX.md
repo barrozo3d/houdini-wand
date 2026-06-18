@@ -546,6 +546,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/yan-paul-dubbelman-procedural-nature-procedural-living-plants.md
 
+
+### Effective TD
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=7NejsDXzxXI
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/effective-td.md
+
 ---
 
 ## Tag Reference
