@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=A11B_UE07ac
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["sop-solver", "dop", "procedural-animation", "simulation", "organic", "rendering", "lighting", "art-direction"]
+extraction_status: complete
 frames_dir: tutorials/frames/experimental-motion---the-sop-solver/
 frame_count: 4
 ---
@@ -33,27 +33,40 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Using the SOP Solver inside a DOP network to build iterative, state-aware geometry systems that create lifelike organic motion — with an emphasis on the conceptual/philosophical approach to building living systems.
 
 ### Summary
-[PENDING EXTRACTION]
+Yan Paul Dubbelman presents an 89-minute live session dedicated to the SOP Solver in Houdini. The session covers two distinct approaches to the SOP Solver, demonstrating both setups to give viewers a solid understanding of this powerful but tricky tool. Dubbelman focuses on systems that simulate "life" — organic, evolving motion — rather than standard physics simulations. The session ends with rendering and lighting techniques including tricks that make lighting feel more realistic and art-directed. The tone is philosophical: Dubbelman shares his decision-making process and encourages viewers to question how they approach their work.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Understand the SOP Solver's place in the DOP context and why it differs from standard DOP solvers
+2. Set up the first SOP Solver approach — direct geometry manipulation inside a DOP network
+3. Build iterative feedback loops where geometry at frame N influences frame N+1
+4. Set up the second SOP Solver approach — a more abstract conceptual system for organic behavior
+5. Create systems that produce lifelike "growth" or "living" motion
+6. Render the resulting animation with art-directed lighting
+7. Apply lighting tricks for realism and mood — key light positioning, environment lighting, and subtle variation
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- SOP Solver (DOP context)
+- DOP Network
+- Geometry data in DOPs
+- Foreach iteration inside SOP Solver
+- Attribute Wrangle (inside SOP Solver)
+- Rendering/lighting setup
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+sop-solver, dop, procedural-animation, simulation, organic, rendering, lighting, art-direction
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Experimental Motion - CHOPS](experimental-motion---chops.md) — companion session by same author using CHOPs for smooth organic motion
+- [Yan Paul Dubbelman | Procedural Nature | Procedural Living Plants](yan-paul-dubbelman-procedural-nature-procedural-living-plants.md) — same artist's natural/botanical procedural work
+- [Surface Advection](surface-advection.md) — another approach to organic flowing motion using volume advection

@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=RDiA2R47Wzo
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["unreal-engine", "virtual-production", "hda", "megascans", "rendering", "aces", "substance-painter", "procedural", "pipeline"]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-fx-in-unreal/
 frame_count: 4
 ---
@@ -33,27 +33,47 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Creating a complete virtual production pipeline using Houdini and Unreal Engine together — from procedural modeling and HDAs in Houdini to scene assembly, lighting, and rendering in Unreal Engine with ACES color space and DaVinci Resolve delivery.
 
 ### Summary
-[PENDING EXTRACTION]
+Guido Poncini presents a comprehensive course on integrating Houdini with Unreal Engine for virtual production and installation sequences. The course uses the Maxi Museum in Rome as the location reference, covering procedural modeling and UV mapping in Houdini, import into Unreal, scene organization with sequences and subsequences, Megascans material application, HDRI-based lighting, and ACES color space setup for final export. A unique segment covers transforming a shark model into a procedural robot using Houdini, textured in Substance Painter. The Houdini Engine / Session Sync connection between both applications is also demonstrated.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model the location environment (museum interior) using Houdini procedural modeling
+2. Set up procedural UV mapping on all meshes in Houdini
+3. Import geometry into Unreal Engine and organize assets in folders
+4. Set up a main sequence with subsequences for multi-shot organization
+5. Configure Houdini Engine Session Sync between Houdini and Unreal
+6. Apply Megascans materials to environment geometry in Unreal
+7. Create HDRI-based interior lighting and set up post-processing
+8. Configure ACES color space for export
+9. Export the rendered sequence as EXR for import into DaVinci Resolve
+10. Build the procedural robot from a shark base model in Houdini and texture in Substance Painter
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Houdini Engine (Unreal plugin)
+- Session Sync (Houdini–Unreal live link)
+- Houdini Digital Asset (HDA)
+- UV Unwrap / UV Flatten SOP
+- Procedural UV mapping
+- Megascans materials (Unreal)
+- HDRI / Skylight (Unreal)
+- ACES color space (Unreal post-process)
+- Sequencer (Unreal main/subsequences)
+- Substance Painter (external texturing)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+unreal-engine, virtual-production, hda, megascans, rendering, aces, substance-painter, procedural, pipeline
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural HDAs for Unreal](procedural-hdas-for-unreal.md) — focused course on building and deploying HDAs inside Unreal Engine
+- [Effective TD](effective-td.md) — covers HDA creation and optimization workflow, foundational for Houdini-Unreal pipeline
+- [Procedural Growth with KineFX and the Labs Tree Tools](procedural-growth-with-kinefx-and-the-labs-tree-tools.md) — procedural vegetation that can be exported to Unreal environments
