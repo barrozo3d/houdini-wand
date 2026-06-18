@@ -526,6 +526,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/experimental-motion---chops.md
 
+
+### Experimental Motion - The SOP Solver
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=A11B_UE07ac
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/experimental-motion---the-sop-solver.md
+
 ---
 
 ## Tag Reference
