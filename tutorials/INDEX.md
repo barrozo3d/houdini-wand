@@ -686,6 +686,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/scientific-phenomena-in-houdini.md
 
+
+### Visualizing Protein Data Bank Information
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=f7QwzqZqtFI
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/visualizing-protein-data-bank-information.md
+
 ---
 
 ## Tag Reference
