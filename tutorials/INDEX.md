@@ -646,6 +646,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/problem-space.md
 
+
+### History of Houdini Systems
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=mwUn21-v_0s
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/history-of-houdini-systems.md
+
 ---
 
 ## Tag Reference
