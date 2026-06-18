@@ -756,6 +756,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/simulated-creatures.md
 
+
+### Magical FX
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=J9dhXxxLPfI
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/magical-fx.md
+
 ---
 
 ## Tag Reference
