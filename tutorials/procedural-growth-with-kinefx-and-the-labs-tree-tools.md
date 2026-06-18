@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=j5XxDiG25wQ
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["kinefx", "labs", "tree", "growth", "vex", "chops", "procedural", "wind", "rigging", "vegetation", "animation"]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-growth-with-kinefx-and-the-labs-tree-tools/
 frame_count: 4
 ---
@@ -33,27 +33,44 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building, rigging, and animating procedural trees using the free SideFX Labs Tree Tools combined with KineFX rigging — then adding a procedural growth and wind animation system using VEX and CHOPs, plus modding the Labs tools for greater flexibility.
 
 ### Summary
-[PENDING EXTRACTION]
+Mark Fancher presents an intermediate-to-advanced Houdini.School course on procedural vegetation using the free, built-in SideFX Labs Tree Tools as the starting geometry, then extending into KineFX rigging and animation. The course covers rigging the tree with KineFX, building a procedural growth sequence and a wind animation system using VEX and CHOPs, and goes deep into modifying the Labs tree tools themselves for more flexible behavior. The course assumes VEX familiarity and is described as a technical exercise with highly satisfying artistic results.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Generate a tree using SideFX Labs Tree Tools and explore the tool parameters
+2. Rig the tree structure using KineFX — convert the tree to a KineFX skeleton
+3. Set up KineFX constraints and joint hierarchies for the branches
+4. Build a procedural growth system in VEX — animate the tree growing from seed over time
+5. Build a wind animation system using CHOPs for natural branch oscillation
+6. Connect CHOP animation channels back to KineFX skeleton transforms
+7. Dive into the Labs Tree Tools internals and mod the HDA for greater flexibility
+8. Render the final animated tree with wind and growth effects
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- SideFX Labs Tree Generator SOP
+- KineFX skeleton tools
+- Rig Stash Pose SOP
+- Full Body IK (KineFX)
+- Attribute Wrangle (VEX growth logic)
+- CHOP network (wind oscillation)
+- Channel CHOP / Spring CHOP
+- Labs Tree Tools HDA (internal modification)
+- VEX: chramp(), fit(), smooth()
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+kinefx, labs, tree, growth, vex, chops, procedural, wind, rigging, vegetation, animation
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Experimental Motion - CHOPS](experimental-motion---chops.md) — CHOPs for smooth organic animation, directly applicable to the wind system in this course
+- [Mechanical rigging in Houdini - Attaching custom controls](mechanical-rigging-in-houdini---attaching-custom-controls.md) — KineFX rigging techniques used in mechanical and organic rig setups
+- [Yan Paul Dubbelman | Procedural Nature | Procedural Living Plants](yan-paul-dubbelman-procedural-nature-procedural-living-plants.md) — related procedural plant creation from the same natural/botanical domain

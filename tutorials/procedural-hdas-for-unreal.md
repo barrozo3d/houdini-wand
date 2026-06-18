@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rKcH4oIfoVw
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["hda", "unreal-engine", "procedural", "splines", "building-generator", "houdini-engine", "session-sync", "materials", "pipeline"]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-hdas-for-unreal/
 frame_count: 4
 ---
@@ -33,27 +33,47 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a procedural building generator HDA in Houdini — from interactive splines through procedural modeling and randomized asset creation — then deploying it to Unreal Engine via Houdini Engine with full Session Sync communication.
 
 ### Summary
-[PENDING EXTRACTION]
+Julian (Technical Artist at Cloud Imperium Games, creator of tools for Star Citizen) teaches a step-by-step course on building a production-ready procedural building generator HDA. The workflow uses interactive splines/curves as the building footprint input, procedurally models the structure, adds an automated cable system, and exposes a user-friendly parameter interface. The HDA is then imported into Unreal Engine where Houdini attributes control mesh spawning, material assignment, and Session Sync enables live two-way communication between Houdini and Unreal for iterative development.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Design the HDA architecture and define what parameters artists will need
+2. Build the interactive spline/curve input for building footprint definition
+3. Create procedural modeling logic driven by the spline (walls, floors, details)
+4. Build an automated cable/wire generation system for organic scene detailing
+5. Add randomization with art-direction controls for asset variation
+6. Design a clean parameter interface (folders, labels, sensible defaults)
+7. Export/save the HDA for use in Unreal Engine
+8. Import the HDA via the Houdini Engine plugin in Unreal
+9. Access Houdini attributes from Unreal — mesh import, material assignment
+10. Set up Session Sync for live Houdini-Unreal communication during development
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Houdini Digital Asset (HDA) creation
+- Curve SOP / Bezier Curve input
+- PolyExtrude / PolyBevel SOP
+- Copy to Points SOP (randomized assets)
+- Attribute Randomize SOP
+- Cable/curve sweep system
+- HDA parameter interface editor
+- Houdini Engine plugin (Unreal)
+- Session Sync (Houdini ↔ Unreal)
+- Houdini attributes in Unreal (unreal_material, unreal_instance, etc.)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+hda, unreal-engine, procedural, splines, building-generator, houdini-engine, session-sync, materials, pipeline
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini FX in Unreal](houdini-fx-in-unreal.md) — complete Houdini-Unreal virtual production pipeline covering environment modeling and rendering
+- [Effective TD](effective-td.md) — HDA creation workflow and Python UI automation for artist-facing tools
+- [Tuna Can | procedural modeling and rig with KineFX](tuna-can-procedural-modeling-and-rig-with-kinefx.md) — procedural SOP modeling techniques used in building HDAs
