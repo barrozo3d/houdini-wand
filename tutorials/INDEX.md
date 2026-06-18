@@ -596,6 +596,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/surface-advection.md
 
+
+### Forces: Building Custom Velocity Setups
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=v1psrXhj9IY
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/forces-building-custom-velocity-setups.md
+
 ---
 
 ## Tag Reference
