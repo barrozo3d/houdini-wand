@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=7J-hDF0H6ck
 author: cgside
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["kinefx", "rigging", "controls", "mechanical", "joints", "sop", "procedural-rigging"]
+extraction_status: complete
 frames_dir: tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/
 frame_count: 4
 ---
@@ -33,27 +33,44 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Attaching custom control shapes to joints in a KineFX mechanical rig using the Attach Joint Geo SOP — creating named control points with custom geometry shapes that travel with the rig transforms.
 
 ### Summary
-[PENDING EXTRACTION]
+This cgside tutorial demonstrates the practical process of attaching custom control shapes to a mechanical rig in Houdini using KineFX SOP-level rigging. The workflow uses Add SOP or Point Generate to create named target points, initializes transforms with Rig Doctor, creates custom control geometry (sphere, any shape), and connects everything through the Attach Joint Geo node. The tutorial shows how to name controls, assign them to specific joints (target_left, target_right), assign colors, and set up the rig so controls transform correctly with the skeleton. It is a focused, hands-on tutorial within a larger mechanical rigging series.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create named target points using Add SOP or Point Generate (set to points, not primitives)
+2. Name points via Name SOP — e.g., "target_left" and "target_right"
+3. Use Rig Doctor SOP to initialize transforms on the target points
+4. Create control shape geometry (sphere, box, or custom) and set it as a primitive
+5. Assign a color to the control for visual identification
+6. Name the control geometry using Name SOP on primitives
+7. Connect everything through the Attach Joint Geo SOP
+8. Disable "rest pose" in Attach Joint Geo settings
+9. Link each named control shape to the corresponding joint name
+10. Verify the controls transform correctly with the rig
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Add SOP / Point Generate SOP
+- Name SOP (point and primitive naming)
+- Rig Doctor SOP (initialize transforms)
+- Sphere SOP (control shape)
+- Attach Joint Geo SOP
+- KineFX skeleton workflow
+- Rest pose parameter (disabled)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+kinefx, rigging, controls, mechanical, joints, sop, procedural-rigging
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Tuna Can | procedural modeling and rig with KineFX](tuna-can-procedural-modeling-and-rig-with-kinefx.md) — by same author (cgside), procedural modeling and KineFX rigging of a tuna can object
+- [Procedural Growth with KineFX and the Labs Tree Tools](procedural-growth-with-kinefx-and-the-labs-tree-tools.md) — KineFX used for procedural tree rigging and animation
+- [Character Design and Modeling](character-design-and-modeling.md) — character geometry creation that would need rigging as a next step

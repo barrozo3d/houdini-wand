@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=J9dhXxxLPfI
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["particles", "pop", "pyro", "vop", "fluids", "lighting", "rendering", "vfx", "procedural", "portal"]
+extraction_status: complete
 frames_dir: tutorials/frames/magical-fx/
 frame_count: 4
 ---
@@ -33,27 +33,43 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building three progressive magical visual effects (particle disintegration, flame, portal) using a multi-system approach combining SOPs, VOPs, POPs, volumes, and fluids, culminating in a complete lit and rendered scene.
 
 ### Summary
-[PENDING EXTRACTION]
+This Houdini.School course takes a project-based approach, building three distinct magical FX types across multiple sessions. It begins with customizable particle effects for characters, progresses to a particle disintegration system built with VOPs and POPs, then creates a pyro-based flame effect. These individual effects combine in the final session into a portal scene that is fully lit, textured, and rendered. The course emphasizes the central role of SOPs as the foundation for effects work and teaches how complex results can be achieved with simple, well-structured node networks.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Design and build character-specific particle emission setups in POPs
+2. Create particle emitters driven by geometry attributes and custom VOP networks
+3. Build a particle disintegration system: emit particles from a surface, drive motion with VOPs
+4. Set up Pyro simulation for a stylized magical flame effect
+5. Adjust Pyro parameters for art-directed flame look (temperature, density, velocity)
+6. Assemble all three FX into a unified portal scene composition
+7. Set up lighting for the portal — rim lighting, volume light shafts, emissive elements
+8. Texture the scene and refine the render for final output
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- POP network (POP Source, POP Force, POP Wind)
+- VOP network in POPs
+- Pyro Solver (DOP)
+- Pyro Source SOP
+- Volume VOP
+- Attribute Wrangle (SOP)
+- Lighting (area lights, environment light)
+- Material / Surface shader
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+particles, pop, pyro, vop, fluids, lighting, rendering, vfx, procedural, portal
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Forces: Building Custom Velocity Setups](forces-building-custom-velocity-setups.md) — custom velocity forces directly applicable to particle and Pyro FX
+- [Scientific Phenomena in Houdini](scientific-phenomena-in-houdini.md) — volume and particle-based phenomena with similar simulation techniques
+- [Surface Advection](surface-advection.md) — surface-based particle advection techniques complementing the disintegration setup
