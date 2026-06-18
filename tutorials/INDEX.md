@@ -476,6 +476,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/mechanical-rigging-in-houdini---attaching-custom-controls.md
 
+
+### Yan Paul Dubbelman | Procedural Nature | High-Quality Custom Leaves
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=d3pMfIsvAyQ
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/yan-paul-dubbelman-procedural-nature-high-quality-custom-leaves.md
+
 ---
 
 ## Tag Reference
