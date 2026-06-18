@@ -606,6 +606,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/forces-building-custom-velocity-setups.md
 
+
+### Attributes
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=VM3m52SHUrk
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/attributes.md
+
 ---
 
 ## Tag Reference
