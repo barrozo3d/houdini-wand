@@ -636,6 +636,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/mops-motion-operators-for-houdini.md
 
+
+### Problem-Space
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=nUwA8xsmnS0
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/problem-space.md
+
 ---
 
 ## Tag Reference
