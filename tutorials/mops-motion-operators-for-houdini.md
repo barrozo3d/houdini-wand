@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=pqGY2M2VBQo
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["mops", "motion-graphics", "animation", "procedural-animation", "rbd", "vellum", "falloffs", "packed-primitives"]
+extraction_status: complete
 frames_dir: tutorials/frames/mops-motion-operators-for-houdini/
 frame_count: 4
 ---
@@ -33,27 +33,45 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Introduction to the MOPs (Motion Operators) toolkit — a free, open-source Houdini plugin for motion design that abstracts complex mathematical transformations into intuitive gestural animation tools for packed primitives.
 
 ### Summary
-[PENDING EXTRACTION]
+Henry Foster (developer of MOPs, 15-year technical artist) presents the MOPs toolkit course for Houdini.School. MOPs is a free open-source toolkit designed to make motion design in Houdini as intuitive as C4D MoGraph. The course covers MOPs generators, modifiers, and falloffs for duplicating, bouncing, aiming, and rotating points and geometry. MOPs can be layered on top of RBD and Vellum simulations for creative art direction of physics-based motion. The course also introduces the underlying math — trigonometry, matrices, position/orientation/scale — giving students insight into what MOPs abstracts for them.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Install MOPs from GitHub and understand its node categories (generators, modifiers, falloffs)
+2. Use MOPs generators to distribute copies of geometry as packed primitives
+3. Apply MOPs Transform modifier for position, rotation, scale animation with curves
+4. Use MOPs Noise modifier for organic, staggered motion across instances
+5. Add MOPs Falloff nodes to control which instances are affected and by how much
+6. Set up MOPs on top of an RBD simulation to art-direct collision results
+7. Apply MOPs to a Vellum cloth simulation for intuitive cloth motion control
+8. Explore the math underlying MOPs — transformation matrices and trigonometry
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- MOPs Transform SOP
+- MOPs Noise SOP
+- MOPs Falloff SOP (various types: shape, texture, ramp)
+- MOPs Instancer SOP
+- MOPs Apply Attributes SOP
+- Copy to Points SOP (packed primitives)
+- Pack SOP
+- RBD simulation (DOP)
+- Vellum solver (DOP)
+- Transformation matrices in VEX
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+mops, motion-graphics, animation, procedural-animation, rbd, vellum, falloffs, packed-primitives
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [MOPs: Motion Operators for Houdini Part 1](mops-motion-operators-for-houdini-part-1.md) — 165-minute hands-on deep dive into MOPs basics
+- [MOPs: Motion Operators for Houdini Part 2](mops-motion-operators-for-houdini-part-2.md) — advanced MOPs modifiers including move-along-spline
+- [From C4D to Houdini](from-c4d-to-houdini.md) — MOPs is the Houdini answer to C4D MoGraph; natural pairing

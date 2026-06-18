@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=g9eSle9IVjU
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["mops", "motion-graphics", "packed-primitives", "animation", "falloffs", "instancing", "procedural-animation", "beginners"]
+extraction_status: complete
 frames_dir: tutorials/frames/mops-motion-operators-for-houdini-part-1/
 frame_count: 51
 ---
@@ -33,27 +33,47 @@ frame_count: 51
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Hands-on introduction to the MOPs toolkit (MOPs 101) — installing MOPs, understanding the packed primitive paradigm, and using core MOPs generators, modifiers, and falloffs for intuitive motion design in Houdini.
 
 ### Summary
-[PENDING EXTRACTION]
+Henry Foster (Toadtorm, developer of MOPs) delivers a 165-minute live session as MOPs 101 — the first comprehensive introduction to the toolkit. Starting with a conceptual PowerPoint on what MOPs is and how it works, he then walks through installation and dives into the core nodes: generators for distributing instances, modifiers for transforming them (translate, rotate, scale), and falloffs for controlling which instances are affected. The course introduces the packed primitive paradigm that underpins MOPs and explains why it exists. Students leave with a working MOPs setup and understanding of the toolkit's core philosophy.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Download and install MOPs from GitHub or the Houdini package manager
+2. Understand the conceptual model: MOPs operates on packed primitives via attributes
+3. Set up a basic MOPs network with a generator (distribute objects)
+4. Apply MOPs Convert to turn standard geometry into packed primitives
+5. Use MOPs Transform modifier to animate position, rotation, and scale
+6. Add MOPs Noise modifier for organic variation across instances
+7. Apply MOPs Shape Falloff to limit effects to a region of space
+8. Use MOPs Ramp Falloff for gradient-driven effects
+9. Chain multiple modifiers together for layered, complex motion
+10. Render the result to verify the motion design output
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- MOPs Convert SOP
+- MOPs Transform SOP
+- MOPs Noise SOP
+- MOPs Instancer SOP
+- MOPs Shape Falloff SOP
+- MOPs Ramp Falloff SOP
+- Copy to Points SOP
+- Pack / Unpack SOP
+- Attribute Wrangle (packed primitive attributes)
+- `@P`, `@orient`, `@pscale` (packed primitive attributes)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+mops, motion-graphics, packed-primitives, animation, falloffs, instancing, procedural-animation, beginners
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [MOPs: Motion Operators for Houdini](mops-motion-operators-for-houdini.md) — overview/promo for the full MOPs course series
+- [MOPs: Motion Operators for Houdini Part 2](mops-motion-operators-for-houdini-part-2.md) — continuation with advanced modifiers including move-along-spline
+- [MOPs: Motion Operators for Houdini Part 3](mops-motion-operators-for-houdini-part-3.md) — deep dive into the linear algebra math underlying MOPs
