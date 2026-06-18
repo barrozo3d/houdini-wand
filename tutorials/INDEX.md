@@ -496,6 +496,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/mops-motion-operators-for-houdini-part-3.md
 
+
+### MOPs: Motion Operators for Houdini Part 2
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=J2g0v1k6MBs
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/mops-motion-operators-for-houdini-part-2.md
+
 ---
 
 ## Tag Reference
