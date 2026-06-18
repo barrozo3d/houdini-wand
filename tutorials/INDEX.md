@@ -456,6 +456,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/rain-effect-in-houdini-houdini-tutorial.md
 
 
+
+### Tuna Can | procedural modeling and rig with KineFX
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=hHLH7pr_eZo
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tuna-can-procedural-modeling-and-rig-with-kinefx.md
+
 ---
 
 ## Tag Reference
