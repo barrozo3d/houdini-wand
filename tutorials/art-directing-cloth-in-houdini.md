@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=psd-vus4U5s
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["vellum", "cloth", "simulation", "redshift", "karma", "rendering", "mops", "forces"]
+extraction_status: complete
 frames_dir: tutorials/frames/art-directing-cloth-in-houdini/
 frame_count: 4
 ---
@@ -33,27 +33,43 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Art directing cloth simulations using Vellum inside Houdini, combining forces, brushes, MOPs falloff specs, and even smoke simulations to create realistic and controllable fabric behavior.
 
 ### Summary
-[PENDING EXTRACTION]
+Paul Estevez (CG generalist and motion designer from Munich) presents a Houdini.School course on art directing cloth with Vellum. The course covers the full process from basic geometry setup through applying forces and tools for realistic fabrics, setting up attributes for export to other software, and lighting, texturing, and rendering cloth with Redshift and Karma. Distinctive techniques include using POP Force nodes, the Vellum brush, MOPs falloff specs, and smoke simulations to manipulate cloth movement organically.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Set up a base piece of geometry as the starting cloth object
+2. Configure Vellum cloth simulation constraints and fabric properties
+3. Apply POP Force nodes to drive cloth movement and directionality
+4. Use the Vellum brush to sculpt and push cloth interactively
+5. Integrate MOPs falloff specs for art-directed control over simulation regions
+6. Use smoke simulations as velocity fields to influence cloth motion
+7. Set up attributes for exporting cloth to other 3D software
+8. Light, texture, and render final cloth using Redshift or Karma inside Houdini
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Vellum Cloth solver
+- Vellum Brush tool
+- POP Force nodes
+- MOPs Falloff specs
+- Smoke simulation (as velocity influence)
+- Redshift renderer
+- Karma renderer
+- Attribute transfer/export nodes
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, cloth, simulation, redshift, karma, rendering, mops, forces
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Simulated Creatures](simulated-creatures.md) — covers soft body simulation with FEM solver, complements Vellum cloth workflows
+- [MOPs: Motion Operators for Houdini](mops-motion-operators-for-houdini.md) — MOPs falloff and modifiers used in cloth art direction
+- [Forces: Building Custom Velocity Setups](forces-building-custom-velocity-setups.md) — custom velocity fields applicable to Vellum cloth simulations

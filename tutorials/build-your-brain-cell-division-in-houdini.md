@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=EE1wuXaI8wI
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["vellum", "vdb", "advection", "growth", "rendering", "redshift", "karma", "compositing", "procedural"]
+extraction_status: complete
 frames_dir: tutorials/frames/build-your-brain-cell-division-in-houdini/
 frame_count: 4
 ---
@@ -33,27 +33,39 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedural growth system simulating cell division to build a brain-like organic structure, combining Vellum rings, VDB advection, and multiple sub-techniques into a continuous animated growth sequence.
 
 ### Summary
-[PENDING EXTRACTION]
+Tim (Houdini.School instructor) presents a course building a procedural brain/cell-division growth effect in Houdini. The setup combines Vellum ring simulations with VDB advection and various sub-techniques stitched together into a continuous growth sequence. The course covers rendering inside Houdini's rendering context with Redshift (primary renderer) and Karma (secondary walkthrough), then finishes with compositing in Fusion. It is presented as a live-session course with on-demand viewing.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Plan the growth sequence logic and breakdown the "cell division" motion into stages
+2. Set up Vellum rings as structural growth elements
+3. Use VDB advection to drive organic expansion and flow of the growth
+4. Combine multiple sub-techniques to stitch a continuous growth animation sequence
+5. Enter the rendering context (LOPs/Solaris or object-level) and set up lighting
+6. Render the full sequence using Redshift; optionally use Karma as an alternative
+7. Composite the rendered sequence in Fusion
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Vellum solver (rings/grains mode)
+- VDB Advect Points / Volume Advect
+- VDB from Particles
+- Rendering context (Redshift / Karma)
+- Fusion compositor (external)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, vdb, advection, growth, rendering, redshift, karma, compositing, procedural
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Surface Advection](surface-advection.md) — deep dive into volume and surface advection techniques used in organic growth effects
+- [Scientific Phenomena in Houdini](scientific-phenomena-in-houdini.md) — natural growth patterns and procedural shapes including fractals and natural structures
+- [Art Directing Cloth in Houdini](art-directing-cloth-in-houdini.md) — also uses Vellum as a procedural simulation tool for organic shapes

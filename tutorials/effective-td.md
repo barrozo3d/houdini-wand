@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=c9qw6hVstEA
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["hda", "python", "pyro", "optimization", "pipeline", "td", "ui", "procedural", "houdini-digital-assets"]
+extraction_status: complete
 frames_dir: tutorials/frames/effective-td/
 frame_count: 4
 ---
@@ -33,27 +33,42 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Technical Director workflow for analyzing, optimizing, and packaging a Pyro simulation into a reusable Houdini Digital Asset (HDA) with Python-automated UI for artist-friendly interaction.
 
 ### Summary
-[PENDING EXTRACTION]
+Jesper (Houdini.School instructor) teaches a three-session TD-focused course centered on real-world pipeline thinking. The scenario: a TD receives a Pyro simulation file from an artist and must optimize it for caching/rendering, wrap it into a procedural HDA, and then add Python automation and improved UI for usability. Session 1 covers simulation data analysis and optimization; Session 2 covers HDA creation; Session 3 focuses on Python-driven UI and automation. The course teaches the mindset of building tools with the artist in mind.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Receive and critically analyze an existing Pyro simulation file
+2. Identify performance bottlenecks — unnecessary resolution, divisions, cached fields
+3. Methodically optimize the simulation parameters for caching and rendering efficiency
+4. Select the node network to wrap and create a Houdini Digital Asset (HDA)
+5. Expose relevant parameters and ensure the HDA is fully procedural for different input simulations
+6. Write Python scripts to automate repetitive tasks within the HDA
+7. Build a cleaner UI with Python parameter callbacks, labels, and folder organization
+8. Test the HDA across multiple simulation files to validate generalization
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Pyro simulation solver (DOP network)
+- File cache SOP / DOP I/O
+- Houdini Digital Asset (HDA) creation
+- Python SOP / parameter callbacks
+- Parameter interface editor
+- On Created / On Loaded Python scripts
+- Cache and rendering output settings
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+hda, python, pyro, optimization, pipeline, td, ui, procedural, houdini-digital-assets
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural HDAs for Unreal](procedural-hdas-for-unreal.md) — HDA creation and deployment into Unreal Engine with artist-facing parameter interfaces
+- [History of Houdini Systems](history-of-houdini-systems.md) — historical context on Houdini's Pyro and simulation systems
+- [Noise](noise.md) — Python and PDG/TOP nodes used to manage and generate noise setups; Python knowledge overlaps with TD work

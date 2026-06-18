@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=0XnjEVcaq6A
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["chops", "motion", "animation", "procedural-animation", "organic", "rendering", "art-direction"]
+extraction_status: complete
 frames_dir: tutorials/frames/experimental-motion---chops/
 frame_count: 4
 ---
@@ -33,27 +33,42 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Using CHOPs (Channel Operators) in Houdini to create smooth, organic, art-directed motion for natural and ambient visual work — particularly for exhibition and installation contexts.
 
 ### Summary
-[PENDING EXTRACTION]
+Yan Paul Dubbelman, a Dutch digital artist known for calm, nature-inspired motion work, presents an 84-minute live session on using CHOPs to generate smooth, experimental motion. His focus is on achieving a specific artistic feeling — very calm and organic — rather than technically driven effects. The session demonstrates how CHOPs can process and shape motion data to create the kind of fluid, living movement present in his portfolio of flowers, plants, and large-scale exhibition pieces. Rendering techniques are touched on briefly alongside the CHOP-driven motion workflows.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Understand the philosophy behind CHOPs as a motion processing network (not just animation curves)
+2. Set up a basic CHOP network to drive point positions or transform attributes
+3. Use noise and filter CHOPs to generate smooth, organic motion channels
+4. Apply the channel data back to geometry using CHOP to SOP feedback
+5. Layer multiple CHOP signals for complex but calm compound motion
+6. Art-direct the motion feel by adjusting timing, amplitude, and phase in CHOPs
+7. Set up rendering with appropriate lighting for the motion-driven final output
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- CHOP network context
+- Noise CHOP
+- Filter CHOP (lag, spring)
+- Math CHOP
+- Channel CHOP
+- CHOP to SOP (export/binding)
+- Geometry CHOP
+- Rendering context (lighting setup)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+chops, motion, animation, procedural-animation, organic, rendering, art-direction
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Experimental Motion - The SOP Solver](experimental-motion---the-sop-solver.md) — companion session by same author using the SOP Solver for organic life-like motion
+- [Procedural Growth with KineFX and the Labs Tree Tools](procedural-growth-with-kinefx-and-the-labs-tree-tools.md) — procedural growth and wind animation using VEX and CHOPs together
+- [Yan Paul Dubbelman | Procedural Nature | Procedural Living Plants](yan-paul-dubbelman-procedural-nature-procedural-living-plants.md) — same artist's natural shape procedural work, directly related aesthetic approach

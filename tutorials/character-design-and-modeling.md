@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=4tJmvGrhxA4
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["modeling", "character", "vdb", "boolean", "polygon", "character-design", "animation", "procedural"]
+extraction_status: complete
 frames_dir: tutorials/frames/character-design-and-modeling/
 frame_count: 4
 ---
@@ -33,27 +33,41 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Full character creation pipeline in Houdini from concept sketches to finished 3D model, using polygon modeling, VDB, Boolean, and reshape operations, with 2D hand-drawn animation concepts translated into 3D techniques.
 
 ### Summary
-[PENDING EXTRACTION]
+Christopher Rutledge (CG artist and short filmmaker) teaches a Houdini.School course on creating original characters entirely within Houdini. The workflow starts with concept sketching and design, then moves to blocking out the body and eyes using polygons alongside VDB, Boolean, and reshape operations. A distinctive element is the translation of 2D hand-drawn animation techniques into Houdini workflows, giving character models expressive, stylized properties. The course presents unique tricks Rutledge developed over years of character-based filmmaking in Houdini.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Sketch and finalize character design concepts (traditional or digital sketches)
+2. Import sketches into Houdini as image planes for reference
+3. Block out the body using polygon primitives and box-modeling techniques
+4. Refine forms using VDB operations (convert to VDB, reshape, smooth)
+5. Apply Boolean operations to combine or subtract shapes for complex areas
+6. Model the eyes and expressive facial features using polygons
+7. Incorporate 2D animation concepts (squash/stretch, silhouette) translated into 3D geometry operations
+8. Clean up topology for final model readiness
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Polygon modeling tools (PolyExtrude, PolyBevel, PolyCap)
+- VDB from Polygons
+- VDB Reshape
+- Boolean SOP
+- PolyReduce / QuadRemesh
+- File SOP (image reference import)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+modeling, character, vdb, boolean, polygon, character-design, animation, procedural
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Tuna Can | procedural modeling and rig with KineFX](tuna-can-procedural-modeling-and-rig-with-kinefx.md) — procedural modeling pipeline in Houdini with practical SOP techniques
+- [Simulated Creatures](simulated-creatures.md) — animating and simulating organic character objects in Houdini using FEM
+- [From C4D to Houdini](from-c4d-to-houdini.md) — foundational Houdini modeling and attribute workflows for artists coming from other 3D tools

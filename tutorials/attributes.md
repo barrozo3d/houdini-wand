@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=VM3m52SHUrk
 author: Houdini.School
 ingested: 2026-06-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "unspecified"
+tags: ["attributes", "geometry", "vex", "rbd", "flip", "vellum", "crowds", "fundamentals", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/attributes/
 frame_count: 4
 ---
@@ -33,27 +33,48 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Deep-dive exploration of Houdini attributes — their types, classes, reading/writing patterns, and practical use across multiple simulation contexts including RBD, FLIP, Vellum, and crowds.
 
 ### Summary
-[PENDING EXTRACTION]
+David Torno (Houdini.School instructor) presents a comprehensive course on Houdini attributes, structured as step-by-step sessions covering geometry component foundations through advanced attribute workflows. The course clarifies terminology, explains attribute classes and types, details the geometry spreadsheet, and covers intrinsics. Practical implementation examples are drawn from RBD, FLIP, Vellum, and crowd simulations, making the knowledge directly applicable across Houdini's major simulation contexts. Viewport GL attributes for visualization are also covered.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Learn the core geometry components (points, vertices, primitives, detail) and their relationship to attributes
+2. Understand attribute classes (point, vertex, primitive, detail) and data types (float, integer, vector, string, etc.)
+3. Navigate and sort data in the Geometry Spreadsheet
+4. Learn how to access and read intrinsic attributes
+5. Read and write attributes from scratch using Attribute Wrangle and related nodes
+6. Apply attributes in RBD simulation contexts for collision and constraint control
+7. Use attributes in FLIP fluid simulations for emission and viscosity
+8. Implement Vellum attributes for constraint and pin control
+9. Set up crowd simulation attributes for agent behavior
+10. Configure viewport GL attributes for visual feedback in the 3D viewport
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Attribute Wrangle (SOP)
+- Attribute Create
+- Attribute Promote
+- Attribute Transfer
+- Geometry Spreadsheet
+- Intrinsic attributes
+- Viewport GL attributes (gl_lit, gl_color, etc.)
+- RBD simulation attributes
+- FLIP fluid attributes
+- Vellum constraint attributes
+- Crowd simulation attributes
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+unspecified
 
 ### Tags
-[PENDING EXTRACTION]
+attributes, geometry, vex, rbd, flip, vellum, crowds, fundamentals, beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Loops](loops.md) — David Torno also teaches loops in SOPs, VOPs, and VEX; pairs naturally with attribute workflows
+- [Noise](noise.md) — noise heavily uses and drives attributes; natural follow-on to attributes fundamentals
+- [Problem-Space](problem-space.md) — advanced manipulation of attributes in world/object/rest space
