@@ -566,6 +566,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-hdas-for-unreal.md
 
+
+### Velocity Forces 2.0: Advanced
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=EuL8598tnm4
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/velocity-forces-20-advanced.md
+
 ---
 
 ## Tag Reference
