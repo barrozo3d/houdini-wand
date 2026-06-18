@@ -516,6 +516,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/mops-motion-operators-for-houdini-part-1.md
 
+
+### Experimental Motion - CHOPS
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=0XnjEVcaq6A
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/experimental-motion---chops.md
+
 ---
 
 ## Tag Reference
