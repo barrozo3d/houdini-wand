@@ -586,6 +586,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/small-scale-fluids.md
 
+
+### Surface Advection
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=w_NnhoKeLlE
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/surface-advection.md
+
 ---
 
 ## Tag Reference
