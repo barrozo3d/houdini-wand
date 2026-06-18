@@ -706,6 +706,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/effective-td.md
 
+
+### Liquid SOPs
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=YKnqahKFNuY
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/liquid-sops.md
+
 ---
 
 ## Tag Reference
