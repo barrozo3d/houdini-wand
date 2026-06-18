@@ -616,6 +616,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/attributes.md
 
+
+### Art Directing Cloth in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=psd-vus4U5s
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/art-directing-cloth-in-houdini.md
+
 ---
 
 ## Tag Reference
