@@ -716,6 +716,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/liquid-sops.md
 
+
+### From C4D to Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=V31YogBW2Y0
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/from-c4d-to-houdini.md
+
 ---
 
 ## Tag Reference
