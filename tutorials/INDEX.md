@@ -736,6 +736,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-fx-in-unreal.md
 
+
+### Loops
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=OQDFQtoTOuA
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/loops.md
+
 ---
 
 ## Tag Reference
