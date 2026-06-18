@@ -746,6 +746,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/loops.md
 
+
+### Simulated Creatures
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=M8HOGm6FxIw
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/simulated-creatures.md
+
 ---
 
 ## Tag Reference
