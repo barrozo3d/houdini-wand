@@ -666,6 +666,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/maths-for-artists.md
 
+
+### Procedural Growth with KineFX and the Labs Tree Tools
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=j5XxDiG25wQ
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-growth-with-kinefx-and-the-labs-tree-tools.md
+
 ---
 
 ## Tag Reference
