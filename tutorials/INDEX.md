@@ -556,6 +556,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/effective-td.md
 
+
+### Procedural HDAs for Unreal
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=rKcH4oIfoVw
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-hdas-for-unreal.md
+
 ---
 
 ## Tag Reference
