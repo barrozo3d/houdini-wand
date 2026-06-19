@@ -48,6 +48,18 @@ Before answering, read `tutorials/INDEX.md`. Search for entries matching the tec
 | `references/render-pipeline.md` | Karma, Mantra, Redshift, MaterialX, Solaris/LOPs |
 | `references/houdini-workflow.md` | Houdini contexts, network editor patterns, HDAs |
 | `references/python-houdini.md` | hou Python API — scripting, shelf tools, callbacks |
+| `references/kinefx-apex.md` | Character rigging — KineFX skeleton SOPs, APEX graph, Autorig Builder |
+| `references/copernicus.md` | 2D compositing and texture pipeline (COP context, H20.5+) |
+
+### Step 2b — Check Recipes (full-pipeline questions)
+If the question is about an **end-to-end workflow** rather than a single node/technique, also check:
+
+| Recipe | When to use |
+|--------|-------------|
+| `recipes/pyro-hero-shot.md` | Pyro fire/smoke/explosion production pipeline |
+| `recipes/flip-fluid-render.md` | FLIP fluid from sim to Karma render |
+| `recipes/rbd-destruction.md` | Fracturing + constraint teardown + debris pipeline |
+| `recipes/houdini-to-ue5.md` | Houdini Engine HDAs or static export into UE5 |
 
 ### Step 3 — Answer Format
 
@@ -251,8 +263,28 @@ houdini-19, houdini-20, houdini-21
 | `render-pipeline.md` | Karma XPU/CPU, Mantra, Redshift, MaterialX, USD/Solaris |
 | `houdini-workflow.md` | Contexts, HDAs, network patterns, project structure |
 | `python-houdini.md` | hou module API, shelf tools, Python nodes, callbacks |
+| `kinefx-apex.md` | **KineFX & APEX** — skeleton SOPs, APEX rigging graph, Autorig Builder, animation retargeting, capture/skinning (H20+) |
+| `copernicus.md` | **Copernicus (COP2 replacement)** — GPU compositing, AOV post-processing, procedural texture generation (H20.5+) |
 | `foundations-overview.md` | **Core concepts** from Houdini Foundations book (H19.5): workspace, nodes, attributes, modeling, simulation, VEX, HDAs, pipeline |
 | `release-notes-h21.md` | **H21 release notes** — KineFX/APEX, Copernicus cables, Solaris Adobe USD, Karma XPU shader blending, new SOPs, VEX functions |
 | `release-notes-h20-5.md` | **H20.5 release notes** — Copernicus introduction, APEX Script, layered animation, new VEX functions |
 | `version-tracker.md` | **Version state** — last changelog check date, known versions, URL patterns for auto-update |
 | `tutorials/INDEX.md` | All ingested tutorials and book excerpts |
+
+## Recipes
+
+Production pipeline guides: step-by-step from first SOP to final render. Check these for full-shot workflows.
+
+| File | What it covers |
+|------|---------------|
+| `recipes/pyro-hero-shot.md` | Full pyro pipeline: sourcing → DOP setup → caching → Solaris → Karma XPU render with AOVs |
+| `recipes/flip-fluid-render.md` | FLIP fluid + whitewater: sim → meshing → water shader → Karma XPU + Copernicus comp |
+| `recipes/rbd-destruction.md` | RBD destruction: Voronoi fracture → constraint teardown → debris/dust → Karma render |
+| `recipes/houdini-to-ue5.md` | Houdini → UE5: Houdini Engine HDA workflow + static export (USD/Alembic/VDB) |
+
+### Step 2 — Check Recipes
+When the question is about a **full production workflow** (not a single technique), check the relevant recipe before answering:
+- Pyro shot → `recipes/pyro-hero-shot.md`
+- Fluid/liquid → `recipes/flip-fluid-render.md`
+- Destruction/fracture → `recipes/rbd-destruction.md`
+- Houdini → UE5 export → `recipes/houdini-to-ue5.md`

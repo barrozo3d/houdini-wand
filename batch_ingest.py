@@ -5,13 +5,16 @@ Add URLs to the URLS list below, then run:
   python batch_ingest.py
   python batch_ingest.py --skip-video       # faster, no frame extraction
   python batch_ingest.py --whisper-model small
+  python batch_ingest.py --dry-run          # preview which URLs are new (no ingest)
 
+Already-ingested URLs (those in tutorials/INDEX.md) are automatically skipped.
 Each tutorial is committed and pushed individually.
 """
 
 import sys
 import subprocess
 import argparse
+import re
 from pathlib import Path
 
 SKILL_DIR     = Path(__file__).parent
@@ -61,22 +64,65 @@ URLS = [
 # ─────────────────────────────────────────────────────────────────────────────
 
 
+def already_ingested_urls():
+    """Return the set of YouTube URLs already present in tutorials/INDEX.md."""
+    index_path = SKILL_DIR / "tutorials" / "INDEX.md"
+    if not index_path.exists():
+        return set()
+    content = index_path.read_text(encoding="utf-8-sig")
+    # Match lines like: - **URL:** https://www.youtube.com/watch?v=XXXXXXXXXXX
+    found = re.findall(r"https://www\.youtube\.com/watch\?v=([\w-]+)", content)
+    # Normalise to full URL for comparison
+    return {f"https://www.youtube.com/watch?v={vid}" for vid in found}
+
+
 def main():
     parser = argparse.ArgumentParser(description="Batch ingest new tutorials")
     parser.add_argument("--skip-video", action="store_true")
     parser.add_argument("--whisper-model", default="base",
                         choices=["tiny", "base", "small", "medium", "large"])
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Show which URLs are new without ingesting")
     args = parser.parse_args()
 
     if not URLS:
         print("No URLs in URLS list. Add them to batch_ingest.py and re-run.")
         return
 
-    print(f"Ingesting {len(URLS)} URL(s)...\n")
+    done = already_ingested_urls()
+    new_urls = []
+    skipped = []
+    for url in URLS:
+        # Normalise: strip extra params (&pp=..., &t=..., etc.) for comparison
+        vid_match = re.search(r"v=([\w-]+)", url)
+        canonical = f"https://www.youtube.com/watch?v={vid_match.group(1)}" if vid_match else url
+        if canonical in done:
+            skipped.append(url)
+        else:
+            new_urls.append(url)
+
+    print(f"Total URLs: {len(URLS)}  |  Already ingested: {len(skipped)}  |  New: {len(new_urls)}")
+    if skipped:
+        print("Skipping (already in INDEX.md):")
+        for u in skipped:
+            print(f"  skip: {u}")
+
+    if args.dry_run:
+        print("\nDry run — no ingestion performed.")
+        print("New URLs that would be ingested:")
+        for u in new_urls:
+            print(f"  {u}")
+        return
+
+    if not new_urls:
+        print("Nothing new to ingest.")
+        return
+
+    print(f"\nIngesting {len(new_urls)} new URL(s)...\n")
     successes, failures = [], []
 
-    for i, url in enumerate(URLS, 1):
-        print(f"\n[{i}/{len(URLS)}] {url}")
+    for i, url in enumerate(new_urls, 1):
+        print(f"\n[{i}/{len(new_urls)}] {url}")
         cmd = [sys.executable, str(INGEST_SCRIPT), url,
                "--whisper-model", args.whisper_model]
         if args.skip_video:
