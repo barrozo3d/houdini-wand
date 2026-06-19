@@ -806,6 +806,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/character-design-and-modeling.md
 
+
+### 00 weeks overview v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=W1_pCONvY_o
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/00-weeks-overview-v1-1080p.md
+
 ---
 
 ## Tag Reference
