@@ -896,6 +896,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/module-i-week-02-01-creating-a-new-project-v1-1080p.md
 
+
+### module i   week 03   01   introduction to volumes v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=hEcmhhNlpzY
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/module-i-week-03-01-introduction-to-volumes-v1-1080p.md
+
 ---
 
 ## Tag Reference
