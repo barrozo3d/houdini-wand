@@ -1116,6 +1116,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/module-ii-week-01-04-tetrahedral-soft-bodies-v1-1080p.md
 
+
+### module ii   week 01   06   updating the rest blend v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=aUkXMjjLT-k
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/module-ii-week-01-06-updating-the-rest-blend-v1-1080p.md
+
 ---
 
 ## Tag Reference
