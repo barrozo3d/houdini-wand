@@ -916,6 +916,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/module-i-week-04-01-introduction-to-particles-v1-1080p.md
 
+
+### module i   week 05   01   importing the geometry v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Fo3HaNq9f8M
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/module-i-week-05-01-importing-the-geometry-v1-1080p.md
+
 ---
 
 ## Tag Reference
