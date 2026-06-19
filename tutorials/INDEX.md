@@ -1136,6 +1136,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/module-ii-week-03-06-breaking-welds-and-constraints-v1-1080p.md
 
+
+### week 01   01   intro v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=9ocqYW1XHk4
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/week-01-01-intro-v1-1080p.md
+
 ---
 
 ## Tag Reference
