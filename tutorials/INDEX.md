@@ -1246,6 +1246,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/week-04-06-cull-by-speed-v1-1080p.md
 
+
+### w01   01   introduction v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=RQBrvngXM6Y
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/w01-01-introduction-v1-1080p.md
+
 ---
 
 ## Tag Reference
