@@ -1226,6 +1226,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/week-02-07-starting-the-vellum-sim-v1-1080p.md
 
+
+### week 02   08   setting the strong constraints and the breaking threshold v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=9TNDsfFNoq4
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/week-02-08-setting-the-strong-constraints-and-the-breaking-threshold-v1-1080p.md
+
 ---
 
 ## Tag Reference
