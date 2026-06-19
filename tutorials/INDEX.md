@@ -1016,6 +1016,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/module-i-week-04-01-intro-v1-1080p.md
 
+
+### module i   week 01   09   setting the active attribute v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=VXkmQAGzBbA
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/module-i-week-01-09-setting-the-active-attribute-v1-1080p.md
+
 ---
 
 ## Tag Reference
