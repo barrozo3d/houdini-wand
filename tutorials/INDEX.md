@@ -1236,6 +1236,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/week-02-08-setting-the-strong-constraints-and-the-breaking-threshold-v1-1080p.md
 
+
+### week 04   06   cull by speed v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=UFrvmv0rwQI
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/week-04-06-cull-by-speed-v1-1080p.md
+
 ---
 
 ## Tag Reference
