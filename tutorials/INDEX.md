@@ -1036,6 +1036,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/module-i-week-02-15-starting-the-post-sim-setup-v1-1080p1.md
 
+
+### module i   week 02   16   point deforming the metal and glass v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=oZh_MAnZyaQ
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md
+
 ---
 
 ## Tag Reference
