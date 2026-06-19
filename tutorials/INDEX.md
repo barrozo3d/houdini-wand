@@ -946,6 +946,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/module-ii-week-01-01-basic-bullet-sim-v1-1080p.md
 
+
+### module ii   week 02   01   importing the geometry v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=tC3H8wBaytE
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/module-ii-week-02-01-importing-the-geometry-v1-1080p.md
+
 ---
 
 ## Tag Reference
