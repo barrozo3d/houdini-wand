@@ -1186,6 +1186,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/week-05-01-intro-v1-1080p.md
 
+
+### week 01   11   rbd configure v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=dIBS14jw25k
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/week-01-11-rbd-configure-v1-1080p.md
+
 ---
 
 ## Tag Reference
