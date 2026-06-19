@@ -856,6 +856,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/53-recreating-our-solver-with-pops-v1-1080p.md
 
+
+### 76 starting the smoke vortex v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=BFZ3tItjKn8
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/76-starting-the-smoke-vortex-v1-1080p.md
+
 ---
 
 ## Tag Reference
