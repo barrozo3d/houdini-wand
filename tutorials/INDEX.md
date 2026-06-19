@@ -1316,6 +1316,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/w03-04-adding-viscosity-v1-1080p.md
 
+
+### w03   11   meshing v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=H56dPbE3S2E
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/w03-11-meshing-v1-1080p.md
+
 ---
 
 ## Tag Reference
