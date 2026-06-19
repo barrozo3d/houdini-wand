@@ -876,6 +876,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/78-building-the-vortex-dop-network-v1-1080p.md
 
+
+### module i   week 01   01   your first houdini project v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Mq1snWFUBj0
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/module-i-week-01-01-your-first-houdini-project-v1-1080p.md
+
 ---
 
 ## Tag Reference
