@@ -846,6 +846,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/52-creating-a-simplified-particle-system-v1-1080p.md
 
+
+### 53 recreating our solver with pops v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=9objvx69_58
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/53-recreating-our-solver-with-pops-v1-1080p.md
+
 ---
 
 ## Tag Reference
