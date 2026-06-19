@@ -1146,6 +1146,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/week-01-01-intro-v1-1080p.md
 
+
+### week 02   01   intro v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=IoxlDdh5OPg
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/week-02-01-intro-v1-1080p.md
+
 ---
 
 ## Tag Reference
