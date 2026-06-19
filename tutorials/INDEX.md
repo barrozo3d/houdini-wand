@@ -1026,6 +1026,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/module-i-week-01-09-setting-the-active-attribute-v1-1080p.md
 
+
+### module i   week 02   15   starting the post sim setup v1 1080p1
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=XFOd1dy92Eg
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/module-i-week-02-15-starting-the-post-sim-setup-v1-1080p1.md
+
 ---
 
 ## Tag Reference
