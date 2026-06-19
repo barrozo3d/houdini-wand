@@ -836,6 +836,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/51-introducing-the-sop-solver-v1-1080p.md
 
+
+### 52 creating a simplified particle system v1 1080p
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=l65A4S4YhSw
+- **Author:** The VFX School Archive
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/52-creating-a-simplified-particle-system-v1-1080p.md
+
 ---
 
 ## Tag Reference
