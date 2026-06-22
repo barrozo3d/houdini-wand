@@ -1333,6 +1333,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** A separately-recorded, shorter intro to the same Houdini.School Effective TD course. Jesper introduces himself and previews the curriculum: optimizing data for caching, wrapping the system into an HDA, and adding a Python-driven UI to control the optimization. Frames the course around data management/optimization rather than the Pyro-simulation/three-session structure described in the other Effective TD recording.
 - **File:** tutorials/effective-td-7nejsdxzxxi.md
 
+
+### Animate Gaussian Splats with Houdini - Free Tutorial + Scene Files
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=MqtMQl8DtjQ
+- **Author:** SOP Cemetery
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md
+
 ---
 
 ## Tag Reference
