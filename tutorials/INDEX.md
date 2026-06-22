@@ -1336,6 +1336,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Starting from a chaotic, formless splash, the instructor adds structured fluid behaviour by combining viscosity (light, for milk) and surface tension. The jitter seed on the FLIP Source is animated with `$F` so initial particle positions vary per frame, preventing grid patterns. A simple isolated DOP network is built to demonstrate the viscosity and surface tension interaction clearly. Surface...
 - **File:** tutorials/w04-11-viscosity-and-surface-tension-v1-1080p.md
 
+
+### Effective TD
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=7NejsDXzxXI
+- **Author:** Houdini.School
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/effective-td.md
+
 ---
 
 ## Tag Reference
