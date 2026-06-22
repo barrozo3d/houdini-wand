@@ -1338,19 +1338,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=MqtMQl8DtjQ
 - **Author:** SOP Cemetery
-- **Houdini Version:** unspecified
-- **Tags:** #vex #attributes #procedural #rendering #intermediate #advanced
-- **Summary:** Node-by-node walkthrough of a pre-built Houdini scene that animates Gaussian splats (SIGGRAPH 2023 splat representation: oriented ellipsoid points with covariance/color/opacity), with the project file provided as a starting point. Note: only the intro framing was captured by ingestion (Whisper failed, captions truncated) — full node-level steps need re-ingestion.
-- **File:** tutorials/animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md
-
-
-### Animate Gaussian Splats with Houdini - Free Tutorial + Scene Files
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=MqtMQl8DtjQ
-- **Author:** SOP Cemetery
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 21
+- **Tags:** #kinefx #apex #rigging #animation #attributes #karma #rendering #advanced
+- **Summary:** Rigs and animates a Gaussian-splat scan (a fly) via KineFX skeleton + Harmonic Capture + APEX rig, then re-deforms the original splat points with Gaussian Splat Deform (since direct skin-driven deformation fails to reorient splats), finally rendering in Karma XPU with no materials, just camera DoF/motion blur and a shadow-catcher plane.
 - **File:** tutorials/animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md
 
 ---

@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=MqtMQl8DtjQ
 author: SOP Cemetery
 ingested: 2026-06-22
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 21"
+tags: [kinefx, apex, rigging, animation, attributes, karma, rendering, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/animate-gaussian-splats-with-houdini---free-tutorial-scene-files/
 frame_count: 0
 ---
@@ -64,27 +64,46 @@ frame_count: 0
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Rigging and animating a Gaussian-splat scan (a fly) by building a KineFX skeleton, binding it to a proxy/skin mesh with Harmonic Capture, driving it through an APEX rig, then deforming the original splat points with Gaussian Splat Deform so the splats follow the animated skin — finally rendering the deformed splats directly in Karma XPU.
 
 ### Summary
-[PENDING EXTRACTION]
+Bogdan walks through a full, pre-built Houdini 21 scene (provided as a project file) that animates a Gaussian-splat scan of a fly. He opens with context on Gaussian splatting (a 2023 SIGGRAPH technique representing scenes as a dense cloud of oriented, soft volumetric points carrying color/alpha/luminance, rather than a textured polygon mesh). Houdini 21 has native Gaussian splatting support, but the tutorial also uses an external GitHub plugin (unlocked/baked into this scene, so installation isn't required to use the provided file). The pipeline: import the Gaussian splat and segment/surface it into separate body parts (head, body, wings, tail, legs); manually build a KineFX skeleton matching the segmented surface's pose; bind the skin to the skeleton with Harmonic Capture (noting that joints must sit inside a fully closed surface — the harmonic capture needs a closed tet volume, and holes in the scan-derived surface will break the capture); build an APEX rig on top of the KineFX skeleton to give animators IK-style high-level controls instead of tedious forward-kinematics bone-by-bone posing; save the rigged character as a self-contained BGEO so it can be reopened and animated via Scene Animator. He shows that naively deforming the raw splats with the skin animation fails — the splats keep their original orientation and don't follow leg stretches — so the real technique is re-importing the Gaussian splat fresh (without baking spherical harmonics this time), feeding the splat points + a static capture skin + the animated skin into the Gaussian Splat Deform node, which uses bundled scripts to extract per-point transforms and properly re-orient each splat to match the deforming geometry. Finally, the deformed splats are rendered directly in Karma XPU — no materials are used, only a camera (with depth of field, focus distance, and motion blur driven by per-splat velocity) and a shadow-catcher plane, with shadow casting enabled on the Big GS Splats import node.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Context] Understand Gaussian splats as a dense cloud of oriented points carrying color/alpha/luminance, not a textured polygon surface
+2. [Import] Import the Gaussian splat scan via the GS Import node (native in Houdini 21, or via the external plugin — this scene uses unlocked baked assets so no install is required)
+3. [Segment + surface] Segment the splat scan into separate body parts (head, body, left/right wing, tail, legs) and convert each into a closed surface
+4. [Build KineFX skeleton] Manually build a skeleton per body part, matching the segmented surface's actual pose/orientation
+5. [Harmonic Capture] Bind the skin to the skeleton with Harmonic Capture; ensure joints sit inside a fully closed surface, since the node builds a tet volume and holes in the surface prevent correct weight capture
+6. [APEX rig] Build an APEX rig over the KineFX skeleton to give animators IK-style high-level controls (drag a wing tip, drag a leg tip) instead of posing every bone by hand
+7. [Save as BGEO] Save the rigged character as a self-contained BGEO so any scene can reopen it and drive it via Scene Animator
+8. [Animate] Animate the character; observe that directly applying this animation to the original splats fails (splats keep original orientation, don't follow leg stretches)
+9. [Re-import for deform] Re-import the Gaussian splat fresh, this time without baking spherical harmonic coefficients
+10. [Gaussian Splat Deform] Feed splat points (input 1) + static capture skin + animated skin into Gaussian Splat Deform, which extracts per-point transforms via internal scripts and binds each splat to the deforming surface ("bind splat to prim")
+11. [Karma render] Render the deformed splats in Karma XPU with no materials — just a camera (DoF, focus distance, motion blur via splat velocity) and a shadow-catching plane
+12. [Shadow casting] Enable shadow casting on the GS Splats import node (disabled by default) so the splats correctly cast shadows in Karma
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- GS Import / Big GS Splats — imports a Gaussian splat scan; has a shadow-casting toggle (disabled by default, must be enabled for Karma shadows)
+- KineFX skeleton — manually built per body part to match the segmented splat-derived surface's pose
+- Harmonic Capture — binds skin to skeleton via a tet-volume calculation; requires joints to sit inside a fully closed surface or capture fails
+- APEX rig — layered over KineFX to provide animator-friendly IK-style controls instead of raw forward-kinematics bone posing
+- Scene Animator — applied to a saved character BGEO to drive its self-contained rig in any scene
+- Gaussian Splat Deform — takes splat points + capture skin + animated skin; extracts per-point transforms and re-orients/repositions each splat ("bind splat to prim") so splats follow mesh deformation correctly
+- Spherical harmonics — baked/computed during splat import for lighting response; skipped on the second (deform-targeted) import since it's recomputed/handled differently for deformation
+- Karma XPU — final renderer; splats use no materials, lit only via the engine's intrinsic splat color/alpha; camera depth of field + velocity-driven motion blur for the final look
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21
 
 ### Tags
-[PENDING EXTRACTION]
+kinefx, apex, rigging, animation, attributes, karma, rendering, advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Setting the Active Attribute](module-i-week-01-09-setting-the-active-attribute-v1-1080p.md) — another per-point attribute-driven technique (different domain: RBD activation vs. splat deformation)
+- [KineFX / APEX reference](../references/kinefx-apex.md) — this skill's KineFX/APEX reference material, directly relevant to the rigging portion of this tutorial
