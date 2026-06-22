@@ -1338,9 +1338,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=MqtMQl8DtjQ
 - **Author:** SOP Cemetery
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** unspecified
+- **Tags:** #vex #attributes #procedural #rendering #intermediate #advanced
+- **Summary:** Node-by-node walkthrough of a pre-built Houdini scene that animates Gaussian splats (SIGGRAPH 2023 splat representation: oriented ellipsoid points with covariance/color/opacity), with the project file provided as a starting point. Note: only the intro framing was captured by ingestion (Whisper failed, captions truncated) — full node-level steps need re-ingestion.
 - **File:** tutorials/animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md
 
 ---
