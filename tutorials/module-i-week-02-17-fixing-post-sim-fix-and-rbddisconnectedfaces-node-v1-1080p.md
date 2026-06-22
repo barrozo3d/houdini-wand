@@ -1,12 +1,12 @@
----
+﻿---
 title: module i   week 02   17   fixing post sim fix and rbddisconnectedfaces node v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=R-ay-5fX_Os
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, sop, rbd, rendering, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-17-fixing-post-sim-fix-and-rbddisconnectedfaces-node-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,32 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Fixing the RBD Disconnected Faces artifact, where faces lose their piece-level transform after deformation and float free, by reconnecting them to their nearest named piece and splitting the output for independent shading.
 
 ### Summary
-[PENDING EXTRACTION]
+After glass fracture and deformation, some faces become disconnected from their pieces — they float in space because they lost their piece-level transform. The RBD Disconnected Faces SOP reconnects orphaned faces back to their nearest named piece. Workflow: after RBD Deform Pieces, add RBD Disconnected Faces with "fix" mode enabled. The post-sim output is then split by name groups: a Blast SOP with `name == 'big_metal'` isolates and deletes the proxy geometry, and a separate Blast with `name == 'glass'` splits the glass stream for independent shader assignment. A quick visualization shader — Principled Shader with a glass preset (refraction IOR ~1.5) — is applied only to the glass group for a visual check before final render.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`RBD Disconnected Faces`] Add after RBD Deform Pieces; enable "fix" mode to reconnect floating faces
+2. [`Blast SOP`] Isolate and delete `name == 'big_metal'` proxy geometry
+3. [`Blast SOP`] Split out `name == 'glass'` geometry for independent shading
+4. [`Principled Shader`] Apply a glass preset (refraction IOR ~1.5) to the glass group for a quick visual check
+5. [Verify] Confirm no floating disconnected faces remain before final render
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `RBD Disconnected Faces SOP` — reconnects orphaned faces to their nearest named piece after deformation; "fix" mode performs the repair
+- `Blast SOP` (by `name` group) — standard pattern for splitting post-sim geometry by piece-name for independent shading
+- `Principled Shader` (glass preset, IOR ~1.5) — used here purely as a fast visual-check shader
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19 (Renascence 2.0 — Module I, gap-filler)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Point Deforming the Metal and Glass](module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md) — the preceding deform step that can introduce this artifact
+- [Car Glass Fracture](module-i-week-04-01-intro-v1-1080p.md) — another glass-heavy shot where this fix is relevant
+- [Bus Stop Destruction Intro](module-i-week-02-01-intro-v1-1080p.md) — the week this fix supports

@@ -1,12 +1,12 @@
----
+﻿---
 title: week 01   11   rbd configure v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=dIBS14jw25k
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [rbd, simulation, dop, attributes, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-01-11-rbd-configure-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Deep dive into the `RBD Configure` node — visualising and tuning collision geometry representation and padding to ensure accurate Bullet solver contacts for bridge destruction pieces.
 
 ### Summary
-[PENDING EXTRACTION]
+The instructor drops in the RBD Configure node, then isolates a single piece using Delete nodes to inspect its collision geometry. The Visualize tab is used to reveal the collision proxy, which is larger than the actual mesh by default due to collision padding. The tutorial covers how to adjust collision padding on the solver vs. per-piece, and how to switch collision shape type (convex hull, bounding box, concave) for different piece types.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`RBD Configure`] Drop and connect to pack all simulated geometry
+2. [`Delete SOP`] Isolate a single piece for per-piece collision inspection
+3. [`Bullet Solver`] Connect a test solver; enable Visualize > Show Geometry Representation
+4. [Solver settings] Adjust Collision Padding on the solver to reduce proxy inflation
+5. [`RBD Configure` > Collision Shapes] Change collision shape type (convex hull / bounding box / concave)
+6. [Per-piece override] Set collision padding per primitive group for finer control
+7. [Verify] Inspect final collision proxy fits actual mesh before caching
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `RBD Configure` — packs geometry and writes RBD-required point/primitive attributes; exposes Collision Shapes tab for per-piece proxy type
+- `Bullet Solver` — Visualize tab > Show Geometry Representation displays active collision proxy
+- Collision Padding — gap added around each proxy shape; reduces interpenetration but inflates collisions if too large
+- Collision Shape Types — Convex Hull (default, fast), Box (fastest), Concave (accurate, slow)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Bridge Destruction course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Bridge Destruction Week 01 Intro](week-01-01-intro-v1-1080p.md) — the overall week where RBD Configure is first introduced
+- [Module II Week 01 Basic Bullet Sim](module-ii-week-01-01-basic-bullet-sim-v1-1080p.md) — foundational Bullet sim setup
+- [Module I Setting the Active Attribute](module-i-week-01-09-setting-the-active-attribute-v1-1080p.md) — related per-piece RBD attribute work

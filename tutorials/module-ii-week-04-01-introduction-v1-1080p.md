@@ -1,12 +1,12 @@
----
+﻿---
 title: module ii   week 04   01   introduction v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=SlbMugY762Q
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, vellum, particles, rendering, karma, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-04-01-introduction-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,34 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Sourcing grains from the contact regions of the existing crocodile/hunter Vellum simulation rather than scattering across the whole scene, then up-resing the grain sim for final render quality.
 
 ### Summary
-[PENDING EXTRACTION]
+The final Vellum week covers grains simulation and full render. The grain-sourcing efficiency trick uses the previous Vellum simulation (crocodile + hunter) to generate a time-varying source volume: as the croc thrashes and the hunter is squeezed, the contact region emits grains, driven by a SOP Solver or DOP stamp inside the grains network. The grain network is built from scratch in DOPs rather than from the shelf tool this time: Vellum Grains Source + Vellum Solver + Vellum Constraint. An up-res technique runs a low-res grain sim first for timing/behaviour, then re-sims at high pscale with finer constraint sub-steps for render-quality results. The final render uses Karma XPU with Megascans materials for ground/mud.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Contact-driven sourcing] Derive a time-varying grain source volume from the croc/hunter Vellum sim's contact regions
+2. [`SOP Solver` / DOP stamp] Drive grain emission timing from the existing sim rather than a fixed scatter
+3. [Vellum Grains network] Build from scratch in DOPs: Vellum Grains Source + Vellum Solver + Vellum Constraint
+4. [Low-res pass] Simulate grains at low resolution first to confirm timing and behaviour
+5. [Up-res pass] Re-simulate at high pscale with finer sub-steps for render quality
+6. [Render] Apply Megascans ground/mud materials; render in Karma XPU
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Contact-driven grain sourcing — deriving emission volume/timing from an existing simulation's contact regions rather than static scatter
+- Vellum Grains Source / Vellum Solver / Vellum Constraint — built manually in DOPs for full control
+- Up-res workflow — low-res timing pass followed by a high-pscale, finer-substep render pass
+- Karma XPU — final renderer with Megascans ground/mud materials
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19-20 (Renascence 2.0 — Module II)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Full Vellum Assembly: Point Deform Body + Pinning](module-ii-week-03-01-introduction-v1-1080p.md) — the preceding week's combined sim this grain pass sources from
+- [Introduction to Grains](module-i-week-06-01-introduction-to-grains-v1-1080p.md) — the earlier course's foundational Vellum Grains lesson
+- [Tabletop Week 01 Intro](w01-01-introduction-v1-1080p.md) — another instancing/particle-heavy render pipeline for comparison

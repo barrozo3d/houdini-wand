@@ -1,12 +1,12 @@
----
+﻿---
 title: module ii   week 03   06   breaking welds and constraints v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=dfD5FUdMCTc
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, vellum, attributes, vex, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-03-06-breaking-welds-and-constraints-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Dynamically breaking Vellum weld and stitch constraints at specific simulation times using a SOP Solver inside the Vellum DOP network, since break thresholds cannot be keyframed directly on the Vellum nodes themselves.
 
 ### Summary
-[PENDING EXTRACTION]
+The collar stitch and boot attachment constraints need to break at a specific frame when the crocodile flips the hunter over. Weld breaking is enabled via the "breaking" checkbox on the Vellum Weld node with a break threshold of 1. Because the break threshold cannot be keyframed directly on the Vellum node, a SOP Solver inside the DOP network is required to modify the constraint geometry per frame: a wrangle reads the current frame and lowers the break threshold along a time ramp using `f@breakthreshold = fit($F, start, end, 1.0, 0.01);`. The boot attachment is handled differently — at the specific flip frame, the boot constraints are deleted entirely using a Delete SOP gated on `$F > threshold`, producing a clean instant detach. The general pattern established is that a SOP Solver inside Vellum DOPs is the standard way to animate any Vellum constraint attribute over time.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Vellum Weld`] Enable the "breaking" checkbox; set break threshold to 1
+2. [`SOP Solver` (inside DOPs)] Add to allow per-frame modification of constraint attributes
+3. [`Attribute Wrangle`] Ramp the break threshold down over time: `f@breakthreshold = fit($F, start, end, 1.0, 0.01);`
+4. [`Delete SOP`] For the boot attachment, delete constraints entirely when `$F > threshold` for an instant clean detach
+5. [Verify] Confirm collar and boot constraints break at the intended flip frame, not before or after
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Vellum Weld` (breaking enabled) — stitch/weld constraints that can fail once stressed past threshold
+- `SOP Solver` (inside DOPs) — required pattern for animating any Vellum constraint attribute, since Vellum nodes don't support direct keyframing
+- VEX: `f@breakthreshold = fit($F, start, end, 1.0, 0.01);` — time-ramped threshold reduction
+- `Delete SOP` gated on `$F > threshold` — instant clean constraint removal for the boot detach
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19-20 (Renascence 2.0 — Module II, gap-filler)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Cloth Draping Intro](module-ii-week-02-01-introduction-v1-1080p.md) — the cloth setup whose collar stitch is broken here
+- [Full Vellum Assembly: Point Deform Body + Pinning](module-ii-week-03-01-introduction-v1-1080p.md) — the week this animated breaking technique supports
+- [Setting the Active Attribute](module-i-week-01-09-setting-the-active-attribute-v1-1080p.md) — a parallel time-driven attribute-animation pattern from the RBD context

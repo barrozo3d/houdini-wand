@@ -1,12 +1,12 @@
----
+﻿---
 title: module i   week 02   01   creating a new project v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=Mjw4gT36Ub4
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18.5"
+tags: [sop, instancing, attributes, procedural, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-01-creating-a-new-project-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Scattering geometry over a head surface using two parallel approaches: building scatter elements entirely inside Houdini, and instancing Megascans models via the Quixel Bridge workflow.
 
 ### Summary
-[PENDING EXTRACTION]
+This week's focus is scattering objects over a surface — specifically distributing elements over a head mesh. Two sub-projects are introduced: building the scattered geometry entirely inside Houdini, and using Megascans models as instanced scatter elements through a Quixel Bridge workflow. New H18.5 scatter-related nodes and improved Copy to Points workflows are introduced. The head surface is the distribution surface, with attributes like `pscale`, `orient` and `Cd` controlling per-instance variation. The week's deliverable is a moss/plant-covered head scene rendered in Karma.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Scatter SOP`] Distribute points across the head surface
+2. [`Attribute Wrangle`] Set `pscale`, `orient` and `Cd` per point for instance variation
+3. [Megascans / Quixel Bridge] Import Megascans models as alternate instance geometry
+4. [`Copy to Points SOP`] Instance geometry (built-in or Megascans) onto the scattered points
+5. [Render] Light and render the moss/plant-covered head in Karma
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Scatter SOP` — distributes points over the head surface for instancing
+- `Copy to Points SOP` (H18.5 improved workflow) — instances geometry per point, reading `pscale`/`orient`/`Cd`
+- Quixel Bridge / Megascans — external asset library imported as instanced scatter geometry
+- `Attribute Wrangle` — randomizes per-instance attributes for natural variation
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18.5 (Renascence 1.0 — Module I)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Your First Houdini Project](module-i-week-01-01-your-first-houdini-project-v1-1080p.md) — the preceding week establishing the course pipeline
+- [Introduction to Volumes](module-i-week-03-01-introduction-to-volumes-v1-1080p.md) — the following week's cloud/volume work
+- [Module I Point Deforming the Metal and Glass](module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md) — another attribute-driven per-piece technique from a later module

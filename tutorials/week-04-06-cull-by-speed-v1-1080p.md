@@ -1,12 +1,12 @@
----
+﻿---
 title: week 04   06   cull by speed v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=UFrvmv0rwQI
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [particles, pyro, attributes, vex, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-04-06-cull-by-speed-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Velocity-based particle culling — reading velocity magnitude from RBD simulation points and removing (culling) those below a speed threshold so that only fast-moving debris pieces emit smoke/dust particles.
 
 ### Summary
-[PENDING EXTRACTION]
+The instructor caches the POP sim result to disk and enables load-from-disk for fast flipbook playback. Particles are displayed as pixels or small points for viewport clarity. The core technique reads the `v` (velocity) attribute on each point, computes its length, and uses a threshold to delete slow-moving points so that only high-speed objects contribute to pyro emission sources. This prevents stationary or slowly-settling debris from generating unwanted smoke.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Cache + Load from Disk] Cache the POP sim to disk; enable Load from Disk on the File Cache node for fast playback
+2. [`Merge SOP`] Temporarily merge debris into the main network for preview
+3. [Viewport Display] Press D > Geometry > Particles Display; switch to Pixels or Points with reduced size for clarity
+4. [`Attribute Wrangle`] Compute velocity magnitude: `float spd = length(v);`
+5. [`Blast SOP` or Wrangle] Delete points where `spd` is below the speed threshold
+6. [Iterate] Flipbook to verify only fast-moving pieces retain points
+7. [Output] Feed culled points into the Pyro Source for smoke/dust emission
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `File Cache SOP` (Load from Disk) — reads pre-cached .bgeo.sc frames for near-instant playback of point sims
+- `Attribute Wrangle` — VEX: `float spd = length(v); if (spd < threshold) removepoint(0, @ptnum);`
+- `v` attribute — world-space velocity vector on RBD/POP points; standard Houdini velocity attribute
+- Viewport Display (D key > Particles) — switches particle display mode to Pixels or Points for better visibility
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Bridge Destruction course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Bridge Destruction Week 04 Intro](week-04-01-intro-v1-1080p.md) — the week overview that introduces this speed cull concept
+- [Module I Introduction to Particles](module-i-week-04-01-introduction-to-particles-v1-1080p.md) — foundational POP/particle work
+- [Building the Vortex DOP Network](78-building-the-vortex-dop-network-v1-1080p.md) — Pyro that consumes these culled points

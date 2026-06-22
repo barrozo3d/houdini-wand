@@ -1,12 +1,12 @@
----
+﻿---
 title: week 05   01 intro v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=_UqQ526rOzI
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [rendering, mantra, volumes, compositing, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/week-05-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Week-five overview: bringing the full bridge destruction scene to a final render in Mantra — importing shaders and cameras, randomising vehicle colours, generating fog volumes, lighting with HDRI and distant light, and compositing in Nuke.
 
 ### Summary
-[PENDING EXTRACTION]
+The final week of the Bridge Destruction course focuses on rendering. Pre-built shaders and cameras are merged in from a provided scene file. Vehicle colours are randomised procedurally to add visual variety. Fog volumes are generated to set atmosphere, then everything is lit with an HDRI and a distant light. The Mantra render passes are taken into Nuke for a straightforward but dramatic composite result.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`File Merge`] Import shaders and cameras from a provided Houdini scene
+2. [`Attribute Randomize / Wrangle`] Randomise colour attributes across car/truck pieces
+3. [`Volume SOP / Fog Volume`] Generate atmospheric fog volumes
+4. [`Mantra ROP`] Configure and launch the Mantra renderer
+5. [`Environment Light`] Set up HDRI sky lighting
+6. [`Distant Light`] Add directional sunlight
+7. [Nuke comp] Import render passes and produce final composite
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Mantra ROP` — the render output operator driving Mantra
+- `Environment Light` — sphere light accepting an HDRI map for image-based lighting
+- `Distant Light` — parallel sun-direction light
+- Volume SOP (fog) — creates low-density atmospheric volumes for depth and haze
+- Attribute randomise — randomises `Cd` or shader parameter per piece for colour variation
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Bridge Destruction course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Bridge Destruction Week 04 Intro](week-04-01-intro-v1-1080p.md) — the debris/pyro sims being rendered this week
+- [Module II Week 01 Basic Bullet Sim](module-ii-week-01-01-basic-bullet-sim-v1-1080p.md) — the RBD elements feeding into this render
+- [Module I Importing the Geometry](module-i-week-05-01-importing-the-geometry-v1-1080p.md) — parallel rendering setup from the earlier course

@@ -1,12 +1,12 @@
----
+﻿---
 title: module ii   week 01   06   updating the rest blend v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=aUkXMjjLT-k
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, vellum, rigging, attributes, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-01-06-updating-the-rest-blend-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Re-posing a character's arms and blending the new pose into the Vellum solid-body constraints as the rest state, using the `restblend` attribute as a spring-like target-position control without simulating actual muscles.
 
 ### Summary
-[PENDING EXTRACTION]
+The hunter's arms are raised in a T-pose / gun-holding pose, which looks wrong at rest. The fix is to manually re-pose the arms and blend this new rest position into the Vellum constraints so the solver treats it as the natural rest state. Workflow: group the left and right arms separately using bounding-sphere group mode, apply a Transform SOP per group to lower the arms, then feed this re-posed geometry into the Vellum Solid Object as the rest geometry via the "rest blend" parameter (which blends from the sim-current shape toward the rest shape). The `restblend` float attribute (0-1) controls how strongly the body is attracted back toward the rest pose, acting as a target-position spring. The rest blend is evaluated after each Vellum substep, making it an effective way to add muscle-like stiffness without simulating actual muscles.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Group SOP`] Select left arm and right arm separately using bounding-sphere mode
+2. [`Transform SOP`] Lower each arm group from the raised T-pose
+3. [Rest geometry input] Feed the re-posed geometry into Vellum Solid Object's rest blend input
+4. [`restblend` attribute] Set the 0-1 float controlling pull-back strength toward the new rest pose
+5. [Verify] Confirm the rest blend is applied after each substep, giving muscle-like stiffness without actual muscle simulation
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Group SOP` (bounding-sphere mode) — isolates limb regions for independent re-posing
+- `Transform SOP` — applies the manual re-pose to lower the arms
+- `restblend` attribute (float, 0-1) — Vellum Solid Object parameter blending sim-current shape toward a custom rest shape, evaluated per substep
+- Rest-pose blending — a target-position-spring technique for muscle-like stiffness without true muscle simulation
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19-20 (Renascence 2.0 — Module II, gap-filler)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Tetrahedral Soft Bodies](module-ii-week-01-04-tetrahedral-soft-bodies-v1-1080p.md) — the preceding setup this rest-blend correction applies to
+- [Full Vellum Assembly: Point Deform Body + Pinning](module-ii-week-03-01-introduction-v1-1080p.md) — the combined sim using this corrected rest pose
+- [Introduction to Vellum: Cloth/String/Grain Fundamentals](module-ii-week-01-02-introduction-to-vellum-v1-1080p.md) — broader Vellum constraint fundamentals

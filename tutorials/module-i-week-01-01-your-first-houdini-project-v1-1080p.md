@@ -1,12 +1,12 @@
----
+﻿---
 title: module i   week 01   01   your first houdini project v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=Mq1snWFUBj0
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18.5"
+tags: [sop, lop, solaris, karma, rendering, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-01-01-your-first-houdini-project-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,34 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Introducing the updated Renascence Program Volume 1, working in Houdini 18.5 — the first version to include the Solaris context and Karma renderer — and establishing the course's SOP-to-render pipeline.
 
 ### Summary
-[PENDING EXTRACTION]
+Sets up the default "build" desktop layout and drops a sphere to introduce the basic SOP geometry workflow. Week 1's project is procedural modelling of a scattering-based scene, followed by lighting/materials in Solaris (the new USD-based context), rendering with Karma (the new render engine), and a light comp pass in Nuke. Establishes the course pipeline: SOP geometry -> Solaris LOP -> Karma render -> Nuke comp. This was the first VFX School program to adopt Solaris/Karma; earlier Film FX Season 1 lessons used only Mantra.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Desktop] Use the default "build" layout for the session
+2. [`Sphere SOP`] Drop a sphere to demonstrate basic SOP geometry creation
+3. [Procedural modelling] Build the week's scattering-based scene in SOPs
+4. [Solaris LOP] Move geometry into the USD-based Solaris context for lighting/materials
+5. [Karma render] Render the staged scene using the Karma engine
+6. [Nuke comp] Take the Karma render into Nuke for a light compositing pass
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Sphere SOP` — first geometry node used to demonstrate the SOP workflow
+- Solaris (LOP context) — new in H18.5; USD-based staging context for lighting/materials/cameras
+- Karma — new renderer introduced alongside Solaris in H18.5, replacing Mantra for this course's pipeline
+- Pipeline pattern: SOP geometry -> Solaris LOP -> Karma render -> Nuke comp
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18.5 (Renascence 1.0 — Module I)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Weeks Overview](00-weeks-overview-v1-1080p.md) — the earlier Film FX course that used Mantra instead of Solaris/Karma
+- [Creating a New Project](module-i-week-02-01-creating-a-new-project-v1-1080p.md) — the following week's scattering project
+- [Introduction to Volumes](module-i-week-03-01-introduction-to-volumes-v1-1080p.md) — continues the H18.5 Renascence pipeline

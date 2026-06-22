@@ -1,12 +1,12 @@
----
+﻿---
 title: module ii   week 02   01   introduction v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=161Gcdsi6Nw
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, vellum, cloth, simulation, intermediate, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-02-01-introduction-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,37 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Cloth draping workflow: fitting clothing to the body in T-pose before simulation, with remeshing, constraint grouping, tearing and stitching covered as the week's core Vellum cloth techniques.
 
 ### Summary
-[PENDING EXTRACTION]
+Workflow begins by draping cloth in T-pose: fitting the clothing geometry to the body before the main simulation so clothing sits correctly at frame 0. Geometry preparation includes a Remesh SOP to triangulate cloth (Vellum produces more natural folds on triangles), group creation for constraint regions, and pre-fracturing cloth with cut lines ready for the simulation to tear along. Key Vellum cloth techniques covered: weld constraints (stitching seams), attachment constraints (pinning cloth to the body), tearing (enabling a break threshold on cloth constraints), and the Vellum sub-solver for draping in rest pose. A bonus topic covers handling cloth intersection at the start of simulation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [T-pose drape] Fit clothing geometry to the body before the main simulation begins
+2. [`Remesh SOP`] Triangulate cloth geometry for natural Vellum folding
+3. [Group creation] Define constraint regions (e.g. seams, pin areas) via groups
+4. [Pre-fracture cut lines] Add tear lines to the cloth ahead of simulation
+5. [Weld constraints] Stitch seams together
+6. [Attachment constraints] Pin cloth to the body where needed
+7. [Tearing] Enable break threshold on selected cloth constraints
+8. [Intersection handling] Resolve cloth/body intersection present at simulation start
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Remesh SOP` — triangulates cloth for better Vellum fold behaviour
+- Vellum weld constraints — stitches seams together
+- Vellum attachment constraints — pins cloth to underlying body geometry
+- Break threshold (tearing) — enables cloth constraints to fail and tear under stress
+- Vellum sub-solver — used here specifically for draping cloth into rest pose before the main sim
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19-20 (Renascence 2.0 — Module II)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vellum Module Intro: Crocodile Attack Overview](module-ii-week-01-01-introduction-v1-1080p.md) — the preceding week's broader Vellum overview
+- [Full Vellum Assembly: Point Deform Body + Pinning](module-ii-week-03-01-introduction-v1-1080p.md) — the following week's combined cloth+soft-body assembly
+- [Breaking Welds and Constraints](module-ii-week-03-06-breaking-welds-and-constraints-v1-1080p.md) — the gap-filler detailing animated constraint breaking for this same cloth setup

@@ -1,12 +1,12 @@
----
+﻿---
 title: week 02   04   finishing the horizontal cable sim v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=ykTr02tft_k
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [rbd, simulation, dop, attributes, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-02-04-finishing-the-horizontal-cable-sim-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Completing the guided Bullet simulation for the bridge's horizontal cables — resolving intra-guide constraint removal, tuning guide strength and release thresholds to control when cable segments detach and fall freely.
 
 ### Summary
-[PENDING EXTRACTION]
+The instructor resolves a constraint-visibility issue caused by the guided sim removing intra-guide constraints by default, which is toggled off to restore correct cable connections. Guide strength is demonstrated by setting it to zero, causing all pieces to fall immediately and freely, showing how strength controls the blending between guided and free-simulated motion. The angular and linear release thresholds within the Guided Simulation settings are then tuned to define the exact point at which cable segments break away from the guide and simulate independently.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Guided Sim > Constraints Tab] Disable "Remove Intra-Guide Constraints" to restore constraint visibility
+2. [`RBD Solver` playback] Verify constraints now appear and hold correctly
+3. [Guide Strength] Set strength to 0 to see unconstrained fall; then restore to working value
+4. [Guided Sim > Simulation Settings] Locate angular threshold and linear threshold parameters
+5. [Angular Threshold] Tune the angle at which a piece detaches from the guide
+6. [Linear Threshold] Tune the linear velocity/displacement that triggers detachment
+7. [`RBD Solver`] Final playback confirming cables follow guide then release on collapse
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Guided Sim Constraints Tab > Remove Intra-Guide Constraints — toggle that incorrectly removes constraints between guided pieces; must be disabled
+- Guide Strength — float parameter (0-1) blending guide influence; 0 = fully free, 1 = fully guided
+- Angular Release Threshold — maximum angular deviation from guide before a piece goes free
+- Linear Release Threshold — maximum positional deviation before a piece detaches
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Bridge Destruction course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Starting the Guided Sim](week-02-03-starting-the-guided-sim-v1-1080p.md) — the preceding setup step this video completes
+- [Bridge Destruction Week 02 Intro](week-02-01-intro-v1-1080p.md) — week overview
+- [Starting the Vellum Sim](week-02-07-starting-the-vellum-sim-v1-1080p.md) — Vellum wire approach for the vertical cables

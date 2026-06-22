@@ -1,12 +1,12 @@
----
+﻿---
 title: module i   week 02   16   point deforming the metal and glass v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=oZh_MAnZyaQ
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, sop, rbd, attributes, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,32 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Using the RBD Deform Pieces SOP to apply a low-poly proxy simulation's per-piece rigid transforms onto high-resolution render geometry, matched by the `name` attribute.
 
 ### Summary
-[PENDING EXTRACTION]
+Before this node existed, the old method used a for-each loop capturing each piece's transform and deforming the matching hi-res piece individually — complex and slow. The RBD Deform Pieces workflow instead takes the high-res render geometry on input 0 and the fractured/simulated proxy geometry stream on input 1, matching pieces by their shared `name` attribute and applying per-piece rigid transforms directly. The constraints input (input 2) is not required unless using constraint-driven deformation. The high-res mesh needs additional polygon density to deform smoothly, so a Subdivide is added before the RBD Deform Pieces node. The result is that bending bus-stop metal follows the proxy simulation perfectly at full render resolution.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Subdivide SOP`] Increase polygon density on the high-res mesh for smooth deformation
+2. [`RBD Deform Pieces`] Input 0: high-res render mesh; Input 1: simulated proxy geometry stream
+3. [Name matching] Confirm both inputs share the `name` attribute used for piece correspondence
+4. [Optional] Connect constraints input only if constraint-driven deformation is needed
+5. [Verify] Confirm high-res geometry now follows the proxy sim's per-piece transforms exactly
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `RBD Deform Pieces SOP` (H19+) — matches pieces by `name` and applies per-piece rigid transforms from a proxy sim onto high-res geometry
+- `Subdivide SOP` — adds the polygon density required for the high-res mesh to deform smoothly
+- Old for-each-loop method — superseded by this node; useful context for why RBD Deform Pieces is preferred
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19 (Renascence 2.0 — Module I, gap-filler)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Starting the Post-Sim Setup](module-i-week-02-15-starting-the-post-sim-setup-v1-1080p1.md) — the preceding setup this lesson operates within
+- [Fixing Post-Sim: RBD Disconnected Faces](module-i-week-02-17-fixing-post-sim-fix-and-rbddisconnectedfaces-node-v1-1080p.md) — the following cleanup step for artifacts this deform pass can introduce
+- [Bus Stop Destruction Intro](module-i-week-02-01-intro-v1-1080p.md) — the week this technique is built for

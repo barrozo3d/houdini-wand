@@ -1,12 +1,12 @@
----
+﻿---
 title: module i   week 03   01   intro v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=QkzF0SC76qY
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, sop, rbd, attributes, animation, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-03-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,32 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Organizing a complex car model's geometry for a car-crash simulation, separating pieces that need simulation from those kept rigid or pre-animated for performance.
 
 ### Summary
-[PENDING EXTRACTION]
+Overview of Week 3 (weeks 3 and 4 form one large project): the car slides in sideways and impacts a post, with metal bending and glass shattering across the two weeks. Week 3's focus is geometry organization — the car model is complex with many named parts, a detailed chassis, wheels and windows — and selecting the right pieces for simulation versus keeping others rigid or kinematic is critical for performance. Efficiency work includes simplifying/merging small non-simulating parts and isolating the bending panels. Wheels spin during the slide (pre-animated in SOPs), but that spin doesn't need to be simulated — wheels are kept kinematic and only become active on impact. The week outputs a cached simulation ready for Week 4's glass fracture pass.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Geometry audit] Inspect the complex car model's named parts, chassis, wheels and windows
+2. [Simplify/merge] Combine small non-simulating parts to reduce piece count for performance
+3. [Isolate bending panels] Separate body panels that need plasticity-driven deformation
+4. [Pre-animate wheels] Animate wheel spin in SOPs; keep wheels kinematic until impact triggers activation
+5. [`RBD Solver`] Run and cache the Week 3 simulation as the basis for Week 4's glass pass
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Geometry organization pass — merging/simplifying non-simulating parts is a performance-critical step before any RBD setup
+- Kinematic-to-active wheel handling — pre-animated spin stays kinematic until an impact-triggered activation switches it to simulating
+- Cached simulation hand-off — Week 3's cache feeds directly into Week 4's glass fracture pass
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19 (Renascence 2.0 — Module I)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Car Glass Fracture](module-i-week-04-01-intro-v1-1080p.md) — the direct continuation of this car-crash project
+- [Bus Stop Destruction Intro](module-i-week-02-01-intro-v1-1080p.md) — the preceding week's multi-material destruction
+- [Setting the Active Attribute](module-i-week-01-09-setting-the-active-attribute-v1-1080p.md) — the staged-activation technique relevant to the wheel impact trigger

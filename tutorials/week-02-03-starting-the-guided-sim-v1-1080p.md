@@ -1,12 +1,12 @@
----
+﻿---
 title: week 02   03   starting the guided sim v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=9qkYzPC9IKM
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [rbd, simulation, dop, attributes, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-02-03-starting-the-guided-sim-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Setting up the Bullet guided-simulation workflow for the bridge's horizontal cables — assigning name attributes, building hard constraints with RBD Constraints from Rules, and wiring the guide sim to inherit motion from the week-one road/metal RBD result.
 
 ### Summary
-[PENDING EXTRACTION]
+The instructor gives the cable blocks a `name` attribute so each segment is individually identifiable, then feeds them into RBD Constraints from Rules to generate surface-point-based hard constraints between adjacent pieces. Hard constraints are chosen over soft because the cables are stiff and need no plasticity. The guide simulation is then established by linking the cable RBD network to the previously cached week-one simulation so cable motion is guided by bridge collapse motion rather than solved independently.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Attribute Wrangle / Name SOP`] Assign a unique `name` attribute to each cable block
+2. [`RBD Constraints from Rules`] Generate surface-point constraints between cable pieces; connect render and proxy geometry inputs
+3. [`RBD Constraint Properties`] Switch constraint type from soft to hard for cable stiffness
+4. [`Guided Simulation SOP`] Load the week-one sim as a guide source
+5. [Guide Strength] Set the strength parameter controlling how strongly pieces follow the guide
+6. [Guide Release Thresholds] Configure angular and linear thresholds for when pieces detach from the guide
+7. [`RBD Solver`] Run the guided cable simulation and verify cable motion follows bridge collapse
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Name SOP` — assigns a string name attribute per piece, required by constraint-building nodes
+- `RBD Constraints from Rules` — generates constraint geometry from proximity/rules between named pieces
+- `RBD Constraint Properties` — sets constraint type (hard/soft/cone-twist) and strength
+- Guided Simulation — Houdini 18 feature allowing one RBD sim to follow another; guide strength and release thresholds control the transition
+- Hard Constraints — zero-compliance constraints; ideal for stiff cables that must not bend
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Bridge Destruction course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Finishing the Horizontal Cable Sim](week-02-04-finishing-the-horizontal-cable-sim-v1-1080p.md) — continuation of this exact setup
+- [Bridge Destruction Week 02 Intro](week-02-01-intro-v1-1080p.md) — overview of the cable week
+- [Module II Introduction to Vellum](module-ii-week-01-02-introduction-to-vellum-v1-1080p.md) — Vellum approach used for vertical cables

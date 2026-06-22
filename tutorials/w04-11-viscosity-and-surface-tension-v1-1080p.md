@@ -1,12 +1,12 @@
----
+﻿---
 title: w04   11   viscosity and surface tension v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=1yb3mindncw
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [flip, simulation, dop, attributes, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/w04-11-viscosity-and-surface-tension-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Tuning FLIP fluid viscosity and surface tension parameters together to achieve realistic milk splash behaviour — using jitter seed animated with `$F` for non-repeating emitter variation, then adjusting surface tension to create cohesive droplet crowns.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a chaotic, formless splash, the instructor adds structured fluid behaviour by combining viscosity (light, for milk) and surface tension. The jitter seed on the FLIP Source is animated with `$F` so initial particle positions vary per frame, preventing grid patterns. A simple isolated DOP network is built to demonstrate the viscosity and surface tension interaction clearly. Surface tension creates the cohesive forces that hold milk droplets together into a crown shape, turning a chaotic spray into a photogenic food-shot splash.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`FLIP Source`] Navigate to the FLIP Source; locate Jitter Seed parameter
+2. [Animate Jitter Seed] Set Jitter Seed expression to `$F` so variation changes each frame
+3. [Jitter Scale] Set Jitter Scale to 1 for natural variation; 0 would produce a grid
+4. [Isolated test network] Build a minimal DOP network to test viscosity and surface tension in isolation
+5. [`FLIP Solver` > Viscosity] Enable and set low viscosity (~5-20) for milk
+6. [`FLIP Solver` > Surface Tension] Enable surface tension; increase value until droplets and crown form
+7. [Iterate] Flip-book and compare; surface tension too high collapses the fluid, too low makes it chaotic
+8. [Apply to main network] Transfer confirmed values back to the main sim
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Jitter Seed (`$F`) — animated seed on FLIP Source prevents repeating particle grid patterns per frame
+- Jitter Scale — controls magnitude of per-particle position randomisation; 0 = perfect grid, 1 = natural scatter
+- `FLIP Solver` > Surface Tension — adds cohesive force between particles; value range typically 0.01-1.0 for water-like fluids; creates crown splashes and hanging droplets
+- `FLIP Solver` > Viscosity — low values (1-20) for water/milk; works in conjunction with surface tension
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Tabletop Food Simulation course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Tabletop Week 04 Intro](w04-01-introduction-v1-1080p.md) — the week overview introducing viscosity and surface tension for the milk pour
+- [Adding Viscosity to FLIP](w03-04-adding-viscosity-v1-1080p.md) — the week 3 viscosity introduction this builds on
+- [Small Scale Fluids](small-scale-fluids.md) — reference for FLIP surface tension in small-scale setups

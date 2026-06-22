@@ -1,12 +1,12 @@
----
+﻿---
 title: module i   week 02   01   intro v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=G1JI3ACUZN4
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, sop, rbd, attributes, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A bus stop destruction shot combining three material types — steel, glass and wood — using RBD Material Fracture together with plasticity-driven soft constraints so metal permanently deforms rather than springing back.
 
 ### Summary
-[PENDING EXTRACTION]
+Covers a bus stop with mixed-material destruction: a steel frame (metal), glass panels and wood planks. The new technique highlighted is the RBD Material Fracture SOP for both glass and wood fracture patterns. The key technique for metal is "plasticity" (new around H18) applied to soft constraints — metal holds its bent/deformed shape after impact instead of springing back, with constraints weakening and permanently deforming rather than breaking cleanly, producing realistic crushed-metal behaviour. Post-sim, Point Deform applies the low-res proxy simulation to the high-res render mesh. Also mentions the RBD Disconnected Faces fix for glass shards that separate at impact.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`RBD Material Fracture`] Fracture glass and wood with material-appropriate patterns
+2. [Plasticity] Apply plasticity to metal soft constraints so it deforms permanently under impact
+3. [`RBD Solver`] Run the combined multi-material simulation
+4. [`Point Deform`] Apply the low-res proxy sim result to the high-res render mesh
+5. [`RBD Disconnected Faces`] Fix glass shards that separate incorrectly at impact
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `RBD Material Fracture SOP` — generates glass and wood fracture patterns appropriate to each material
+- Plasticity — soft-constraint property letting metal permanently bend/deform rather than spring back or break
+- `Point Deform` — transfers proxy sim transforms onto high-res render geometry
+- `RBD Disconnected Faces` — reconnects glass faces that float free after fracture/deform
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19 (Renascence 2.0 — Module I)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Point Deforming the Metal and Glass](module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md) — the gap-filler lesson detailing the Point Deform step used here
+- [Fixing Post-Sim: RBD Disconnected Faces](module-i-week-02-17-fixing-post-sim-fix-and-rbddisconnectedfaces-node-v1-1080p.md) — the gap-filler detailing the disconnected-faces fix mentioned here
+- [City Ground Destruction Intro](module-i-week-01-01-intro-v1-1080p.md) — the preceding week's Boolean fracture setup

@@ -1,12 +1,12 @@
----
+﻿---
 title: week 02   08   setting the strong constraints and the breaking threshold v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=9TNDsfFNoq4
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [vellum, simulation, dop, attributes, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-02-08-setting-the-strong-constraints-and-the-breaking-threshold-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Enabling all bridge vertical cables in the Vellum sim and differentiating constraint break strength — making rear-section cable attach constraints unbreakable while allowing forward-section cables to snap at a tuned threshold, driving the visual cable-snapping destruction effect.
 
 ### Summary
-[PENDING EXTRACTION]
+With a single test cable working, the Delete/Blast node isolating it is disabled so all cables enter the sim together. The instructor identifies that rear bridge cables should never detach (the rear section of the bridge remains intact), so those attach constraints are flagged as unbreakable using a geometry-based selection combined with a TimeShift to the last frame. A break threshold is then set on the remaining forward cables, controlling at what stress value they snap — producing the signature bridge cable snap effect during destruction.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Blast SOP`] Disable the isolating Blast node to include all cable geometry
+2. [`Object Merge`] Bring in rear bridge section geometry for spatial reference
+3. [`TimeShift SOP`] Sample the rear bridge geo at the last frame (e.g. frame 250) to confirm it never falls
+4. [`Attribute Wrangle`] Set `breakthreshold` attribute to a very high value (unbreakable) on rear cable constraints
+5. [`Attribute Wrangle`] Set tuned `breakthreshold` on forward section cable constraints
+6. [`Vellum Solver`] Run full cable sim; verify rear cables hold and forward cables snap at collapse
+7. [Iterate] Adjust break threshold values until snap timing matches the desired destruction beat
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `breakthreshold` attribute — per-constraint Vellum attribute; controls the stress value at which a constraint is deleted
+- `TimeShift SOP` — freezes geometry to a specific frame for spatial queries; used here to sample final bridge position
+- `Object Merge` — references geometry from another area of the network for constraint spatial selection
+- `Blast SOP` — used earlier to isolate test cables; disabled here to restore all cables
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Bridge Destruction course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Starting the Vellum Sim](week-02-07-starting-the-vellum-sim-v1-1080p.md) — the preceding step that established the Vellum wire setup
+- [Module II Introduction to Vellum](module-ii-week-01-02-introduction-to-vellum-v1-1080p.md) — foundational Vellum concepts including constraint attributes
+- [Starting the Guided Sim](week-02-03-starting-the-guided-sim-v1-1080p.md) — the Bullet guided sim for horizontal cables, parallel to this Vellum work

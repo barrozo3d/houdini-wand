@@ -1,12 +1,12 @@
----
+﻿---
 title: module ii   week 01   01   introduction v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=Y00rlBFqpxQ
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, vellum, cloth, simulation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-01-01-introduction-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Introducing the Vellum-focused Module II with a crocodile-attack scene, rapidly demonstrating cloth, tetrahedral soft bodies, string/wires and grains in a single solver to show Vellum's range.
 
 ### Summary
-[PENDING EXTRACTION]
+Project: a crocodile attack scene where a hunter is grabbed in the crocodile's mouth. Vellum is praised for being fast and versatile, handling cloth, string, hair, soft bodies and grains all in one solver. Week 1 is a rapid overview demonstrating cloth, soft bodies (tetrahedral constraints), string/wires and grains in a single lesson. The full project pipeline simulates the soft-body hunter (tetrahedral Vellum) together with cloth (the hunter's clothes) in one pass, then adds grains separately as a post-sim effect using the Vellum result as a collider. Introduces the Vellum sub-solver concept: a multi-step position-based-dynamics process that resolves constraints iteratively.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Cloth] Quick demo of Vellum cloth constraints
+2. [Soft body] Quick demo of tetrahedral Vellum constraints
+3. [String/wire] Quick demo of Vellum string/wire constraints
+4. [Grains] Quick demo of Vellum grains
+5. [Pipeline plan] Combine soft-body hunter + cloth clothes in one sim; add grains afterward using the Vellum result as a collider
+6. [Sub-solver] Note the Vellum sub-solver as the iterative constraint-resolution mechanism shared by all types
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Vellum (single solver) — handles cloth, string, soft body and grains together with shared collision
+- Vellum sub-solver — multi-step position-based-dynamics iteration that resolves constraints within each timestep
+- Pipeline order — soft body + cloth simulated together first; grains added as a separate post-sim pass colliding against that result
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19-20 (Renascence 2.0 — Module II)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Introduction to Vellum: Cloth/String/Grain Fundamentals](module-ii-week-01-02-introduction-to-vellum-v1-1080p.md) — the deep-dive gap-filler for the techniques previewed here
+- [Cloth Draping Intro](module-ii-week-02-01-introduction-v1-1080p.md) — the following week's cloth-specific focus
+- [Tetrahedral Soft Bodies](module-ii-week-01-04-tetrahedral-soft-bodies-v1-1080p.md) — the gap-filler detailing the soft-body setup for the hunter

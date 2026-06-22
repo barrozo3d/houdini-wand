@@ -1,12 +1,12 @@
----
+﻿---
 title: module ii   week 03   01   splitting by material v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=cvAuweF1fvg
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18.5"
+tags: [dop, sop, rbd, attributes, intermediate, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-03-01-splitting-by-material-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,32 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Splitting destruction geometry by material group and applying the RBD Material Fracture SOP, which generates characteristic shard shapes per material (glass, wood, concrete) in a single node.
 
 ### Summary
-[PENDING EXTRACTION]
+Continues from the Week 2 building Alembic, resaving the project under a new name. A key setup step is the Connectivity SOP set to "primitives" mode to identify separate geometry pieces, followed by a Convert SOP to move from PolySoup to standard polygons. Geometry is split by material groups so different pieces receive different fracture treatment: the RBD Material Fracture SOP (an H18.5+ node) handles glass, wood and concrete fracture in one node, with each material type generating characteristic shard shapes — glass produces many small sharp fragments, wood produces long splinters along the grain, and concrete produces chunky irregular blocks. The `name` attribute remains critical, since each piece needs a unique name for the constraint network.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Connectivity SOP`] Set to "primitives" mode to identify separate geometry pieces
+2. [`Convert SOP`] Convert from PolySoup to standard polygons
+3. [Material groups] Split geometry into glass, wood and concrete groups
+4. [`RBD Material Fracture SOP`] Fracture each material group with its characteristic shard pattern
+5. [`Assemble SOP`] Re-assign unique `name` attributes after fracture for the constraint network
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Connectivity SOP` (primitives mode) — groups geometry by connected-piece membership before material splitting
+- `RBD Material Fracture SOP` (H18.5+) — single node producing material-appropriate fracture patterns (glass/wood/concrete)
+- `name` attribute — required uniquely per piece for the downstream constraint network
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18.5 (Renascence 1.0 — Module II)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Importing the Geometry (Module II W02)](module-ii-week-02-01-importing-the-geometry-v1-1080p.md) — the preceding week establishing the building asset
+- [Concrete + Metal Destruction](module-ii-week-04-01-importing-the-geometry-v1-1080p.md) — the following week's skyscraper collapse
+- [Bus Stop Destruction Intro](module-i-week-02-01-intro-v1-1080p.md) — a later course applying RBD Material Fracture to glass and wood

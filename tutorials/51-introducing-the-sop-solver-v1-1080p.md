@@ -1,12 +1,12 @@
----
+﻿---
 title: 51 introducing the sop solver v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=8HkP7iVgi0Y
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [sop, dop, vex, particles, simulation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/51-introducing-the-sop-solver-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,34 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a manual particle solver entirely inside a SOP Solver to teach the underlying integration mechanics before switching to the dedicated POP system.
 
 ### Summary
-[PENDING EXTRACTION]
+Creates a geometry network with a Scatter SOP (100 points) as the particle source. Explains that a particle solver tracks each point's position and velocity as vectors and integrates motion each frame: new_position = old_position + velocity * timestep. Builds this directly with an Attribute Wrangle inside a SOP Solver using `@P += @v * ch('timestep');`. Adds gravity by subtracting from the Y component of velocity each frame, then introduces age/life attributes to kill particles once they exceed their lifespan. The key teaching point is that POPs are simply a specialized, optimized wrapper around this exact SOP Solver logic.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Scatter SOP`] Generate 100 points as the initial particle source
+2. [`SOP Solver`] Wrap the points in a SOP Solver to iterate per-frame state
+3. [`Attribute Wrangle`] Integrate position from velocity: `@P += @v * ch('timestep');`
+4. [`Attribute Wrangle`] Apply gravity by decrementing `@v.y` each frame
+5. [Age/Life attributes] Track `@age` and `@life`; remove points once age exceeds life
+6. [Verify] Inspect the Geometry Spreadsheet to confirm position and velocity update correctly each frame
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Scatter SOP` — generates the initial particle point cloud
+- `SOP Solver` — iterates geometry frame-by-frame, feeding its own output back as input
+- `Attribute Wrangle` — VEX: `@P += @v * ch('timestep');` for Euler integration; gravity via `@v.y -= ch('gravity');`
+- `age` / `life` attributes — standard Houdini particle lifespan pattern, manually implemented here
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Film FX Season 1)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Creating a Simplified Particle System](52-creating-a-simplified-particle-system-v1-1080p.md) — extends this manual solver to emit new particles each frame
+- [Recreating Our Solver With POPs](53-recreating-our-solver-with-pops-v1-1080p.md) — rebuilds this exact system using POPs for comparison
+- [Module I Introduction to Particles](module-i-week-04-01-introduction-to-particles-v1-1080p.md) — later course revisiting POPs terminology

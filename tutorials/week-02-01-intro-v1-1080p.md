@@ -1,12 +1,12 @@
----
+﻿---
 title: week 02   01   intro v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=IoxlDdh5OPg
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [rbd, vellum, simulation, dop, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/week-02-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Week-two overview of the Bridge Destruction course: simulating the bridge cables — stiff horizontal cables using Bullet's guided-sim workflow and flexible vertical cables using Vellum.
 
 ### Summary
-[PENDING EXTRACTION]
+The instructor introduces the cable simulation strategy, distinguishing between the heavy, near-rigid horizontal suspension cables (simulated with Bullet hard constraints driven by the week-one guided sim result) and the more flexible vertical hanger cables (simulated with Vellum). The geometry is simplified to four strands before simulation. The guided simulation workflow in Houdini 18 is introduced as a key technique for making secondary elements follow the main RBD sim without a full independent solve.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`File SOP`] Load the cable geometry from the bridge model
+2. [`Resample / Curve`] Simplify complex cable geometry to four clean strands
+3. [`RBD Constraints from Rules`] Build hard constraints between cable segments
+4. [`RBD Material Fracture` / Guided Sim setup] Wire the guided sim so cables follow the week-one road/metal sim
+5. [`Vellum Configure Wire`] Set up the vertical hanger cables as Vellum wires
+6. [`Vellum Solver`] Run the Vellum wire simulation for vertical cables
+7. [`RBD Solver`] Run the Bullet sim for horizontal cables
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `RBD Constraints from Rules` — procedurally generates constraints between adjacent cable pieces
+- Hard Constraints — preferred over soft for stiff cable-like behaviour with no plasticity needed
+- Guided Simulation (Bullet) — drives secondary sim pieces from a reference simulation result
+- `Vellum Configure Wire` — sets up wire (hair/cable) constraints in Vellum
+- `Vellum Solver` — solves the Vellum constraint network each frame
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Bridge Destruction course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Starting the Guided Sim](week-02-03-starting-the-guided-sim-v1-1080p.md) — hands-on guided sim setup for the horizontal cables
+- [Starting the Vellum Sim](week-02-07-starting-the-vellum-sim-v1-1080p.md) — hands-on Vellum wire setup for the vertical cables
+- [Module II Intro to Vellum](module-ii-week-01-02-introduction-to-vellum-v1-1080p.md) — foundational Vellum concepts

@@ -1,12 +1,12 @@
----
+﻿---
 title: 03 houdini versions v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=EMmAmGGsI6I
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [beginner, procedural]
+extraction_status: complete
 frames_dir: tutorials/frames/03-houdini-versions-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,30 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A 3-minute explainer of Houdini's licensing tiers and why the Film FX course requires Houdini FX specifically.
 
 ### Summary
-[PENDING EXTRACTION]
+Houdini Core includes all SOP/VOP/CHOP modelling tools but excludes every simulation solver (no fluids, RBD, particles, crowds or pyro). Houdini FX is the complete commercial package with all simulation solvers included. Houdini Indie offers the same toolset as FX but with a revenue cap for small studios/freelancers. Houdini Learning/Apprentice is free and non-commercial with watermarked renders. The recommendation for this course is FX, since all later simulation lessons depend on it.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Core] All modelling/SOP/VOP/CHOP tools, no DOP simulation solvers
+2. [FX] Full commercial license, all solvers included
+3. [Indie] FX toolset under a commercial revenue cap
+4. [Learning/Apprentice] Free, non-commercial, watermarked output
+5. [Recommendation] Use FX for this course since destruction/fluids/particles are required later
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- License tiers — Core, FX, Indie, Learning/Apprentice; the simulation toolset (DOPs) is gated behind FX/Indie
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (licensing comparison remains accurate through current versions)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Weeks Overview](00-weeks-overview-v1-1080p.md) — the course this licensing choice supports
+- [Introducing the SOP Solver](51-introducing-the-sop-solver-v1-1080p.md) — first simulation-adjacent lesson requiring FX
+- [Your First Houdini Project](module-i-week-01-01-your-first-houdini-project-v1-1080p.md) — later course also requiring FX

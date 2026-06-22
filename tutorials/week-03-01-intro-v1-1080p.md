@@ -1,12 +1,12 @@
----
+﻿---
 title: week 03   01   intro v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=OnBsOG4SwIU
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18.5"
+tags: [rbd, simulation, dop, instancing, attributes, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/week-03-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Week-three overview: procedurally scattering and simulating a fleet of cars on the bridge road surface using Bullet RBD, including cone-twist suspension constraints and a procedural intersection-removal system.
 
 ### Summary
-[PENDING EXTRACTION]
+The instructor explains how to import varied vehicle geometry, separate bodies from wheels, and scatter them across the road using new Houdini 18.5 SOPs (Scatter and Align, Attribute from Pieces). A procedural system removes intersecting cars before a lightweight pre-simulation settles them against each other. The main sim then uses soft constraints and cone-twist constraints to fake vehicle suspension behaviour during the destruction event.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`File SOP`] Import a variety of vehicle models
+2. [`Group SOP`] Separate wheel geometry from body geometry per vehicle
+3. [`Scatter and Align SOP`] Place vehicles on the road surface with directional variation (Houdini 18.5)
+4. [`Attribute from Pieces SOP`] Transfer per-piece attributes to scattered instances (Houdini 18.5)
+5. [`VEX Wrangle`] Procedurally detect and remove intersecting cars
+6. [`RBD Solver`] Run a quick pre-sim to settle/slide cars before the main destruction
+7. [`Constraint Network`] Apply cone-twist constraints for wheel suspension behaviour
+8. [`RBD Solver`] Run the full main destruction simulation with the cars included
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Scatter and Align SOP` (H18.5) — scatters points on a surface and aligns them to the surface normal with variation
+- `Attribute from Pieces SOP` (H18.5) — copies per-piece attributes onto scattered instances
+- Cone Twist Constraints — allow constrained rotation within a cone angle, ideal for wheel pivots
+- Soft Constraints — used alongside cone-twist to provide suspension spring-like behaviour
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18.5 (Bridge Destruction course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Module II Week 01 Basic Bullet Sim](module-ii-week-01-01-basic-bullet-sim-v1-1080p.md) — RBD/Bullet fundamentals that underpin the car sim
+- [Module I Setting the Active Attribute](module-i-week-01-09-setting-the-active-attribute-v1-1080p.md) — active attribute usage relevant to staged activation of cars
+- [Bridge Destruction Week 01 Intro](week-01-01-intro-v1-1080p.md) — the road fracture sim the cars ride on

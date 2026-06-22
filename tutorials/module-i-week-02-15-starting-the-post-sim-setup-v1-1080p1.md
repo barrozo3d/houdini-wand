@@ -1,12 +1,12 @@
----
+﻿---
 title: module i   week 02   15   starting the post sim setup v1 1080p1
 source: YouTube
 url: https://www.youtube.com/watch?v=XFOd1dy92Eg
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, sop, rbd, procedural, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-15-starting-the-post-sim-setup-v1-1080p1/
 frame_count: 4
 ---
@@ -33,27 +33,32 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Establishing the post-simulation network for applying the proxy RBD result back to high-resolution render geometry, using named Nulls and Object Merge to assemble a stable multi-input setup.
 
 ### Summary
-[PENDING EXTRACTION]
+Adds a Null SOP after the DOP Import cache (named e.g. "OUT_SIM") to cap the simulation stream. A Split SOP (or separate Blast) separates top vs. bottom pieces for independent treatment. A new geometry node named "post_sim" is created, using Object Merge SOPs to pull in: the cached RBD fractured geometry, the original un-fractured metal mesh (pre-fracture geo for deformation), the glass mesh, and the collider geometry. This multi-input post_sim SOP is where the RBD Deform Pieces node operates in the following lesson. The key habit emphasized is always inserting named Nulls as network outputs to keep Object Merge paths stable.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Null SOP`] Cap the DOP Import cache output with a named Null (e.g. "OUT_SIM")
+2. [`Split SOP` / `Blast SOP`] Separate top vs. bottom pieces for independent treatment
+3. [New geometry node] Create "post_sim" as the destination network
+4. [`Object Merge`] Pull in cached RBD geo, pre-fracture metal mesh, glass mesh and collider geometry
+5. [Naming convention] Use named Nulls throughout so Object Merge paths remain stable across edits
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Null SOP` — named network output caps, used as stable Object Merge targets
+- `Split SOP` / `Blast SOP` — separates geometry by region (top/bottom) for independent post-sim treatment
+- `Object Merge` — multi-input pattern pulling cached sim, pre-fracture mesh, glass mesh and collider into one post_sim network
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19 (Renascence 2.0 — Module I, gap-filler)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Point Deforming the Metal and Glass](module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md) — the following lesson that operates on this post_sim setup
+- [Bus Stop Destruction Intro](module-i-week-02-01-intro-v1-1080p.md) — the week this post-sim pipeline supports
+- [Fixing Post-Sim: RBD Disconnected Faces](module-i-week-02-17-fixing-post-sim-fix-and-rbddisconnectedfaces-node-v1-1080p.md) — the subsequent post-sim cleanup lesson

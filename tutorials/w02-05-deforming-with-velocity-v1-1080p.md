@@ -1,12 +1,12 @@
----
+﻿---
 title: w02   05   deforming with velocity v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=IuvtudgbzLw
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [sop, attributes, vex, animation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/w02-05-deforming-with-velocity-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Using the Trail SOP in Compute Velocity mode to generate a velocity attribute on animated geometry, then transferring and using that velocity to displace a surface mesh — a reusable no-simulation technique for fluid-like deformation and motion blur.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from blueberry geometry with only position, normals and UVs, the instructor adds a velocity attribute using the Trail SOP set to "Compute Velocity" rather than its default trail mode. This `v` attribute is then used to drive positional displacement of the yogurt surface. The instructor also notes this is a standard technique for adding motion blur to animated geometry that lacks velocity in Arnold or Mantra. The velocity is scaled and applied per point in a wrangle for art-directable control over the splash shape.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`Geometry Spreadsheet`] Confirm no `v` attribute exists on the falling blueberry points
+2. [`Trail SOP`] Drop Trail SOP; switch mode from "Trail" to "Compute Velocity"
+3. [Verify] Check Geometry Spreadsheet to confirm `v` attribute now exists per point
+4. [`Attribute Transfer SOP`] Transfer `v` from blueberry geo onto yogurt surface mesh by proximity
+5. [`Attribute Wrangle`] Scale transferred velocity: `@P += @v * ch("scale");` with art-directable parameter
+6. [Iterate] Adjust scale and blend to taste; check deformation in viewport
+7. [Motion Blur note] Same `v` attribute is used by renderers (Arnold/Mantra) for geometry motion blur
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Trail SOP` (Compute Velocity) — derives `v` from positional delta between frames without adding actual trail geometry; standard velocity-generation pattern
+- `Attribute Transfer SOP` — blends attribute values from source to destination by point proximity and distance falloff
+- `Attribute Wrangle` VEX: `@P += @v * ch("scale");` — point-level displacement along velocity direction
+- Motion Blur — any renderer reading `v` on geometry uses it for subframe position interpolation; Trail SOP is the standard way to add this
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Tabletop Food Simulation course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Tabletop Week 02 Intro](w02-01-introduction-v1-1080p.md) — the week overview introducing this velocity deformation strategy
+- [Module I Point Deforming the Metal and Glass](module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md) — post-sim point deformation using similar attribute transfer patterns
+- [Tabletop Week 03 Intro](w03-01-introduction-v1-1080p.md) — the next week comparing this fake technique against real FLIP

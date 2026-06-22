@@ -1,12 +1,12 @@
----
+﻿---
 title: module i   week 01   09   setting the active attribute v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=VXkmQAGzBbA
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19"
+tags: [dop, sop, rbd, attributes, vex, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-01-09-setting-the-active-attribute-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Using the `active` integer attribute to control when RBD pieces become live in the simulation, enabling staged destruction that propagates outward from an impact point or follows a keyframed activation sequence.
 
 ### Summary
-[PENDING EXTRACTION]
+Explains the standard H19+ RBD workflow node chain, where every RBD node has a pink primary input plus constraint and proxy inputs: RBD Configure -> RBD Material Fracture -> RBD Constraint Properties -> RBD Solver. The `active` integer attribute (0 = kinematic/frozen, 1 = simulating) is set per primitive. Two common methods are shown: keyframe-animating `active` inside a SOP Solver within the DOP network, or setting `active` based on distance from an impact point so pieces near the blast go active first and outer pieces follow. The VEX pattern is `i@active = (@P.y < ch('threshold')) ? 1 : 0;` or a distance-based variant. Critically, `active` must be set at the SOP level before the DOP network, or inside a SOP Solver inside DOPs for animated activation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Node chain] Establish RBD Configure -> RBD Material Fracture -> RBD Constraint Properties -> RBD Solver
+2. [`Attribute Wrangle`] Set `i@active` per primitive: `i@active = (@P.y < ch('threshold')) ? 1 : 0;`
+3. [Distance-based activation] Drive `active` by distance from an impact point for outward-propagating destruction
+4. [`SOP Solver` (inside DOPs)] Keyframe-animate `active` over time for scripted activation sequences
+5. [Verify] Confirm pieces stay kinematic (active=0) until their trigger condition, then simulate (active=1)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `active` attribute (int, 0/1) — per-primitive switch between kinematic and simulating state
+- VEX pattern: `i@active = (@P.y < ch('threshold')) ? 1 : 0;` — position/distance-based activation
+- `SOP Solver` (inside DOPs) — required for animating `active` over time rather than a single static condition
+- RBD node chain — RBD Configure / RBD Material Fracture / RBD Constraint Properties / RBD Solver, each with pink primary + constraint + proxy inputs
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 19 (Renascence 2.0 — Module I, gap-filler)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [City Ground Destruction Intro](module-i-week-01-01-intro-v1-1080p.md) — the project this staged-activation technique supports
+- [Concrete + Metal Destruction](module-ii-week-04-01-importing-the-geometry-v1-1080p.md) — references this exact technique for skyscraper collapse
+- [Car Crash Geometry Organization](module-i-week-03-01-intro-v1-1080p.md) — the wheel impact-trigger activation relevant here

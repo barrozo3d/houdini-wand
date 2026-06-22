@@ -1,12 +1,12 @@
----
+﻿---
 title: w03   04   adding viscosity v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=9N9CavpgoB4
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [flip, simulation, dop, attributes, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/w03-04-adding-viscosity-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,34 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Enabling and tuning viscosity in a FLIP fluid simulation — toggling the viscosity option in the FLIP Solver and setting per-object viscosity values in the FLIP Object's Physical tab, with a workflow for later importing per-point viscosity attributes for multi-fluid scenarios.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a too-watery chocolate fluid, the instructor walks through the exact steps to add viscosity: first enabling it in the FLIP Solver, then navigating to the FLIP Object and setting a viscosity value (e.g. 100) in the Physical tab. The resulting sim shows visibly thicker, slower flow. The instructor previews the future step of importing per-point `viscosity` attribute from outside the DOP network to support multiple fluid types with different viscosities in one sim.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [`FLIP Solver`] Enter the solver; navigate to the Viscosity tab and check "Enable Viscosity"
+2. [`FLIP Object` > Physical tab] Set the Viscosity parameter to an initial value (e.g. 100)
+3. [Playback] Run sim and observe thicker flow behaviour
+4. [Iterate] Try values between 50-5000 to find desired thickness for chocolate
+5. [Ground plane] Hide ground plane for cleaner preview
+6. [Future step noted] Connect an external `viscosity` point attribute via FLIP Source for per-fluid variation
+7. [Verify] Confirm fluid stacks and slows convincingly for a food-shot look
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `FLIP Solver` > Viscosity tab > Enable Viscosity — must be checked; without it the viscosity value on the object has no effect
+- `FLIP Object` > Physical > Viscosity — global viscosity for the object (cP-like units); 0 = water, 100 = thick chocolate, 5000+ = very stiff
+- Per-point `viscosity` attribute — advanced workflow: set `viscosity` per emitter point externally and import via FLIP Source to override the global value
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Tabletop Food Simulation course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Tabletop Week 03 Intro](w03-01-introduction-v1-1080p.md) — the week overview motivating this viscosity work
+- [Viscosity and Surface Tension](w04-11-viscosity-and-surface-tension-v1-1080p.md) — expanded treatment in week 4
+- [Small Scale Fluids](small-scale-fluids.md) — reference for FLIP viscosity in small-scale contexts

@@ -1,12 +1,12 @@
----
+﻿---
 title: w02   01   introduction v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=C7vpFqAZClk
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18"
+tags: [sop, attributes, procedural, animation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/w02-01-introduction-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Week-two overview of the Tabletop course: faking fluid surface deformation (yogurt displacement) using procedural SOP techniques driven by velocity and geometry rather than any fluid simulation, for fast iteration with convincing splash shapes.
 
 ### Summary
-[PENDING EXTRACTION]
+Instead of running a FLIP simulation for the yogurt, the instructor uses purely procedural SOP deformation to recreate the look of blueberries and chocolate falling into yogurt. Velocity attributes from the falling objects are sampled and used to displace the yogurt surface geometry. This approach avoids heavy fluid simulation entirely, making it extremely quick to iterate while still achieving believable fluid-like shapes. Shading, lighting and rendering complete the week.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Review falling objects] Inspect blueberry/chocolate RBD geo and its velocity attributes
+2. [`Trail SOP`] Compute velocity (`v`) on the falling geometry via Trail SOP in "Compute Velocity" mode
+3. [`Attribute Transfer SOP`] Transfer velocity from falling objects onto yogurt surface points
+4. [`Attribute Wrangle`] Displace yogurt surface point positions using transferred velocity magnitude
+5. [Noise + Ramp] Add procedural noise to the displaced surface for organic fluid-like ripples
+6. [Shading] Apply Principled Shader to yogurt with subsurface and gloss parameters
+7. [Arnold ROP] Light and render the combined scene
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Trail SOP` (Compute Velocity mode) — calculates per-point velocity vector from positional change between frames without leaving a trail
+- `Attribute Transfer SOP` — copies attributes (here `v`) from one geometry to another based on proximity
+- `Attribute Wrangle` — displaces `@P` along the transferred velocity or normal direction proportional to speed
+- This technique avoids any DOP/FLIP entirely — all computation stays in SOPs
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18 (Tabletop Food Simulation course)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Deforming with Velocity](w02-05-deforming-with-velocity-v1-1080p.md) — hands-on implementation of the velocity deformation introduced this week
+- [Module I Point Deforming the Metal and Glass](module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md) — related SOP deformation by attributes
+- [Tabletop Week 03 Intro](w03-01-introduction-v1-1080p.md) — next week using actual FLIP simulation

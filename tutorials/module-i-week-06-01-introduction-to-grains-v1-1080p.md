@@ -1,12 +1,12 @@
----
+﻿---
 title: module i   week 06   01   introduction to grains v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=XPDsqVutqDw
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18.5"
+tags: [dop, sop, vellum, simulation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-06-01-introduction-to-grains-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Introducing Vellum grain simulations using an FBX zombie animation as the source, scattering grain particles throughout the body volume and using the animated mesh as a deforming collider for a disintegration effect.
 
 ### Summary
-[PENDING EXTRACTION]
+FBX import workflow: File -> Import Filmbox FBX, then scale down to 0.1 for proper scene scale (~2m character height). Creates a geometry node, uses Object Merge to bring in the zombie, then converts it via VDB From Polygons -> Points From Volume to scatter grain particles throughout the body volume. The grain setup uses the Vellum Grains shelf tool to create the PBD grain solver. Key grain parameters covered: particle separation (controls density), pscale (render size), friction and restitution. The animated zombie is used as a deforming collider so grains interact correctly with the moving body, producing a pour-out/disintegration sand effect as it dies. Notes that Renascence 1.0 uses the Vellum Grains DOP path rather than the older POP Grains node.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Import FBX] File -> Import Filmbox FBX; scale to 0.1 for correct real-world scene scale
+2. [`Object Merge`] Bring the zombie geometry into the working network
+3. [`VDB From Polygons`] Convert the zombie mesh to a volume
+4. [`Points From Volume`] Scatter grain seed points throughout the body volume
+5. [Vellum Grains shelf tool] Build the PBD grain solver from the scattered points
+6. [Tune grains] Set particle separation, pscale, friction and restitution
+7. [Deforming collider] Use the animated zombie mesh as a collider so grains react to body motion
+8. [Result] Grains pour from the zombie as it dies, producing the disintegration effect
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `VDB From Polygons` + `Points From Volume` — standard pipeline for filling a mesh's interior with scatter points
+- Vellum Grains (shelf tool) — builds the PBD grain solver network automatically
+- Grain parameters — particle separation (density), pscale (render size), friction, restitution
+- Deforming collider — an animated mesh used directly as a Vellum collision object so grains respond to motion
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18.5 (Renascence 1.0 — Module I)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Importing the Geometry](module-i-week-05-01-importing-the-geometry-v1-1080p.md) — the preceding week's FLIP/Alembic workflow
+- [Module II Introduction to Vellum](module-ii-week-01-02-introduction-to-vellum-v1-1080p.md) — broader Vellum fundamentals including grains
+- [Tabletop Week 01 Intro](w01-01-introduction-v1-1080p.md) — another RBD/particle instancing-driven effect for comparison

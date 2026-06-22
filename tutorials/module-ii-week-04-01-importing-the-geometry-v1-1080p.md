@@ -1,12 +1,12 @@
----
+﻿---
 title: module ii   week 04   01   importing the geometry v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=uPPW2sI_oyw
 author: The VFX School Archive
 ingested: 2026-06-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18.5"
+tags: [dop, sop, rbd, attributes, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-04-01-importing-the-geometry-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,30 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Importing a multi-LOD skyscraper Alembic for a realistic downward-collapse simulation, and introducing the "active attribute" pipeline that activates pieces progressively as a wave propagates from the impact point.
 
 ### Summary
-[PENDING EXTRACTION]
+Uses a different skyscraper Alembic asset with multiple LODs available, selecting LOD3 for simulation. The import workflow mirrors Week 2: Alembic SOP -> Transform at 0.01 scale -> visual check. The week's concept is a realistic downward collapse where the building folds and pancakes floor by floor, with separate simulation of concrete slabs, steel rebar/frame, and glass panes. Sets up the "active attribute" pipeline: pieces start inactive (kinematic) and become active (simulating) based on a wave propagating downward from the impact point. This lesson covers only the geometry import and scale step; the active-attribute technique itself is covered in the Renascence 2.0 gap-filler lesson 09.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. [Import Alembic] Select LOD3 of the skyscraper asset for simulation-resolution geometry
+2. [`Alembic SOP`] Import; `Transform SOP` scale to 0.01 to match Houdini scene units
+3. [Material separation] Plan separate simulation streams for concrete slabs, steel frame and glass panes
+4. [Active-attribute pipeline] Establish that pieces will start kinematic (`active=0`) and switch to simulating (`active=1`) as a wave propagates from the impact point — implemented in the linked gap-filler lesson
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Alembic SOP` + `Transform SOP` (0.01 scale) — same import pattern as Module II Week 2
+- Active attribute pipeline — pieces toggle from kinematic to simulating based on distance/wave from impact; full implementation deferred to a gap-filler lesson
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
-
-### Tags
-[PENDING EXTRACTION]
+Houdini 18.5 (Renascence 1.0 — Module II)
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Setting the Active Attribute](module-i-week-01-09-setting-the-active-attribute-v1-1080p.md) — the gap-filler lesson implementing the active-attribute technique referenced here
+- [Splitting by Material](module-ii-week-03-01-splitting-by-material-v1-1080p.md) — the preceding multi-material fracture week
+- [City Ground Destruction Intro](module-i-week-01-01-intro-v1-1080p.md) — a later course's parallel staged-destruction setup
