@@ -546,17 +546,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Yan Paul Dubbelman presents a 74-minute accessible introduction to building procedural botanical elements (flowers, plants, natural forms) in Houdini. The session is explicitly designed to break down the intimidating "Houdini wall" — the misconception that Houdini requires simulations and heavy coding for natural work. No simulations are used at all; everything is SOP-level procedural geometry...
 - **File:** tutorials/yan-paul-dubbelman-procedural-nature-procedural-living-plants.md
 
-
-### Effective TD
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=7NejsDXzxXI
-- **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "hda", "python", "pyro", "optimization", "pipeline", "td", "ui", "procedural", "houdini-digital-assets"
-- **Summary:** Jesper (Houdini.School instructor) teaches a three-session TD-focused course centered on real-world pipeline thinking. The scenario: a TD receives a Pyro simulation file from an artist and must optimize it for caching/rendering, wrap it into a procedural HDA, and then add Python automation and improved UI for usability. Session 1 covers simulation data analysis and optimization; Session 2...
-- **File:** tutorials/effective-td.md
-
-
 ### Procedural HDAs for Unreal
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rKcH4oIfoVw
@@ -695,17 +684,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** "scientific-visualization", "data-visualization", "pdb", "molecular", "attributes", "particles", "simulation", "biology"
 - **Summary:** Kate Zegarace (Houdini.School instructor and VFX artist) presents a course on molecular visualization using Protein Data Bank (PDB) data as the input. The course covers the biology basics of proteins (what they are, how they work) then builds the Houdini pipeline to process PDB files and generate multiple visualization modes: space-filling, wireframe, ball-and-stick models. Atoms are animated...
 - **File:** tutorials/visualizing-protein-data-bank-information.md
-
-
-### Effective TD
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=c9qw6hVstEA
-- **Author:** Houdini.School
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/effective-td.md
-
 
 ### Liquid SOPs
 - **Source:** YouTube
@@ -1336,15 +1314,24 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Starting from a chaotic, formless splash, the instructor adds structured fluid behaviour by combining viscosity (light, for milk) and surface tension. The jitter seed on the FLIP Source is animated with `$F` so initial particle positions vary per frame, preventing grid patterns. A simple isolated DOP network is built to demonstrate the viscosity and surface tension interaction clearly. Surface...
 - **File:** tutorials/w04-11-viscosity-and-surface-tension-v1-1080p.md
 
-
 ### Effective TD
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=c9qw6hVstEA
+- **Author:** Houdini.School
+- **Houdini Version:** unspecified
+- **Tags:** hda, python, pyro, optimization, pipeline, td, ui, procedural, houdini-digital-assets
+- **Summary:** Jesper (Houdini.School instructor) teaches a three-session TD-focused course centered on real-world pipeline thinking. The scenario: a TD receives a Pyro simulation file from an artist and must optimize it for caching/rendering, wrap it into a procedural HDA, and then add Python automation and improved UI for usability. Session 1 covers simulation data analysis and optimization; Session 2 covers HDA creation; Session 3 focuses on Python-driven UI and automation.
+- **File:** tutorials/effective-td.md
+
+
+### Effective TD (intro v1)
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=7NejsDXzxXI
 - **Author:** Houdini.School
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/effective-td.md
+- **Houdini Version:** unspecified
+- **Tags:** hda, python, pipeline, td, ui
+- **Summary:** A separately-recorded, shorter intro to the same Houdini.School Effective TD course. Jesper introduces himself and previews the curriculum: optimizing data for caching, wrapping the system into an HDA, and adding a Python-driven UI to control the optimization. Frames the course around data management/optimization rather than the Pyro-simulation/three-session structure described in the other Effective TD recording.
+- **File:** tutorials/effective-td-7nejsdxzxxi.md
 
 ---
 
