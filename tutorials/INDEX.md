@@ -799,9 +799,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=EMmAmGGsI6I
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** beginner, procedural
-- **Summary:** Houdini Core includes all SOP/VOP/CHOP modelling tools but excludes every simulation solver (no fluids, RBD, particles, crowds or pyro). Houdini FX is the complete commercial package with all simulation solvers included. Houdini Indie offers the same toolset as FX but with a revenue cap for small studios/freelancers. Houdini Learning/Apprentice is free and non-commercial with watermarked...
+- **Houdini Version:** Not specified
+- **Tags:** "beginner"
+- **Summary:** Licensing/edition overview (not version-specific): Houdini Core has the full toolset minus simulation (no Pyro/fluids/RBD/particles/crowds); FX is the complete unlimited commercial package; Indie is FX features under a limited commercial license capped at 4K×4K render output; Education is FX features for verified teaching institutions; Apprentice is free with full FX features for learning, watermarked and resolution-capped. Apprentice is sufficient for following a learning course.
 - **File:** tutorials/03-houdini-versions-v1-1080p.md
 
 
