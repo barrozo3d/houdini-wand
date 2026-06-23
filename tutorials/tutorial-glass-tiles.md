@@ -3,10 +3,10 @@ title: [Tutorial] Glass Tiles
 source: YouTube
 url: https://www.youtube.com/watch?v=Ps6ZOKEdDos
 author: Alexander Eskin
-ingested: 2026-06-11
-houdini_version: "Not specified (H19–H21 UI)"
-tags: [sop, modelling, procedural, instancing, rendering, redshift, intermediate]
-extraction_status: complete
+ingested: 2026-06-23
+houdini_version: "[PENDING]"
+tags: []
+extraction_status: pending
 frames_dir: tutorials/frames/tutorial-glass-tiles/
 frame_count: 4
 ---
@@ -23,7 +23,7 @@ frame_count: 4
 
 
 ### Full Content [0:00]
-**Transcript:** Okay, let's start with the Juno. Ju... tiles... source... green. Let's make a tile. It's going to be made from a box. Box... of 0.1, 0.5. And that's it. We're going to color the other side, so it would be easier to determine which side this tile is facing. So the fifth primitive should be red. And now it is. Let's make it more complicated than just a box for the extrude. By extruding it, primitive number 5, number 4 should be extruded by a bit. And inserted by a fair bit. And we should probably check for it. Or a battle. Because we're going to render it and they're going to be glassy or whatever. The refractions will look much, much better. On the battle shapes and subdivided ones. They should be held by a small amount. In the crease mode, two divisions. Like this and subdivided. It's going to look like this. And I'm happy with it. Now... Oh, tiles. So we made a singular tile. Now we should make some points. To copy those tiles to size 10 and height is 2.5. Oh, the X is different. YZ. We didn't need any polygons. We need only points 128, 128. So, copy the points. Copy the points. Don't forget to check the back end instance. And they copied, but they're huge. We need to scale them d...
+**Transcript:** Okay, let's start with the Juno. Ju... tiles... source... green. Let's make a tile. It's going to be made from a box. Box... of 0.1, 0.5. And that's it. We're going to color the other side, so it would be easier to determine which side this tile is facing. So the fifth primitive should be red. And now it is. Let's make it more complicated than just a box for the extrude. By extruding it, primitive number 5, number 4 should be extruded by a bit. And inserted by a fair bit. And we should probably check for it. Or a battle. Because we're going to render it and they're going to be glassy or whatever. The refractions will look much, much better. On the battle shapes and subdivided ones. They should be held by a small amount. In the crease mode, two divisions. Like this and subdivided. It's going to look like this. And I'm happy with it. Now... Oh, tiles. So we made a singular tile. Now we should make some points. To copy those tiles to size 10 and height is 2.5. Oh, the X is different. YZ. We didn't need any polygons. We need only points 128, 128. So, copy the points. Copy the points. Don't forget to check the back end instance. And they copied, but they're huge. We need to scale them down. Scale. Just create the P scale attribute. And just scale them down. Select this. Now have a wall. White and red. Oh, good. This is how it was supposed to be. Now we need to create an attribute. It's going to drive the animation. And we're going to drive the animation via attribute transfer. So, the attribute should be called rather. Diffle 0, value 0. This one is going to be value of 1. And the driving thing is going to be just a grid. The grid of a huge size. The bit of a rotation. And a different axis, of course. So, this is the grid. This is our grid. It's going to drive the animation. It needs a bit of a points to it. Otherwise, they won't transfer properly. So, right now we don't see anything because we don't have the visualizer. We can create one by pressing Ctrl, we don't have the mouse button and pressing the left mouse button on the attribute. Now we have one. But it's the colors are pretty ugly. And also, the descent threshold was huge, so we couldn't see anything. I want to fix the colors to lack the orange. I want to add some noise to the fourth. So, we can use mountain. And the mountain is going to work on all the axis except for the X1. We don't have any vectors. Check the noise along the vector checkbox. This is now noise, but we need to return the attribute to the unnoise points before the displacement. So, we just use the attribute copy. And we're going to take these points and displace ones with the attribute. And copy the displaced attribute to the previous undisplaced points. And it's going to look like this. Pretty cool. We also can animate it with the transferring node. The attribute is transferred. The attribute copy of working. Now we need to animate it just like pre-animation. Just to see how it looks. Duh. Blapse. Layer 1. 96 frames. Just with the preview purposes. And now it grows. Everything looks great. Now we need to make them rotate because nothing is happening right now. For the rotation purposes, we're going to use the orient. And it's going to be painful to believe me. So, orient. Orient goes as follows. P orient equals q multiply. P orient. Rotate the attribute that we're going to use for rotation. Rotate the tiles. Rotate the tiles. This is impossible to understand. We have to memorize it. Seriously. Just copy it somewhere. Basically, we're using the orient to... We're rotating orient using this thingy. This attribute with this amount of degrees by this axis. So, you can change the axis here. For example. And now they're rotating in the x axis, which is weird. Okay, eager one. Eager is funnier. But we need a z axis. So, stick to it. The cool thing is that we can bend the orient and nothing will be broken. And we're going to use this. Pressing the B button on the keyboard. And we found the direction. The desired one. I like this part. So, we can create camera now. New camera. Create here and now. Now, move these things around a bit. And create another geo node. But we're going to get render tiles. Import these tiles here. Unscrew the orange tiles. Okay, don't forget to change the instant type to instance where you can compatible jix and instance sub-level back primitives. It will work if you want to change it, but the loading times before the rendering will be much higher. Now we need a background. The background will be just the grid. 5x5 with the xy plane. And hit in the floor. And that's it. Maybe we should move it around a bit. One light should be okay. For our purposes. Light. I didn't like the shape. It doesn't matter. Won't change the outcome. So, the shape disk size 0.5 spread. 0.5 and over here. Make a shortcut. Control-1. Cut the material. Create a red-shot material. We need three. The first one. It's going to be tiles. Second one. It's going to be trails. The third one is going to be back. And let's make a shortcut. Go to output. Create a red-shot. Red-node. Short-cut. Control-3. Half of the resolution. Pressing just 1, 2, 3. We can jump around quickly. There's a resolution. 90, 20, 20, 20. So, something came up. Which is good. Let's not forget to add the materials to the tiles. And to the background. Now we're all set. Let's make the tiles a bit brighter. And we'll loss here. Go back. Change our light source to a more greenish, blueish tint. And decrease intensity. And also we can check the lives of level of dates. That means when we're going to scroll the timeline, the rotation will be updated. And we're going to heal the beautiful stuff that's going on. Back to our tiles shader. Let's go with tiles. It's going to be our default state. Let's just a second down to check the light. Maybe if we decrease the spread, yeah, looks better. Tiles shader. This looks serviceable. I'm not going to change anything here. Just create a blend material. The first one is going to be tiles. The second one is standard emissive tiles. Just make an animation. So we will determine when the material is properly connected. And the third one is going to be just glass. Just glass is 100% transmission. And very rough. Not very rough. A bit rough. Maybe not. Okay, anyway. Layer color. This is correct. Yeah, this shouldn't work because there's no attribute to blend it with. So we have one. Rotor. And we're going to use this for blending. And don't forget to like it in. We could use a ramp to make a sort of wave. So there's going to be a front of the wave. And the back of the wave. Like this. And the whole emission thing should be as extreme as it is right now. Also we need a color. Color-dram. We're going to use the same attribute. But it's going to be green. And then blue. About any white. We're going to plug it into the emissive color. Just need to find it. First emission. Promote. Here it is. Now it's colored. Bitland. So we just use a transmission. Don't really see the beauty behind it. So we're going to use the funnel to make it look better. We're going to plug our ramp into the perpendicular color. Again. And then here. Now it's to subtle. No, it's something. By 25 maybe. Oops. Maybe like so. Anyway, now we need the glass shader to work. We need another ramp. We have the same attribute, but in different fashion. So when the glowing part stops, we're just going to transform everything to the transparent shader. Which is this. I've never seen anything behind it less. So it looks black. This is why we need to add trails. And we're going to create ones. Trails. I have the source when I use the grid. XY plane. I'm going to rotate it. It doesn't really matter. Just. I like it this way. 5 to 0.5. 3. It doesn't really matter what looks neat. Minus 90. Press B a couple of times. Now it's rotated to the desirable angle or axis. And we should move the source grid a bit like this. Now we have a proper source. Drop a pop network node. Now there are some points being sourced. Also we need to move it a bit farther away. Also we need to move it a bit farther away. Like here. Okay. The points are being scattered. And my viewport is being bugged. Okay. Too much for points. I think if I will be enough. Yep. So we're going to add a velocity here. Just. 5, 4, 2. Variants should be 0. Otherwise they're going to fly everywhere. We don't need this. Very nearly the speed variance. True. They're flying but the life expectancy should be 7 seconds with the variance of 2 seconds. We'll do it some unused attributes. I'm going to need ID. And that's it basically. We don't need a velocity or anything. Editorial node. 20 points. Add a time shift before that. Just add some 500 frames for example. Age life doesn't really matter here. Let's add some primitives using the ID attribute that we made beforehand. The top network made the action. ID. Now we have lines. Now we have to color them. CD equals Ctreme. And ID. Load alpha equals Ctreme. And we need the curve view attribute that we haven't made yet. What we will. Yeah. We got a bracket. I'm going to change the color from float to vector. And we have to add curve attributes without the sampling. 0. The color should be green. Blue. And red. And these two should be constant like this. The alpha is facing the wrong direction. Now we have some trails. Awesome. Okay. So everything sort of works. We can make the alpha channel a bit fancier. But it doesn't really matter. Anyway. Let's make another June node. And we have to add trails. And we are going to use trailsource. No, trail source out. And we are going to render them as strands. So we are going to type 0 to subdivisions. We don't need to subdivide them. And we are going to also need our material trails that we haven't set up yet. Let's go to the matte context. So we don't need this. We can use the incandescent material. The two attributes attached. And alpha. Right. Call it the color alpha to alpha. Intensity set to 4. For example. Now let's see. Lamb. Nice. So something's happening. We have the reflection. We have the refraction. Everything looks neat. Perhaps we can reduce the width of the trail without any advanced tricks. Just like this. So that's it.
 
 **Frame:** tutorials\frames\tutorial-glass-tiles\frame_000.jpg
 
@@ -33,45 +33,27 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-Procedural glass/mosaic tile wall: single tile built from `box` + `polyextrude` + `subdivide` (crease mode, 2 divisions), oriented by coloring a reference primitive, distributed on a 128×128 point grid via `copytopoints`, with per-tile attribute variation for luxury glass refraction rendering in Redshift.
+[PENDING EXTRACTION]
 
 ### Summary
-A 25-minute tutorial by Alexander Eskin building a procedural glass tile wall for luxury brand rendering. A single tile is modeled from a `box` (0.1 × 0.5), one primitive colored red for orientation reference, then `polyextrude` + `subdivide` with crease (2 divisions) for smooth beveled edges needed for glass refraction. Tiles are distributed on a 128×128 point grid (size 10, height 2.5, YZ plane, points-only mode) via `copytopoints` with per-instance scaling. Final render uses Redshift with glass/refraction shader.
+[PENDING EXTRACTION]
 
 ### Key Steps
-1. Geo node → `box` SOP — size 0.1 × 0.5; this is the single tile unit
-2. Color primitive 5 red (`primitive` SOP or `attribwrangle`) — orientation reference to know which face is front
-3. `polyextrude` — extrude primitive 4 by a small amount; insert face by a fair amount for beveled profile
-4. `subdivide` SOP — **crease mode**, 2 divisions → smooth beveled tile shape (critical for glass refraction)
-5. Tile is complete. Pivot/clean attributes as needed
-6. `grid` SOP — size 10, height 2.5, YZ plane; **points only** mode (no polygons); 128×128 points
-7. `copytopoints` SOP — copy tile to grid points; enable **"Pack and Instance"** option
-8. Scale instances down to fit grid spacing (tiles are huge initially)
-9. Per-tile attribute variation via `attribwrangle` — randomize rotation, `pscale`, or `orient` per point
-10. Redshift material — glass shader with refraction; enable subdivision in Redshift object settings
+[PENDING EXTRACTION]
 
 ### Houdini Nodes / VEX / Settings
-- `box` SOP — size 0.1 × 0.5
-- `primitive` SOP or `attribwrangle` — color primitive 5 red for orientation
-- `polyextrude` SOP — extrude primitive 4+5; insert offset for bevel
-- `subdivide` SOP — crease mode, 2 divisions
-- `grid` SOP — size 10 × 2.5, YZ plane, 128×128 rows/cols, **points only**
-- `copytopoints` SOP — Pack and Instance enabled
-- `attribwrangle` — per-tile scale/rotation randomization
-- Redshift glass shader — refraction + subdivision
+[PENDING EXTRACTION]
 
 ### Difficulty
-Intermediate
+[PENDING EXTRACTION]
 
 ### Houdini Version
-Not specified (H19–H21 UI)
+[PENDING EXTRACTION]
 
 ### Tags
-sop, modelling, procedural, instancing, rendering, redshift, intermediate
+[PENDING EXTRACTION]
 
 ---
 
 ## Related Tutorials
-- [[model-a-procedural-flower-houdini-tutorial]] — similar copytopoints distribution approach
-- [[houdini-tutorial-make-any-geometry-knitted]] — procedural pattern distribution on geometry
-- [[houdini-uv-unwrapping-fundamentals]] — UV prep for textured tile rendering
+[PENDING EXTRACTION]
