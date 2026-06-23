@@ -3,10 +3,10 @@ title: [Tutorial] Heavy Chic. Part 2.
 source: YouTube
 url: https://www.youtube.com/watch?v=mOKs6Dht5Mw
 author: Alexander Eskin
-ingested: 2026-06-11
-houdini_version: "Not specified (H19–H21 UI)"
-tags: [dop, sop, vex, particles, simulation, rendering, intermediate]
-extraction_status: complete
+ingested: 2026-06-23
+houdini_version: "[PENDING]"
+tags: []
+extraction_status: pending
 frames_dir: tutorials/frames/tutorial-heavy-chic-part-2/
 frame_count: 4
 ---
@@ -23,7 +23,7 @@ frame_count: 4
 
 
 ### Full Content [0:00]
-**Transcript:** Okay, we need to fix a few things before starting the render. First of all, we need to add noise, amplitude 0.5, soil size 0.4, and use of expression. We should multiply amps. By our CD color, this way the particles that want move won't be affected by the noise. Otherwise, they have just float away like this. Like little worms. Now we don't need that. We'll do this. Everything looks great. Also, we need to fix the gamma a bit. We'll fix it by introducing a ramp here. It's going to be a nice, sharp ramp. Let's apply the ramp. And for the preview purposes, I'll apply it into CD. Just don't forget to plug it back. The ramp should be from 0 to 1. And it's going to be, we should add the third point, value 0.15. Select all the three of the points and tell them to be interpolated as the peace-pline. Also move this a bit. Like this. Okay. Don't forget to plug it back. Preview. Okay. Looks pretty good. Now we should increase the particle count. And the point separation decrease the point separation from 0.01 to 0.004. That should increase our point count from 700,000 points to 11 million. Now use the file cache. Name it part equals sim. Don't need it here. Move it there. Did it everything. ...
+**Transcript:** Okay, we need to fix a few things before starting the render. First of all, we need to add noise, amplitude 0.5, soil size 0.4, and use of expression. We should multiply amps. By our CD color, this way the particles that want move won't be affected by the noise. Otherwise, they have just float away like this. Like little worms. Now we don't need that. We'll do this. Everything looks great. Also, we need to fix the gamma a bit. We'll fix it by introducing a ramp here. It's going to be a nice, sharp ramp. Let's apply the ramp. And for the preview purposes, I'll apply it into CD. Just don't forget to plug it back. The ramp should be from 0 to 1. And it's going to be, we should add the third point, value 0.15. Select all the three of the points and tell them to be interpolated as the peace-pline. Also move this a bit. Like this. Okay. Don't forget to plug it back. Preview. Okay. Looks pretty good. Now we should increase the particle count. And the point separation decrease the point separation from 0.01 to 0.004. That should increase our point count from 700,000 points to 11 million. Now use the file cache. Name it part equals sim. Don't need it here. Move it there. Did it everything. Also did groups. All of them file path explicit. This is dollar s and dollar four. The dollar s means that the name is going to be derived from the sub name. So here is blah blah blah, our path to the hip file, then jute, then particle sim, particle sim, 0, 0, 0, 1. We can press the middle mouse button to see the full path. So here it is. Okay. Sim. Okay. So it worked. Just fine. Now we should clean this up. Now reduce the scale a bit. Now we can see a little bit. P scale equals scale. That means that we will make a parameter. It's going to multiply the existing P scale by the number here. 2.4. Okay. More like it. Okay. Now we need to create the particle itself because if we're going to use the sphere one, it's going to look at trotters. So do you know the particle geosource? Let's say dark gray box. I's offset scatter. 45 points. I'm going to fracture. I'll have the fractured box. Back it. Back all the pieces. Peace by piece. And group the external pieces, group type points named Blaster. Bounding regions. So is 0.5. Now Blast. Blaster and Aspect. Now I have this clump. Now Shared. Shared. And we'll use connectivity attribute. And select only one piece that we need. Class equals zero. Now select it. Group type should be set to points. Now we're going to select the one piece that we like the most. It doesn't really matter. I like this one. Set the match size. Create the reference box and scale it accordingly to the box. Now it's going to be in the same scale that's our preview sphere. And create another node. Name it particle zero zero. Just in case we're going to need more particles. We won't. But if you want. Now also we need to apply material here in the material context. Create material. Let's shift material builder. Name it gold. And apply it here. Gold. Also impact it. Yeah, like this. Forget about that. And create another node. Call it particle zero zero. And use we can use this one as our instance. And mine the scale. It's going to be multiplied by the p scale of this particles. Now we're going to create the instance node. We're shifting instances. Select the instance object of the node. It's going to be particle zero zero. And in the instance node itself, we're going to import our points from the particle scene. Let's go and render it. We're the light source and the camera. Now we're going to use a node. That way it's more convenient to animate it later on. We're going to fix the resolution to 1080, 90, 90, focal length 200, 6.3, and C axis. And here we're going to move it to the 0.9151143. And rotate it a bit. I'll start to do 35. Go ahead and shoot here 10. And we need to create a light source. Light source would be a simple white. We call it light 10. Make it yellow, make it fun. We get less explosive and change its type from area to distant. We're going to render the default settings. Let's try to render it. So it works. We need to rotate the light source. We'll increase the intensity, fix the shader, make it more metal like reduce the roughness, introduce color. Just eyeball it. The problem right now is that all the particles are rotated at the same angle. So it looks very dull. To make it more magical we should introduce random rotation. We're going to use the first dimension parameters for all. Now let's look at the render. The field really helps. Put the focal points somewhere here. Maybe tweak the shader a bit. To pin. Maybe we should increase the light intensity. Let's see how it looks from the top. Now we're going to use the different render mode for the convenience sake. We're going to use the shot 20. We're going to use the light. We can't edit the light. Let's shot 10. I need to fix the black gaps. I fixed it in a chip way. Out, plane, material. One, sub to you. One, sub to you. Let's see how it looks right now. Much better. I forgot to do that. Nope. The shot 0.10 looks like this right now. I think that's it.
 
 **Frame:** tutorials\frames\tutorial-heavy-chic-part-2\frame_000.jpg
 
@@ -33,39 +33,27 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-Continuation of Heavy Chic Part 1 — noise masking via Cd so stationary particles stay still, gamma ramp correction (B-spline, 3 points), scaling to 11 million particles by reducing point separation, `filecache` for disk-based playback, and final render setup.
+[PENDING EXTRACTION]
 
 ### Summary
-A 17-minute continuation tutorial (Part 2) completing the Heavy Chic luxury particle effect. The key refinement is masking particle noise by multiplying amplitude by `Cd` — particles with zero Cd won't flutter. A sharp B-spline ramp corrects gamma for the visual look. Point count scales from ~700k to 11 million by reducing point separation from 0.01 to 0.004. Sim is cached to disk via `filecache` named "part_sim", then rendered (Mantra/Karma) — final frame shows dramatic dark golden particle cloud.
+[PENDING EXTRACTION]
 
 ### Key Steps
-1. Add noise to particles in `popwrangle` or `popvop`: amplitude **0.5**, noise size **0.4**
-2. Multiply amplitude by `Cd` attribute — particles with `Cd=0` (stationary) are unaffected by noise (critical masking trick)
-3. Gamma correction: add `attribvop` → `ramp` node with sharp B-spline interpolation, 3 points (values: 0, 0.15, 1), apply to `Cd`
-4. Preview ramp applied to `Cd`; plug back to final output after preview
-5. Scale up particles: reduce point separation from **0.01 → 0.004** → count goes from ~700k to **11 million** points
-6. `filecache` SOP — name: "part_sim"; cache sim to disk for playback performance
-7. Render setup: Karma/Mantra with point cloud rendering; adjust point size and material for luxury glitter look
+[PENDING EXTRACTION]
 
 ### Houdini Nodes / VEX / Settings
-- `popwrangle` / `popvop` — noise: amplitude 0.5, size 0.4; multiply amplitude by `Cd` to mask stationary particles
-- `attribvop` — ramp node: B-spline interpolation, 3 points (0, 0.15, 1) for gamma correction; applied to `Cd`
-- Point separation: **0.01 → 0.004** (scales particle count from ~700k to 11M)
-- `filecache` SOP — name: "part_sim"; writes sim to disk
-- Karma or Mantra render node — point cloud / sprite rendering
+[PENDING EXTRACTION]
 
 ### Difficulty
-Intermediate
+[PENDING EXTRACTION]
 
 ### Houdini Version
-Not specified (H19–H21 UI)
+[PENDING EXTRACTION]
 
 ### Tags
-dop, sop, vex, particles, simulation, rendering, intermediate
+[PENDING EXTRACTION]
 
 ---
 
 ## Related Tutorials
-- [[tutorial-heavy-chic-part-1]] — Part 1 (prerequisite — builds the base sim this tutorial refines)
-- [[урок-тяжелый-люкс-часть-1]] — Russian companion series by same author
-- [[improve-solaris-performance---houdini-tutorial]] — filecache strategy for sim caching
+[PENDING EXTRACTION]
