@@ -188,7 +188,7 @@ def build_raw_md(info, ch_transcripts, frame_paths, slug):
         t_fmt = f"{int(ch.get('start',0))//60}:{int(ch.get('start',0))%60:02d}"
         chapters_section += f"\n### {ch['title']} [{t_fmt}]\n"
         if ch["text"]:
-            chapters_section += f"**Transcript:** {ch['text'][:1200]}{'...' if len(ch['text'])>1200 else ''}\n\n"
+            chapters_section += f"**Transcript:** {ch['text']}\n\n"
         if i < len(frame_paths):
             rel = frame_paths[i].relative_to(SKILL_DIR)
             chapters_section += f"**Frame:** {rel}\n"
@@ -266,6 +266,9 @@ def update_index_pending(info, slug, filename):
 - **File:** tutorials/{filename}
 """
     content = INDEX_FILE.read_text(encoding="utf-8")
+    if f"tutorials/{filename}" in content or (url and url in content):
+        print(f"      INDEX.md already has an entry for {filename} — skipping (re-ingest will refresh the .md file but not duplicate the index)")
+        return
     placeholder = "*(Empty — add your first entry by saying"
     if placeholder in content:
         content = re.sub(r"\*\(Empty[^)]+\)\*", entry.strip(), content)
