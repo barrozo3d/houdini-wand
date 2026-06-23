@@ -1,12 +1,12 @@
-﻿---
+---
 title: w02   05   deforming with velocity v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=IuvtudgbzLw
 author: The VFX School Archive
-ingested: 2026-06-19
-houdini_version: "Houdini 18"
-tags: [sop, attributes, vex, animation, intermediate]
-extraction_status: complete
+ingested: 2026-06-23
+houdini_version: "[PENDING]"
+tags: []
+extraction_status: pending
 frames_dir: tutorials/frames/w02-05-deforming-with-velocity-v1-1080p/
 frame_count: 4
 ---
@@ -23,7 +23,7 @@ frame_count: 4
 
 
 ### Full Content [0:00]
-**Transcript:** Kind: captions Language: en As I I believe I mentioned earlier, we're going to be using velocity as one of our attributes for displacing this geometry. And at the moment, if we take a look, well, we come right to the file node, select that, and then go to geometry spreadsheets, we can see what we've got. The attributes we currently have on the points just position, got normal and UVs. And primitive, we just got a couple of groups for the two different blueberries, and nothing in detail. So, we don't have our velocity attributes yet. So, we need to go ahead and and make that. So, if we take a trail sop. So, by default, if we I don't know if you'll see much here. Let's stretch that length. It'll kind of Yeah, you can see it's kind of copying the the geometry there. Making like a almost like a tail in the geometry. Let me turn this off. But we don't want that. Okay, I'm going to put this back to default and change this to compute velocity. So, this is handy also for um your motion blur if you're working with geometry with animation, and if you don't have a velocity on it, and you want to render motion blur, this is quite a common thing that I that I do and and others to to get that. A...
+**Transcript:** As I believe I mentioned earlier, we're going to be using velocity as one of our attributes for displacing this geometry. And at the moment, if we take a look, well, we'll come right to the file node, select that, and then go to geometry spreadsheet, we can see what we've got. The attributes we currently have on the points just position, a normal and DVs, and primitive, we just got a couple of groups for the two different blueberries and nothing in detail. So we don't have our velocity attributes yet, so we need to go ahead and make that. So if we take a trail, stop, so by default, if we, I don't know if you'll see much here, let's just drag the length, we'll kind of, yeah, you can see, it's kind of copying the geometry there, making like a, almost like a tail in the geometry, and we turn this off. But we don't want that, okay, I'm going to put this back to default and change this to compute velocity. So this is handy also for your motion blur, if you're working with geometry with animation, and if you don't have a velocity on it and you want to render motion blur, this is quite a common thing that I do and others to get that. And I'm going to turn this up, I'm going to double the velocity scales, just a multiplier, okay, give us more to work with. So if we head up to the geometry spreadsheet now, you could see we've got a velocity in our geometry, we've got some numbers, things for us to work with, okay, on the points. Cool, so let's come back to this attribute transfer. I'm going to take the black here and actually put it onto the grid, okay, we don't have color here now, so there's an error, transferring a something which isn't there, so let's give it that. So I'm going to drop down a attribute, there it is, okay, we used one of these in the first week, so we're going to drop in here and again, we've taken the attributes, so we've got velocity, the velocity attribute and we're going to trans make color from that, okay, if we visualize that now, you can see we've got some weird results, so what I'm going to do is drop a, what is it called vector, to float, so this has one input which is a vector, so we have a vector in x, y and z, and then we can take this while I was to separate those components, so we've got x, y and z, I'm going to take the y component and connect it to the color there, and there you go, already we can see something better, we've got some cleaner values, we don't have vector colors being transferred, okay, so at the moment it's only affecting the color, we can't see any deformation of the yoghurt, so let's drop a attribute, wrangle, and then here we can use the color information to deform the geometry, okay, we're going to drop down a little bit of x, not a lot, nothing too complicated, so we need to access the position attribute in y, okay, we're only going to move our geometry up this way, turn that off, and what we're going to do is we're going to take, oops, so we're going to take the position that we've got, y again, we're going to add the color, so we're changing the color, right, see the, I'm going to put dot x because we don't want the, we only want one part of the color, we'll be the same of the every, because it's gray, if I come here, I'll highlight this and show you, we've got find place where we've got values, yeah, you can see they're the same, x, y, and z, but so we don't want all three, I just want one, just want this one number, it doesn't matter, I can take it from x, from y or z, r, g, or b, sorry, so I'm just going to take it from r, x, I could put r also, in fact, it'll still work, oops, okay, let's go back to our scene views, so we can see this once is happening, in fact if I just drop a, oops, a semicolon there, I think we should get something, yeah, you see that, we got a little, we got a bit of a dip then, see that, so it's already something going on, we would be good to have a bit more control on this, so I'm going to multiply this and we're going to create our own multipliers, so I could just put, I can multiply by two, three, okay, but what we would be nice to do is to make a slider down here, so we can have something to click and drag along and be, we'll have a bit more artistic control, right, so to make a, a channel like that, we use ch, and it will default to a float, but if you want a vector, you put use chanavie, or chanav f for floats, yeah, we don't need to do that because default is a float, which is what we need, and then we give it a name, we call it, molt, close the brackets there, I'm going to put all of this inside one bracket, so we have a correct order of, you know, the math works correctly, so that's gone to zero now, so we have no, so this is multiplied by zero, so we're not getting anything, so if we click this button, that makes our slider, so we have the name there, molt, and it's at zero, so now if I drag this up, we should see, it's a bit hard to see the, you can't see it's dropping down, go from zero to one, but if I middle click, we can go higher or lower, with that, I'm going to change the, this to, let's drag the line, get something a bit smoother, okay, great,
 
 **Frame:** tutorials\frames\w02-05-deforming-with-velocity-v1-1080p\frame_000.jpg
 
@@ -33,35 +33,27 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-Using the Trail SOP in Compute Velocity mode to generate a velocity attribute on animated geometry, then transferring and using that velocity to displace a surface mesh — a reusable no-simulation technique for fluid-like deformation and motion blur.
+[PENDING EXTRACTION]
 
 ### Summary
-Starting from blueberry geometry with only position, normals and UVs, the instructor adds a velocity attribute using the Trail SOP set to "Compute Velocity" rather than its default trail mode. This `v` attribute is then used to drive positional displacement of the yogurt surface. The instructor also notes this is a standard technique for adding motion blur to animated geometry that lacks velocity in Arnold or Mantra. The velocity is scaled and applied per point in a wrangle for art-directable control over the splash shape.
+[PENDING EXTRACTION]
 
 ### Key Steps
-1. [`Geometry Spreadsheet`] Confirm no `v` attribute exists on the falling blueberry points
-2. [`Trail SOP`] Drop Trail SOP; switch mode from "Trail" to "Compute Velocity"
-3. [Verify] Check Geometry Spreadsheet to confirm `v` attribute now exists per point
-4. [`Attribute Transfer SOP`] Transfer `v` from blueberry geo onto yogurt surface mesh by proximity
-5. [`Attribute Wrangle`] Scale transferred velocity: `@P += @v * ch("scale");` with art-directable parameter
-6. [Iterate] Adjust scale and blend to taste; check deformation in viewport
-7. [Motion Blur note] Same `v` attribute is used by renderers (Arnold/Mantra) for geometry motion blur
+[PENDING EXTRACTION]
 
 ### Houdini Nodes / VEX / Settings
-- `Trail SOP` (Compute Velocity) — derives `v` from positional delta between frames without adding actual trail geometry; standard velocity-generation pattern
-- `Attribute Transfer SOP` — blends attribute values from source to destination by point proximity and distance falloff
-- `Attribute Wrangle` VEX: `@P += @v * ch("scale");` — point-level displacement along velocity direction
-- Motion Blur — any renderer reading `v` on geometry uses it for subframe position interpolation; Trail SOP is the standard way to add this
+[PENDING EXTRACTION]
 
 ### Difficulty
-Intermediate
+[PENDING EXTRACTION]
 
 ### Houdini Version
-Houdini 18 (Tabletop Food Simulation course)
+[PENDING EXTRACTION]
+
+### Tags
+[PENDING EXTRACTION]
 
 ---
 
 ## Related Tutorials
-- [Tabletop Week 02 Intro](w02-01-introduction-v1-1080p.md) — the week overview introducing this velocity deformation strategy
-- [Module I Point Deforming the Metal and Glass](module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md) — post-sim point deformation using similar attribute transfer patterns
-- [Tabletop Week 03 Intro](w03-01-introduction-v1-1080p.md) — the next week comparing this fake technique against real FLIP
+[PENDING EXTRACTION]
