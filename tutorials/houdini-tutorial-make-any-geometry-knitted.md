@@ -3,10 +3,10 @@ title: Houdini Tutorial: Make Any Geometry Knitted
 source: YouTube
 url: https://www.youtube.com/watch?v=mTnQji8a8nw
 author: PolygonCGI
-ingested: 2026-06-11
-houdini_version: "Not specified (H20–H21 UI)"
-tags: [sop, vop, modelling, procedural, curves, attributes, rendering, redshift, intermediate, advanced]
-extraction_status: complete
+ingested: 2026-06-23
+houdini_version: "[PENDING]"
+tags: []
+extraction_status: pending
 frames_dir: tutorials/frames/houdini-tutorial-make-any-geometry-knitted/
 frame_count: 12
 ---
@@ -78,7 +78,7 @@ frame_count: 12
 **Frame:** tutorials\frames\houdini-tutorial-make-any-geometry-knitted\frame_010.jpg
 
 ### Material setup and Redshift render settings [22:30]
-**Transcript:** We need to put it on material top.  Also, we need to put a check mark to render it as a stretch.  Also, we decrease desolation sub-devices and put it 0.25 to global scale multiplier.  We'll create a camera.  Like from this view.  Let's create a redshift node output.  We put our camera here in the render node.  Let's minibit.  We'll use hair shader.  Let's delete the standard one.  Let's add hair.  We need to transfer our color attributes.  Let's use redshift point attributes.  Let's put it in diffuse color.  We put it white color in reflection.  We don't need transmission.  Add a franel.  Let's make a bit of offset of our angular shift.  Let's adjust a bit of fire.  We'll add a primary reflection weight.  We need to diffuse for sure.  We have a texture and colors.  Also translucent.  For softer light, we open our rendshift render view.  I like to use post effects.  Let's open it.  Let's add a bit of exposure.  Let's add a bloom.  Also, let's adjust color curves.  Let's add some contrast.  Let's move the color.  From here, it's just tweaking.  Maybe you want to add bigger features.  Maybe you need different colors or extra noise.  It's all adjustable.  For example, we can use color ...
+**Transcript:** We need to put it on material top.  Also, we need to put a check mark to render it as a stretch.  Also, we decrease desolation sub-devices and put it 0.25 to global scale multiplier.  We'll create a camera.  Like from this view.  Let's create a redshift node output.  We put our camera here in the render node.  Let's minibit.  We'll use hair shader.  Let's delete the standard one.  Let's add hair.  We need to transfer our color attributes.  Let's use redshift point attributes.  Let's put it in diffuse color.  We put it white color in reflection.  We don't need transmission.  Add a franel.  Let's make a bit of offset of our angular shift.  Let's adjust a bit of fire.  We'll add a primary reflection weight.  We need to diffuse for sure.  We have a texture and colors.  Also translucent.  For softer light, we open our rendshift render view.  I like to use post effects.  Let's open it.  Let's add a bit of exposure.  Let's add a bloom.  Also, let's adjust color curves.  Let's add some contrast.  Let's move the color.  From here, it's just tweaking.  Maybe you want to add bigger features.  Maybe you need different colors or extra noise.  It's all adjustable.  For example, we can use color correct and use our hue to create another color.  That's it.  We built the setup.  This workflow works with almost any object.  As long as it has UVs.  Even if it doesn't, you can generate it with F2 UV in Houdini.  This was my first tutorial.  Don't judge too hard.  Thanks for watching.  See you next time.
 
 **Frame:** tutorials\frames\houdini-tutorial-make-any-geometry-knitted\frame_011.jpg
 
@@ -88,62 +88,27 @@ frame_count: 12
 ## Structured Notes
 
 ### Core Technique
-UV-space projection trick to wrap a procedurally built knit stitch pattern onto any arbitrary geometry: flatten the target mesh into 2D UV space via `attribswap` (P ↔ UV), tile the knit grid in that space with VEX, then project back to 3D — combined with `sweep`-based strand generation and Redshift hair shader for final rendering.
+[PENDING EXTRACTION]
 
 ### Summary
-A 27-minute tutorial by PolygonCGI building a fully procedural knitted-geometry effect on a skull. The core insight is using UV connectivity + attribute swap to project a tiling knit stitch (built from `mirror`/`polyfuse`/`copytopoints`) onto any mesh surface. Strands are generated via `sweep` with `curlnoise` variation and a `rest` attribute for fiber randomization. Final render uses Redshift's hair shader with color transferred from the original skull texture. Frames confirm: final render shows a colored crochet skull; workflow shows knit grid in UV space and fiber preview with Cd color transfer.
+[PENDING EXTRACTION]
 
 ### Key Steps
-1. Build half-stitch curve → `matchsize` to align on X → `mirror` SOP (welds points, not polygons) → `polyfuse` → single primitive loop
-2. `curvewarp` SOP — procedural stitch width control
-3. `copytopoints` with offset 0.5 → closed stitch pair; tile on `grid` SOP (size ~1.05)
-4. `pointsfromvolume` SOP — set density via single slider; enable pscale attribute (set multiplier to 1, not default 2)
-5. `copytopoints` — copy stitch tile to grid points; `polyfuse` to merge; clean unused attributes (keep UV + N)
-6. `connectivity` SOP (UV mode) → generates `class` attribute (UV island ID, 0–6)
-7. `vertexsplit` SOP on UV attribute → `attribswap` SOP: swap P ↔ UV → mesh flattened into 2D UV space
-8. VEX wrangle — map knit grid into 0–1 UV space; `matchsize` to align on X minimum
-9. `attribswap` back → restore 3D positions; knit now conforms to skull surface
-10. `attribfrommap` SOP — load skull texture as `Cd`; `attribtransfer` → transfer color to knit surface; `subdivide` for smoother color
-11. `sweep` SOP — strands mode (not tubes); ensure copytopoints preserves pscale; add `rest` attribute
-12. `attribvop` — `curlnoise` for fiber curl; 4D noise driven by P/pscale for per-curve randomization; control roughness/amplitude via promoted parameters
-13. `attribvop` — compute normals from rest: `normalize(rest - P)`
-14. `attribrename` SOP — rename `pscale` → `width` for Redshift hair curve rendering; enable "Shade Open Curves" in Redshift object settings
-15. Redshift hair shader — diffuse + translucency + Fresnel reflection; `rsPointAttributes` node to drive diffuse color from `Cd`; post: exposure, bloom, color curves
+[PENDING EXTRACTION]
 
 ### Houdini Nodes / VEX / Settings
-- `mirror` SOP — welds points; follow with `polyfuse` for single primitive
-- `matchsize` SOP — align to X axis minimum
-- `curvewarp` SOP — stitch width control
-- `copytopoints` SOP — offset 0.5 for stitch pair; preserves pscale (check setting)
-- `grid` SOP — size 1.05
-- `pointsfromvolume` SOP — density slider; pscale multiplier set to 1
-- `connectivity` SOP — UV mode → `class` attribute (island IDs)
-- `vertexsplit` SOP — split on UV attribute
-- `attribswap` SOP — swap P ↔ UV (flattens mesh to 2D)
-- VEX wrangle — UV-space grid mapping
-- `attribfrommap` SOP — texture → Cd attribute
-- `attribtransfer` SOP — color from skull to knit surface
-- `subdivide` SOP — increase polygon count ×2 for color quality
-- `sweep` SOP — strands mode; scale by pscale radius
-- `attribvop` — `curlnoise`, 4D noise, `rest` attribute, normalize
-- `attribrename` SOP — pscale ↔ width
-- `divide` SOP — uncheck Convex Polygons; enable Remove Shared Edges
-- Redshift hair shader — diffuse, translucency, Fresnel; `rsPointAttributes` for Cd
-- Redshift post: exposure, bloom, color curves, contrast
+[PENDING EXTRACTION]
 
 ### Difficulty
-Advanced
+[PENDING EXTRACTION]
 
 ### Houdini Version
-Not specified (H20–H21 UI)
+[PENDING EXTRACTION]
 
 ### Tags
-sop, vop, modelling, procedural, curves, attributes, rendering, redshift, intermediate, advanced
+[PENDING EXTRACTION]
 
 ---
 
 ## Related Tutorials
-- [[vops-02---random-noise---houdini-beginner-tutorial]] — curlnoise and noise VOP patterns used for fiber variation
-- [[vops-04---geometry-interactions---houdini-beginner-tutorial]] — attribtransfer geometry interaction technique
-- [[model-a-procedural-flower-houdini-tutorial]] — similar copytopoints + procedural surface distribution approach
-- [[houdini-uv-unwrapping-fundamentals]] — UV concepts foundational to the UV-space projection trick
+[PENDING EXTRACTION]
