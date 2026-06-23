@@ -367,6 +367,8 @@ def main():
                         help="Skip video download and frame extraction")
     parser.add_argument("--youtube-url", default=None,
                         help="Override Epic URL auto-resolution with a known YouTube URL")
+    parser.add_argument("--force", action="store_true",
+                        help="Overwrite an existing tutorial file even if extraction_status: complete")
     args = parser.parse_args()
 
     # Auto-resolve Epic Games community pages to their YouTube equivalent
@@ -398,6 +400,13 @@ def main():
         slug   = slugify(title)
         out_md = TUTORIALS_DIR / f"{slug}.md"
         frames_out = FRAMES_DIR / slug
+
+        if out_md.exists() and not args.force:
+            existing = out_md.read_text(encoding="utf-8")
+            if "extraction_status: complete" in existing:
+                print(f"      {out_md.name} is already fully extracted — refusing to overwrite.")
+                print(f"      Pass --force to re-collect anyway (this will wipe the existing Structured Notes).")
+                return
 
         # 2. Transcript
         ch_transcripts = []
