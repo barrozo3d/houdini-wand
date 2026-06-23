@@ -1,12 +1,12 @@
-﻿---
+---
 title: 51 introducing the sop solver v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=8HkP7iVgi0Y
 author: The VFX School Archive
-ingested: 2026-06-19
-houdini_version: "Houdini 18"
-tags: [sop, dop, vex, particles, simulation, intermediate]
-extraction_status: complete
+ingested: 2026-06-23
+houdini_version: "[PENDING]"
+tags: []
+extraction_status: pending
 frames_dir: tutorials/frames/51-introducing-the-sop-solver-v1-1080p/
 frame_count: 4
 ---
@@ -23,7 +23,7 @@ frame_count: 4
 
 
 ### Full Content [0:00]
-**Transcript:** Kind: captions Language: en Let's quickly create a new project to go over a brief introduction to particles and pops. So, we'll go over to file, new project, and I'll select the destination. I'll just call this intro to pops. Hit accept. And then I'll save the file. Intro to pops. 001. Now let's create a geometry container and I'll call this subsolver demo. Dive inside. Let's start by creating a grid. And it's just going to be a one square meter grid. It's fine. And on that grid, we'll scatter some points. Let's say 100 points and we'll disable the relax situations. Let me disable the grid and also switch to a dark background. So clicking D background dark. So these are the particles or the points that we generated on the surface. A particle solver will do is essentially grab the points position and each point's velocity and calculate what the next point's position will be based on that velocity. Position is just a vector. So you have three floats for each one of these coordinates X, Y, and Z. A velocity is also going to be a vector which with three floats for each one of the coordinates. And that vector is going to give us the direction of the movement and also the speed. The leng...
+**Transcript:** Let's quickly create a new project to go over a brief introduction to particles and pops. So we'll go over to File, New Project, and I'll select the destination. I'll just call this Intro to Pops. It accepts and then I'll save the file. Intro to Pops. Here's your one. Now let's create a jump to Container and I'll call this Sub Solver Demo. Dive inside. Let's start by creating a grid and it's just going to be a one square mirror grid. It's fine. And now that grid will scatter some points. Let's say 100 points and we'll disable the relaxed situations. Let me disable the grid and also switch to a dark background. So clicking D, background, dark. So these are the particles or the points that we generated on the surface. A particle solver will do is essentially grab the points position and each points velocity and calculate what the next points position will be based on that velocity. Position is just a vector. So you have three floats for each one of these coordinates, x, y, and z. A velocity is also going to be a vector which with three floats for each one of the coordinates. And that vector is going to give us the direction of the movement and also the speed. The length of that vector is also going to give us the speed of the object. In this case the points. So what we'll do is we'll just create an attribute. I'm going to go to attribute create. And we'll create an attribute called v from velocity. It's going to be a type vector and we'll say that the value is going to be let's say one. So the velocity right now it's going to be the units as you know inside Houdini is in meters, the spatial units, the speed the velocity is going to be in meters per second. So right now I'm saying that will be these points have a velocity of one meter per second on the y axis. Nothing has happened. But if we were to do the calculation ourselves, we would for instance create a point wrangle and do a very simple line of code where we say that my position at p is going to be equal to my position plus my velocity. Same I call and we have some displacement happening. So this is before we calculate the new position. I'm going to call this create valve create V and here I'm going to call update position. So we updated the position as soon as this information comes in this line of code is applied to the points and we get a new position. But if you move the time slider, this doesn't continue to happen. Okay, we would need to apply this again. And those would keep moving and so on and so forth. And they would keep moving. Now of course we don't do this like that. There is a solver, a soft solver in Houdini. So you can just type solver that will be able to apply whatever operations you want to apply to your geometry through time. Meaning that it will take into account the previous frame to apply that operation on the previous frame. And so on and so forth going forward through time. So the difference will be that if we connect this here and we copy this update position control C inside the solver, you'll see that inside the solver we have input one and put two input three and before which will correspond to these inputs. And we have the previous frame. If we control V, the update position here and we feed it the previous frame. What this means is that on each frame, the solver is going to look at the previous frame and apply this this wrangle, this update position operation. If we go up now and we look at the solver, what we'll see is that the particles keep moving. We need to move through time. And you'll also notice that the timeline, let me just adjust this. We don't need as many let's say 120. So I'm just suggesting the length of our time outline. You'll notice that our timeline starts getting blue, which means that this is being cached. You also have a reset simulation here, which indicates that this is being simulated through time. Okay. Now this isn't correct because we know that our timeline is in in frames and our file is working at 24 frames per second. So if we have a look at this from a front view, space bar three and return on the grid. So if this is one unit or if this is one unit, okay, one, two, what we need to, what we would expect is after one second, knowing that the velocity is in frame in meters per second, after one second, meaning 24 frames, our particles should be at this position. But that's not what's happening. Okay. On each frame, it's jumping one mirror. And the reason for that is because we're applying on this update position, we are, we're not applying it correctly. We're not taking into consideration that the solver is going to be running through per frame and not per second. So even though the speed is per second, the solver is going to be applied per frame. So we need to take that into account and it's pretty easy to do. All we need to do is multiply our velocity by the time increment, which is also a global variable that we have inside Houdini. And it's written like this. The order of operations here is also is going to be first, you have the multiplication happening and then you will have the addition happening. Okay. Now this time increment will be updated according to your frames per second. And it'll know that in this case, it's going to be one by 24. Okay. And it's, that's, we're going to be applying a 24th of the velocity on each frame, meaning that right now, if we go up. So now the particles will only reach the height of two at frame 24. Let me go space mark three. And that's what we should have. Okay. We start at zero, sorry. We start at zero and then they go up and at frame 24, they're at this height. At frame 48, they'll be at that height. Okay. Now it's correct. This is one of the common operations that the pop solve will do. Let me just turn on here at the real time. And this is the speed of our particles.
 
 **Frame:** tutorials\frames\51-introducing-the-sop-solver-v1-1080p\frame_000.jpg
 
@@ -33,34 +33,27 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-Building a manual particle solver entirely inside a SOP Solver to teach the underlying integration mechanics before switching to the dedicated POP system.
+[PENDING EXTRACTION]
 
 ### Summary
-Creates a geometry network with a Scatter SOP (100 points) as the particle source. Explains that a particle solver tracks each point's position and velocity as vectors and integrates motion each frame: new_position = old_position + velocity * timestep. Builds this directly with an Attribute Wrangle inside a SOP Solver using `@P += @v * ch('timestep');`. Adds gravity by subtracting from the Y component of velocity each frame, then introduces age/life attributes to kill particles once they exceed their lifespan. The key teaching point is that POPs are simply a specialized, optimized wrapper around this exact SOP Solver logic.
+[PENDING EXTRACTION]
 
 ### Key Steps
-1. [`Scatter SOP`] Generate 100 points as the initial particle source
-2. [`SOP Solver`] Wrap the points in a SOP Solver to iterate per-frame state
-3. [`Attribute Wrangle`] Integrate position from velocity: `@P += @v * ch('timestep');`
-4. [`Attribute Wrangle`] Apply gravity by decrementing `@v.y` each frame
-5. [Age/Life attributes] Track `@age` and `@life`; remove points once age exceeds life
-6. [Verify] Inspect the Geometry Spreadsheet to confirm position and velocity update correctly each frame
+[PENDING EXTRACTION]
 
 ### Houdini Nodes / VEX / Settings
-- `Scatter SOP` — generates the initial particle point cloud
-- `SOP Solver` — iterates geometry frame-by-frame, feeding its own output back as input
-- `Attribute Wrangle` — VEX: `@P += @v * ch('timestep');` for Euler integration; gravity via `@v.y -= ch('gravity');`
-- `age` / `life` attributes — standard Houdini particle lifespan pattern, manually implemented here
+[PENDING EXTRACTION]
 
 ### Difficulty
-Intermediate
+[PENDING EXTRACTION]
 
 ### Houdini Version
-Houdini 18 (Film FX Season 1)
+[PENDING EXTRACTION]
+
+### Tags
+[PENDING EXTRACTION]
 
 ---
 
 ## Related Tutorials
-- [Creating a Simplified Particle System](52-creating-a-simplified-particle-system-v1-1080p.md) — extends this manual solver to emit new particles each frame
-- [Recreating Our Solver With POPs](53-recreating-our-solver-with-pops-v1-1080p.md) — rebuilds this exact system using POPs for comparison
-- [Module I Introduction to Particles](module-i-week-04-01-introduction-to-particles-v1-1080p.md) — later course revisiting POPs terminology
+[PENDING EXTRACTION]
