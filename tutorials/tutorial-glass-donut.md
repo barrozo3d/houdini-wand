@@ -3,10 +3,10 @@ title: [Tutorial] Glass Donut
 source: YouTube
 url: https://www.youtube.com/watch?v=j5Ew_6-W8DE
 author: Alexander Eskin
-ingested: 2026-06-11
-houdini_version: "Not specified (H19–H21 UI)"
-tags: [sop, vop, modelling, animation, rendering, redshift, intermediate]
-extraction_status: complete
+ingested: 2026-06-23
+houdini_version: "[PENDING]"
+tags: []
+extraction_status: pending
 frames_dir: tutorials/frames/tutorial-glass-donut/
 frame_count: 4
 ---
@@ -23,7 +23,7 @@ frame_count: 4
 
 
 ### Full Content [0:00]
-**Transcript:** Let's create your node. Let's put the last dominant. Diving side. Let's create our dark. It stores orientation x size 0.5, 0.15. Rows 400. Columns 800. Good. Now we should add some noise with point wall noise. We're going to use anti-aliased flow noise because it has the flow attribute. Let's add this noise to the current position. And this is what we got. Let's tweak the parameters a bit. Roughness should be 0.6 or takes 4. Frequency 4. These ones should be 0 and the amplitude should be 0.0.25. Here's our dominant. The anti-aliased flow noise has the flow parameter which allows us to cycle through noise. We have the 0 and 1 would be the same image all the noise. And while we scroll this or animate it, there will be some motion. We can create some loops with these. That's what we're going to do. We promote this parameter because we can't animate it. And whoops. Kill this. Small stuff. I don't need this. We don't need this. We're going to separate this. And animate it. Set the 30th phase. And animate it from 0 to 1. Set the interpolation to linear. And move this frame to 301. Otherwise, the first frame and the frame 300 will help the same noise pattern. And I'm going to have a bump ...
+**Transcript:** Let's create tune-out lets fill it now Tell it the last Bridget Direven's side create our dot it stores orientation x size 0.5 0.15 rows 400 columns 800 good now we should add some noise with point or noise we're going to use anti-aliased flow noise because it has the flow attribute let's add this noise to the current position and this is what we got let's tweak the parameters a bit roughness should be 0.6 octaves for frequency 4 these ones should be 0 and the amplitude should be 0.025 okay here's our dot at the anti-aliased flow noise has the flow parameter which allows us to cycle through noise so we have the 0 and 1 would be the same image all the noise and while we scroll this or animate it there would be some motion so we can create some loops with ease that's what we're going to do we promote this parameter because we can't animate in the whoops kill this small stuff I don't need this we don't need this separate this and animate it set a 30 FPS and animate it from 0 to 1 set the revolution to linear and move this frame to 301 otherwise the first frame in the frame 300 will help the same noise pattern and I'm going to have a bump in the animation you know so we don't need this I'm going to move it one frame further okay now we need to add a full extra extruded by 0.05 and don't forget to press open back otherwise it will just displace the thing and now have two layers okay that was the idea output modeling wise is done we've achieved output custom create a camera select it output in the line advanced we don't need the global elimination here because it's going to be just glass and black background levels set it as is and go to material step press first material builder glass standard diffuse zero reflection one roughness zero transmission one amazing glass material fly it to I would you not okay the camera should be at 120 millimeters focal length press the lock I'll adjust it now just eyeball it where is it where is the fun part of the image somewhere here okay and we need to create the hDI to light the glass I'm going to use after effects you can use whatever program we prefer it's just a simple gradient with color 4000 pixels by 2000 pixels call it gradient solid one for background one for the gradient itself I'm going to use circle and just feather it out then create adjustment layer called exposure adjust exposure a bit so that the fall off will be a look a bit more realistic perhaps like this and just stretch the thing out a little bit and color it you can use the default node there's a preset for colorizing stuff I prefer using video copilot color vibrance which is almost the same but it shifts hue a bit depending on the intensity of the light so perhaps it will look a bit better anyway something like this so it's going to be our first gradient save it render out and the second one is going to be the same but it's going to be stretched like this which it has the option to tweak the hue of the hdrim up in the dome light but it can't color it so this gradient should be off some color to begin with so let's go back to VDini and create the light call it light dome zero selector default color space use the duration okay we'll work for now now we can also we should tweak the resolution 1920 by 1080 okay let's render it okay let's rotate the light there we are let's zoom to find some more interesting angle for the camera something like this and maybe create another light and move this one as well tweak the color and move it a bit as well just has some interesting color contrast this is a weird spot okay so we can tweak the globals so probably we can fix these dark parts by increasing the amount of reflection trace depth so let's save this image as a reference point and let's try to get rid of these dark parts such as depth combine 24 hmm so it might look better in some cases but for this particular project it's just not worth it there are drawings increased drastically with these and didn't fix these parts so I'd rather I'd rather tweak the angles of the light so this one is probably from this one I'm gonna leave this part dark yeah I'd say it's a good solution anyway we can continue to tweak the light the blues but it's more of an artistic choice I'd rather fix these things let's switch to the full res render so we can see it better so here is the problematic part because of the lack of the polygons the interpolation of the surface tend to break things up we can change it by just increasing the amount of polygons but not before the noise but rather after it I'd rather not add subdivide here because it can just slow down the viewport and it's not a very convenient thing to do I'd rather use the resolution displacement and just tweak the minimum edge length set it to zero that would mean that all the polygons would be subdivided no matter the size they take on screen and maximum subdivisions six will be just insanely high number we should stick to two kill the screen space adaptive toggle and and try to render again render times will increase but these things will be much more pleasant to look at which is the goal looks kind of nice I'd say so that's it
 
 **Frame:** tutorials\frames\tutorial-glass-donut\frame_000.jpg
 
@@ -33,40 +33,27 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-English companion to Glass Donut RU — same `aanoise` flow loop technique with specific parameter values: torus (X orientation, rows 400, cols 800), roughness 0.6, octaves 4, frequency 4, amplitude 0.025. Seamless loop: promote `flow`, animate 0→1 linear with **end key at frame 301** (not 300) to prevent frame 1 and frame 300 having identical noise.
+[PENDING EXTRACTION]
 
 ### Summary
-A 13-minute English tutorial confirming the Glass Donut workflow with exact parameter values. Torus (X, size 0.5×0.15, 400 rows × 800 cols) + `aanoise` added to position (roughness 0.6, octaves 4, frequency 4, amplitude 0.025). Promote `flow` parameter (mandatory — can't keyframe inside VOP). Animate flow 0→1 linear; place end keyframe at frame **301** so frame 300 in a 300-frame loop never coincides with the start value. `polyextrude` for thickness + Redshift glass.
+[PENDING EXTRACTION]
 
 ### Key Steps
-1. Geo node → `torus` SOP — orientation X, size 0.5 × 0.15, rows **400**, columns **800**
-2. `attribvop` or mountain — apply `aanoise` (anti-aliased flow noise), add to position
-3. Noise params: roughness **0.6**, octaves **4**, frequency **4**, amplitude **0.025**
-4. **Promote `flow` parameter** to node interface (required to keyframe it)
-5. Keyframe `flow`: frame 1 = 0, frame **301** = 1, linear interpolation
-6. Why 301: frame 300 in a 300-frame loop plays before the key, never matching frame 1 → seamless
-7. `polyextrude` SOP — add thickness for glass geometry
-8. Redshift glass shader + render
+[PENDING EXTRACTION]
 
 ### Houdini Nodes / VEX / Settings
-- `torus` SOP — X orientation, 0.5 × 0.15, 400 rows, 800 cols
-- `attribvop` — `aanoise` added to P; roughness 0.6, octaves 4, freq 4, amplitude 0.025
-- `flow` parameter promoted — keyframe: 0 at frame 1, **1 at frame 301** (linear)
-- `polyextrude` SOP
-- Redshift glass shader
+[PENDING EXTRACTION]
 
 ### Difficulty
-Intermediate
+[PENDING EXTRACTION]
 
 ### Houdini Version
-Not specified (H19–H21 UI)
+[PENDING EXTRACTION]
 
 ### Tags
-sop, vop, modelling, animation, rendering, redshift, intermediate
+[PENDING EXTRACTION]
 
 ---
 
 ## Related Tutorials
-- [[урок-стеклянный-пончик]] — Russian companion with full extraction
-- [[vops-02---random-noise---houdini-beginner-tutorial]] — aanoise and flow noise fundamentals
-- [[tutorial-glass-tiles]] — Redshift glass material context
+[PENDING EXTRACTION]
