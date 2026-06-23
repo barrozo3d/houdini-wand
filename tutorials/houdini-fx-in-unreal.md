@@ -3,10 +3,10 @@ title: Houdini FX in Unreal
 source: YouTube
 url: https://www.youtube.com/watch?v=RDiA2R47Wzo
 author: Houdini.School
-ingested: 2026-06-18
-houdini_version: "unspecified"
-tags: ["unreal-engine", "virtual-production", "hda", "megascans", "rendering", "aces", "substance-painter", "procedural", "pipeline"]
-extraction_status: complete
+ingested: 2026-06-23
+houdini_version: "[PENDING]"
+tags: []
+extraction_status: pending
 frames_dir: tutorials/frames/houdini-fx-in-unreal/
 frame_count: 4
 ---
@@ -23,7 +23,7 @@ frame_count: 4
 
 
 ### Full Content [0:00]
-**Transcript:** Kind: captions Language: en my name is Guido poncini and I am extremely happy to introduce you to my course Houdini effects in a real engine throughout this course we will explore the key techniques that are used to create sequence scg sequence designed for virtual production installation with this particular course in mind in our first session we will cover the main techniques used to model a location inspired by a real workplace the Maxi Museum in Rome will go over the basics of modeling techniques procedural UV mapping and importing your meshes into unreal once inside unreal we will discuss how to organize your project in folders how to work with a main sequence and subsequences and understand our unreal and Houdini systems work together and also how they differ we will also see how to apply Mega scans materials create an hdri base the lighting for the interior how to set up your lighting and post processing and prepare your render in Aces color space just ready to export in XR sequence that you will be able to import in your DaVinci Resolve session we will then explore how I transformed a Shark model into a procedural robot and how I textured it inside substance painter finally...
+**Transcript:** Halo mio squadra Seguida Ponsini, eторовti molto facile di Delero tecniche, usiamo il model di allocazione spiegare per un reale lavoro e placed il Maximusium in Rome. We will go over the basics of modeling techniques, procedural UV mapping e importing your meshes into Unreal. Once inside Unreal, we will discuss how to organize your project in folders, how to work with the MN sequence and sub sequences and understand how Unreal and Udini systems work together and also how they differ. We will also see how to apply Megascans materials, create an HDRI based lighting for the interior, how to set up your lighting and post processing and prepare your render in ACES color space, just ready to export in AXR sequence that you will be able to import in your DaVinci Resolve session. We will then explore how I transformed a shark model into a procedural robot and how I textured it inside Substance Painter. Finalmente, we will create a simple rig in KineFX and in this way we will learn how this kind of rig can be used to transfer many things, also meshes to Unreal. During the second session, we will discuss how to approach clothes and soft body within Valum. We will animate the Earth beating and make the clothes dance, as well as explore techniques for transferring those soft body simulation to a real time context. Using soft body vertex animation texture, for example, Dem, labs, converter and side effects labs, skinning converter tool. We will also cover rigid bodies and how those can be transferred using RBD vertex animation textures. Finally, we will explore two different approaches to metal banding, one more traditional using RBD constraints and another one using Valum with proxy meshes. By the end of this session, you will be able to add fine details and dynamics to your Unreal scene with a good understanding of many VFX techniques for real time. During the third and final session, we will dive into NiaGara, the powerful tool of Unreal Engine for particles. We will compare it to a traditional Udini pop network. We will learn how to debug the system and we will start creating some everyday usage examples like snapping elements over a sign distance field and creating smoke and fire particle system starting from a pyrosimulation. Using both the side effects, labs flip, book node and a custom open gel workflow. We will also examine what I called the pinky wall care and NiaGara system that I created using rib bones entirely inside Unreal. Covering these topics will help us to understand more about materials for real time effects and also how to set up, for example, vertex animation texture in order to support NiaGara is dancing. By the end of this session, you will be able to add some nice details and particle system and you will wrap up your final project in Unreal. I hope you join me in this journey with Udini and Unreal Engine.
 
 **Frame:** tutorials\frames\houdini-fx-in-unreal\frame_000.jpg
 
@@ -33,47 +33,27 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-Creating a complete virtual production pipeline using Houdini and Unreal Engine together — from procedural modeling and HDAs in Houdini to scene assembly, lighting, and rendering in Unreal Engine with ACES color space and DaVinci Resolve delivery.
+[PENDING EXTRACTION]
 
 ### Summary
-Guido Poncini presents a comprehensive course on integrating Houdini with Unreal Engine for virtual production and installation sequences. The course uses the Maxi Museum in Rome as the location reference, covering procedural modeling and UV mapping in Houdini, import into Unreal, scene organization with sequences and subsequences, Megascans material application, HDRI-based lighting, and ACES color space setup for final export. A unique segment covers transforming a shark model into a procedural robot using Houdini, textured in Substance Painter. The Houdini Engine / Session Sync connection between both applications is also demonstrated.
+[PENDING EXTRACTION]
 
 ### Key Steps
-1. Model the location environment (museum interior) using Houdini procedural modeling
-2. Set up procedural UV mapping on all meshes in Houdini
-3. Import geometry into Unreal Engine and organize assets in folders
-4. Set up a main sequence with subsequences for multi-shot organization
-5. Configure Houdini Engine Session Sync between Houdini and Unreal
-6. Apply Megascans materials to environment geometry in Unreal
-7. Create HDRI-based interior lighting and set up post-processing
-8. Configure ACES color space for export
-9. Export the rendered sequence as EXR for import into DaVinci Resolve
-10. Build the procedural robot from a shark base model in Houdini and texture in Substance Painter
+[PENDING EXTRACTION]
 
 ### Houdini Nodes / VEX / Settings
-- Houdini Engine (Unreal plugin)
-- Session Sync (Houdini–Unreal live link)
-- Houdini Digital Asset (HDA)
-- UV Unwrap / UV Flatten SOP
-- Procedural UV mapping
-- Megascans materials (Unreal)
-- HDRI / Skylight (Unreal)
-- ACES color space (Unreal post-process)
-- Sequencer (Unreal main/subsequences)
-- Substance Painter (external texturing)
+[PENDING EXTRACTION]
 
 ### Difficulty
-Intermediate
+[PENDING EXTRACTION]
 
 ### Houdini Version
-unspecified
+[PENDING EXTRACTION]
 
 ### Tags
-unreal-engine, virtual-production, hda, megascans, rendering, aces, substance-painter, procedural, pipeline
+[PENDING EXTRACTION]
 
 ---
 
 ## Related Tutorials
-- [Procedural HDAs for Unreal](procedural-hdas-for-unreal.md) — focused course on building and deploying HDAs inside Unreal Engine
-- [Effective TD](effective-td.md) — covers HDA creation and optimization workflow, foundational for Houdini-Unreal pipeline
-- [Procedural Growth with KineFX and the Labs Tree Tools](procedural-growth-with-kinefx-and-the-labs-tree-tools.md) — procedural vegetation that can be exported to Unreal environments
+[PENDING EXTRACTION]
