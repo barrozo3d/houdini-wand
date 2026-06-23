@@ -1,12 +1,12 @@
-﻿---
+---
 title: w03   11   meshing v1 1080p
 source: YouTube
 url: https://www.youtube.com/watch?v=H56dPbE3S2E
 author: The VFX School Archive
-ingested: 2026-06-19
-houdini_version: "Houdini 18"
-tags: [flip, volumes, sop, rendering, intermediate]
-extraction_status: complete
+ingested: 2026-06-23
+houdini_version: "[PENDING]"
+tags: []
+extraction_status: pending
 frames_dir: tutorials/frames/w03-11-meshing-v1-1080p/
 frame_count: 4
 ---
@@ -23,7 +23,7 @@ frame_count: 4
 
 
 ### Full Content [0:00]
-**Transcript:** Kind: captions Language: en Now, I want to go ahead and generate our uh mesh. So, we've got our points, we need to make a mesh from this. And the workflow we're going to use is VDB. So, I'm going to find a VDB from uh particles. Okay, connect that up. We get an error there. Probably the voxel size is too big. Let's drop that down a little. Still nothing. Maybe the radius scale. It does say that we shouldn't drop it past 1.5, but we're going to be smoothing the the VDB after anyway. Try dropping that down to one. Still nothing. I'm going to drop this down .1. There we go. Getting something. Still a bit coarse. So, I'm going to drop the VDB scale down even further. 0.025. It'll take a while. Now, we're getting something nice and smooth. Probably drop this down a bit. I don't think it'll make much difference now. Should be fine. Cool. Okay. Looks looking nice now, but still you can see little a bit of roughness there. So, we can just drop a VDB VDB smooth. Oops. Drop VDB smooth SDF. And this as simple as that. Just connect it up and we get a much nicer result. Then, to bring it back into uh polygon geometry, we need a convert. I think just by default it will generate Yeah, our polygon...
+**Transcript:** Now I want to go ahead and generate our mesh. So we've got our point. We need to make a mesh from this. And the workflow we're going to use is VDB. So I'm going to find a VDB from particles. OK, connect that up. We've got an error there. Probably the voxel size is too big. Let's drop that down a little. Still nothing. Maybe the radius scale. It does say that we shouldn't drop it past 1.5. But we're going to be smoothing the VDB after anyway. Try dropping that down to 1. Still nothing. I'll drop this down 0.1. There we go. Getting something still a bit coarse. So I'm going to drop the VDB scale down even further. 0.025. Let's take a while. Now again, something nice and smooth. Probably drop this down a bit. I don't think it'll make much difference now. It should be fine. Good. OK, looks just looking nice now. But still you can see a little bit of roughness there. So we could just drop a VDB smooth. Whoops. VDB smooth SDF. And this is as simple as that. Just connect it up. And we get a much nicer result. Then to bring it back into polygon geometry, we need a convert. I think just by default it will generate our polygonal geometry there. So that's looking really nice. Look, we get all these ripples and waves, all these detail. And that's thanks to the high resolution. OK, so to get some color on here, I'm going to drop a color node, but from a separate stream, I'm going to color the path called first of all. We're going to color the points, but based on a ramp from an attribute. And the attribute will be this cosity, which we still have. So that's going to pull in the viscosity from the same here. And our range, if you remember, the highest velocity was 250. There we go. So we're already getting something there. So now we just need to play with the colors here. So here, let's see on it. I'm going to get some kind of browns going on. OK, so I'm going to bring this one up. Let's find out. Got some values kind of worked out already here. So I'll just drop those in. 0.690, color I want it 0.02435 and 0 there. So we get this nice brown there. And then the position at 2. Great. And then to add another color here, well, I'm going to bring this one down. I'm just going to keep it at white and the position for 0.45. And I'm just going to click on this space here. And that should drop in another color for us. Move that up. And the color for this one will be another kind of brown. 0.525, 0.22665. Not purple, but this kind of yellowy brown color. OK, it's got that colors working there. Now, so we need to transfer these colors onto this geometry. So if you remember from week two, where we were transferring, I think it was the velocity to deform the yogurts, I'm going to do something similar here but with the color. So I'm going to use an attribute transfer, which is here. OK, drop the geometry here. And then just by default, I think it should pretty much work. Let's see if we want to play around. Let's bring the distance down. And then the blend threshold 0.25. Maybe we can get something working a bit nicer there. OK, and then we can maybe if I think we need some color on here to get the blending working. If I drop a color node, I see if that does anything for us. Drop that down in further. We can do this. Well, this is fine as it is for the moment. We'll try a flipbook with this. Let's bring in our the collider. So we got something to look at. So you can see that I'm simulating here. So I'm going to press Escape to cancel that because I highlighted my top network. I'm going to turn off the display there, click on the brain to stop that from running again. Hide the emitter. Go into my collider. Visualize just right at the top. Oh, actually, the go to the transform because we want the correct scale. I'll go back. Let me, I'm going to give a color to this anyway. Put it off to the side. We'll color it to something, something plain like that. OK, let's put it on smooth shaded. Cool. Head back to the start. See, bring the camera in a bit closer. Something like that. Bit far away. Something about there. OK, and then this flipbook, 100 frames. So flipbook is done. Let's take a look. Looks great. Quite subtle, but you can tell that there are different viscosities. The kind of yellowy one is much thicker. The brown one is softer. You can see it because it flows down so much quickly, so much quicker. But it looks really great. Got a lot of detail. Nice little ripples there. And hopefully they'll be able to bring them out even more in the render.
 
 **Frame:** tutorials\frames\w03-11-meshing-v1-1080p\frame_000.jpg
 
@@ -33,35 +33,27 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-Converting FLIP particle points to a render-ready polygon mesh using a VDB workflow: VDB from Particles -> VDB Smooth SDF -> Convert VDB, with careful voxel size and radius scale tuning to produce a clean mesh that separates distinct fluid layers.
+[PENDING EXTRACTION]
 
 ### Summary
-The instructor builds the particle-to-mesh pipeline from scratch, troubleshooting VDB from Particles settings (voxel size and radius scale) until a visible level set appears. VDB Smooth SDF is then applied to remove particle-level roughness. Convert VDB extracts a polygon mesh. The key insight is that tuning voxel size to a very small value (0.025) in combination with VDB smoothing produces a mesh clean enough for a food close-up render, and distinct VDB layers can be produced per fluid group to keep sauces separate.
+[PENDING EXTRACTION]
 
 ### Key Steps
-1. [`VDB from Particles`] Connect FLIP particle output; set Voxel Size (try 0.1 -> 0.025) until a surface appears
-2. [Radius Scale] Tune Radius Scale (try 1.5 -> 1.0) if the default produces nothing
-3. [`VDB Smooth SDF`] Connect downstream; default settings remove particle-level noise
-4. [`Convert VDB`] Extract polygon mesh from the smoothed SDF level set
-5. [Per-fluid separation] Use a Blast/Group to separate fluid by group; run VDB pipeline per fluid for distinct meshes
-6. [Verify] Check mesh in viewport; confirm smooth continuous surface with no popping or holes
-7. [Output] Feed polygon mesh into shading/rendering network
+[PENDING EXTRACTION]
 
 ### Houdini Nodes / VEX / Settings
-- `VDB from Particles` — converts point clouds to VDB level sets; Voxel Size (smaller = more detail, slower) and Radius Scale (minimum 1.0 recommended by Houdini) are the two critical parameters
-- `VDB Smooth SDF` — Gaussian or mean-curvature flow smoothing on a signed distance field; reduces noise without collapsing thin features
-- `Convert VDB` — extracts polygons from a VDB SDF; default Adaptivity=0 gives uniform quads
-- Layer separation — processing separate fluid groups through independent VDB pipelines keeps sauce colours/shaders distinct
+[PENDING EXTRACTION]
 
 ### Difficulty
-Intermediate
+[PENDING EXTRACTION]
 
 ### Houdini Version
-Houdini 18 (Tabletop Food Simulation course)
+[PENDING EXTRACTION]
+
+### Tags
+[PENDING EXTRACTION]
 
 ---
 
 ## Related Tutorials
-- [Tabletop Week 03 Intro](w03-01-introduction-v1-1080p.md) — the week overview that introduces this meshing step
-- [Tabletop Week 04 Intro](w04-01-introduction-v1-1080p.md) — week 4 also uses VDB meshing for the milk pour
-- [Small Scale Fluids](small-scale-fluids.md) — FLIP meshing reference for small-scale setups
+[PENDING EXTRACTION]
