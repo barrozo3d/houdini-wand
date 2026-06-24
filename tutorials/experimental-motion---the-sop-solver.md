@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=A11B_UE07ac
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["sop", "vop", "particles", "procedural", "advanced"]
+extraction_status: complete
 frames_dir: tutorials/frames/experimental-motion---the-sop-solver/
 frame_count: 4
 ---
@@ -33,27 +33,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Two SOP Solver-driven generative growth systems for organic/naturalistic shapes: (1) coral-like growth via a "life" attribute pushed out along normals with Soft Peak + periodic Remesh to maintain detail, and (2) a vein/neuron "synapse" system using Find Shortest Path + Point Cloud Open/Filter to spread and decay a life attribute through a pre-built 3D vein network.
 
 ### Summary
-[PENDING EXTRACTION]
+A long-form artistic workshop (Yan Paul Dubbelman / Houdini.School) on using the SOP Solver philosophically — guiding a system toward a result rather than authoring every step. **System 1 (coral growth):** starting from a sphere, create a `life` float attribute (Attribute Adjust Float) driven by a Noise pattern, feed it into a Soft Peak node's Distance input (pushes points outward along their normals proportional to `life`) — set the attribute update mode to "Set" (not "Add") so it doesn't runaway-accumulate each frame. Add a Remesh node (small target size, e.g. 0.05) between the previous-frame input and the Soft Peak so the growing shape can keep generating new geometry detail as it expands, rather than stretching a fixed point count thin. Use a Point Velocity node + a one-line Attribute Wrangle (`v = v + n;` reading as redirecting velocity into normal direction) to bias growth toward "up"/toward a light direction rather than growing as a uniform ball; layered Curl Noise on that velocity adds organic wandering. Use `fit($F, startFrame, endFrame, 1, 0)` on the life-setting value to taper growth off over time, producing a finished, non-runaway shape — a good base mesh for flowers/grass/scatter rather than a hero asset (caveat: per-frame remeshing means point count/order is inconsistent frame-to-frame, breaking Attribute Copy / Vellum / stable UVs unless you freeze the last frame or skip the Remesh). Labs **Sharpen Mesh** repeated through the solver (small step size, e.g. 0.01) turns the soft coral look into angular/rocky/crystalline shapes; masking the sharpen (or the soft peak) with a group expression on the `life` attribute (e.g. `@life > 0.05`) art-directs WHERE the effect applies. A **Mask by Feature** node aimed "from the sky" can replace the raw noise as the life source, so growth only happens toward a simulated light direction, with shaded/occluded areas naturally losing energy.
+
+**System 2 (veins/synapses):** model a vein network procedurally — Find Shortest Path from a small "start" point group to all other points (Path Cost controls how far branches reach; fewer start points = longer reaching branches), embed interior structure first with **Tetrahedron Embed** (fills the mesh's volume with internal tetrahedra) so veins can route through the inside, not just the surface, then Fuse (critical — removes hundreds of thousands of overlapping duplicate path points) and Resample with Subdivision Curves treatment for smooth organic vein curves instead of hard angular path segments. Use Match Size to normalize input geometry scale (Remesh/Tet Embed are scale-sensitive) so the same network logic works on a sphere, helix, or any other base shape. Feed this vein mesh into a SOP Solver: seed a few random "neuron" points each frame (re-seeded via `$F` as the random seed so different points fire over time) with a life value, then use **Point Cloud Open** + **Point Cloud Filter** (a blur-like neighbor-averaging system, not a simple SOP) inside an Attribute VOP (bind/bind-export of the `life` attribute) to spread that life value to nearby points — feed both the "first frame" input and "previous frame" input into an Add so life keeps accumulating and spreading, then Multiply by a constant <1 each frame to decay it back toward zero, producing flashing/fading "neuron firing" pulses that travel along the vein network. A frame-modulo expression (`$F % N == 0`) gates how often new neurons fire (e.g. every 15 frames) for a heartbeat-like rhythm instead of constant flicker. The resulting `life` attribute can drive a Sweep/round-tube radius (`Attribute Remap` → P-scale) for a pulsing vein/blood-vessel visual, or directly drive shader color via an Attribute-from-`live` Color node.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**Coral growth:** Sphere → SOP Solver (wire previous-frame input) → inside: Attribute Adjust Float (`life`, driven by Noise) → Remesh (small target size) → Soft Peak (Distance = `life`) → out. Add Point Velocity + Attribute Wrangle (`v = v + n;`) to bias growth direction; add Curl Noise on velocity for organic wander. Use `fit($F, t0, t1, 1, 0)` on the life-set value to taper growth to a finished state. Layer Labs Sharpen Mesh (small step size) inside the same solver loop for angular/crystalline variants; mask either node's effect with a group expression on `life` for art-directed regions; swap the raw Noise source for a Mask by Feature (sky-direction light) to make growth phototropic.
+
+**Veins/synapses:** Build a vein mesh outside the solver first: small "start" point group (random or bounding-box-based) → Find Shortest Path (Start/End groups, "from each start to any end", Path Cost) → for interior veins, run Tetrahedron Embed before the path search → Fuse (removes duplicate overlapping path points — can drop point count by ~98%) → Resample with Subdivision Curves treatment for smoothing. Normalize input scale with Match Size beforehand. Feed the finished vein mesh into a new SOP Solver: each frame, randomly select ~0.05–1% of points (`$F`-seeded) into a `life`-valued group (simulating firing neurons); inside an Attribute VOP wired with Bind/Bind Export of `life`, use Point Cloud Open (radius + point count controls blur tightness) and Point Cloud Filter to spread life to nearby points; Add the spread result to both the original first-frame input and the previous-frame input so it keeps accumulating/traveling, then Multiply by a decay constant (<1) each frame so old activity fades; gate new-neuron firing frequency with `$F % N == 0`. Drive a Sweep tube's P-scale or a shader's color from the resulting `life` attribute for the final pulsing-vein visual.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOP Solver (previous-frame feedback loop; must focus/pin outside the solver to see results), Attribute Adjust Float, Noise, Soft Peak (Distance from attribute), Remesh (target size), Point Velocity, Attribute Wrangle (`v = v + n;` for normal-direction bias), Curl Noise, Color (Attribute-from node, for visualizing `life`), Labs Sharpen Mesh (step size), group expressions for masking (e.g. `@life > 0.05`), Mask by Feature (sky-direction light source), `fit()` VEX/expression function for tapering over `$F`. Vein system: group creation (random-chance point selection, bounding-region selection), Find Shortest Path (Start/End point groups, Path Cost, "from each start to any end"), Tetrahedron Embed, Fuse, Resample (Subdivision Curves treatment, max segment length), Match Size (Center + Scale to Fit), Sweep (round tube profile), Attribute VOP with Bind/Bind Export, Point Cloud Open, Point Cloud Filter, Attribute Remap, modulo frame-gating expressions (`$F % N`).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — both systems require comfort with SOP Solvers, VEX/VOPs, Point Cloud functions, and an experimental, iterative "guide the system" mindset rather than predictable step-by-step modeling.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+"sop", "vop", "particles", "procedural", "advanced"
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `51-introducing-the-sop-solver-v1-1080p.md`, `52-creating-a-simplified-particle-system-v1-1080p.md`, `53-recreating-our-solver-with-pops-v1-1080p.md` — share SOP Solver fundamentals at a more beginner level
+- `experimental-motion---chops.md` — likely the same Houdini.School "Experimental Motion" series, different topic (CHOPs)
+- `yan-paul-dubbelman-procedural-nature-high-quality-custom-leaves.md`, `yan-paul-dubbelman-procedural-nature-procedural-living-plants.md` — same artist/instructor, shares organic procedural-growth philosophy

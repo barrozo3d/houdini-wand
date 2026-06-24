@@ -531,9 +531,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=A11B_UE07ac
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "sop-solver", "dop", "procedural-animation", "simulation", "organic", "rendering", "lighting", "art-direction"
-- **Summary:** Yan Paul Dubbelman presents an 89-minute live session dedicated to the SOP Solver in Houdini. The session covers two distinct approaches to the SOP Solver, demonstrating both setups to give viewers a solid understanding of this powerful but tricky tool. Dubbelman focuses on systems that simulate "life" — organic, evolving motion — rather than standard physics simulations. The session ends with...
+- **Houdini Version:** Not specified
+- **Tags:** "sop", "vop", "particles", "procedural", "advanced"
+- **Summary:** Yan Paul Dubbelman's 89-minute SOP Solver workshop covering two generative systems: (1) coral-like growth via a `life` attribute driving Soft Peak (push along normals) inside a per-frame Remesh loop, with normal-biased velocity, Curl Noise, Labs Sharpen Mesh, and `fit($F,...)` tapering for art-directed organic/crystalline shapes; (2) a 3D vein/"synapse" network built with Find Shortest Path + Tetrahedron Embed + Fuse + Resample, then animated via Point Cloud Open/Filter spreading a decaying `life` attribute for pulsing neuron-firing visuals, drivable into a Sweep's radius or shader color.
 - **File:** tutorials/experimental-motion---the-sop-solver.md
 
 
