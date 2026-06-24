@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=EMmAmGGsI6I
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/03-houdini-versions-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,32 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Not a technical tutorial — a licensing/edition overview so newcomers pick the right Houdini version before starting a course.
 
 ### Summary
-[PENDING EXTRACTION]
+Explains SideFX's Houdini license tiers: Core (full toolset minus FX — no Pyro/fluids/RBD/particles/crowds, still capable for modeling/lighting/general work), FX (complete unlimited package), Indie (FX feature set, limited commercial license, render cap 4K×4K), Education (FX features for verified teaching institutions), and Apprentice (free, full FX features for learning, with watermarked renders and a resolution cap). Recommends Apprentice as sufficient for following along with a learning course.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Compare editions on SideFX's site: Commercial (Indie/FX/Studio/Pipeline) vs. learning/non-commercial (Apprentice, Education).
+2. Choose Core only if FX/simulation tools (Pyro, fluids, rigid bodies, particles, crowds) aren't needed — cheaper, still broadly capable.
+3. Choose FX for full unlimited commercial simulation work.
+4. Choose Indie for freelancers/small studios needing FX features under a limited commercial license (render output capped at 4K×4K).
+5. Choose Education if affiliated with a teaching institution.
+6. Choose Apprentice (free) for learning — full FX feature set, but renders are watermarked and resolution-limited.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+N/A — licensing overview, no node/VEX content.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — informational only.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (general SideFX licensing overview, not version-specific).
 
 ### Tags
-[PENDING EXTRACTION]
+#beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None — this is a standalone licensing/setup primer, not a technique tutorial.
