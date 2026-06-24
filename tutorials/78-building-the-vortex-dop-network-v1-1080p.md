@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=FAE7gVev-ss
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["dop", "pyro", "smoke", "simulation", "advanced"]
+extraction_status: complete
 frames_dir: tutorials/frames/78-building-the-vortex-dop-network-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building the actual Pyro DOP network around the torus source from the previous lesson — sizing the smoke object using a temporary static-object proxy, redirecting buoyancy away from "up" to drive the vortex sideways, and tuning the Dissipation micro-solver's Control Field (temperature-remapped dissipation range) to actually take visible effect given the source's un-normalized (0–2, continuously re-added) density/temperature values.
 
 ### Summary
-[PENDING EXTRACTION]
+Sets up the minimum required Pyro sim network: Pyro Solver, Smoke Object, and a Volume Source referencing the torus source built previously. To size the Smoke Object's simulation bounds correctly relative to the source torus, creates a throwaway Static Object referencing the torus (via Object Transform + copied sub-path), merges it temporarily into the view for visual sizing reference only, then deletes it once the Smoke Object's Division Size/position parameters are dialed in (using copy-parameter "based relative reference" links so the Volume Source inherits the same division size as the Smoke Object, and aligning the torus's known center height into the object's position math). Sets Volume Source to source Smoke (Density, Temperature, and Velocity) from the prepared torus-source geometry. Key creative deviation: on the Pyro Solver, buoyancy is NOT left pointing up — its direction is changed to point along -Z, so the simulation's natural rising motion instead becomes lateral motion in the desired vortex travel direction. Enables Dynamic Resize (tracking the source) so the sim container grows to follow the moving emitter. After an initial fast, low-resolution test run (confirming the vortex shape reads correctly with combustion off and minimal disturbance), raises Voxel/Division resolution to ~0.3 for more detail, then tunes the Dissipation micro-solver: setting a high Dissipation amount (e.g. 0.9) initially appeared to do nothing, which becomes the lesson's main teaching point about the **Control Field** system shared by most Pyro micro-solvers — it remaps the dissipation amount based on a chosen scalar field (here, Temperature) across a Control Range (e.g. 0 to 1 by default): low values in that field get more dissipation, high values get less. Since the actual source data uses density/temperature values up to ~2 — and the Volume Source re-adds (accumulates) that amount every single simulation step rather than setting it once — the default 0–1 Control Range never meaningfully engages; raising the Control Range maximum to ~4 (accounting for the cumulative re-addition) makes the Dissipation solver's effect become clearly visible, causing the trailing smoke to fade out well before reaching the end of its travel instead of persisting the whole way.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. New network: add Pyro Solver, Smoke Object, Volume Source (the three essential Pyro DOP ingredients).
+2. Temporarily reference the source Torus into a Static Object (Object Transform + copied sub-path) purely to visualize true size/position while sizing the Smoke Object's simulation bounds; merge it into the viewport, then delete once sizing is locked in.
+3. Set Smoke Object Division Size and position using copy-parameter "based relative reference" links (e.g. dividing a size value by 2) so dimensions stay synced/derived rather than hardcoded; account for the torus's known center-height offset (e.g. 1.5) when positioning the container; push the container in the intended travel direction (e.g. -1 on an axis).
+4. Link the Volume Source's Division Size to the same based-relative-reference value as the Smoke Object, so source and container resolution stay in sync.
+5. Volume Source: assign the torus-source geometry as input; set Source to Smoke, sourcing Density, Temperature, and Velocity.
+6. On the Pyro Solver: change Buoyancy Direction away from the default up-axis to the desired travel direction (e.g. -Z) so the sim's natural buoyant rise instead drives lateral vortex motion.
+7. Enable Dynamic Resize (and have it track the source object) so the sim bounds expand to follow the moving emitter.
+8. Add a camera, run an initial low-res test to confirm overall vortex shape reads correctly (combustion off, no extra turbulence/disturbance added yet — shape comes purely from the source geometry's own motion).
+9. Raise resolution (Division Size ~0.3) for a more detailed final look.
+10. Tune Dissipation: set a high Dissipation value (e.g. 0.9) — if no visible effect appears, open the Dissipation micro-solver's **Control Field** settings; set the control field to Temperature, and raise the **Control Range** maximum from the 0–1 default to roughly match (or exceed, since Volume Source re-adds source values every step) the actual peak density/temperature values in use (e.g. up to 4 for source values around 2) — this makes low-temperature regions dissipate fast and high-temperature regions persist, producing a visibly fading trail instead of smoke persisting unchanged all the way to the end of the shot.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Pyro Solver (Buoyancy Direction), Smoke Object (Division Size, Dynamic Resize + track source), Volume Source (Source: Smoke — Density/Temperature/Velocity, Division Size), Static Object + Object Transform (temporary sizing proxy, deleted after use), Dissipation micro-solver (Dissipation amount, Control Field = Temperature, Control Range min/max remapping). Copy Parameter "based relative reference" linking for keeping dimensions in sync across nodes.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — assumes the prior lesson's source-building work and general Pyro DOP fluency; the Control Field remapping concept generalizes to most other Pyro micro-solvers (combustion, turbulence, etc.), not just dissipation.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+"dop", "pyro", "smoke", "simulation", "advanced"
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `76-starting-the-smoke-vortex-v1-1080p.md` — direct prerequisite, builds the torus source geometry and velocity field this lesson feeds into the actual Pyro DOP sim

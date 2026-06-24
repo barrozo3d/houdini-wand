@@ -849,9 +849,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=FAE7gVev-ss
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** dop, sop, pyro, volumes, simulation, intermediate
-- **Summary:** The core network uses three nodes: Pyro Solver, Smoke Object and Volume Source. A sizing trick temporarily adds a Static Object with the torus geometry to visually calibrate the Smoke Object's bounding box, which is then removed once sizing is confirmed. The smoke container is set to roughly 3 units wide, centered at 1.5 height to match the torus position, using "copy parameter / paste...
+- **Houdini Version:** Not specified
+- **Tags:** "dop", "pyro", "smoke", "simulation", "advanced"
+- **Summary:** Builds the Pyro DOP network (Pyro Solver, Smoke Object, Volume Source) around the prior lesson's torus source, sizing the container via a temporary Static Object proxy. Redirects Buoyancy Direction away from "up" to drive the vortex sideways instead. Main teaching point: the Dissipation micro-solver's Control Field (remaps dissipation by Temperature over a Control Range) appears to do nothing at the default 0-1 range because the source's density/temperature values run up to ~2 and are re-added every step by Volume Source — raising the Control Range max to ~4 makes dissipation visibly take effect.
 - **File:** tutorials/78-building-the-vortex-dop-network-v1-1080p.md
 
 
