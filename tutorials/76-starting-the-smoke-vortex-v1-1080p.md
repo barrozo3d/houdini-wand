@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=BFZ3tItjKn8
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["dop", "sop", "pyro", "smoke", "simulation", "intermediate"]
+extraction_status: complete
 frames_dir: tutorials/frames/76-starting-the-smoke-vortex-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a rotating, shape-distorted Torus as the emitter geometry for a Pyro smoke vortex — scattering source points across the torus surface and computing per-point velocity from its rotation + animated noise distortion so the resulting smoke inherits realistic swirling motion from the source geometry itself.
 
 ### Summary
-[PENDING EXTRACTION]
+Continuation lesson (follows a prior sine-function/sphere demo) applying the same animation principles to a new emitter shape. Builds a Torus (aligned to Z, tuned radius/thickness ~0.6/0.025), increases its row/column resolution, applies a Transform (kept separate, for non-uniform scaling) and a Subdivide for smoother geometry, lifts it off the ground, and animates rotation around Z via `time * 120` (or similar) — referencing the original Torus into a "torus source" network via Object Merge (importantly bringing the Transform along so the merged copy still inherits the rotation animation). Adds a Mountain SOP (noise displacement, not centered, asymmetric dimensions like 0.2/0.4) driven by `time` so the shape continuously warps as it spins. Computes per-point **velocity from the geometry's actual motion** using a Trail SOP set to "Compute Velocity" — this captures both the rotation and the mountain-noise shape change as a true velocity field (visible as velocity trails on the points). Converts the result into a **Pyro Source** node (set to NOT keep the input, but instead do Volume Scatter to generate points inside the volume, with tuned Particle Separation) configured to source both density and temperature. Since the Pyro Source's own scattered points don't carry the Trail SOP's velocity, an **Attribute Transfer** node pulls the velocity attribute from the torus-source points onto the newly scattered pyro-source points, restoring the rotational/shape-change motion on the actual smoke-driving points. Adds an **Attribute Noise** node (animated, centered, reduced saturation ~0.5, element size ~0.25, increased roughness ~0.8, remapped to a 0–1 range) to add density/temperature variation, applied identically to both fields (previewed on a Color attribute first for visual feedback before assigning to Density/Temperature). Finishes by converting these point attributes into actual sim volumes with **Volume Rasterize Attributes**, rasterizing both Density and Temperature using a Voxel Size tied to the same particle-separation-style reference value (~0.05) — producing the two source volumes (density + temperature) that will drive the Pyro simulation in a later lesson.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Torus: align to Z axis, tune Radius (~0.6) and minor radius (~0.025), increase Rows (e.g. 16) and Columns resolution; Shift+W to preview subdivisions.
+2. Transform SOP (kept separate, for axis-specific scaling) → Subdivide for smoother geometry.
+3. Lift the torus off the ground (translate Z ~1) and animate Rotation Z with an expression like `time * 120` for continuous spin.
+4. New geometry network "torus source": Object Merge the torus — critically, merge it in a way that includes its Transform node so the rotation animation is preserved in the new context.
+5. Mountain SOP: enable noise displacement, uncheck Center, set asymmetric dimensions (e.g. 0.2 / 0.4), animate via `time` in the noise offset so the shape warps continuously; tune Element Size/Frequency (~0.6).
+6. Trail SOP → Compute Velocity, to derive a true per-point velocity attribute from the combined rotation + shape-change motion (verify via visible velocity trails).
+7. Pyro Source node: disable "Keep Input," enable Volume Scatter (points generated inside the volume, tune Particle Separation lower to preview density), set to source Smoke (Density + Temperature).
+8. Attribute Transfer: pull the `v` (velocity) attribute from the torus-source points onto the Pyro Source's newly scattered points, since Volume Scatter's own points start without velocity.
+9. Attribute Noise: animated, Center on, Saturation ~0.5, Element Size ~0.25, Roughness ~0.8, Minimum 0 remapped toward 1 — preview on Color first, then apply identically to Density and Temperature for organic variation.
+10. Volume Rasterize Attributes: rasterize Density and Temperature point attributes into actual volume grids, Voxel Size tied to the same reference scale (~0.05) used for Particle Separation — produces the final density + temperature source volumes.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Torus, Transform, Subdivide, Object Merge (bringing in upstream Transform for animation), Mountain (noise displacement, animated via `time`), Trail (Compute Velocity), Pyro Source (Volume Scatter, Particle Separation, Source Smoke: Density + Temperature), Attribute Transfer (velocity), Attribute Noise (animated, Saturation, Element Size, Roughness, remap range), Volume Rasterize Attributes (Voxel Size). Expression: `time * <speed>` for rotation/noise animation.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate to Advanced — assumes familiarity with basic Pyro source-building concepts; this lesson specifically focuses on deriving believable emitter velocity from animated source geometry rather than faking it.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+"dop", "sop", "pyro", "smoke", "simulation", "intermediate"
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `78-building-the-vortex-dop-network-v1-1080p.md` — direct continuation, takes these source volumes into the actual Pyro DOP simulation
