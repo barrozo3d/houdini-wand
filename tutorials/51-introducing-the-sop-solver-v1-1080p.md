@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=8HkP7iVgi0Y
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["sop", "vex", "wrangler", "particles", "simulation", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/51-introducing-the-sop-solver-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Manually building a position-integration solver from scratch with the SOP Solver node, to understand what particle/POP solvers do under the hood: feeding each frame's previous-frame geometry back into a wrangle that updates position by velocity × the per-frame time increment.
 
 ### Summary
-[PENDING EXTRACTION]
+Before touching POPs, builds the same per-frame position update manually to demystify what a solver actually does. Scatters 100 points on a grid, gives them a constant velocity attribute `v` (vector, meters/second — Houdini's native unit), and writes a Point Wrangle (`@P = @P + @v;`) that nudges position once. Demonstrates that running this wrangle once doesn't animate anything over time — it has to be re-applied every frame. Wraps the same wrangle inside a **SOP Solver** node, which automatically feeds back the previous frame's result as input on each subsequent frame, producing real per-frame animation when scrubbing the timeline. Then catches and fixes the classic frame-rate bug: velocity is defined in meters/second, but the solver runs per-frame, not per-second — so naively adding `@v` each frame moves the particles 24× too fast at 24fps. Fix: multiply velocity by Houdini's built-in `$TimeInc` (1/fps) before adding, so the position update is correctly scaled to one frame's worth of motion (`@P = @P + @v * $TimeInc;`).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. File → New Project; create a Geometry container, dive in.
+2. Grid SOP (1×1) → Scatter SOP (~100 points, relax iterations disabled) → hide the Grid, switch viewport to dark background.
+3. Attribute Create: name `v`, type Vector, value (0, 1, 0) — a constant "1 m/s on Y" velocity attribute on every point.
+4. Point Wrangle named e.g. "update position": `@P = @P + @v;` — confirms a one-shot position nudge, but scrubbing the timeline does nothing further since it's not re-applied per frame.
+5. Add a **SOP Solver** node; copy the wrangle inside it; wire it after the Attribute Create. Inside the solver, the wrangle now reads from "previous frame" input instead of the static first-frame geometry, so each frame's wrangle output feeds the next frame's input.
+6. Scrub/play the timeline (e.g. extend playback range to 120 frames) — particles now visibly animate; the timeline turns blue where cached, and a Reset Simulation button appears, confirming it's a real time-dependent simulation.
+7. **Bug discovered:** front view (Spacebar 3) shows particles moving 1 unit per FRAME, not per second — wrong, since velocity was defined as meters/SECOND but the solver runs once per frame (24 fps project).
+8. **Fix:** multiply `@v` by Houdini's global `$TimeInc` variable (= 1/fps) before adding to position: `@P = @P + @v * $TimeInc;`. Order of operations is multiply-then-add. Result: particles now correctly travel exactly 1 meter by frame 24, 2 meters by frame 48, etc., matching the intended 1 m/s velocity.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Grid, Scatter, Attribute Create (vector attribute `v`), Point Wrangle, **SOP Solver** (feeds previous-frame geometry back as input each frame). VEX: `@P`, `@v`, global `$TimeInc` variable (1/fps, used to convert a per-second velocity into a correct per-frame position delta). Viewport: Spacebar+3 for front view, `d` for background/display options.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner to Intermediate — foundational for understanding any time-based simulation in Houdini (POPs, DOPs, custom solvers); the `$TimeInc` gotcha is a common early-career bug worth internalizing.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+"sop", "vex", "wrangler", "particles", "simulation", "beginner"
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `52-creating-a-simplified-particle-system-v1-1080p.md` — direct continuation, building on this SOP Solver foundation
+- `53-recreating-our-solver-with-pops-v1-1080p.md` — recreates this exact solver using native POPs, a natural next step

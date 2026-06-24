@@ -809,9 +809,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=8HkP7iVgi0Y
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** sop, dop, vex, particles, simulation, intermediate
-- **Summary:** Creates a geometry network with a Scatter SOP (100 points) as the particle source. Explains that a particle solver tracks each point's position and velocity as vectors and integrates motion each frame: new_position = old_position + velocity * timestep. Builds this directly with an Attribute Wrangle inside a SOP Solver using `@P += @v * ch('timestep');`. Adds gravity by subtracting from the Y...
+- **Houdini Version:** Not specified
+- **Tags:** "sop", "vex", "wrangler", "particles", "simulation", "beginner"
+- **Summary:** Manually builds a position-integration solver to demystify what POP/particle solvers do: scatters points on a grid, gives them a constant velocity attribute, and wires a Point Wrangle (`@P = @P + @v;`) inside a SOP Solver so each frame feeds back the previous frame's result. Catches and fixes the classic per-frame-vs-per-second bug by multiplying velocity by Houdini's `$TimeInc` global variable.
 - **File:** tutorials/51-introducing-the-sop-solver-v1-1080p.md
 
 
