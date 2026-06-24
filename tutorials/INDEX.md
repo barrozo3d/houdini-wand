@@ -789,9 +789,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=W1_pCONvY_o
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** sop, dop, pyro, particles, rbd, rendering, mantra, beginner
-- **Summary:** Walks through the course week-by-week: Week 1 covers Houdini versions/hardware, the interface, modelling Thor's hammer, shaders and a Mantra render. Week 2 covers scene setup, CHOP-based animation of the hammer, ray effects, WOPS for geometry and ramps. Week 3 introduces particles and POPs for a lightning/ray storm. Later weeks cover pyro (smoke/fire), RBD destruction, FLIP fluids and final...
+- **Houdini Version:** Not specified
+- **Tags:** "sop", "vop", "particles", "simulation", "pyro", "beginner"
+- **Summary:** Syllabus/overview (not hands-on) for a 5-week Thor's Hammer lightning-strike VFX course: Week 1 modeling/shading/interface basics; Week 2 CHOPs animation + ray/lightning VOPs setup; Week 3 points/particles/collisions + spark system; Week 4 volumes/Pyro solver smoke pass; Week 5 materials/render passes/COPs compositing.
 - **File:** tutorials/00-weeks-overview-v1-1080p.md
 
 

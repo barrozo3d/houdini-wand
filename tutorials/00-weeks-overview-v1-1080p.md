@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=W1_pCONvY_o
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["sop", "vop", "particles", "simulation", "pyro", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/00-weeks-overview-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,27 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course syllabus/overview trailer (not a hands-on tutorial) for a 5-week Houdini VFX course building a Thor's Hammer lightning-strike shot — maps what each week covers so learners know what to expect before starting.
 
 ### Summary
-[PENDING EXTRACTION]
+Outlines a 5-week project-based course: Week 1 — Houdini interface/versions/hardware, procedural workflow basics, modeling a Thor's Hammer asset with shaders and a first render. Week 2 — animating the hammer via CHOPs, building the main "ray"/lightning-strike setup with ray ramifications and extra rays, VOPs for geometry modification and attribute ramps. Week 3 — points, particles, and collisions fundamentals via a comparative simple example, then building a spark particle system for the final shot. Week 4 — volumes and the Pyro solver, building the smoke pass caused by the lightning impact from Week 2. Week 5 — bringing it together: materials for each effect, render passes, and compositing the final shot using COPs.
 
 ### Key Steps
-[PENDING EXTRACTION]
+N/A — syllabus only, no hands-on steps in this video. Topic map for the underlying course: Week 1 modeling/shading basics → Week 2 CHOPs animation + ray/lightning VOPs setup → Week 3 points/particles/collisions + spark system → Week 4 volumes/Pyro smoke pass → Week 5 materials/render passes/COPs compositing.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Mentions (by category, not demonstrated): CHOPs (animation), VOPs (geometry modification, attribute ramps), particle/points/collision systems, Pyro solver (volumes/smoke), COPs (compositing). No specific node graph shown in this overview.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner (course entry point — explicitly designed to take beginners through a full VFX pipeline).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+"sop", "vop", "particles", "simulation", "pyro", "beginner"
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None with direct technical overlap — this is a syllabus/overview, not a technique entry. Worth cross-referencing once other "module"/"week" numbered entries from the same course (The VFX School Archive) are extracted, since they likely form a continuous series.
