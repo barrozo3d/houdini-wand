@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=l65A4S4YhSw
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["sop", "vex", "wrangler", "particles", "simulation", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/52-creating-a-simplified-particle-system-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,34 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Extends the manual SOP Solver position-integration setup (from the previous lesson) into a simplified hand-rolled particle system: continuous emission, age/lifespan-based death, and randomized per-particle velocity — all built from first principles in VEX before introducing native POPs.
 
 ### Summary
-[PENDING EXTRACTION]
+Direct continuation of "introducing the sop solver." First, makes the Scatter node re-randomize every frame by setting its Global Seed to `$F` (frame number), then merges the solver's own previous-frame output with freshly-scattered Input 1 particles each frame, producing continuous particle emission rather than one static batch. Adds an `age` float attribute (starts at 0) and increments it every frame inside the solver via `age += $TimeInc` (equivalent to `age = age + $TimeInc`). Adds a `life` attribute (lifespan, e.g. 3 seconds) and a Point Wrangle inside the solver that calls `removepoint(0, @ptnum)` when `@age >= @life`, so particles die naturally once they exceed their lifespan. Finally introduces per-particle randomness: a Point Wrangle multiplies the velocity by `fit01(rand(@ptnum + @Frame), 0.5, 1.5)` so each particle gets a unique, frame-seeded random speed multiplier between 0.5x and 1.5x, instead of every particle moving at an identical uniform velocity. Frames this whole exercise as proof that a serviceable particle system can be hand-built from simple VEX rules inside a SOP Solver — sets up the next lesson's comparison against doing the same thing with native POPs.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. On the Scatter SOP, set Global Seed to `$F` so each frame produces a newly randomized point distribution.
+2. Inside the SOP Solver, merge the previous frame's simulated particles (already updated by the position wrangle) with the freshly-scattered Input 1 points each frame — this is what produces continuous emission instead of one static batch of particles.
+3. Add an Attribute Create node for `age` (float, default 0) before the solver.
+4. Inside the solver, add an "update position and age" wrangle: increment age each frame with `@age += $TimeInc` (mirrors the earlier `@P += @v * $TimeInc` position-update pattern).
+5. Add an Attribute Create node for `life` (float, e.g. 3.0 — lifespan in seconds).
+6. Inside the solver, add a Point Wrangle that removes points once they've exceeded their lifespan: `if (@age >= @life) removepoint(0, @ptnum);`.
+7. Add a Point Wrangle to randomize velocity: `@v *= fit01(rand(@ptnum + @Frame), 0.5, 1.5);` — uses point number + frame as a varying random seed so each particle's speed differs and changes pattern over time, rather than every particle sharing one constant velocity value.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Scatter (Global Seed = `$F`), SOP Solver (merging previous-frame output with new Input 1 particles for continuous emission), Attribute Create (`age` float, `life` float), Point Wrangle (age increment via `$TimeInc`, lifespan-based `removepoint()`, randomized velocity via `rand()` + `fit01()`). VEX functions: `removepoint(geo, ptnum)`, `rand()`, `fit01()`, global `$TimeInc` and `$Frame`/`@Frame`.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner to Intermediate — builds directly on the SOP Solver fundamentals lesson; the VEX patterns here (lifespan removal, randomized attributes) are common building blocks reused across native POP/DOP work later.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+"sop", "vex", "wrangler", "particles", "simulation", "beginner"
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `51-introducing-the-sop-solver-v1-1080p.md` — direct prerequisite, introduces the SOP Solver and `$TimeInc` position-integration pattern this lesson builds on
+- `53-recreating-our-solver-with-pops-v1-1080p.md` — direct continuation, rebuilds this same emission/age/randomization system using native POPs instead of hand-rolled VEX

@@ -819,9 +819,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=l65A4S4YhSw
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** sop, dop, particles, simulation, intermediate
-- **Summary:** Uses `$F` as the global seed on the Scatter node so each frame produces a fresh point distribution. Inside the solver, merges the previous frame's existing particles (first input) with the new frame's freshly scattered particles (second input) using a Merge SOP, so the system continuously grows rather than resetting. Adds age tracking by incrementing `@age += 1/$FPS` each frame, and adds...
+- **Houdini Version:** Not specified
+- **Tags:** "sop", "vex", "wrangler", "particles", "simulation", "beginner"
+- **Summary:** Extends the manual SOP Solver setup into a hand-rolled particle system: Scatter's Global Seed set to `$F` for continuous emission, an `age` attribute incremented via `@age += $TimeInc` each frame, lifespan-based death via `removepoint()` when age exceeds a `life` attribute, and per-particle randomized velocity via `rand(@ptnum + @Frame)` + `fit01()`. Sets up a later comparison against native POPs.
 - **File:** tutorials/52-creating-a-simplified-particle-system-v1-1080p.md
 
 
