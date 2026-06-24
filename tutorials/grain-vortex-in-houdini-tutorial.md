@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=8fcfu6gmzUQ
 author: raphaël
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["dop", "sop", "rbd", "simulation", "procedural", "advanced"]
+extraction_status: complete
 frames_dir: tutorials/frames/grain-vortex-in-houdini-tutorial/
 frame_count: 4
 ---
@@ -33,27 +33,42 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A two-stage RBD Bullet sim of rock proxies — first a settle/drop sim, then a second Bullet sim with vortex POP forces (Axis + Wind) — re-timed with a non-linear speed ramp for a slow-mo swirling-rocks shot, finished by transferring the simulated motion back onto high-poly Megascans geometry via a transform-points trick.
 
 ### Summary
-[PENDING EXTRACTION]
+Scatters a Megascans rock (reduced to a ~100-face/50-point low-poly proxy for sim performance, high-poly kept separately via a Null for final render) onto 10,000 points scattered inside a box volume (Scatter on an ISO-Offset volume), randomizing per-instance orientation with a MOPs Randomize node. De-intersects the scattered copies using a Boolean (Detect operation) to flag intersecting polygons, then iteratively uses Proximity Blast / nearest-point deletion (repeating the check-and-delete pass until no intersecting geometry remains) before re-running Copy to Points. Builds a box collider (Peak to extend it outward past the scattered points' actual bounds, top face removed, Poly Extrude for thickness) and scales the whole scene up 5x before simulating (RBD sims are cheaper/more accurate at larger physical scale). **Sim 1 (settle):** Bullet Solver, 5 substeps, tuned Collision Padding (lowered to ~0.002 to match the visualized collision shape to the actual mesh) and Collision Shape set to Concave (not the default Convex Hull) for the box collider — settles ~30 frames of rocks falling and resting under gravity/collision only. Splitting settle and swirl into two separate sims (rather than one long sim) avoids having to wait through the settle phase every time you tweak swirl-force parameters. **Sim 2 (vortex):** grabs frame 25 of the settled sim via a frozen Time Shift, removes points inside a custom "smiley face" collider shape (Group + Keep Bounding Region on points, then Blast) to carve out a hole in the rock field, re-packs as packed instances (required/preferred for Bullet), adds a merged Box+Smiley collider, 10 substeps, and two POP forces: **POP Axis Force** (the main swirl, large radius, with some inward suction so rocks don't fly to the box edges) and **POP Wind** (amplitude ~2.5, scale 0.5, low length, higher roughness, for turbulent variation) — plus an Attribute Wrangle zeroing `v.y` each step to suppress excessive upward ejection without having to perfectly hand-tune the force values. After simulating (~25 frames cached), points that drifted back inside the smiley-face hole are cleaned up with the same group+blast trick used to carve the hole originally (accepting that a few points simply vanish as the simplest fix). **Re-timing for slow-mo:** a Re-Time SOP stretches frames 1–25 to output frames 1–250 (10x slowdown), a Time Shift trims the clean opening 50 frames (`$F + 49`) so the shot starts mid-turbulence rather than on the flat initial state, and a second Re-Time set to "By Frame" with custom keyframes (and handles set to maintain equal acceleration via the R hotkey) creates a fast-slow-fast S-curve speed ramp for a more dynamic, transition-friendly motion feel. **High-poly swap:** Delete Geometry (keep Points only) → Attribute Wrangle setting `@transform` rows' translation to (0,0,0)/identity (effectively centering each packed point's transform) → delete the now-unneeded transform attribute → Copy to Points with the high-poly geometry as the source → Transform Pieces (second input = the original simulated low-poly points) to apply the captured motion/orientation onto the high-poly copies. Finishes with per-piece random color, undoing the earlier 5x scale-up, Megascans PBR shading (custom diffuse ramp + Color Composite Multiply for tonal variation) and a 3-light setup: a dim fill HDRI, a key light from upper-right, and an uplight beneath the smiley-face cutout for rim lighting.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Import/Match Size a Megascans rock; strip unneeded attributes (keep Position/Normal/UV); keep a Null with the high-poly version, and a Poly Reduce (~0.01% keep, down to ~100 faces) for the low-poly sim proxy.
+2. Box → ISO Offset (volume) → Scatter (10,000 points) → Copy to Points (low-poly rock) → MOPs Randomize (orientation).
+3. De-intersect: Boolean (Detect) → Blast non-selected (keep only intersecting polys) → find nearest scatter point to that geometry → delete those points → re-run Copy to Points; repeat the check (duplicate the detect/blast chain) until no intersecting geometry remains; Proximity-based search-radius blast can speed up bulk removal before the precise per-point pass.
+4. Build the box collider: extend bounds past the actual scattered point cloud with Peak, delete the top face (Blast the prim), Poly Extrude for wall thickness (output back face).
+5. Scale entire scattered geo + collider up 5x for cheaper/more accurate Bullet sim behavior.
+6. **Sim 1:** Bullet Solver (5 substeps) on the scattered rocks vs. the box collider; lower Collision Padding (~0.002) and set the collider's Collision Shape to Concave to match visualized collision geometry to the actual mesh; cache ~30 frames to let rocks settle.
+7. Trim sim output to just the ID attribute; freeze frame 25 with a Time Shift (Ctrl+Shift-click to clear its frame expression).
+8. Carve the smiley-face hole: Group (second input = smiley collider) → Keep points inside that Bounding Region → Blast; ensure the rock copies are Packed Instances (Pack and Instance toggle on Copy to Points) so a deleted point removes the whole rock, not a sub-piece.
+9. **Sim 2:** merge Box + Smiley colliders; Bullet Solver, 10 substeps; add POP Axis Force (large radius, suction inward) for the swirl, POP Wind (amplitude 2.5, scale 0.5, low length, higher roughness) for turbulence, and an Attribute Wrangle (`v.y = 0;` or similar) to suppress excessive upward launch; cache ~25 frames.
+10. Clean stray points that re-entered the smiley-face hole using the same Group+Blast pattern from step 8.
+11. Re-Time SOP: Speed 0.1 (or explicit Input range 1–25 → Output range 1–250) for a 10x slowdown.
+12. Time Shift `$F + 49` to skip the clean/flat opening frames and start on already-turbulent motion.
+13. Second Re-Time set to "By Frame" with manual keyframes (e.g. frame 1→1, 25→96, 50→192 when working in the now-250-frame range) and equal-acceleration handles (press R) for a fast-slow-fast non-linear speed ramp.
+14. High-poly transfer: Delete Geometry (Points only) → Attribute Wrangle zeroing each point's `@transform` translation (centers it) → delete the `transform` attribute → Copy to Points (high-poly geo) → Transform Pieces (second input: the original low-poly simulated points) to reapply the real per-instance motion onto the high-poly copies.
+15. Finishing: random color per piece, invert the earlier 5x scale-up, custom diffuse ramp + Color Composite (Multiply) over Megascans PBR maps, 3-point lighting (dim fill HDRI, upper-right key, beneath-floor rim/uplight through the smiley cutout).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Match Size, Poly Reduce, Box, ISO Offset, Scatter, Copy to Points (Pack and Instance), MOPs Randomize, Boolean (Detect), Blast, Proximity-based nearest-point search, Peak, Poly Extrude, Bullet Solver (Sub Steps, Collision Padding, Collision Shape: Concave vs. Convex Hull), Time Shift (frozen frame via cleared expression, `$F + N` offset), Group (Keep Bounding Region, points domain), POP Axis Force, POP Wind, Attribute Wrangle (`v.y = 0`, `@transform` zeroing), Re-Time SOP (Speed mode and By-Frame keyframe mode), Delete Geometry (Points only), Transform Pieces, Color Composite (Multiply). VEX: `@transform`, `v.y`.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines RBD/Bullet simulation tuning, procedural de-intersection, packed-instance workflows, and non-linear re-timing; assumes prior Houdini SOP/DOP fluency.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+"dop", "sop", "rbd", "simulation", "procedural", "advanced"
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `houdini-tutorial---simple-disintegration-fx.md` and other RBD-focused entries — shares Bullet/RBD simulation territory
+- `mops-motion-operators-for-houdini-part-1.md`, `-part-2.md`, `-part-3.md` — shares MOPs node usage (Randomize)

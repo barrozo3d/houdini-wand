@@ -210,9 +210,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=8fcfu6gmzUQ
 - **Author:** raphaël
-- **Houdini Version:** Not specified (H20–H21 UI)
-- **Tags:** dop, sop, rbd, simulation, instancing, procedural, intermediate
-- **Summary:** A 25-minute intermediate tutorial building a vortex grain animation: a Megascans rock is reduced to a ~100-face proxy via `polyreduce`, scattered across a flat plane in a custom shape pattern, then simulated with Bullet RBD using a vortex/tornado velocity force. Post-sim, the high-poly mesh is restored onto simulated point positions and orientations for rendering. Frames show the smiley face...
+- **Houdini Version:** Not specified
+- **Tags:** "dop", "sop", "rbd", "simulation", "procedural", "advanced"
+- **Summary:** Two-stage Bullet RBD sim: a Megascans rock reduced to a ~100-face proxy is scattered, de-intersected (Boolean Detect + iterative nearest-point Blast), and dropped/settled in a box collider; a second sim then carves a smiley-face hole and adds POP Axis Force + POP Wind for a swirling vortex, with a `v.y=0` wrangle to suppress excess upward ejection. Re-timed with a 10x slowdown plus a custom by-frame speed-ramp for a fast-slow-fast feel, then the high-poly mesh is transferred back onto the simulated low-poly points via a transform-zeroing + Transform Pieces trick.
 - **File:** tutorials/grain-vortex-in-houdini-tutorial.md
 
 
