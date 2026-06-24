@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=9objvx69_58
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["sop", "vop", "particles", "simulation", "beginner"]
+extraction_status: complete
 frames_dir: tutorials/frames/53-recreating-our-solver-with-pops-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Rebuilds the exact same hand-rolled SOP Solver particle system (emission + age/lifespan + randomized velocity from the two previous lessons) using a native **POP Network** instead — same visual result, far less manual VEX wiring, and far more attributes tracked automatically under the hood.
 
 ### Summary
-[PENDING EXTRACTION]
+Shows that a POP Network needs no manual Scatter step — the source surface can feed directly into the network's first input, and the POP Solver/POP Object/operator structure handles emission, integration, and storage automatically. Converts the earlier hand-built rates and values into POP Network terms: a **POP Source** node (Source: surface, Emission Type: Scattered onto surfaces) on the Birth tab replaces the default "5000 particles/second constant activation" with a rate matching the earlier hand-rolled system (100 particles/frame × 24fps = 2400/second), disables the source's own surface visualization. Sets initial velocity via "Set Initial Velocity" with Variance 0 and a velocity vector of (0,1,0), and sets Life Expectancy to 3 (seconds) on the Birth tab — reproducing the earlier manual setup exactly, side-by-side comparable via a Transform offset + templating both networks. Re-adds the earlier random-speed variation by simply setting the POP Source's velocity Variance to 0.5 instead of hand-writing a `rand()`/`fit01()` expression. Notes that the POP Network's Geometry Spreadsheet carries far more attributes automatically (id, age, life, position, position-previous, source, UV, etc.) than the hand-rolled SOP Solver version (which only had position, age, life, velocity) — more power and flexibility for later, more complex motion, at the cost of needing to understand a few more built-in nodes.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Feed the source surface directly into a POP Network's first input — no Scatter SOP needed.
+2. Inside the POP Network: identify the **POP Solver** (does the per-frame calculations), the **POP Object** (stores/holds all simulation data, your access point to the geometry), and **operator** nodes (feed new information/behavior into the solver over time).
+3. Add a **POP Source** node; Source Geometry = first input ("first context geometry"); Emission Type = Scattered onto surfaces; disable its own surface visualization if distracting.
+4. On the POP Source's **Birth** tab: replace the default constant activation rate (5000/sec) with the rate matching the earlier system — 100 particles/frame at 24fps = 2400/second.
+5. On the **Attributes** tab: set initial velocity via "Set Initial Velocity," Variance = 0 initially, velocity = (0, 1, 0) — matches the earlier `v` attribute setup.
+6. On the Birth tab, set **Life Expectancy** to 3 (seconds) — matches the earlier `life` attribute.
+7. Compare side-by-side with the original SOP Solver setup using a Transform node offset and template/ghost display on both networks to confirm visually identical results.
+8. Reintroduce randomized speed: simply raise the POP Source's velocity **Variance** to 0.5 (replicating the earlier hand-coded `fit01(rand(...), 0.5, 1.5)` random-velocity wrangle) — no custom VEX needed.
+9. Compare attribute richness: the SOP Solver's Geometry Spreadsheet only exposed position/age/life/velocity, while the POP Object's geometry spreadsheet exposes id, age, life, position, position-previous, source, UV, and more — automatically tracked by the native system.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+POP Network, POP Solver, POP Object, **POP Source** (Source Geometry, Emission Type: Scattered onto surfaces, Birth tab: activation rate / Life Expectancy, Attributes tab: Set Initial Velocity + Variance). No custom VEX required for this lesson — everything achieved through POP Source parameters that replace the earlier hand-written wrangles.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner to Intermediate — direct conceptual bridge from manual VEX solver work to native POPs, showing the native system isn't magic, just convenient built-in versions of the same operations.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+"sop", "vop", "particles", "simulation", "beginner"
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `51-introducing-the-sop-solver-v1-1080p.md` and `52-creating-a-simplified-particle-system-v1-1080p.md` — direct prerequisites; this lesson rebuilds their exact result using native POPs instead of hand-rolled VEX

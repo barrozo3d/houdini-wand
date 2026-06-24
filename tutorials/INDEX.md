@@ -829,9 +829,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=9objvx69_58
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** dop, sop, particles, simulation, intermediate
-- **Summary:** Creates a POP Network and feeds the surface geometry directly into its first input (no need to pre-scatter). Inside the network: a POP Solver handles all integration automatically, a POP Object stores all simulation state (the DOP-level container analogous to the manual attribute storage used previously), and a POP Source emits particles with surface emission and a constant birth rate matching...
+- **Houdini Version:** Not specified
+- **Tags:** "sop", "vop", "particles", "simulation", "beginner"
+- **Summary:** Rebuilds the prior two lessons' hand-rolled SOP Solver particle system using a native POP Network instead: a POP Source on the Birth tab replaces the manual scatter/emission rate (matched to 2400 particles/sec = 100/frame at 24fps), Set Initial Velocity + Variance replaces the hand-coded velocity randomization, and Life Expectancy replaces the manual age/life wrangle — same visual result, far more attributes tracked automatically (id, age, life, position-previous, UV, etc.) than the manual version.
 - **File:** tutorials/53-recreating-our-solver-with-pops-v1-1080p.md
 
 
