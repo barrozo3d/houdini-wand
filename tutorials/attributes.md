@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=VM3m52SHUrk
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: ["attributes", "beginner", "intermediate"]
+extraction_status: complete
 frames_dir: tutorials/frames/attributes/
 frame_count: 4
 ---
@@ -33,27 +33,27 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+This is a promotional trailer for David Tornow's paid "Attributes" course on Houdini.School — not a standalone technique tutorial itself, but useful as a map of what a deep attributes course covers.
 
 ### Summary
-[PENDING EXTRACTION]
+Introduces a 3-session paid course on Houdini attributes: Session 1 covers core geometry components, attribute classes/types, the geometry spreadsheet, and intrinsics. Session 2 covers the many ways to create/read attributes, attributes vs. variables (global vs. local, `$` vs. `@` syntax history), and touches VOPs/VEX/HScript/Python alongside native SOP attribute nodes for non-coders. Session 3 applies attributes to RBD, FLIP, Vellum, and Crowd simulation setups, plus viewport GL attributes. Mentions Houdini ships with 8000+ native attributes.
 
 ### Key Steps
-[PENDING EXTRACTION]
+N/A — this is a course advertisement, not a walkthrough. Topics signposted for further learning (via the paid course, not covered here): geometry component/attribute relationships, geometry spreadsheet navigation, intrinsics, attribute creation/read methods, `$`-vs-`@` variable syntax, attribute usage in RBD/FLIP/Vellum/Crowd sims, native SOP attribute nodes for non-coders.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Mentions VOPs, VEX, HScript, Python, and "native SOP attribute nodes" as the toolset the full course covers, but does not demonstrate any specific node or code in this trailer.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner to Intermediate (per the course's own framing — starts at beginner, moves into intermediate territory quickly).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+"attributes", "beginner", "intermediate"
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `noise.md` and other Houdini.School-style fundamentals tutorials may share attribute-handling territory once cross-referenced; no direct technical overlap found since this entry has no concrete technique content.
