@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=cguHzZ9L87g
 author: Mat Sola - Learn Destruction FX in Houdini & UE5
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern, H18+)"
+tags: [uv, unwrapping, fundamentals, uv-layout, uv-flatten, auto-seams, workflow, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-uv-unwrapping-fundamentals/
 frame_count: 4
 ---
@@ -33,27 +33,80 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Seven-step UV workflow for any Houdini geometry: Step 0 Geometry Prep → Step 1 Seam Creation (4 methods: projection / manual / auto seams / procedural group) → Step 2 UV Flatten → Step 3 UV Layout/Pack → Step 4 Manual Editing (UV Brush) → Step 5 Visualize (runs throughout all steps) → Step 6 Export. Visualization is the underlying thread that runs across every step.
 
 ### Summary
-[PENDING EXTRACTION]
+Mat Sola comprehensive UV fundamentals course (65m23s). Covers the complete end-to-end UV pipeline in Houdini with concrete examples for each step. Geometry preparation section covers 7 common problems (non-manifold edges, single-vertex sharing, unwelded points, flipped normals, scale issues, overlapping geometry, zero surface area, stale attributes/groups). Seam creation covers 4 methods (projection-based, manual group edges, auto seams node, procedural group by edge angle). UV Flatten node converts 3D → 2D. UV Layout node handles packing, island padding, UDIM tile assignment, and stack identical islands. UV Brush enables manual distortion correction. Visualization covers Ctrl+2 split viewport, Spacebar+5 UV view, Labs UV Visualize node (islands/worldspace blend/seams), and right-click visualizer (UV distortion overlay). Export via right-click → Save Texture / UV to Image or Labs Export UV Wireframe node.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**Step 0 — Geometry Preparation (fix before UV work):**
+- Non-manifold edges: 3+ faces sharing 1 edge → unwrappable
+- Single vertex shared between two separate shapes (hourglass point)
+- Unwelded/split points (Platonic solid example — looks solid but isn't)
+- Flipped/inconsistent normals → fix with Normal node + group
+- Scale issues: Houdini works in meters; oversized geo → use Measure node to check
+- Overlapping/duplicate geometry → translate apart to check
+- Zero surface area (infinitely thin objects)
+- Stale attributes/groups → **Attribute Delete** + **Group Delete** for clean slate
+
+**Step 1 — Seam Creation:**
+- Method A: **UV Project** (projection-based: plane/cylinder/torus/wrap) — old-school, only good for simple geo/terrain
+- Method B: Manual seams via **Group** node (select edges → replace base group) — art-directable, hide seams behind ear/back
+- Method C: **Auto Seams** node — automated, slider-driven, fast but imprecise; good for background objects
+- Method D: Procedural via **Group** (edge angle filter: Include by Edges → min/max edge angle) — fully parametric, works on any object
+
+**Step 2 — UV Flatten:**
+- **UV Flatten** node: takes seam group → flattens into 0–1 UV space
+- Use Ctrl+2 (split view) + Spacebar+5 (UV viewport) to see result simultaneously
+
+**Step 3 — UV Layout (Pack/Organize):**
+- **UV Layout** node: packs all islands efficiently into UV space
+- Island Padding: 40px at 2K; 80px at 4K (prevents texture bleeding in game engines)
+- Stack Identical Islands: ON for mirrored geometry (e.g., both eyes share same UV → same paint result)
+- UDIM tiles: UV Layout → Default UDIM field (1001=tile 1, 1005=tile 5 in first row, 2001=second row tile 1)
+
+**Step 4 — Manual Editing:**
+- **UV Brush** node: interactively massage UV points in viewport to reduce distortion (red spots in UV distortion view)
+- Press Space in viewport while UV Brush is selected to enter interactive mode
+- Red = high distortion; gray = neutral; goal is to move red areas toward gray
+
+**Step 5 — Visualize (throughout all steps):**
+- Ctrl+2 split viewport; Spacebar+5 = UV view
+- Display toolbar: "Display UV Island Boundaries" (show seam lines in 3D view); "Display UV Boundaries" (blue = open edges)
+- Right-click visualizer icon → UV Distortion (red overlay on high-distortion areas); Curvature; UVs
+- **Labs UV Visualize** node: UV Islands (color-code each island), View in World Space (blend 3D↔UV), Visualize Seams (thickness slider)
+- Ctrl+Middle Click: inspect attribute spreadsheet to confirm UV attribute presence
+
+**Step 6 — Export:**
+- Right-click on any node → Save Texture / UV to Image → name + resolution (512/1024/2048) → Accept
+- **Labs Export UV Wireframe** node: same save dialog → Render button → exports UV wireframe to file
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **UV Project**: projection-based unwrap (plane/cylinder/torus/polar/wrap); UV on vertex level
+- **Auto Seams**: automated seam detection; slider governs cut aggressiveness
+- **UV Flatten**: flattens seam-defined islands to 2D UV space; seam group as input
+- **UV Layout**: pack islands; Island Padding (px); Default UDIM tile; Stack Identical Islands; island rotation options
+- **UV Brush**: manual UV vertex editing; interactive mode via Space; use with UV Distortion overlay
+- **Labs UV Visualize**: UV Islands color / World Space blend / Seams (color + thickness); requires SideFX Labs
+- **Labs Export UV Wireframe**: render UV wireframe to image file
+- **Attribute Delete**: remove existing UV/material/group attributes for clean slate
+- **Group Delete**: `shift+*` in group name field removes all groups
+- Group node (edge mode, Include by Edges): min/max edge angle for procedural seams
+- Ctrl+Middle Click on viewport: attribute spreadsheet for any node
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate — comprehensive fundamentals, no simulation; strong foundation for any Houdini artist
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern, H18+); SideFX Labs required for Labs UV Visualize and Labs Export UV Wireframe
 
 ### Tags
-[PENDING EXTRACTION]
+#uv #unwrapping #fundamentals #uv-layout #uv-flatten #auto-seams #workflow #beginner-intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `houdini-tutorial-make-any-geometry-knitted.md` — UV-space projection technique that depends on clean UVs
+- `houdini-uv-unwrapping-fundamentals.md` — (this file)
+- `intro-to-houdini-for-vfx---beginner-course.md` — companion fundamentals course
+- `procedural-hdas-for-unreal.md` — procedural modeling pipeline where UV quality matters for Unreal import

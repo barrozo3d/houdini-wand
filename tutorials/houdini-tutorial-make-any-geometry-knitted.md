@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=mTnQji8a8nw
 author: PolygonCGI
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern, H19+)"
+tags: [knit, procedural, uv, copy-to-points, sweep, attribute-swap, redshift, shading, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tutorial-make-any-geometry-knitted/
 frame_count: 12
 ---
@@ -88,27 +88,53 @@ frame_count: 12
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+UV-space knit projection: flatten the 3D mesh into UV space (Attribute Swap P↔UV), tile a hand-built knit stitch loop across a grid in that UV space, then project back to the original 3D rest position. This lets knit stitches conform to any UV-unwrapped geometry. Sweep node generates strands (not tubes) for a fiber look; Redshift Hair shader with point color attributes for final render.
 
 ### Summary
-[PENDING EXTRACTION]
+PolygonCGI beginner/intermediate tutorial (27m27s). Build a single knit stitch by modeling half a loop, mirroring, and using CurveKnot for procedural width control. Tile the stitch across a grid using Points from Volume + Copy to Points. Flatten the target skull mesh into UV space (Connectivity UV → Vertex Split → Attribute Swap P↔UV), align the knit grid into UV space, then Attribute Swap rest→P to project the knit back to 3D. Transfer colors via Attribute Transfer + Attribute from Map. Use Sweep (strands mode) with Attribute Wrangles for rest-based random fiber offset and 4D curl noise. Normals calculated as normalize(rest−P). Render in Redshift with Hair shader + point color attribute.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model half knit stitch loop → **Mirror** (matches points, not polys) → **PolySoup** to merge to single prim.
+2. **CurveKnot** before mirror for procedural stitch width control (dream-pen equivalent).
+3. **MatchSize** (scale ~0.2 on axis) → **Copy/Shift** −0.5 to close the stitch loop.
+4. **Grid** (size 1.05 per cell) → **Points from Volume** (pscale attribute, set to 1 not 2 default).
+5. **Copy to Points** → stitch copies on grid → **PolySoup** to merge → clean attributes (keep UVs + normals).
+6. **Connectivity** (UV mode) → `class` attribute = per-UV-island ID (0–6 for skull).
+7. **Vertex Split** (UV attribute) → **Attribute Swap** (P↔UV) → mesh is now flattened in UV space.
+8. VEX wrangle: project knit grid into UV 0–1 space; use **MatchSize** to align knit to flattened mesh.
+9. **Attribute Reset** (rest→P) → knit snaps from UV space back onto 3D skull surface.
+10. **Attribute Transfer** (colors from skull) + **Attribute from Map** (load texture as Cd) → Subdivide for smoothing.
+11. **Sweep** in strands mode (NOT tubes) — must preserve pscale from Copy to Points; add `rest` attr + Attribute Wrangle `rest_random` for per-fiber random offset (blend value 0→1).
+12. **Attribute Wrangle** `curl_noise`: 4D noise using P/pscale as position, multiply result × pscale × randomization → add to position.
+13. Normals: `rest − P`, then **Normalize**.
+14. Rename `pscale→width` for shade-over-curves preview in Houdini viewport; rename back before render.
+15. Redshift: **Hair shader** + **RS Point Attributes** node → connect Cd to Diffuse Color; add Fresnel + Angular Shift for fiber sheen.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Mirror**: matches points, produces 2 polygons → fix with PolySoup
+- **CurveKnot**: procedural stitch width (like dream-pen in After Effects)
+- **Points from Volume**: density slider; pscale attribute checkbox (set to 1 not default 2)
+- **Connectivity** (UV mode): assigns `class` integer = UV island index
+- **Vertex Split**: split on UV attribute before Attribute Swap
+- **Attribute Swap** (P↔UV): core trick to flatten 3D mesh into UV space
+- **Sweep** (Strand mode): `Keep Scale` checkbox must be ON to preserve pscale from Copy to Points
+- Curl noise VEX: `vector4 noise4d = noise(set(P/pscale, @Frame*speed)); P += noise4d.xyz * pscale * randomization;`
+- Normals VEX: `v@N = normalize(v@rest - v@P);`
+- Redshift Hair shader → RS Point Attributes node → Diffuse Color ← Cd
+- Divide node: uncheck Convex Polygons, enable Remove Shared Edges (keeps borders clean for UV cutting)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — requires knowledge of UVs, attribute wrangles, Copy to Points, and basic Redshift shading
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern, H19+); rendered with Redshift
 
 ### Tags
-[PENDING EXTRACTION]
+#knit #procedural #uv #copy-to-points #sweep #attribute-swap #redshift #shading #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `houdini-uv-unwrapping-fundamentals.md` — understanding UVs which are essential to this workflow
+- `houdini-tutorial---simple-disintegration-fx.md` — another UV-space trick (BBox centroid in VOP)
+- `model-a-procedural-flower-houdini-tutorial.md` — similar Copy to Points + procedural modeling pattern
