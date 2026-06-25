@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=0XnjEVcaq6A
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern)"
+tags: [chops, animation, procedural, secondary-motion, jiggle, spring, filter, kinefx, vellum, mops, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/experimental-motion---chops/
 frame_count: 4
 ---
@@ -33,27 +33,56 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+CHOPs (Channel Operators) as procedural animation filter: feed animated SOP geometry into a CHOP Network via a Geometry node, apply Filter/Jiggle/Spring/Envelope nodes, read back with Channel CHOP, and apply to geometry. Result: organic secondary motion added on top of any animation without keyframes or re-simulation. Core expression: `fit($F, 1, end, 0, 1)` for procedural no-keyframe linear animations.
 
 ### Summary
-[PENDING EXTRACTION]
+Houdini.School workshop by Jampal Duman (84 min): using CHOPs for organic, no-keyframe procedural animation. Philosophy: no keyframes — build filter systems instead. Setup: split viewport into 3 panes (main + CHOP network editor + Motion Effects Viewer). Core pipeline: (1) Animated SOP → (2) CHOP Network (Geometry node reads SOP, filter chain, CHOP Out) → (3) Channel node (reads CHOP, applies back to SOP). Motion Effects View: visualize animation curves from any CHOP node. Key nodes demonstrated: Filter (smooth interpolation), Jiggle (physical jiggle for mesh objects, expects XYZ translation), Spring (jiggle-like but works on any attribute including custom ones), Stretch (time-scale animation), Envelope Filter (stagger/natural delay). Attribute-based art-direction: create float attribute (mask 0→1 along Y from match size) → Blend Shapes node (input 1 = CHOP data, input 2 = rest, blend from attribute) = per-point CHOP strength. Spring on custom attributes: Geometry node reads "glow" attribute, Spring outputs filtered glow, used for color/pscale. For Each loop with time-offset expression: stagger growth cycles per object. Curl deformer (KineFX Rig Attribute Wrangle): creates local transform (bone) per curve point → rotate each bone using mask attribute → controlled curl. Use `orient along curve` + `mask from geometry` (first point, ramp 0→1). Vellum hair integration: Vellum Configure Hair → pin constraint (group "pin" on point 0) → simulate → feed into CHOP for extra secondary motion. MOPS spread follow-up: glow attribute → weight primitive attribute → promote to point → Spring for glow animation. Limitations: CHOPs cannot read custom attributes for strength masking (Blend Shapes as workaround); processes full timeline before playback (pre-cache heavy sims); no collision awareness.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Viewport setup:** split 3 panes: main SOP viewer / CHOP network editor / Motion Effects Viewer (Viewers → Motion Effects View). Pane 2 shows curves; link CHOP pane to screen #1.
+2. **No-keyframe animation:** use `fit($F, 1, 75, 0, 1)` in Translate Y of Transform SOP → linear procedural animation, easily adjustable.
+3. **CHOP pipeline:** CHOP Network SOP → dive in → Geometry node (drag animated null/SOP in) → ensure "Animated" is on both Geometry and Channel Method → Filter/Jiggle/Spring chain → CHOP Out → Channel SOP outside reads CHOP Out.
+4. **Filter node:** smooths animation curves; Lag parameter controls trailing; visual curve shows result.
+5. **Cycle/Mirror:** Geometry node end mode → Cycle or Mirror (creates looping/bouncing from one-way animation).
+6. **Jiggle node:** adds physical jiggle to mesh objects (cube, head, etc.). Parameters: stiffness, dampening, mass multiplier. Faster dampening = shorter jiggle. Expects t x/y/z channels.
+7. **Attribute mask:** Attribute Create (float, points, "mask") → pattern: Line, Y axis, 0→1 (after Match Size to normalize height 0→1). Blend Shapes (CHOP → input 1; rest → input 2; blend from attribute mask) → Ramp/Color Ramp curves drive blend strength per-region.
+8. **Spring node:** works on ANY attribute (not just physical). Set attribute name in Geometry source. Parameters: springiness, mass, dampening. Better than Jiggle for point clouds.
+9. **Vellum hair:** Resample → group "pin" (point 0) → Vellum Configure Hair (pin to animation ON) → Vellum Solver → CHOP for extra secondary.
+10. **Curl deformer (KineFX):** Rig Attribute Wrangle → requires "local_transform" attribute. Orient Along Curve → creates curve orientation. Attribute Create (float, points, "mask") → mask from geometry (ramp from point 0 along curve) → rotate bones via rig wrangle → springy curl.
+11. **Envelope filter:** stagger/delay animation; exponential decay mode = natural organic stop-and-go.
+12. **For Each loop time offset:** expression reads iteration count → offsets time per object → staggered growth. Multiplier controls offset amount.
+13. **MOPS glow attribute:** MOPs Spread (follow from root group) → create "weight" primitive attribute → Attribute Promote (prim → point) → Geometry CHOP reads "glow" attribute → Spring → Color from attribute.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Expression: `fit($F, 1, 75, 0, 1)` — maps frame range to 0–1 (no keyframes needed)
+- CHOP Network (container for all CHOP nodes)
+- Geometry CHOP: reads animated SOP; Method must be "Animated"
+- Channel SOP: reads from CHOP Out, applies filtered data back to geometry
+- Filter CHOP: smoothing kernel, lag, type (Gaussian, mean, etc.)
+- Jiggle CHOP: stiffness, dampening, mass; expects physical t x/y/z
+- Spring CHOP: springiness, mass, dampening; reads any attribute
+- Stretch CHOP: scales animation duration (multiplier × time)
+- Envelope Filter CHOP: mode = "local maximum window" for organic stagger
+- Blend Shapes SOP: input 1 = CHOP data; input 2 = rest; blend masking = scale from attribute
+- Match Size SOP: normalize geometry to 0→1 range for predictable attribute masks
+- Orient Along Curve SOP: creates normal/tangent/binormal for curve deformers
+- Rig Attribute Wrangle (KineFX): creates local_transform per point = "bone" per curve point
+- Mask From Geometry SOP: ramp 0→1 from reference point along curve = follow-up offset
+- Motion Effects View: Viewers pane → Motion Effects View (visualize CHOP curves)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — CHOP pipeline setup is unintuitive at first (animation must pass through specific nodes); core techniques reusable across projects; no VEX required; advanced use (curl deformer, glow attribute) needs KineFX knowledge.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern, Houdini 19+ for KineFX rig attribute wrangle; MOPS for spread node)
 
 ### Tags
-[PENDING EXTRACTION]
+#chops #animation #procedural #secondary-motion #jiggle #spring #filter #kinefx #vellum #mops #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `velocity-forces-20-advanced.md` — CHOPs-adjacent: procedural motion/forces
+- `intro-to-vops---houdini-beginner-tutorial.md` — VOPs for procedural values; complements CHOPs approach
+- `mops-motion-operators-for-houdini-part-1.md` — MOPs spread/follow-up used in this tutorial
+- `procedural-growth-with-kinefx-and-the-labs-tree-tools.md` — KineFX rig attribute wrangle for procedural animation

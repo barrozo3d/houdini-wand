@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=MqtMQl8DtjQ
 author: SOP Cemetery
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 21"
+tags: [gaussian-splats, kinefx, apex, rigging, animation, karma, point-deform, spherical-harmonics, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/animate-gaussian-splats-with-houdini---free-tutorial-scene-files/
 frame_count: 9
 ---
@@ -73,27 +73,53 @@ frame_count: 9
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Animate Gaussian Splats (point clouds) by converting them to proxy surfaces, rigging the surface with KineFX + APEX, animating it, then deforming the original GS points back using GS Deform node. Core "magic" node: Particle Fluid Surface (treats GS points like fluid particles → mesh surface). Pipeline: .ply import → segment → surface → KineFX skeleton + Bi-Harmonic Capture → transfer capture weights to GS points → APEX rig → Scene Animate → SimNode Vogue → GS Deform → Karma XPU.
 
 ### Summary
-[PENDING EXTRACTION]
+SOP Cemetery (Bogdan) 81-min tutorial: animate a Gaussian splat fly in Houdini 21. Plugin needed: G-SOP (GitHub) for GS import/bake/deform nodes (unlocked versions included in project files — G-SOP install not required). Pipeline: (1) Import fly .ply → Bake GS Splat (compute spherical harmonics = split SH into RGB components) → transform to Y-up. (2) Manual segmentation: select points by hand (W=wireframe shows points, shaded shows splats) → blast into head/body/wings/legs/tail. (3) Surface each segment: Particle Fluid Surface (particle separation drives mesh resolution) → filter → smooth → Quadremesh → normals (Polyframe) → Stash. For concave parts (head, body, tail): close holes with sphere + Ray Project + smooth + shrink + merge original + VDB → convert back → Quadremesh. (4) KineFX skeleton: skeleton node → Modify (name joints) → Orient Joints (align axis to children) → add tags per leg (leg1–leg6) and tail segments. Connect with Parent Joints. Master control rotates whole rig. (5) Bi-Harmonic Capture: joint must be inside closed surface; creates bone capture attributes. Test with Joint Deform node. (6) Transfer bone capture to GS points: Attribute Transfer (bilinear, point domain, bone_capture) from proxy surfaces to original segmented GS points. (7) APEX rig: pack geometry + skeleton → Apex Autorig Components (FK Transform = init all joints; Bone Deform = skin to skeleton). Custom scripts: switch control (Abstract Control XY → index switch between proxy skin and GS visualization), IK chains (Multi IK by tag = leg1–6 + tail spine), configure controls (shape/color/scale/rotation limits). Scene Animate for animation layers (body layer + wings layer). (8) Simnode Vogue → unpack shapes → retime (slow motion → speed up = realistic fly motion). (9) GS Deform: fresh GS import (not compute SH) + rest Bake GS Splat + animated deformed proxy geometry → GS Deform node. Custom relighting: directional gain + ambient gain + gamma. Point Velocity → Karma XPU (no materials; DoF + motion blur; shadow: disable shadow casting on baked GS). Bonus: copy custom geometry onto splat points (inherit orient/color from splat attributes).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Import:** GS Splat Import → Bake GS Splat (enable Compute Spherical Harmonics = splits SH into R/G/B). Transform to Y-up.
+2. **Segment:** wireframe mode (W) shows points for selection. Blast node per body part (manual point selection).
+3. **Surface:** Particle Fluid Surface (low particle separation = denser surface) → filter → Quadremesh → Polyframe normals → Stash → Color → extra Blast (remove interior fragments).
+4. **Close concave holes:** sphere bounding box → Ray Project → Smooth → Shrink offset (negative) → Merge with original → VDB from Polygons (unify) → Convert VDB → Quadremesh.
+5. **KineFX skeleton:** skeleton node (draw bones) → Modify (name: head, head_tip, left_wing_0/1/2, leg_1_tip, etc.) → Orient Joints (align tails to children; identity reset for hip/head) → add tags (leg1, leg2, …, tail) for APEX IK targeting.
+6. **Capture:** Bi-Harmonic Capture (bharmonic) — joint must be inside closed surface. Transfer attributes to original proxy via Attribute Transfer.
+7. **Transfer to GS points:** Attribute Transfer (bone_capture, point domain) from rigged proxy → original GS points.
+8. **APEX:** Pack folder (name: base.shape, base.skeleton, base2.shape) → Apex Autorig Components. Add FK Transform, Bone Deform. Custom fuse-graph scripts: skin switch (Abstract Control X drag → index switch), Multi IK by tag (legs: leg1–6; tail: spine by tag), orientation limits (head rotation ±5–15°), configure controls (shape/color/scale).
+9. **Animate:** Scene Animate node → animation layers (body, wings). Wings: continuous flap keyframed → layer weight 0/1 controls visibility.
+10. **Export:** SimNode Vogue (invoke shape only) → Unpack → Retime (slow motion → real speed).
+11. **GS Deform:** Fresh GS import + bake (no compute SH) + animated deformed proxy → GS Deform (fetches xform, extracts transform, bind splat to prim).
+12. **Relight:** custom node (directional/ambient gain, gamma) driven by a transform (light position = empty).
+13. **Karma XPU:** no materials needed. Camera + DoF + f-stop. Point Velocity for motion blur. Shadow plane: disable shadow casting on baked GS nodes → re-enable.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Bake GS Splat: Compute Spherical Harmonics = on (splits SH into RGB attributes for relighting)
+- Particle Fluid Surface: particle separation drives resolution vs. coverage tradeoff
+- Quadremesh: converts polygon soup to clean quad topology
+- Bi-Harmonic Capture (bharmonic): joint-in-surface required; creates bone_capture attributes
+- VDB from Polygons + Convert VDB: Boolean union for hole-closing (best Boolean tool)
+- KineFX: skeleton, Modify, Orient Joints, Parent Joints, rig pose, Joint Deform
+- APEX: Apex Autorig Components (FK Transform, Bone Deform scripts), Scene Animate, SimNode Vogue
+- Abstract Control: interactive drag control (X/Y axis → parameter value)
+- Multi IK: IK chains by tag (e.g., leg1–6); auto poll vectors, orientation control
+- GS Deform: binds original GS points to animated proxy mesh (the actual deformation node)
+- Point Velocity → Karma motion blur
+- KarmaXPU: no PBR materials; shadow: uncheck "disable shadow casting" on GS bake node
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — requires KineFX rigging knowledge, APEX rig logic/scripting, and Gaussian splat pipeline setup. Project files provided (no G-SOP install required for tutorial scene). Houdini 21 required.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21 (Gaussian splatting native; APEX; G-SOP plugin from GitHub; Karma XPU)
 
 ### Tags
-[PENDING EXTRACTION]
+#gaussian-splats #kinefx #apex #rigging #animation #karma #point-deform #spherical-harmonics #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tuna-can-procedural-modeling-and-rig-with-kinefx.md` — KineFX + APEX rigging workflow
+- `mechanical-rigging-in-houdini---attaching-custom-controls.md` — custom APEX controls
+- `procedural-growth-with-kinefx-and-the-labs-tree-tools.md` — KineFX for procedural animation
+- `houdini-fx-in-unreal.md` — Karma/USD rendering and Houdini-to-Unreal pipeline
