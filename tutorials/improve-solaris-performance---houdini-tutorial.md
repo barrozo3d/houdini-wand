@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=QfWUzrfsDaY
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern with Solaris, H19+)"
+tags: [solaris, lops, performance, proxy-geo, poly-reduce, usd, pipeline, point-deform, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/improve-solaris-performance---houdini-tutorial/
 frame_count: 4
 ---
@@ -33,27 +33,67 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Render/proxy geo duality in Solaris: assign `s@purpose = "proxy"` or `"render"` at root level and set `s@path = s@name + "/" + s@purpose` so each SOP appears in the Solaris scene graph as a parent prim with two children (proxy + render). Viewport uses proxy; render uses high-res. Per-type strategy: static → PolyReduce; multi-instance → For Each loop + PolyReduce + Compile Block; animated → PolyReduce + TimeShift frame 1; RBD → Point Deform with static mesh; cloth → For Each loop per piece + TimeShift; particles → Delete by ID attribute.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX tutorial (22m50s) covering how to efficiently load all common simulation types into Solaris/LOPs with fast viewport performance. The core pattern: SOP network produces two branches (render geo = full quality, proxy geo = low poly), each tagged with `s@purpose` and merged under a common path structure. Covers 6 geometry types: static single mesh, multi-instance (fern), animated character, RBD simulation, Vellum cloth, and particles. Key optimization: export USD to disk → load via Reference node (fastest viewport). Tutorial also demos a custom HDA "prepare for stage" tool available in their paid course.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**Setup pattern for all types:**
+1. After your SOP null, add **AtRoot Wrangle** (primitives): `s@purpose = "proxy";` → this goes to Proxy branch.
+2. **AtRoot Wrangle** (primitives): `s@purpose = "render";` → Render branch.
+3. **Path AtRoot Wrangle** (primitives): `s@path = s@name + "/" + s@purpose;` → creates `ground/proxy` and `ground/render` in scene graph.
+4. **Merge** both branches into one Sub Import in LOPs.
+
+**Static single geo:**
+- Proxy branch: **PolyReduce** 5% + optional color (brown for ground).
+- Add **Name** node if root doesn't have a name attribute yet.
+
+**Multi-instance geo (fern, 16 variants):**
+- **Enumerate** → `variant` attr (integer from name, pair-wise). **Attribute Wrangle** (primitives): rename using `s@name = "fern_" + itoa(i@variant);`
+- Proxy: **Attribute Delete** (keep name + variant) → **For Each Primitive** (piece = variant) → **PolyReduce** 10% inside loop → **Compile Block** for full CPU parallel speed.
+
+**Animated character:**
+- Split by name (foot vs shoe). Proxy: **PolyReduce** 10% + **Attribute Delete** + **TimeShift** (frame 1) on rest mesh → prevents per-frame recalculation.
+- For fast LOPs viewport: **File Export** USD → use **Reference** node instead of Sub Import.
+
+**RBD simulation:**
+- **Connectivity** (primitives) → `deform` class attr. **TimeShift** (frame 1) → **PolyReduce** (make reduction sensitive to `deform`) on points, not primitives.
+- **Point Deform**: input1 = animated sim, input2 = TimeShift static, input3 = Connectivity → low-poly proxy follows animated high-res.
+- Interior/exterior re-texturing: add **Name** node with group filter for inner faces (`rbd_inside`) and outer faces (`rbd`).
+
+**Vellum/cloth:**
+- **Connectivity** → `piece` attr. **TimeShift** frame 1 → **For Each Primitive** (piece = piece attr) → **PolyReduce** 15% inside loop. Compile Block NOT usable (TimeShift breaks compilation).
+
+**Particles:**
+- **Name** node must run over **points** (not primitives). **Delete** node: mode=Random, seed=id attribute → thin out by ID (stable per-particle each frame).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- AtRoot Wrangle: `s@purpose = "proxy";` / `"render";` (runs on primitives)
+- Path AtRoot Wrangle: `s@path = s@name + "/" + s@purpose;`
+- Sub Import (LOPs): import SOP geometry into stage; set import path prefix
+- Name node: sets `s@name` primitive attribute (required for path building)
+- Enumerate: creates integer variant/piece attr from name attr, pair-wise
+- For Each Primitive loop + **Compile Block**: full CPU parallelism for PolyReduce per piece
+- TimeShift (frame 1): freeze geometry shape for proxy; prevents per-frame PolyReduce recalc
+- Point Deform: follows animated high-res with low-poly mesh (3 inputs: animated, static, connectivity)
+- PolyReduce: 5-15% depending on type; "make reduction sensitive to attribute" mode
+- Attribute Delete: keep only name + variant on proxy primitives
+- File Export (USD) + Reference node in LOPs: fastest possible viewport for cached sims
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — requires familiarity with SOPs, LOPs, and SOP Solver concepts; strong practical value for production pipelines
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern with Solaris/TOPS; H19+)
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #lops #performance #proxy-geo #poly-reduce #usd #pipeline #point-deform #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `houdini-solaris-tutorial---rendering-multiple-rops-together.md` — batch rendering multiple ROPs in Solaris
+- `intro-to-houdini-solaris---full-beginner-course.md` — Solaris/USD fundamentals
+- `houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step.md` — caching FLIP sim for fast viewport
+- `houdini-21-tutorial---mpm-snowball.md` — VDB compression strategy for heavy point data

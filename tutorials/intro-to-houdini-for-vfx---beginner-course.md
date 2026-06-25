@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=JbxNElzALrM
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern, H18+)"
+tags: [beginner, fundamentals, attributes, vops, vex, dops, solvers, pop, simulation, navigation, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-for-vfx---beginner-course/
 frame_count: 19
 ---
@@ -123,27 +123,99 @@ frame_count: 19
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Complete Houdini beginner foundation covering all core concepts in sequence: UI/navigation → OBJ/geometry/DOPs context levels → node chaining (display flag R, bypass Q, template E) → attributes (create/adjust/class/type: point/primitive/vertex/detail; float/vector/integer) → Attribute VOP (single most important node) → VEX vs VOPs comparison → DOPs/solvers structure → SOP Solver (previous frame accumulation) → simulation with noise → Geometry VOP inside DOPs. Central insight: simulation = per-frame accumulation from previous frame; SOPs = per-frame re-read from source without accumulation.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX comprehensive beginner course (120m8s, 19 sections). Teaches Houdini from absolute zero: UI orientation (only need scene view, OBJ window, parameter window), context networks (OBJ→geometry→DOPs levels), node operations (Tab menu, display/bypass/template flags, wire cutting with Y), operator types (SOPs/VOPs/DOPs). Deep section on attributes: class (point is king; primitive for poly extrude; detail for single simulation-wide values), type (float/vector/integer), Attribute Create/Adjust/Noise, and the Attribute VOP as master node. VOPs internals: turbulent noise, fit range, vector-to-float, compare, @ptnum for per-point randomness, promote parameter. VEX vs VOPs: VOPs preferred for beginners (no syntax errors, visual arguments). DOPs: solvers (pop/flip/pyro/rbd/vellum each needs matching Object + Source + Solver + Output). SOP Solver: previous frame vs input1 distinction. Particle curl noise with 4D time dimension. Geometry VOP inside DOPs = per-frame attribute operations in simulation context.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**UI & Navigation:**
+- Only 3 windows needed: scene view (viewport), OBJ network, parameter window
+- Tab menu = all nodes; shift-enter = append + set display flag
+- Orbit: left-click drag; pan: middle mouse; zoom: right-click drag
+- S = select; Enter = transform handle; Space+drag = view while in transform mode
+- Space+G = frame camera on selected; U = go up one level
+- D = geometry display settings; W = wireframe toggle; Shift+W = toggle wire overlay
+
+**Context levels:**
+- OBJ level: drop Geometry containers; rename to `effects_xxx`; double-click to enter
+- Geometry level (SOPs): build effects here; one display flag per chain; end with Null
+- Object Merge node: import geo from another container into current one
+- Ghost/Show/Hide other objects: controls LOD of non-active containers
+
+**Node operations:**
+- Display flag: R key; Bypass: Q key; Template: E key (shows wireframe overlay)
+- Y key: scissor to cut wires
+- Alt+drag: duplicate node
+- Ctrl+Middle Click: reset parameter to default
+- Shift+drag: move node + everything above; Ctrl+drag: move + everything below
+- $SF or `$F` expressions: map to current frame number
+
+**Attributes:**
+- Attribute VOP = most important node; recreates any attribute operation
+- Classes: point (most common), primitive (poly extrude etc.), vertex, detail (single sim-wide value)
+- Types: float (1 component), vector (3 components = XYZ), integer (whole numbers 0/1)
+- Geometry spreadsheet: Ctrl+Middle Click to inspect; used only to verify attribute exists and has expected value
+- @ptnum: auto-generated unique integer per point; use `Random(@ptnum)` for per-point randomness
+- Compare node in VOPs: returns 0 (false) or 1 (true) integer — use for per-point conditionals
+
+**VEX vs VOPs:**
+- Both do the same operations; VOPs = visual programming (safer for beginners, no syntax errors)
+- VEX: `@P.y += 2;` → VOPs: constant (vector) → add → P output
+- Prefer VOPs for complex functions (find_attribute_value etc.) — arguments are exposed visually
+- VEX if-statement: simpler syntax; VOPs if-block: messier but no code required
+- Middle-click parameter input → Promote Parameter to expose slider at top level
+- Right-click node → VEX VOP Options → Create Input Parameters → exposes all parameters at once
+
+**DOPs / Simulation:**
+- POP Network = preset DOPs network with pop_object + pop_source + pop_solver + output
+- Solver types: flip (water), pyro (smoke), rbd (rigid body), vellum (cloth), pop (particles)
+- All follow: Object + Source + Solver + Output structure
+- Output node inside DOPs: controls what's visible at parent level regardless of display flag
+
+**SOP Solver (key concept):**
+- Input 1: reads geometry from SOP level at every frame (no accumulation)
+- Previous Frame node: reads result of last frame's operations (accumulation — this is what makes simulation work)
+- Example: transform 0.1 on Y via previous frame → geometry flies upward indefinitely
+- This is why simulations look organic: each frame builds on the previous state
+
+**Noise in simulation:**
+- Curl noise: best for fluid-like particle motion; use 3D or 4D (4th dim = time for proper noise evolution)
+- Amplitude: must be very small (0.02–0.1) inside solver — it accumulates every frame
+- Geometry VOP inside DOPs: same as Attribute VOP but runs at every simulation frame
+- Trail node → compute velocity → fit range → ramp color parameter = color by speed visualization
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Attribute VOP**: master node for all attribute operations; dive inside for full control
+- **Attribute Wrangle**: code-based version of Attribute VOP; `@P.y += 2;` syntax
+- **Attribute Create / Adjust Float / Adjust Vector / Noise**: pre-built helpers; Attribute VOP can replace all
+- **Object Merge**: import SOP geometry into another container; connect via null pointer
+- **Platonic Solid + Subdivide**: good geometry for attribute practice (many points)
+- **Scatter**: creates random points on surface; Relax Iterations OFF for random; seed=`$F` for per-frame randomness
+- **SOP Solver**: accumulates operations frame-to-frame via Previous Frame node
+- **POP Object / POP Source / POP Solver / Output**: standard particle sim structure
+- **Trail** node: computes velocity from position change between frames
+- **Fit Range** VOP: remap values from source min/max to dest min/max
+- **Vector to Float** VOP: split vector into X/Y/Z components (alias: VTF)
+- **Turbulent / Curl / Sparse Convolution Noise** VOPs: different noise algorithms
+- **Compare** VOP: returns 0/1 integer; use for per-point conditionals
+- **Promote Parameter** (middle-click input): exposes slider to parent level
+- **$F expression**: global frame variable; assign to seed for per-frame variation
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — comprehensive foundation; no prior Houdini experience required; strong programming/math analogies throughout
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern, H18+); tutorial uses no version-specific features
 
 ### Tags
-[PENDING EXTRACTION]
+#beginner #fundamentals #attributes #vops #vex #dops #solvers #pop #simulation #navigation #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `intro-to-houdini-particles---full-beginner-course.md` — dedicated particles/POPs course
+- `intro-to-houdini-pyro---full-beginner-course.md` — pyro solver fundamentals
+- `intro-to-vops---houdini-beginner-tutorial.md` — VOPs in depth
+- `vops-02-03-04` series — advanced VOPs operations
+- `intro-to-houdini-volumes---beginner-course.md` — volumes fundamentals
