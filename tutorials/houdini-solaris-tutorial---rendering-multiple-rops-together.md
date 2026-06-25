@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=qg3OFz4JZs4
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern, Solaris)"
+tags: [solaris, rendering, rop, tops, batch-render, workflow, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-solaris-tutorial---rendering-multiple-rops-together/
 frame_count: 4
 ---
@@ -33,27 +33,39 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Use a TOP Network with ROP Fetch nodes to batch-render multiple Solaris/Karma ROP outputs automatically in sequence. Key: name each ROP Fetch node exactly the same as its corresponding ROP output node, set cook order to Node by Node, and use ROG Node Configuration for frame range.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX short tip (1m25s): batch render all Solaris ROP sequences without manually triggering each one. Workflow: create TOP Network → dive in → create one ROP Fetch node per ROP output (character, blast, bug, rain, water), naming each ROP Fetch identically to its ROP output → select all ROP Fetch nodes → set "Stash Stage" to flush at lowest → change ROP cook order from Frame by Frame to Node by Node (renders one ROP output completely before starting the next) → switch Frames batching from Single Frame to ROG Node Configuration (uses each ROP node's own frame range and output file path) → press cook/render to start batch.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create **TOP Network** node in /out (Solaris context).
+2. Dive inside → create one **ROP Fetch** node per ROP output you want to render.
+3. Name each ROP Fetch node **exactly** the same as its corresponding ROP output node name.
+4. Select all ROP Fetch nodes → in the ROP Fetch node, set type field to "Stash Stage / Flush at Lowest."
+5. **Cook Order:** change from "Frame by Frame" to **Node by Node** (finishes entire sequence for ROP A before starting ROP B).
+6. **Frames → Batching:** change from "Single Frame" to **ROG Node Configuration** (picks up frame range from each ROP node automatically).
+7. Press cook button to start batch render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- TOP Network: container for task-based automation
+- ROP Fetch: links TOP to a ROP output node; name must match ROP output name exactly
+- Stash Stage / Flush at Lowest: ROP Fetch type setting
+- Cook Order: Node by Node (vs. Frame by Frame) — renders each ROP fully before next
+- Batching: ROG Node Configuration — inherits frame range from ROP nodes
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — pure workflow tip, no simulation knowledge required
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern with Solaris/TOPS; H19+)
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #rendering #rop #tops #batch-render #workflow #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `improve-solaris-performance---houdini-tutorial.md` — Solaris performance optimization
+- `intro-to-houdini-solaris---full-beginner-course.md` — full Solaris/USD intro
+- `houdini-21-tutorial---mpm-snowball.md` — Karma render pipeline using similar ROP concepts

@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=O2F1Qzl22oU
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19/20"
+tags: [vops, disintegration, mask, noise, particles, vfx, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tutorial---simple-disintegration-fx/
 frame_count: 4
 ---
@@ -33,27 +33,57 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+VOPs-based radial disintegration mask from centroid (2D XZ distance) with sparse convolution noise on the edge, driving: (1) Split Points per masked group → independent triangle pivots, (2) MakeTransform scale-down per triangle (using Import Primitive Attribute as pivot), (3) position noise multiplied by mask. All in Point VOPs; animate "anim" parameter for temporal control.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX 21-min tutorial on a simple disintegration effect (triangles break apart from center outward). Geometry: test squab → Remesh (target size 0.001, 10 iterations) = equal triangles. Mask (Point VOP): BBox node → average Pmin+Pmax = centroid → Vector to Float (X, Z only) → Float to Vector2 for both position and centroid → Distance 2D → fit to 0–1 (source min = "anim" param, max = anim+0.3 constant) → turbulent noise on position (sparse convolution, 3D, amplitude 0.5) → adds organic edge → export "mask" attribute. Animate "anim" from -0.5 (frame 1) to ~3.0 (frame 72). Group (points, `@mask > 0.001`) → Split Points (group only) → each triangle gets own points (can move independently). Point VOP "scale down": Import Primitive Attribute (Prim Position = triangle centroid) → MakeTransform pivot → Bind mask → fit(dest: 1→0, invert) → Multiply position by matrix = triangles shrink from own centroid. Point VOP "P noise": Anti-alias noise (Vector4: XYZ position + time W) → simplex type, amplitude 0.5, freq [5,5,5,0.1] → multiply by mask → only masked triangles jitter. Blast (@mask > 0.999) + Clean (remove unused points) = delete fully disintegrated pieces.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Remesh:** target size 0.001, iterations 10, recompute normals OFF → equal-sized triangles.
+2. **Mask VOP (Point VOP node):**
+   - BBox (first input) → average of Pmin + Pmax = centroid vector
+   - Vector to Float → X, Z channels only (ignore Y height)
+   - Float to Vector2 (position XZ) and same for centroid XZ
+   - Distance → fit(source min="anim" promoted param, max=anim+0.3 constant) → 0–1 mask
+   - Turbulent noise (sparse convolution, 3D, amplitude 0.5) added to position before Distance
+   - Export "mask"
+3. **Animate "anim":** key -0.5 at frame 1, ~3.0 at frame 72 (covers whole geometry).
+4. **Group:** type=points, `@mask > 0.001`.
+5. **Split Points:** split only the masked group → triangles get independent points.
+6. **Scale Down VOP (Point VOP):**
+   - Import Primitive Attribute → primitive position = triangle centroid
+   - MakeTransform: pivot = primitive centroid; scale = Bind("mask") → fit(dest: 1→0, invert)
+   - Multiply @P by transform matrix
+7. **P Noise VOP (Point VOP):**
+   - Vector to Vector4: append time ($T or $FF) as W component
+   - Anti-aliased noise → simplex type, 3D sig, amp 0.5, freq [5,5,5,0.1]
+   - Multiply by Bind("mask")
+   - Add to @P
+8. **Cleanup:** Blast `@mask > 0.999` (delete fully masked prims) + Clean (remove isolated points).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Remesh: target size 0.001, iterations 10, recompute normals OFF
+- Point VOP mask: BBox → Average → Vector to Float (X,Z) → Float to Vector2 → Distance → Fit; noise: sparse convolution, 3D, amplitude 0.5
+- Promoted parameter "anim": controls fit source min (-0.5 → ~3.0); max = anim + 0.3 (add constant)
+- Split Points: split only masked group (not all points)
+- MakeTransform: pivot = Import Primitive Attribute (position); scale = inverted mask (fit dest: 1→0)
+- Anti-alias noise for P: Vector4 input (XYZ pos + time W); simplex; freq 5/5/5/0.1; amplitude 0.5
+- Blast: `@mask > 0.999` to delete fully disintegrated primitives
+- Clean: remove unused points (do NOT remove degenerate primitives)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — VOPs required; concepts transferable to any radial/masked disintegration; straightforward once mask is understood
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 19/20 (BBox node; standard VOPs; note: centroid node deprecated)
 
 ### Tags
-[PENDING EXTRACTION]
+#vops #disintegration #mask #noise #vfx #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `houdini-tutorial---wispy-smoke.md` — VFX shot pipeline (particle emission from destruction)
+- `scientific-phenomena-in-houdini.md` — abstract VFX using similar procedural masking
+- `noise.md` — noise deep-dive relevant to mask edge variation technique
+- `intro-to-vops---houdini-beginner-tutorial.md` — VOPs fundamentals used throughout this tutorial
