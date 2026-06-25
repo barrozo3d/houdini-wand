@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=RDiA2R47Wzo
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern)"
+tags: [unreal-engine, vat, niagara, kinefx, vellum, rbd, pyro, pipeline, intermediate-advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-fx-in-unreal/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course overview for a 3-session Houdini+Unreal Engine pipeline course (Houdini.School). Covers: procedural modeling/UV → Unreal import/organization → Megascans/HDRI/ACES lighting → Vellum cloth+RBD → Vertex Animation Textures (VAT) for real-time → Niagara particles (SDF snapping, pyro-driven smoke/fire, flipbook nodes).
 
 ### Summary
-[PENDING EXTRACTION]
+Short promotional overview (4m25s) for a Houdini.School 3-session course on using Houdini FX inside Unreal Engine. Session 1: modeling techniques + procedural UV mapping → import to Unreal → project/folder organization → MN sequence + subsequences → Megascans materials → HDRI interior lighting → ACES color space render → EXR export for DaVinci → procedural robot from shark model (Substance Painter texturing) + KineFX rig → transfer rig to Unreal. Session 2: Vellum cloth + soft body (animate cloth dancing) → transfer to Unreal real-time via vertex animation textures (VAT), SideFX Labs VAT converter + Labs skinning converter. RBD rigid bodies → RBD VAT. Metal bending: RBD constraints method + Vellum with proxy mesh method. Session 3: Niagara vs. Houdini POP comparison → debug Niagara → SDF snapping in Niagara → smoke+fire particle system from pyro simulation using Labs flipbook node + custom OpenGL workflow → "pinky wall care" (Niagara RBD bones system entirely in Unreal) → VAT in Niagara for dancing materials. Note: transcript is course promo only — no step-by-step technique detail.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Session 1: procedural modeling → UV → Unreal import → scene organization → materials (Megascans) → ACES lighting (HDRI) → KineFX rig → Unreal
+- Session 2: Vellum cloth animation → VAT (SideFX Labs converter) → RBD → RBD VAT → metal bending (RBD constraints vs. Vellum proxy)
+- Session 3: Niagara particles → pyro flipbook/OpenGL workflow → SDF snapping → Niagara + VAT materials
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- SideFX Labs VAT converter (vertex animation textures for real-time Unreal playback)
+- SideFX Labs skinning converter (transfer soft body to skinned mesh)
+- SideFX Labs flipbook node (pyro → image sequence for Niagara)
+- KineFX rig → Unreal import
+- Niagara vs. POP networks (comparison covered in session 3)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced — course overview only; no implementation detail in this transcript
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern; course likely H20–H21 era)
 
 ### Tags
-[PENDING EXTRACTION]
+#unreal-engine #vat #niagara #kinefx #vellum #rbd #pyro #pipeline #intermediate-advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `procedural-hdas-for-unreal.md` — procedural HDA pipeline to Unreal
+- `animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md` — KineFX + APEX rigging workflow
+- `intro-to-houdini-solaris---full-beginner-course.md` — USD/Karma rendering as alternative pipeline
+- `houdini-tutorial---simple-disintegration-fx.md` — RBD concepts used in course session 2

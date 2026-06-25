@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=aQQeEOlHqjQ
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 21"
+tags: [mpm, simulation, snow, particles, vdb, karma, compositing, secondary-sim, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-21-tutorial---mpm-snowball/
 frame_count: 4
 ---
@@ -33,27 +33,55 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+MPM (Material Point Method) solver snowball hitting a helmet. Key workflow: MPM Configure (creates source/collider/solver nodes) → tune critical stretch + stiffness noise mask for breakup variation → VDB point compression for baking → extract large chunks (blast by jp value) → mesh with VDB from Particles → secondary POP simulation for snow debris → Volume Rasterize for volumetric snow render. Three-layer Karma render composited in Nuke.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX (Mikael) 50-min Houdini 21 MPM tutorial: snowball hitting a helmet. Snowball: sphere (0.08 radius) + two Mountain SOPs (large elements high strength + small elements low strength). MPM Configure creates source/collider/solver. Collider fix for concave helmets: enter MPM Collider → VDB Collider → VDB from Polygons enable Pressure Falls + add VDB Reshape SDF. Source settings: Snow preset, velocity X = -9. Solver time scale = 0.1 (slow motion). Stick: friction 0.4, sticky 0.3. Breakup: critical stretch 0.206, increase stiffness, decrease volume preservation. Noise stiffness mask: Attribute Wrangle → cd = fit(abs(noise(P*30, 5 oct, roughness=3.5)), 0, 3.5, 0, 1); e *= fit(cd, 0, 1, 0.1, 5) — white areas stay chunky, black areas break. JPvalue (jp) visualizes breakup (purple=intact, red=breaking). Bounding box optimization: MPM Container → Manual → Boundaries = Delete (deletes particles at boundary, saves bake space). Bake compression: Attribute Delete (keep P/v/pscale/jp/id) → Attribute Promote (pscale points→detail) → Attribute Cast (pscale to 16-bit float) → Convert VDB Points (pack, 32 pts/box, 8-bit fixed position). Post-bake: Convert VDB Points (extract) → Attribute Promote (pscale detail→points) → Blast jp>50 (large chunks) → VDB from Particles (voxel = dx/2/1.51; check dx value from MPM detail attributes) → VDB Smooth + VDB Reshape SDF (erode 0.5) + Convert VDB → mesh. Secondary POP: blast jp<100 → group + blast (remove from helmet chunk bounding volume) → velocity × 0.1 (match time scale) → noise velocity (VOP: normalize + length × random 0.9–1) + Point Replicate (cylinder, velocity stretch, fps divide) → POP Network (POP Track + POP Force 0.1 + wind + pop kill py<-3.1, life 0.1). Volume render: Attribute Create density=1, Wrangle density *= fit(age, 0.1, 0.7, 1.2, 0) → Volume Rasterize Attributes (voxel 0.003, filter=points, vel blur). Three Karma render layers: chunks only / detail snow / helmet. Nuke comp: merge layers, color correct, add motion blur, 4K→1080p.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Snowball:** sphere r=0.08, rows/cols increased → Mountain SOP 1 (amplitude 0.2, large element size) → Mountain SOP 2 (amplitude 0.1, element size 0.01).
+2. **MPM Configure:** auto-generates source/collider/solver. Connect: snowball → MPM Source, helmet → MPM Collider.
+3. **Particle separation:** 0.003 full quality; multiply by 2.5 for preview (= 0.0075). Activate Box Size tab for separate control.
+4. **Fix concave collider:** right-click MPM Collider → Allow Editing. Dive in → VDB Collider → Allow Editing → VDB from Polygons → enable Pressure Falls. Back up → add VDB Reshape SDF.
+5. **Source tuning:** Snow material preset. Velocities X = -9.
+6. **Time scale:** MPM Solver → Time Scale 0.1.
+7. **Stick:** MPM Collider → friction 0.4, sticky 0.3.
+8. **Breakup noise mask (Attribute Wrangle):** `float cd = fit(abs(noise(P*30, 5, 3.5, 1)), 0, 3.5, 0, 1); e *= fit(cd, 0, 1, 0.1, 5);` — visualize jp attribute to see break zones.
+9. **Bounding box:** MPM Container → Manual → Boundaries = Delete. Trim bounds close to simulation area.
+10. **Bake compression:** Attribute Delete (keep P, v, pscale, jp, id) → Attribute Promote (pscale pts→detail) → Attribute Cast (pscale 16-bit float) → Convert VDB Points (pack, 32/box, 8-bit fixed) → File Cache.
+11. **Post-bake:** Convert VDB Points (extract) → Attribute Promote (pscale detail→pts) → Blast jp>50 → VDB from Particles (voxel = dx/2/1.51) → VDB Smooth → VDB Reshape SDF (erode -0.5) → Convert VDB → mesh.
+12. **Secondary POP:** blast jp<100 → bounding-volume group + blast (remove from helmet chunk area) → velocity ×0.1 → VOP noise on velocity + Point Replicate → POP Network (POP Track + POP Force amplitude 0.1, wind 0.2 + pop kill py<-3.1, life 0.1/0.1, time scale 0.1) → bake compressed.
+13. **Volume rasterize:** density create = 1; Wrangle: `density *= fit(@age, 0.1, 0.7, 1.2, 0);` → Volume Rasterize Attributes (voxel 0.003, pts filter, vel blur).
+14. **Karma render:** Karma Bidirxader shader (city 5, shadow density 0.3, smoke brightness 3). 3 render geometry layers. HDRI dome light. AOVs: diffuse/glossy/reflection combined, emission.
+15. **Nuke:** merge layers, color correct, motion blur, reformat 4K→1080p, write EXR.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- MPM Configure: auto-creates source/collider/solver hierarchy
+- MPM Solver time scale: 0.1 (slow motion)
+- MPM Source: critical stretch 0.206; stiffness noise mask; volume preservation reduced
+- MPM Collider: friction 0.4, sticky 0.3; VDB Reshape SDF to fix concave holes
+- VDB from Particles: voxel size = dx/2/1.51 (dx = MPM detail attribute for native voxel size)
+- Convert VDB Points: pack (32/box, 8-bit fixed) → extract. Reduces 11M pts to 30K for baking
+- Attribute Promote pscale pts↔detail: reduces file size (one value instead of per-point)
+- Attribute Cast pscale to 16-bit float: halves float storage
+- VDB Reshape SDF: erosion/dilation for mesh sculpting
+- Volume Rasterize Attributes: voxel 0.003, filter=points, vel blur for motion
+- Pop Kill rule: `if(@P.y < -3.1) kill = 1;`
+- Noise stiffness VEX: `float cd = fit(abs(noise(P*30, 5, 3.5, 1)), 0, 3.5, 0, 1); e *= fit(cd, 0, 1, 0.1, 5);`
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — MPM solver is straightforward; bake compression workflow is essential knowledge; secondary sim adds significant complexity. All major decisions explained.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21 (MPM solver native; Karma XPU render)
 
 ### Tags
-[PENDING EXTRACTION]
+#mpm #simulation #snow #particles #vdb #karma #compositing #secondary-sim #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `intro-to-houdini-pyro---full-beginner-course.md` — simulation pipeline concepts
+- `intro-to-houdini-particles---full-beginner-course.md` — POP network basics used in secondary sim
+- `houdini-tutorial---wispy-smoke.md` — volumetric rendering concepts (VDB + Karma)
+- `houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step.md` — FLIP fluid baking/compression parallels
