@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=eYqxarTsOrE
 author: Daily Course
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 19/20"
+tags: [flip, waterfall, white-water, vdb, mantra, compositing, particles, simulation, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step/
 frame_count: 4
 ---
@@ -33,27 +33,52 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Realistic waterfall FLIP simulation with white water. Terrain flatness is the dominant factor in water dynamics (60% impact). Key pipeline: height field terrain → FLIP source+initial state (Boolean procedural control) → FLIP solver tuning (surface extrapolation 0.2, velocity smoothing 0.02, noise VOP, kill boxes) → separate caching (particles/surface/velocity) → manual VDB conversion (high-res for high-vorticity areas, low-res surface merge) → white water (custom source: vorticity + sparse-surface-field detection) → Mantra Basic Liquid + REST displacement + compositing in Fusion/DaVinci.
 
 ### Summary
-[PENDING EXTRACTION]
+Daily Course 151-min comprehensive waterfall tutorial. Key insight: terrain flatness is critical — flat terrain = stable dynamics; too much relief = chaotic simulation. Workflow: (1) Height field terrain: start flat, add noise in the bevel/drop area only, blur for rectangle shapes, mask for upland slope. Convert to mesh + Poly Reduce + Cast. Rocks: sphere + Subdivide + Mountain SOP. (2) FLIP source: shelf tool → flip source at terrain edge. Initial state: Boolean between two boxes for procedural procedural size control + Boolean subtract lowland area. Boolean + VDB combine with rocks (SDF difference) to cut intersections. Push particles into terrain slightly (shrink inward) to prevent leaks. (3) FLIP tuning: surface extrapolation 0.2 (adhesion; too high = water sticks). Surface velocity smoothing 0.02 (more detail). Max substeps 2 (1 = striped artifacts). Noise VOP: small noise × large noise (Length of large to remove negative values → multiply by small noise = variation without inversion). Friction flip=small, friction collision=small. Kill boxes on sides (remove water gathering at walls). Receipt particles OFF. (4) Caching: separate file caches for particles/surface/velocity; partial simulation to find problems early; pack particles for disk space (optional). (5) Particle optimization: delete lower surface (terrain VDB expand + blast). Delete source area edge (pclosest + ramp by ID). Delete sparse particles where vorticity < threshold AND surface field shrink/expand shows sparse. (6) VDB conversion: high-res VDB from particle fluid for high-vorticity + collision areas; merge with low-res surface field (shrink surface inward first); VDB smooth on upper surface only (masked by particles blast above height); Peak node shrink for surface tension look. Transfer REST/velocity/vorticity attributes to mesh. (7) White water: shelf tool → custom source: vorticity (main) + sparse-surface detection (shrink+expand surface field → extract sparse particles → VDB from particles → VDB combine → Add). Kill-box on unstable first 200 frames (animated). WW solver: constraints stiffness, repellence (cellular foam structures), depth range, adhere params. PScale by point cloud density (pcfind → array length → fit → ramp). Depth for color visualization. (8) Materials: Mantra Basic Liquid (no diffuse, refraction slight green, REST displacement from vorticity+velocity). Uniform Volume underwater. Volume Cloud for white water (render properties: uniform volume + volume density). Trees as reflection-only objects. (9) Compositing in Fusion: color correct (warm midtones), glow on falling water mask, freeze-frame to cover early spray, saturation + gamma.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Terrain:** Height field (flat base) → mask bevel/drop areas → noise only there → blur → lift upland slightly. Convert to mesh → Poly Reduce → Cast. Rocks: sphere + Subdivide + Mountain.
+2. **FLIP source+initial state:** Shelf → flip source at edge. Box for flip boundaries. Boolean (intersect) for source. Boolean (subtract) for initial state within box. Bound node to cut lowland. VDB+SDF difference to remove rock intersections. Shrink particles inward to prevent leaks. Add velocity to source (X direction ~2). Curl Noise on velocity.
+3. **FLIP solver tuning:** Surface Extrapolation = 0.2 (adhesion). Velocity Smoothing = 0.02. Max Substeps = 2. Noise VOP (inner): Vector4 time input; two noises; Length(large noise) × small noise to remove negative values. Kill boxes: Pop Group (bounding object, two side boxes) → Pop Kill. Friction flip=0.02, collision=0.02. Receipt Particles OFF. OpenCL OFF.
+4. **Cache separately:** particles / surface field / velocity field → separate File Cache nodes. Cache in background (partial frames first for testing).
+5. **Particle optimization:** Blast lower surface (terrain VDB shrunk/expanded → blast points inside). Delete source edge particles (rowpointbbox Z-axis ramp by ID → grad-kill blast). Delete sparse flat areas where vorticity<threshold AND volume sample(surface_shrink_expand) < value.
+6. **VDB conversion:** VDB from Particle Fluid (voxel = sim-rest 0.03, particle scale reduced, max particle influence tuned). SDF Union with surface field (shrink surface first). VDB Smooth upper surface (masked by blast above height). Peak node (shrink inward) for surface tension. Transfer REST/velocity/vorticity to mesh.
+7. **White water source:** Shelf whitewater. Custom sparse source: shrink surface field → expand → delete particles inside → VDB from particles → VDB combine (Add) with vorticity source. Kill-box before frame 200: VDB of box → clamp+ramp → multiply source → animated off at frame 200.
+8. **White water solver:** constraints stiffness tuned; repellence (cellular foams, scatter on surface field, feature size range, noise range); depth range; adhere (depth-based + angle-based params reduced). PScale: pcfind(1, @P, radius, maxpts) → len(array) → fit → ramp → bind export pscale. Depth for CD.
+9. **Mantra materials:** Basic Liquid (no diffuse, REST displacement from vorticity+velocity combination → clamp 0–1 → material). Uniform Volume (underwater). Volume Cloud (white water: render properties = uniform volume + volume density attribute → cloud density link). Trees = force mat (no render, reflection only).
+10. **Compositing (Fusion):** Color Corrector (warm midtones: R+G, not blue) → Glow (mask on falling water area) → Time Stretcher (freeze frame to cover early spray) → Gamma → Output.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Surface Extrapolation: 0.2 (FLIP Solver → Collisions; lower = less water adhesion to terrain)
+- Velocity Smoothing: 0.02 (more surface detail)
+- Max Substeps: 2 (1 = striped artifacts on high-res)
+- Receipt Particles: OFF (saves ~10 min per simulation)
+- Kill boxes: Pop Group (bounding object, two side boxes) → Pop Kill (remove point)
+- Kill lower surface: terrain VDB from polygons → VDB Expand → VDB Convert → Blast points inside
+- VDB from Particle Fluid: voxel=sim-rest (0.03), point radius scale tuned, max particle influence tuned
+- Volume Rasterize: surface field + particles, merged with SDF Union
+- pcfind VEX: `int[] arr = pcfind(1, "P", @P, radius, maxpts); int cnt = len(arr); @pscale = fit(cnt, 1, maxpts, ...);`
+- rowpointbbox VEX: `float z = rowpointbbox(1, "P", "z"); @group_del = chramp("del", z);`
+- REST displacement: Basic Liquid → displacement tab → check REST → control by (vorticity + length(velocity)) → fit → clamp → multiply → material input
+- White water constraints stiffness: small positive value (clumps sparse foam)
+- Repellence: scatter on surface field, depth range for cellular structures, noise range for edge randomness
+- Adhere depth: reduced from default (prevents spray sticking unnaturally to surface)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — comprehensive project (2.5h); requires solid FLIP/VDB/Mantra knowledge; teaches professional optimization workflow (partial sims, separate caches, particle optimization before VDB). Chinese instructor with English transcript.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 19/20 (Mantra renderer; whitewater solver; height fields; FLIP solver)
 
 ### Tags
-[PENDING EXTRACTION]
+#flip #waterfall #white-water #vdb #mantra #compositing #particles #simulation #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `intro-to-houdini-volumes---beginner-course.md` — VDB fundamentals used extensively
+- `intro-to-houdini-particles---full-beginner-course.md` — POP/FLIP particle concepts
+- `houdini-tutorial---wispy-smoke.md` — Volume Rasterize Hair used for smoke (parallel VDB pipeline)
+- `w03-11-meshing-v1-1080p.md` — VDB meshing techniques (related particle-to-mesh pipeline)

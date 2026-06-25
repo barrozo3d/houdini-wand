@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=RRmvyQu39-4
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern)"
+tags: [pyro, pop, particles, curves, volume, smoke, karma, wispy, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tutorial---wispy-smoke/
 frame_count: 4
 ---
@@ -33,27 +33,51 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Wispy smoke by combining pyro simulation (for velocity field + dynamics) with POP particles that are advected by the pyro velocity and converted into curve trails per-particle, which are then volumetrically rasterized with Volume Rasterize Hair. The wispy look comes from the fine hair-like curves forming into volumetric threads rather than bulky smoke density.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX 27-min tutorial on wispy (cigarette-style) smoke. Core pipeline: (1) Pyro sim (Config Pyro → sphere source, no flame, buoyancy 0.4, turbulence remapped to hill shape, viscosity 0.1, animated velocity noise layers, gas turbulence inside + vortex confinement, time scale 1.5). (2) Scatter particles from volume (1000–5000, animated density attr with noise, animated seed $F). (3) Enumerate points (gives unique index per particle for curve grouping). (4) POP Network: POP Advect by Volumes (connect to pyro second input, blend=1, velocity=2, direction=Trace). Sub-solver "make into curves": Add node (connect by group attribute "index") + resample 0.2 (subdivision curves) + second Add node to delete previous frame's curves first. (5) Cache optimization: before cache → Attribute Delete (keep v + index) + Attribute Cast v to 16-bit float. After cache: rebuild curves with Add by index + resample. (6) PScale fade: Point VOP → normalize age (age/life) → fit(0.75, 1.0, 1.0, 0.0) → bind export pscale → curves fade out at end of life. (7) Volume Rasterize Hair: curves + pscale → wispy volume threads (width scale low, voxel 0.01, density scale 0.25). (8) Pyro Bake VOP (coloring, blueish, strength 5) + Volume VOP contrast (power node, density^1.3). (9) Karma Smoke material + Karma Bidirxader.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Pyro base:** Config Pyro (sphere source 1.5 units) → remove flame → buoyancy 0.4 → turbulence ramp to hill shape (affect middle densities most) → viscosity 0.1. Add velocity noise two layers (large element + small element, animated).
+2. **Gas turbulence inside solver:** connect to force output; enable control field + remap (hill) + vortex confinement merge (value 5).
+3. **Temperature noise:** Adjust Float (temperature) + multiply noise → range 0.2–1.0 to prevent temperature going to zero.
+4. **Scatter:** scatter 1000–5000 pts from volume → Attribute Adjust Float (density, noise B-spline ramp, element 0.3, poll duration 2) → enable density in Scatter → seed = $F.
+5. **Enumerate:** Enumerate SOP (points mode) → gives `index` attribute per particle.
+6. **POP Advect:** POP Network second input = pyro resolver. POP Advect by Volumes (blend=1, velocity=2, direction=Trace, injection type=update last).
+7. **Make into curves (sub-solver):** Add SOP (connect by group → attribute "index") → Resample (0.2, treat as subdivision curves). Add a second Add SOP above it to delete previous geometry first.
+8. **Cache compression:** Attribute Delete (keep v, index) → Attribute Cast v to 16-bit float → File Cache.
+9. **Post-cache curve rebuild:** Add by index → Resample (same settings as in solver).
+10. **Life-based pscale (Point VOP):** normalize age (age/life) → fit(0.75, 1.0, dest: 1.0, 0.0) → bind export "pscale" → fades curves out at end of life.
+11. **Volume Rasterize Hair:** width scale very small → voxel 0.01 → density scale 0.25 → deactivate color/tangents/velocity outputs.
+12. **Contrast + color:** VDB Volume VOP → power node on density (1.3) → Pyro Bake VOP (blue, strength 5).
+13. **Karma render:** Karma Smoke material, add dome HDRI light. Density scale 0.5. Shadow density 0.1. Smoke darkness 10.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Config Pyro: buoyancy 0.4, viscosity 0.1, turbulence scale 1 (hill remap), time scale 1.5
+- Gas Turbulence: inside solver, force output; control field ON, remap ON, vortex confinement value 5
+- Scatter: density mode → attribute "density" (noise animated) → seed $F (per-frame seed variation)
+- Enumerate SOP (points): gives unique "index" per particle
+- POP Advect by Volumes: blend=1, velocity=2, direction=Trace
+- Sub-Solver "make into curves": Add (by attribute "index") → Resample 0.2 (subdivision curves); Delete-existing Add runs before
+- Attribute Cast: velocity to 16-bit float (halves storage per attribute)
+- Volume Rasterize Hair: width scale ~0.001–0.01, voxel 0.01, density scale 0.25; deactivate CD/tangents/vel
+- Point VOP pscale fade: fit(normalize_age, 0.75, 1.0, 1.0, 0.0) → bind export "pscale"
+- Pyro Bake VOP: blue color, strength 5; Volume VOP power node on density: 1.3 (contrast)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — pyro tuning is mostly standard; the main innovation is the scatter → advect → curve → Volume Rasterize Hair pipeline, which is non-obvious but powerful
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern; uses Karma for render)
 
 ### Tags
-[PENDING EXTRACTION]
+#pyro #pop #particles #curves #volume #smoke #karma #wispy #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `intro-to-houdini-pyro---full-beginner-course.md` — pyro solver fundamentals
+- `intro-to-houdini-particles---full-beginner-course.md` — POP network basics
+- `houdini-21-tutorial---mpm-snowball.md` — VDB + Karma volumetric render pipeline
+- `scientific-phenomena-in-houdini.md` — abstract VFX using similar particle-to-volume techniques
