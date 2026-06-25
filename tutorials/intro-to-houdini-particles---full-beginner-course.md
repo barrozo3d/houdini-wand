@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=94YAomHfMbw
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern, H18+)"
+tags: [particles, pop, beginner, geometry-vop, velocity, sourcing, collisions, curl-noise, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-particles---full-beginner-course/
 frame_count: 8
 ---
@@ -68,27 +68,87 @@ frame_count: 8
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Geometry VOP (inside DOPs) > POP force nodes. Force = acceleration, causing overshoot/oscillation; Velocity = direct assignment, giving precise control. Control philosophy: create a direction vector (goal-seek, cross product for spin), normalize it, optionally scale by age/speed, add curl noise on top, then write to V — never to force — for predictable motion. Sourcing: scatter your own points + randomize seed per frame ($FF) → feed as "All Points"; skip topology-limited "Scatter onto Surfaces" for anything resolution-sensitive.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX full beginner particle course (122m30s, 8 sections). Establishes the core principle: Geometry VOP inside the DOPs network (same as Attribute VOP at SOPs but runs every frame) trumps all pre-built POP nodes for real-world control. Covers: particle basics (POP Network, source, color, life), Geometry VOP workflow (velocity vs. force, goal-seek with subtract+normalize, tornado with cross product, curl noise + age-based amplitude), sourcing (scatter onto surfaces vs. custom scatter + $FF seed, emission attributes, all-points mode, all-geometry mode for grid sheets/curves, impulse activation expressions), attribute inheritance (inherit velocity multiplier, ^Cd exclusion, just-born group trick), source interpolation (match topology vs. use point velocity for animated/changing-topo geo), and volume collisions (static object + SDF fill-interior, VDB Smooth/Reshape for sliding, file cache collision volume for speed). Concludes with pop drag + gravity for natural deceleration, and notes POP force nodes are useful only for drag/gravity not for art-directed motion.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**Core philosophy:**
+- Geometry VOP inside pop network: same as Attribute VOP at SOP level but runs every simulation frame
+- Always update **V** (velocity), not force — force causes acceleration → overshoot → hard to control
+- Exception: pop drag + gravity are fine with force because they gradually scale velocity down (natural)
+
+**Goal-seeking particles (Geometry VOP):**
+1. In Geometry VOP inputs: set op input 1 to point to "goal" null at SOP level (reference path → import point attribute node → P at pt_num=0 → constant 0)
+2. Subtract: `goal_P − particle_P` → normalize → write to V → particles move to goal at constant speed
+3. For speed: multiply normalized vector by constant before writing to V
+4. Kill particles by age (life 1.2s) instead of dealing with oscillation
+
+**Tornado / spin vector (Geometry VOP):**
+1. Constant (0,0,0) = center origin. Subtract P from center → normalize → `up = (0,1,0)`
+2. Cross product of (center−P normalized) × up → spin vector (tangential to origin)
+3. Multiply spin vector by speed multiplier; age → multiply to ramp spin speed over time
+4. Add constant (0, lift_speed, 0) for upward motion → add both to V
+5. Add curl noise (4D: vector-to-vector4, time as 4th dim) on top of combined direction
+
+**Sourcing:**
+- Preferred: Scatter on sphere → **global seed = $FF** → popnet emission = All Points → same results as "Scatter onto Surfaces" but topology-independent
+- Emission attribute: Attribute VOP → turbulent noise → fit range (−0.5 to 0.5 → 0 to 1) → bind export "emit" → popnet source → emission attribute = "emit"
+- To delete low-emit points: Blast node after Attribute VOP (`emit < threshold`)
+- Animate total_count from N → 0 over frames 1–10 to get burst/fade-out source
+- Impulse activation expression: `$F==1` (single burst), `$F<=10` (10 frame emission)
+- All Geometry mode: carries polygons + curves alongside points — each frame spawns a new set of primitives (trippy sheet/cloth look); set impulse activation `$F==1` for single-sheet
+
+**Attribute inheritance:**
+- Pop source → Attributes tab: inherit velocity multiplier, add-to-inherit-velocity for randomness
+- Exclude attribute: use `^Cd` in inherited attribute field to drop color
+- **Just-born group**: birth tab → group = "born"; Geometry VOP: set group = "born" → attributes set once on birth frame, inherited forever (avoids per-frame override that blocks force nodes from working)
+
+**Source interpolation (animated geo):**
+- Match Topology: interpolates points between frames (fills gap); only works with consistent topology
+- Use Point Velocity: Trail node (compute velocity) → VDB from polygons → pyro source; works with changing topology; set inherit velocity = 0 in pop source (just interpolation, not pushing particles)
+
+**Collisions:**
+- Static object → merge node (inside DOPs, after solver: right input = particles, left input = collision) → Shift+R to reverse order
+- Preferred: proxy volume path = SDF from SOP (VDB from Polygons + fill interior); Volume Sample mode in static object collision tab
+- Fill interior: critical — prevents particles from phasing through at high speed
+- VDB Smooth SDF: smooths collision surface for better sliding
+- VDB Reshape SDF dilate/erode: offset collision boundary
+- File Cache the collision volume to avoid per-frame SDF recalculation during playback
+- Physical settings: bounds/bounds_forward (0.5 default), friction (0.5), dynamic_friction_scale
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **POP Network**: DOPs preset; inside = pop_object + pop_source + pop_solver + output
+- **Geometry VOP** (inside DOPs): same as Attribute VOP at SOPs; runs every simulation frame; update V not force
+- **Import Point Attribute** VOP: grab SOP-level geometry position from op_input; pt_num=0 for single point
+- **Cross Product** VOP: perpendicular vector to two input vectors (use for spin direction)
+- **Curl Noise 4D**: `vector-to-vector4` (pos+time) → curl noise → add to direction vector
+- **POP Color**: ramp on `age` (normalized 0→1); set life range; black body preset → color by heat
+- **POP Drag**: `air_resistance = 0.2–0.5` for natural deceleration; use with gravity node
+- **Gravity Force**: placed after solver; not inside merge chain
+- **Scatter**: global seed = `$FF` for per-frame randomization; disable relax iterations; custom point count
+- **Point Velocity node**: fast alternative to Attribute VOP for setting V + curl noise tab; animatable
+- **Trail** SOP: compute velocity on animated geo for collision interpolation
+- **Static Object**: proxy_volume_path → SDP path; collision_detection = Volume Sample; physical tab: bounds/friction
+- **VDB Reshape SDF** + **VDB Smooth SDF**: optional collision surface adjustments
+- **File Cache**: cache collision SDF + scatter source for real-time playback
+- `$F` / `$FF` expression: current frame / frame with substep support; use $FF for seeds in substep simulations
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — course starts beginner but quickly reaches professional-level technique philosophy; essential viewing before attempting any advanced particle work
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern, H18+); techniques apply to all solvers (FLIP, Vellum, RBD)
 
 ### Tags
-[PENDING EXTRACTION]
+#particles #pop #beginner #geometry-vop #velocity #sourcing #collisions #curl-noise #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `intro-to-houdini-for-vfx---beginner-course.md` — prerequisite: Houdini fundamentals, VOPs, DOPs intro
+- `intro-to-vops---houdini-beginner-tutorial.md` — VOPs mastery (recommended before Geometry VOP in DOPs)
+- `intro-to-houdini-pyro---full-beginner-course.md` — same Geometry VOP philosophy applied to pyro
+- `houdini-tutorial---wispy-smoke.md` — POP Advect by Volumes + sub-solver particle technique
+- `houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step.md` — FLIP particle sourcing

@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=m8w2OND3rH0
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini (any modern, H19+)"
+tags: [pyro, fire, smoke, beginner, sourcing, micro-solvers, velocity-field, divergence, temperature, flame, collisions, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-pyro---full-beginner-course/
 frame_count: 0
 ---
@@ -88,27 +88,108 @@ frame_count: 0
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Pyro = 5 target fields (density/temperature/divergence/flame/velocity) + micro-solver shaping. Preferred workflow: scatter on source geo → Attribute VOP (turbulent noise → fit range 0–1) → multiple bind exports (density, temperature, burn, v) → Volume Rasterize Attributes → single pyro solver input. Velocity field: large VDB container + Volume VOP curl noise sourced as Vell (operation=pool) gives 70% of smoke direction; micro-solvers add remaining detail. Use Pyro Burst Source or Pyro Configure nodes for rapid setup.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX comprehensive pyro beginner course (145m31s, 15 sections). Covers the full pyro pipeline from zero: basic setup (pyro solver, fog VDB source, sourcing tab), velocity field sourcing (VDB container + Volume VOP curl noise), all 5 target fields (density/temperature/divergence/flame/velocity) with operation types (add/maximum/pool/copy), all shape micro-solvers (buoyancy, turbulence, disturbance, shredding, viscosity, wind, flame expansion, gas damp), Setup tab (voxel size, OpenCL minimal mode, sparse vs. fixed domain, substeps, time scale, padding), collisions (SDF fill-interior, velocity transfer from animated geo), efficient scatter-based source setup, Pyro Source node, Pyro Burst Source node, and Pyro Configure fireball/shockwave/bonfire presets. Key philosophy: combine velocity fields (direction/motion) + micro-solvers (detail/features) rather than piling on micro-solvers alone.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**Target Fields & Sourcing Operations:**
+- **density**: source as fog VDB. Operation: `add` (continuous emission). Controls opacity/thickness. Dissipation in Field Step.
+- **temperature**: source as fog VDB (different noise offset from density). Target field must be named "temperature". Operation: `maximum` or `pool`. Controls buoyancy rise. Cooling rate = dissipation rate.
+- **divergence**: source as fog VDB (high source_scale ~100 for burst). Target field = "divergence". Operation: `add`. Causes smoke to expand. Negative values = contraction. SDF version provides natural gradient for suction effect.
+- **flame**: source as fog VDB named "burn" (legacy). Target field = "flame". Operation: `maximum`. Controls flame lifespan. Enables: flame expansion (adds divergence), emit from flame density, emit from flame temperature — provides continuous sourcing throughout sim.
+- **velocity (Vell)**: source as vector VDB named "V" or "vell". Target field = "vell". Operation: `pool` (best for magical effects, natural motion). Other: `add` (accumulates speed — use for burst only), `maximum` (consistent speed), `copy` (best adherence, blocks microsolver layering).
+
+**Velocity Field Setup:**
+1. Drop VDB node → name="V", class=fog, type=vector float → VDB Activate (box as reference)
+2. Volume VOP → curl noise 4D (pos → vector-to-vector4 + time) → bind export "V" (3 floats)
+3. Merge with density source → pyro solver source: source_volume="V", target_field="vell", scalar=vector, operation=pool
+4. Voxel size 0.5–1.0 is fine for direction-only velocity fields; decrease only for sharp detail
+5. Strategy: velocity field gives direction (70%), micro-solver turbulence gives detail (30%)
+
+**Micro-Solvers (Shape Tab):**
+- Buoyancy: requires temperature field; gravity direction=-1 (default rises); buoyancy scale = overall speed
+- Turbulence: large swirl noise; swirl size = scale; turbulence value = amplitude
+- Disturbance: threshold field = density (0–0.05, affects only exterior); control field = speed field → apply only to fast-moving voxels; block-based > continuous; use high values (10–20)
+- Speed field: must enable in Field Step → enables control field speed mapping
+- Shredding: like disturbance but preserves velocity magnitude; map to flame field
+- Viscosity: blurs/smooths features over time; very sensitive — use 0.05–0.1 max
+- Wind: push in direction; must enable "add wind to velocity field" in Output tab for particle advection
+- Flame Expansion: adds divergence where flame field is high; set flame range max = compute range result; expansion rate = strength
+- Gas Damp (micro-solver inside pyro): like drag on velocity field; set damp_factor 0.1–0.5; target_speed=0 to freeze
+- Gas Vortex Confinement: preserves swirls as sim slows down; useful for longer-lasting turbulent features
+
+**Setup Tab:**
+- Voxel size: high for tests (0.1–0.2), low for finals (0.02–0.05)
+- Velocity voxel scale: lower res for velocity field only (speed vs. detail tradeoff)
+- Time scale: 1.5–2.0 for flame/fast smoke; never exceed 2.0 (erratic above that — retime post-sim instead)
+- Max substeps: 2–3 for fast smoke or high time scale
+- Sparse (default): dynamic domain expansion, memory to disk, unlimited size
+- OpenCL minimal: fixed domain, GPU-accelerated, fast tests; voxels limited by VRAM; some micro-solvers unsupported
+
+**Bounce / Padding Tab:**
+- Padding: 0.3 (default), increase to 1.0+ for fast-expanding smoke (prevents blocky domain clipping)
+- Ground plane: close above/below with height offset; fast way to get shock wave spreading effect
+- Height field collision: fast to calculate, animated support
+
+**Collisions:**
+1. Plug collision geo into pyro solver 2nd input → collision tab: prefer SDF + Volume Velocity over Collision Geometry
+2. SDF = VDB from Polygons (Surface, fill_interior=ON, name="collision"); fill interior is critical
+3. Velocity transfer: Trail node → compute velocity → VDB from Polygons surface attribute (attribute="v", vdb_name="v", type=velocity)
+4. Naming: collision SDF = "collision"; velocity = "v" (must NOT conflict with velocity source volume name)
+5. VDB Smooth SDF: smooth collision surface for better particle sliding
+6. For animated geo: enable "use deforming geometry" on static object (or pyro collision)
+
+**Efficient Multi-Field Source Setup:**
+1. Scatter on sphere → Attribute VOP → turbulent noise → fit range (−0.5→0.5 to 0→1)
+2. Multiple bind exports: "density", "temperature", "burn" (different noise offsets each)
+3. Volume Rasterize Attributes: list all attributes; tie voxel size to pyro solver via relative reference
+4. Pyro solver sourcing tab: automatically has density, temperature, burn, vell slots ready
+
+**Pyro Burst Source:**
+- Drops and expands points (burst pattern with lifespan ~5 frames)
+- Auto-creates density/temperature/burn/velocity point attributes
+- Link trail_link_separation to pyro voxel size
+- Types: burst (fireball), shockwave (spreading)
+- Volume Rasterize Attributes: set coverage=empty for full coverage
+
+**Pyro Configure Nodes:**
+- Tab → "pyro configure fireball/bonfire/shockwave" → complete pre-built chain
+- Study settings: padded bounce tab, animated turbulence (high start → low finish), divergence from burn, emit from flame settings
+- Good learning resource and production starting point
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Pyro Solver**: main node; tabs: sourcing, shape, field step, look, setup, bounce, collision, output, advanced
+- **VDB from Polygons**: density_vdb (fog VDB) or SDF (surface + fill_interior); set name to match target field
+- **Volume VOP**: applies noise to velocity VDB; curl noise 4D with time for evolving direction
+- **Volume Rasterize Attributes**: converts point attributes to volumes; tie voxel size to pyro via relative reference; normalize_by_clamp_coverage=ON
+- **Pyro Source** node: surface scatter with auto-scaling pscale; link particle_separation to voxel size
+- **Pyro Burst Source** node: auto density+temperature+burn+velocity; burst/shockwave types
+- **Pyro Configure** nodes: fireball, bonfire, shockwave, dragon fire — complete pre-built setups
+- **Gas Damp** micro-solver: velocity drag; damp_factor controls speed reduction rate
+- **Gas Vortex Confinement**: preserves swirls as smoke slows down
+- Trail SOP (compute velocity): transfers animated object velocity to collision volume
+- VDB Smooth SDF / VDB Reshape SDF: collision surface refinement
+- Field Step tab: dissipation, temperature cooling_rate, diffusion, speed field (must enable), emit from flame checkboxes
+- Output tab: add wind to velocity field (critical if wind microsolver is active); convert to VDB; 16-bit float
+- Velocity voxel scale (Setup tab): reduces velocity field resolution independently
+- Compute Range button: find actual min/max values of a field at current frame (for threshold settings)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — beginner-friendly introduction but covers production-ready techniques; prerequisite for advanced pyro work
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern, H19+); Pyro Burst Source added in H20+; OpenCL features vary by GPU driver
 
 ### Tags
-[PENDING EXTRACTION]
+#pyro #fire #smoke #beginner #sourcing #micro-solvers #velocity-field #divergence #temperature #flame #collisions #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `intro-to-houdini-for-vfx---beginner-course.md` — prerequisite: Houdini fundamentals and DOPs structure
+- `intro-to-houdini-volumes---beginner-course.md` — prerequisite: volume creation and manipulation
+- `houdini-tutorial---wispy-smoke.md` — pyro-driven velocity field for particle advection (related VOP technique)
+- `intro-to-houdini-particles---full-beginner-course.md` — same Geometry VOP philosophy for particles
+- `houdini-solaris-tutorial---rendering-multiple-rops-together.md` — batch rendering pyro caches
