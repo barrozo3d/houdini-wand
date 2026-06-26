@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=aUkXMjjLT-k
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [vellum, rest-blend, bend-sop, bounding-sphere, group, soft-body, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-01-06-updating-the-rest-blend-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,52 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Vellum rest blend update: use Bend SOP + bounding sphere groups to repose character arms before simulation, then feed the new rest pose into the Vellum solver's Rest Blend node on frame 1 — this shifts the soft body's natural rest position mid-sim without a visible snap.
 
 ### Summary
-[PENDING EXTRACTION]
+12m37s lesson. Problem: soft body hunter holds arms in an unnatural raised gun position (rest pose). Solution: (1) create arm groups via bounding sphere/bounding object selection, (2) use the Bend SOP to reshape each arm to a natural lowered position, (3) feed this new geometry into a Rest Blend node inside the Vellum DOP on frame 1 of the sim (band + stretch constraint groups). The Vellum solver then gradually tries to match the new rest shape during simulation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Group Arms by Bounding Region**
+- Group SOP: group by bounding region → bounding sphere → move/size the sphere handle to isolate left arm
+- For rotated shapes (right arm): use bounding object instead — plug in a polygon sphere, move/rotate it externally; Group → bounding object → pick that sphere → can rotate selection volume
+- Create separate groups: `left_arm`, `right_arm`
+
+**2. Bend SOP**
+- Bend SOP: source type = points; group = left_arm
+- Right-click viewport → "toggle capture handle" → reveals separate gizmos: capture origin (where bend pivots), capture length (how much geometry bends), bend amount
+- Adjust: capture origin to elbow location; capture length to arm section only; bend amount (e.g., -53 degrees) to lower the arm
+- Duplicate for right arm with different values
+
+**3. Rest Blend (Inside Vellum DOP)**
+- Go to first frame of sim (e.g., frame 140)
+- Inside DOP network: disable gravity + ground plane temporarily
+- Add Rest Blend SOP (from volume menu): wire into Merge/solver; last port is typically correct
+- Configure: constraint groups = "band and stretch" (update these constraint types' rest lengths)
+- Source: object merge/path to the new rest pose geometry (hunter's arm-bent geometry)
+- Update each frame: OFF — update only on frame 1 (or desired frame)
+- Result: on frame 1, all band+stretch constraints update their rest length to match the bent-arm shape; soft body now naturally tries to relax toward lowered-arms pose
+- Re-enable gravity + ground plane
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Group SOP** → bounding sphere: drag sphere handle to isolate arm geometry
+- **Group SOP** → bounding object: use external sphere with rotation to isolate angled arms
+- **Bend SOP**: capture origin (pivot point), capture length (reach), bend amount (degrees); right-click → "toggle capture handle" to access separate gizmos
+- **Rest Blend** (inside Vellum DOP): "update each frame" = off; constraint group = "band and stretch"; source = new rest geometry path
+- band + stretch: the constraint types whose rest lengths are updated to match new rest shape
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, rest-blend, bend-sop, bounding-sphere, group, soft-body, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-ii-week-01-04-tetrahedral-soft-bodies-v1-1080p.md (tet soft body setup)
+- module-ii-week-01-02-introduction-to-vellum-v1-1080p.md (Vellum constraint types)

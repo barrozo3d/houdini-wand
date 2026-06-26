@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=tC3H8wBaytE
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [import, alembic, lod, path-attribute, exploded-view, rbd, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-02-01-importing-the-geometry-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,54 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Import and inspect a multi-LOD Alembic building asset: scale to Houdini units, Unpack to see the path attribute (material per primitive), use 3D connectivity display mode (key 9) to verify piece separation, and drop an Exploded View SOP to create a name attribute and visually inspect overlap before fracturing.
 
 ### Summary
-[PENDING EXTRACTION]
+4m48s lesson (Module II Week 2, lesson 1). Imports a Brooklyn building Alembic with multiple LODs. LOD 2 chosen: separate tiles, windows, wooden panels (all distinct pieces). LOD 1 is fused and unworkable for fracture. Workflow: Geometry node → Alembic SOP → scale to 0.01 → Unpack → inspect path attribute for material IDs → 3D connectivity display (key 9) to confirm piece separation → Exploded View SOP to name pieces and check overlapping. Project: reverse gravity/tractor beam RBD sim.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Import Alembic**
+- File → New Project (module-ii-week-02)
+- Geometry node → dive inside → Alembic SOP
+- Navigate to extracted LOD folder; select LOD 2 file
+- Scale = 0.01 (standard Houdini/Alembic size mismatch: model comes in at ~100m, need ~10m)
+
+**2. Inspect LOD & Piece Structure**
+- Compare LODs: LOD 1 = fused geometry (one piece = bad for fracture); LOD 2 = separate tiles/windows/panels (correct)
+- Unpack SOP: necessary to access primitive-level attributes
+- After Unpack: check primitives → path attribute shows material name per prim (e.g., "door", "wood", "glass") — essential for knowing what to constrain or fracture separately
+
+**3. 3D Connectivity Display**
+- Press 9 on keyboard in viewport → switches to 3D connectivity display mode
+- Each separate connected piece gets a unique color → instantly see which geometry is truly separated vs fused
+- Confirms tiles are all individual floating pieces (not extruded from one mesh)
+
+**4. Exploded View SOP**
+- Drop Exploded View SOP, plug in after Unpack
+- Internally creates a name attribute for each piece (critical for RBD and constraints)
+- Shrink down the exploded view to see overlapping pieces (problematic for sims)
+- Inspect overlap issues early; in this case minimal for a simple sim
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Alembic SOP** — import multi-LOD building; scale = 0.01 for correct Houdini units
+- **Unpack SOP** — unlock packed Alembic geometry to expose primitive attributes
+- `path` attribute (primitive) — material/object path per primitive; use to identify material regions for selective fracture or constraints
+- **3D Connectivity display** — press 9 in viewport; each connected piece = unique color; confirms piece separation
+- **Exploded View SOP** — creates `name` attribute per piece; separates pieces visually; shrink to check overlaps
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[import, alembic, lod, path-attribute, exploded-view, rbd, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-ii-week-02-01-introduction-v1-1080p.md (project overview: tractor beam/reverse gravity)
+- module-i-week-02-01-creating-a-new-project-v1-1080p.md (project setup)
+- module-i-week-01-09-setting-the-active-attribute-v1-1080p.md (RBD active attribute setup)
