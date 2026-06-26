@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=w9p4zfurT2A
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, glass, fracture, car-crash, constraints, laminated-glass, course-intro, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-04-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only — Week 4 car crash: glass fracture pipeline (laminated windscreen = two-step Voronoi + spider web, tempered side window = small pieces), constraints for glass stick-to-frame behavior, final render.
 
 ### Summary
-[PENDING EXTRACTION]
+1m53s intro for Week 4 (final week of Module I RBD course). Builds on Week 3 metal simulation. Covers: laminated glass (windscreen) fracture — first a triangular spider-web pattern then Voronoi fine fracture; tempered glass (side window) — simple fine Voronoi pieces; constraint setup to keep glass pieces stuck to window frame initially; per-frame constraint manipulation in simulation; materials/lights for final car crash render.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Windscreen (laminated): 2-step fracture — spider web triangles first → Voronoi again for tiny blocks; plastic/bending behavior, stays together
+- Side window (tempered): single Voronoi fracture → thousands of tiny pieces, flies apart
+- Constraints: stick glass to window frame, selectively weaken over time in sim
+- Final: materials + lights + render
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- RBD Material Fracture (glass mode) — spider web pattern
+- Voronoi Fracture — second pass for sub-fracture into tiny pieces
+- Constraint networks — time-based weakening
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (context video)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, glass, fracture, car-crash, constraints, laminated-glass, course-intro, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-03-01-intro-v1-1080p.md (Week 3: metal and wheels)
+- module-i-week-05-01-importing-the-geometry-v1-1080p.md (Module I Week 5)
