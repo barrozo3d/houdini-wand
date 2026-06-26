@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=1yb3mindncw
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [flip, fluid, viscosity, surface-tension, jitter, kernel, sub-steps, simulation, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/w04-11-viscosity-and-surface-tension-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,48 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+FLIP viscosity + surface tension for milk/strawberry sim: enable surface tension in FLIP Solver → prevents square splashes, forms tendrils; viscosity holds fluid together; Swirly Kernel (Volume Motion tab) for small-scale high-vorticity sim; increase DopNetwork sub steps for detail. Final milk sim: surface tension=300, viscosity=350, swirly, sub steps=2, particle separation=2.
 
 ### Summary
-[PENDING EXTRACTION]
+12m32s VFX School Archive module. Part of the Week 4 strawberry-collides-with-milk simulation. First demonstrates viscosity + surface tension on a simple cube DOP test, then applies those settings to the main strawberry+milk sim. Key concepts: FLIP Source jitter seed `$F` for per-frame variation; surface tension prevents square-shaped splashes (makes sphere/circle); viscosity holds fluid together (1–3 for small demo, 300–350 for larger sim); Splashy vs Swirly kernel (swirly = high-vorticity, small-scale); DopNetwork sub steps for more detail per frame. Uses F1 shortcut to open node help pages.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **FLIP Source jitter**: Jitter Seed = `$F` → per-frame unique particle positions; Jitter Scale = 1 (default); 0 = grid pattern
+2. **Closed Boundaries** (DopNetwork/FLIP Solver): enable → treats sim bounds as collider, prevents particles escaping
+3. **Surface Tension** (FLIP Solver → Surface Tension): enable → particles pull into spheres/circles instead of flat splash; high values → oily, stringy look; balance carefully
+4. **Viscosity** (FLIP Solver → Viscosity + FLIP Object → Physical):
+   - Small demo: values 1–3
+   - Main milk sim: values 300–350
+   - Viscosity and surface tension compete/balance each other → tendrils + cohesion
+5. **Velocity Transfer Kernel** (FLIP Solver → Volume Motion → Velocity Transfer):
+   - Splashy kernel: default, choppy/turbulent
+   - **Swirly kernel**: better for small-scale high-vorticity sims (like milk splash); retains swirly nature; recommended for this shot
+   - Press **F1** on any parameter → opens Houdini help page for that node
+6. **DopNetwork Sub Steps**: set to 2 → calculates particle positions twice per frame → more detail, slower
+7. Final milk sim settings: surface tension=300, viscosity=350, swirly kernel ON, sub steps=2, particle separation=2 (down from 3)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- FLIP Source: Jitter Seed=`$F`; Jitter Scale=1
+- FLIP Solver → Surface Tension: enable + value (300 for milk scale)
+- FLIP Solver → Viscosity: enable (value set in FLIP Object, not here)
+- FLIP Object → Physical → Viscosity: value 350 for milk scale
+- FLIP Solver → Volume Motion → Velocity Transfer: **Swirly Kernel** (for small-scale high-vorticity)
+- DopNetwork → Sub Steps: 2 (doubles calculation frequency per frame)
+- F1 on selected node → Houdini help documentation
+- Volume Motion box size: 20, position move up 10; Closed Boundaries: enable
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+[flip, fluid, viscosity, surface-tension, jitter, kernel, sub-steps, simulation, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- w03-04-adding-viscosity-v1-1080p.md (basic viscosity introduction, same course)
+- w04-01-introduction-v1-1080p.md (week 4 introduction)
+- w03-11-meshing-v1-1080p.md (FLIP meshing workflow, same course)

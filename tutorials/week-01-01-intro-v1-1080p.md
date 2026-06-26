@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=9ocqYW1XHk4
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [rbd, destruction, fracture, voronoi, boolean, plasticity, constraints, active-animated, bridge, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-01-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,42 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only. Manhattan Bridge destruction: Week 1 overview — model import, fracture prep (boolean for road, Voronoi for metal), plasticity + soft constraints, active/animated attributes for sim/animation blend, efficient caching, post-sim deformation of hi-res geometry from low-res proxy.
 
 ### Summary
-[PENDING EXTRACTION]
+1m58s intro for Week 1 of VFX School's "Manhattan Bridge Destruction Project" course. Topics previewed: import bridge model, analyze and split into simulated/static parts (deformable metal + rigid metal + road). Fracture: road = boolean with custom cutting geo; deformable metal = Voronoi fracture. Configure plasticity and soft constraints (for metal bending behavior). Animate bridge (earthquake/wind sway). Active/animated attributes to blend animation with simulation. Cache efficiently. Post-sim: deform hi-res render geometry using low-res proxy simulation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+*(Week introduction — see other week-01-xx lessons for specifics)*
+
+Week 1 pipeline overview:
+1. Import Manhattan Bridge model → analyze, prepare
+2. Split geometry: deformable metal / rigid metal / road (fracture zones)
+3. Fracture: road → Boolean fracture with custom cutting geometry; deformable metal → Voronoi fracture
+4. Configure plasticity + soft constraints (metal behavior)
+5. Animate bridge oscillation (earthquake/wind)
+6. `active` and `animated` attributes → blend simulated elements with animation
+7. Cache simulation efficiently (low disk footprint)
+8. Post-sim: deform hi-res geometry using low-res proxy transform data
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Boolean fracture (custom cutting geo) for road
+- Voronoi fracture for deformable metal
+- Soft constraints + plasticity (RBD metal behavior)
+- `active` / `animated` point attributes (DOP: controls which points simulate vs animate)
+- Point Deform / Lattice for hi-res deformation from low-res proxy
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, destruction, fracture, voronoi, boolean, plasticity, constraints, active-animated, bridge, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- week-01-11-rbd-configure-v1-1080p.md (same week, RBD configure details)
+- week-02-01-intro-v1-1080p.md (week 2 intro, same project)
