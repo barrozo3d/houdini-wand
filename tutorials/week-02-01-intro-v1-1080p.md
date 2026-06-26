@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=IoxlDdh5OPg
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [rbd, vellum, cables, constraints, guided-sim, bullet, bridge, destruction, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-02-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,38 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only. Week 2 of Manhattan Bridge Destruction: horizontal cables = Bullet (simplify to 4 strands, hard constraints, guided sim from Week 1 animation); vertical cables = Vellum (proxy geometry, pin top to previous animation, breaking constraints at bottom under stress, scale+drag for large-object feel).
 
 ### Summary
-[PENDING EXTRACTION]
+2m12s week intro by VFX School Archive. Week 2 of the Manhattan Bridge Destruction project. Covers two cable types:
+- **Horizontal cables**: Heavy, rigid → Bullet sim. Simplified from intricate geo to 4 proxy strands. Hard constraints. Guided Sim workflow (Houdini feature that guides one sim using animated geometry from Week 1 road sim).
+- **Vertical cables**: Bendy, active → Vellum sim. Proxy geometry prepared first. Top pinned to bridge animation. Bottom connected to road/bridge with breaking constraints (break when under stress). Scale + Drag forces for convincing large-bridge scale feel.
 
 ### Key Steps
-[PENDING EXTRACTION]
+*(Week introduction — see other week-02-xx lessons for specifics)*
+
+Week 2 pipeline:
+1. Horizontal cables: simplify geo → 4 strands; Bullet solver; hard constraints; Guided Sim workflow
+2. Vertical cables: create proxy Vellum geometry; pin top to animated bridge; connect bottom to road with breakable constraints; add Scale + Drag forces
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Bullet solver with hard constraints (horizontal cables)
+- Guided Sim workflow (Houdini) — guide simulation from previous animated geometry
+- Vellum solver (vertical cables) — breakable constraints at bottom
+- Scale + Drag forces for large-bridge motion feel
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, vellum, cables, constraints, guided-sim, bullet, bridge, destruction, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- week-01-01-intro-v1-1080p.md (week 1 overview)
+- week-02-03-starting-the-guided-sim-v1-1080p.md (guided sim detail)
+- week-02-07-starting-the-vellum-sim-v1-1080p.md (Vellum cable sim detail)

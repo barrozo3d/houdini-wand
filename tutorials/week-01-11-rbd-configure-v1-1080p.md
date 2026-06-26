@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=dIBS14jw25k
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [rbd, destruction, active-attribute, collision, fracture, animated-noise, constraints, bridge, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-01-11-rbd-configure-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,50 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+RBD Configure SOP setup: visualize collision shapes (padding 0.1, convex hull); animate `active` attribute using bounding box geometry with Mountain SOP (flow noise, center noise OFF, animated height + transform for growing edge, groups split by normals).
 
 ### Summary
-[PENDING EXTRACTION]
+10m34s VFX School Archive module. Part of Manhattan Bridge Destruction Week 1. Covers RBD Configure SOP setup, collision geometry visualization, and creating an animated `active` attribute that propagates from the center out to the edges over time (simulating progressive destruction). The active boundary is a box with Mountain noise deforming its face positions (flow noise, animated height 0→10 at frame 75, then transform continues to frame 200), split into front/back groups so both edges grow outward from the center. Final edge pieces are never made active → rough unfinished edge on destroyed bridge section.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **RBD Configure SOP** — packs and prepares geometry for bullet simulation; receives geometry + active bounds
+2. **Visualize collision geometry**: Visualize tab → Show Geometry Representation; scale controlled by collision padding (default too large)
+3. **Collision Padding**: reduce to **0.1** (default much larger); set per-piece in Collision Shapes
+4. **Collision Shape**: Box (fastest), Sphere (smoothest), **Convex Hull** (default — accurate for irregular shapes); keep convex hull, just reduce padding
+5. **`active` attribute** — 1 = simulated by forces/collision; 0 = static or animation-only
+6. **Animated active boundary**:
+   - Box → set divisions (100) + switch to Polygon Mesh for Mountain noise
+   - **Mountain SOP**: noise type=Flow, roughness=0 (no detail), center noise=OFF (only add, not displace)
+   - Animate Mountain height: key 0 at frame 1, key 10 at frame 75 → set keyframes linear in animation editor
+   - **Group by Normals**: direction=+X → "back" group; direction=−X → "front" group
+   - **Transform SOP** after mountain: select "back" group → animate X: 0 at frame 75 → 6 at frame 200 (noise moves but stays same shape); set linear
+   - Duplicate transform → "front" group → X: 0 → −6 (opposite direction)
+   - Result: noise grows from center, both edges grow outward; inactive chunk left at far end
+7. Plug box result into middle input of RBD Configure → active attribute animated per piece
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **RBD Configure SOP** (middle input = active bounds geometry)
+- Visualize tab → Show Geometry Representation (collision shapes preview)
+- Collision Shapes: convex hull, **padding=0.1**
+- `active` integer attribute: 1=active (simulated), 0=inactive (static/animated)
+- **Mountain SOP**: type=Flow noise; roughness=0; center noise=OFF; animate height 0→10 (frames 1→75)
+- **Group by Normals**: direction=+X/−X → split box into front/back face groups
+- **Transform SOP**: after Mountain, select group, animate X translation (frames 75→200) to continue noise travel
+- Linear keyframes in animation editor (Graph Editor: select both keys → set linear)
+- Mountain offset parameter: shift noise pattern for different active edge shapes
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, destruction, active-attribute, collision, fracture, animated-noise, constraints, bridge, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- week-01-01-intro-v1-1080p.md (week 1 overview, same project)
+- week-02-01-intro-v1-1080p.md (week 2: cables with Bullet+Vellum)
+- week-02-03-starting-the-guided-sim-v1-1080p.md (guided sim workflow)
