@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=mOKs6Dht5Mw
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [particles, rendering, mantra, instancing, gold-material, file-cache, fracture, pscale, depth-of-field, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-heavy-chic-part-2/
 frame_count: 4
 ---
@@ -33,27 +33,79 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Polish and render the Part 1 heavy particle sim: noise multiplied by color (stationary particles untouched), gamma ramp, upres to 11M points, File Cache, custom fractured-box particle geometry instanced with pscale, gold material (metallic, rough, yellow), Instance node render, distant light, random rotation per particle, DOF camera, fix black gaps with opacity subdivisions.
 
 ### Summary
-[PENDING EXTRACTION]
+17m52s tutorial by Alexander Eskin (continuation of Heavy Chic Part 1). Polishes the particle simulation: adds noise multiplied by Cd (so stationary particles don't drift), applies a b-spline gamma ramp to redistribute particle density, increases point count from 700K to 11M (point separation 0.004). Caches to disk with `$OS.$F4.bgeo.sc`. Creates custom particle geometry: fractures a box, packs pieces, blasts external shell, picks one interesting piece by connectivity class. Instances these geo pieces using the Instance OBJ node driven by pscale. Gold material (metallic, low roughness, yellow tint). Camera: 1080p, 200mm lens, C-axis mode, DOF. Distant light (yellow). Random rotation via first-dimension random. Fixes black gaps with opacity subdivision=1.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Noise Fix (Stationary Particles)**
+- Pop Noise: amplitude=0.5, size=0.4
+- VEX: `force *= Cd.x` — particles with dark color (stationary) aren't perturbed; bright particles still get noise variation
+
+**2. Gamma Ramp on Cd**
+- Add ramp to Cd → 3 points at 0, 0.15, 1 → set all to B-spline interpolation → shifts density distribution
+- Apply to `Cd`, then reconnect into correct pipeline spot
+
+**3. Upres + File Cache**
+- Reduce point separation in Points from Volume: 0.01 → 0.004 → 700K → 11 million points
+- **File Cache SOP**: name = `particle_sim`; use `$OS` for sub-name derive; explicit file path = `<hip>/geo/particle_sim/particle_sim.$F4.bgeo.sc`
+- Middle-mouse on File Cache node to verify full path
+
+**4. Custom Particle Geometry**
+- Box → **Scatter** 45 points → **Fracture SOP** (Voronoi) → **Pack** all pieces
+- **Group SOP** (bounding region, size=0.5) → groups external face points as "Blaster"
+- **Blast**: keep only "Blaster" → **Unpack** → **Connectivity** (class attribute) → select `class == 0` (one piece) → Group (points mode)
+- **Match Size** to reference box (so it matches particle pscale)
+- Object name: `particle_00`
+
+**5. Gold Material**
+- Material Builder: Standard Surface → metallic=1, roughness=low (shiny), base color=yellow
+- Apply to particle_00 geometry
+
+**6. Instancing**
+- **Instance OBJ node**: point to `particle_00` as instance geometry
+- Import cached particle points as Instance node's point source
+- Particle pscale multiplies instance scale automatically
+
+**7. Camera + Light**
+- Camera: 1080p resolution, focal length=200, C-axis mode; position and rotate in viewport
+- Light: type=Distant (not Area), color=white→yellow, increase intensity
+- Apply DOF: set focus point in camera, tweak aperture
+
+**8. Random Rotation**
+- Add random rotation to particles in wrangle/attribute before instancing: first-dimension based random on orient or rot attribute → prevents all particles looking identical (same angle)
+
+**9. Fix Black Gaps**
+- In Mantra render settings or material: opacity → set subdivisions = 1 → removes dark gaps between instanced pieces at render
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Pop Noise**: amplitude=0.5, size=0.4; VEX: `force *= Cd.x;`
+- B-spline ramp on `Cd` — 3 control points (0, 0.15, 1) for gamma correction
+- **Points from Volume**: point separation 0.004 → ~11M pts
+- **File Cache SOP**: `$OS` for sub-name; explicit path with `$F4` frame padding
+- **Fracture SOP** (Voronoi) → **Pack** → **Group** bounding region → **Blast** → **Connectivity** class attribute → select one piece
+- **Match Size SOP** — match particle geo to reference bounding box
+- **Instance OBJ node** — render particles as instanced geo; reads `pscale` automatically
+- **Standard Surface material** — metallic, low roughness, yellow base color
+- Camera: focal length=200, C-axis, DOF
+- Distant light (yellow), intensity adjusted
+- Random rotation wrangle — `@orient = …` or `rot` attribute to randomize per-particle angle
+- Mantra opacity subdivisions = 1 → fixes black gap artifacts
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[particles, rendering, mantra, instancing, gold-material, file-cache, fracture, pscale, depth-of-field, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-heavy-chic-part-1.md (sim setup: height field, pop network, wave animation)
+- tutorial-glass-donut.md (Mantra render tricks by same author)
+- tutorial-glass-tiles.md (material building by same author)

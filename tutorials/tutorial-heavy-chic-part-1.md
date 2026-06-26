@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=fjVERoS2olY
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [particles, pop, height-field, volume, scatter, noise, logo-trace, animation, pscale, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-heavy-chic-part-1/
 frame_count: 4
 ---
@@ -33,27 +33,80 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Heavy particle simulation on a height field: 100K scattered points emit only on frame 1 (`$F==1`); Pop Wind lifted by noise-controlled color; expanding radial animation wave (length+fit spread mask) drives lift; height field with Logo Trace cutout masks the particle distribution; Points from Volume on extruded height field gives layered density. Part 1 covers setup and geo; Part 2 is presumably rendering.
 
 ### Summary
-[PENDING EXTRACTION]
+24m4s tutorial by Alexander Eskin. Builds a "heavy chic" particle sand/logo effect. Workflow: scatter points on a height field, emit only frame 1, drive upward pop wind velocity by noise (turbulence via `windpointy *= Cd.x`), animate an expanding wave mask (length + fit) to control when/where particles rise. Complex height field: Height Field Noise + VOP binding trick (height→density) + turbulence VOP. Logo: Trace PNG alpha → Resample → Extrude → Height Field Mask from Object → Height Field Layer composites logo shape into terrain. Points from Volume on extruded HF volume gives 3D-distributed particle source (700K pts). Sphere preview via detail attribute for fast viewport.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Basic Particle Setup**
+- Grid (fix later — procedural) → **Scatter** 100,000 pts → add `pscale` attribute
+- **Pop Network**: Pop Source → emission type = "all points"; expression `$F==1` → emit only on frame 1 (prevents particle count explosion each frame)
+- Fix timeline to 30 FPS; reduce to 150 frames
+
+**2. Pop Wind + Noise-Driven Velocity**
+- **Pop Wind**: wind velocity Y = 6 (upward)
+- Add **Turb Noise** to grid (colors points by noise pattern)
+- In Pop Wind VEX expression field: `windpointy *= cdx;` — Note: must use `windpointy` not `windy` (includes "point" in the parameter name)
+- Darker noise → slower lift; brighter → faster lift
+
+**3. Animated Wave Driving**
+- Two noise nodes: noise1 (static, for lift areas), noise2 (layered, higher frequency=1.7 for complexity)
+- Radial animation: compute `length(P.xz)` → `fit(len, center, center+spread_width, 1, 0)` to create expanding gradient wave; promote spread_width, animate center 0→5 over 150 frames
+- Noise P before fit for rough edges
+- Multiply static noise by radial wave → final animation mask
+- DOP animation: use **Subs Over** node + **Point VOP** inside DOP to animate grid position (source animation doesn't work from POP Source frame 1 rule — must animate inside DOP)
+
+**4. Fast Viewport Preview**
+- Set detail attribute `preview` → enables small sphere display in viewport (same trick as Vellum grain preview)
+
+**5. Height Field Setup**
+- **Height Field** SOP: size=5×25×9.5, spacing=0.0025
+- **Height Field Noise**: amplitude=3, element size=3, secondary=off, scale=(1.1, 0.7, 0.6, 0.4)
+- **VOP trick** (credit: Sergei, Bizarre Cell Production): in Volume VOP — bind primitive attribute name="height", VEX name="density" → height field height drives volume density
+- **Turb Noise VOP**: add turbulence to density; frequency=0.721; multiply by 0.005; direction vector (0, −0.4, 1)
+
+**6. Logo Integration**
+- **Trace SOP** on logo PNG → use alpha channel; **Resample** (step=8) → Transform (−90°, scale=2.4) → Reverse → **Extrude** → position inside height field bounds
+- **Height Field Mask from Object**: increase resolution → **Blur** slightly → creates smooth logo mask
+- **Height Field Layer** + **Height Field Transform** (offset=−0.5) → composites logo into terrain (lowers terrain where logo is)
+- Reduce particle density to 0.25 where logo is for visual distinction
+
+**7. Points from Volume**
+- **Height Field to Volume** (extrude by 0.015, "third base" mode)
+- **Points from Volume**: density=0.1 → ~700,000 pts; set pscale=1 for natural-looking sand density
+- Feed into Pop Network in place of flat scatter
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Scatter SOP** + `pscale` attribute (manual add)
+- **Pop Source**: emission "all points", `$F==1` condition
+- **Pop Wind**: `windpointy *= cdx;` (multiply Y velocity by noise color; note "windpointy" not "windy")
+- `length(P.xz)` → `fit(len, 0, spread_width, 1, 0)` — expanding radial wave animation mask
+- **Subs Over** (DOP) + **Point VOP** inside DOP — for animating source geometry position inside simulation
+- Detail attribute `preview` — enables sphere preview for particles in viewport
+- **Height Field SOP** — size, spacing parameters
+- **Height Field Noise** — amplitude, element size, scale per-octave
+- **Volume VOP** — bind `height` primitive → `density` VEX name trick (Sergei/Bizarre Cell Production)
+- **Trace SOP** — traces image alpha/color to curves
+- **Height Field Mask from Object** — projects SOP geometry as mask onto height field
+- **Height Field Layer** — composite masks/layers
+- **Height Field Transform** — offset height by value in masked region
+- **Height Field to Volume** / **Extrude Volume** — convert height field to 3D volume
+- **Points from Volume** — scatter in 3D volume; density=0.1 for ~700K pts; pscale=1
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[particles, pop, height-field, volume, scatter, noise, logo-trace, animation, pscale, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-heavy-chic-part-2.md (rendering this particle setup)
+- rain-effect-in-houdini-houdini-tutorial.md (POP basics for comparison)
+- introduction-to-particles-in-houdini-21-full-beginner-course-2026.md (comprehensive POP reference)
