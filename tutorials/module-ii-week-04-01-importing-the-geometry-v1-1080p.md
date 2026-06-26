@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=uPPW2sI_oyw
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [import, alembic, rbd, skyscraper, polysoup, performance, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-04-01-importing-the-geometry-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,37 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Import heavy skyscraper Alembic (3.6M points as polygons), scale to 0.1, use wireframe mode for performance. Strategy: split sim into 3 separate passes (not all at once), leave bottom inactive, omit tiny geometry details.
 
 ### Summary
-[PENDING EXTRACTION]
+3m21s lesson (Module II Week 4, lesson 1). New project "collapse v1" — skyscraper RBD collapse. Imports packed Alembic skyscraper LOD 3, scales to 0.1. Poly soup converts to 3.6M polygon points (heavy) — use wireframe display. Simulation strategy: 3 separate sims to manage complexity, inactive geometry at bottom, omit fine detail geo.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- New project: module-2-week-4 / "collapse.v1.hip"
+- Geometry node → Alembic SOP → navigate to skyscraper geo folder → open LOD 3
+- Transform SOP: scale 0.1 (model comes in very large)
+- Convert SOP: polysoup → polygons (3.6M points — heavy in viewport)
+- Performance: switch display to wireframe
+- Simulation plan: 3 separate passes (top section, mid, base) to keep each sim manageable; bottom inactive; skip tiny details
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Alembic SOP** — import skyscraper; scale = 0.1
+- **Convert SOP** — polysoup → polygons; exposes full point count (~3.6M)
+- Performance tip: wireframe mode (W) for heavy geometry viewport display
+- Sim strategy: 3-pass RBD (not one monolithic sim); active attribute = 0 for bottom/inactive sections
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[import, alembic, rbd, skyscraper, polysoup, performance, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-ii-week-04-01-introduction-v1-1080p.md (week 4 intro: grains + render)
+- module-ii-week-02-01-importing-the-geometry-v1-1080p.md (building import workflow)
+- module-i-week-01-09-setting-the-active-attribute-v1-1080p.md (RBD active attribute)

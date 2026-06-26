@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=SlbMugY762Q
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [grains, vellum, rbd, bullet, rendering, karma, course-intro, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-04-01-introduction-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,39 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only — Module II Week 4 (final week): grains from source geometry built using Solver SOP (dynamic emission over time), high-res sim upres, gun bullet sim (Bullet solver), and full Karma render with materials/shaders/lighting.
 
 ### Summary
-[PENDING EXTRACTION]
+1m55s intro for Module II Week 4 (last week of the VFX School Renaissance program Volume 2). Wraps up the crocodile attack project: (1) Grain source geometry built procedurally from previous sim results (croc + hunter geometry) using a Solver SOP to generate evolving emission volumes; (2) Full grain simulation from scratch in DOPs; (3) High-res upres from low-res grain cache; (4) Gun simulated as Bullet RBD (metal = rigid, not Vellum); (5) Karma render pass: materials, shaders for croc/hunter, lighting, final output.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Build grain source from previous crocodile + hunter sim geometry (evolving over time via Solver SOP)
+- Solver SOP trick: generate dynamic source area that grows with simulation (save unnecessary grain emission)
+- Grain DOP network built from scratch (not shelf tool this time)
+- Upres: get high-res sim from low-res cache for free
+- Gun sim: Bullet RBD (hard metal, not Vellum cloth)
+- Karma render: materials, shaders, lights, final beauty pass
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Solver SOP — build time-evolving grain source from animated sim geometry
+- Vellum Grain solver (DOP) — built from scratch
+- Upres technique — improve sim detail without full re-sim
+- Bullet RBD solver — gun simulation (rigid body)
+- Karma renderer — materials, shaders, lights
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[grains, vellum, rbd, bullet, rendering, karma, course-intro, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-06-01-introduction-to-grains-v1-1080p.md (Vellum grains overview)
+- module-ii-week-04-01-importing-the-geometry-v1-1080p.md (week 4 geometry import)
+- module-ii-week-01-01-introduction-v1-1080p.md (module 2 intro)
+- module-ii-week-01-01-basic-bullet-sim-v1-1080p.md (Bullet RBD basics)
