@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=FKHhGJFvjys
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [noise, vex, vops, pdg, topnet, python, shaders, volumes, particles, motion-graphics, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/noise/
 frame_count: 4
 ---
@@ -33,27 +33,32 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course trailer only — Houdini.School "Noise" class overview: moving beyond basic noise usage to advanced manipulation of stock Houdini noise types, with applications to attributes, shaders, volumes, particle emission maps; includes PDG/TOPnet for rapid noise exploration and Python for larger builds.
 
 ### Summary
-[PENDING EXTRACTION]
+1m31s promotional trailer for the Houdini.School "Noise" full course. No technical content taught in this clip. Course promises: (1) survey of all stock Houdini noise types and simple manipulations to produce more interesting visuals; (2) practical use cases — driving attributes, creating maps/shaders, adding volume detail, defining particle emission; (3) PDG TOPnet workflow for brainstorming/generating thousands of noise variations quickly; (4) Python tooling for large noise builds.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- (Trailer only — no step-by-step content)
+- Course topics advertised: stock noise types survey, noise manipulation chains, attribute driving, shader/map creation, volume noise, particle emission maps, PDG/TOPnet brainstorming workflow, Python scripting for scale
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- VEX `noise()` / VOPs noise nodes (survey of stock types implied)
+- PDG / TOPnet (noise variation generation)
+- Python (batch build automation)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19+
 
 ### Tags
-[PENDING EXTRACTION]
+[noise, vex, vops, pdg, topnet, python, shaders, volumes, particles, motion-graphics, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- mops-motion-operators-for-houdini-part-1.md (MOPs Noise falloff / Noise modifier)
+- mops-motion-operators-for-houdini-part-3.md (math foundations underlying noise: vectors, trig)
+- scientific-phenomena-in-houdini.md (noise-driven procedural effects)

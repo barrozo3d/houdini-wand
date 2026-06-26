@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=q_aD6sza6gA
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5+"
+tags: [mops, math, vectors, matrices, quaternions, vex, linear-algebra, trigonometry, aim-constraint, forward-kinematics, transform, dot-product, cross-product, slurp, quaternion, intermediate-advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/mops-motion-operators-for-houdini-part-3/
 frame_count: 56
 ---
@@ -308,13 +308,122 @@ frame_count: 56
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+CGI math foundations underlying MOPs: vectors (normalize, dot/cross product, double-cross), trigonometry (sine/cosine/unit-circle/arc-cosine), 3×3 and 4×4 transform matrices (rotation via sin/cos, scale, aim constraint, local vs world-space multiplication order, inversion, pivot math, forward kinematics), and quaternions (slurp blending, qrotate, qconvert, angle-axis, crack-transform extraction). Everything is built from scratch in VEX visualizer files distributed with the course.
 
 ### Summary
-[PENDING EXTRACTION]
+163m38s masterclass on the linear algebra and trigonometry that powers MOPs (and all of CG). Three example files — `01_vectors`, `02_trig`, `03_transforms` — walk from first principles to practical VEX. Topics: vectors (normalize, dot product, projection, Lambert/Fresnel shading, cross product, right-hand rule, double-cross for geo-normal forces), trig (sine/cosine as triangle ratios and unit-circle coordinates, arc-cosine to measure angle between vectors), 3×3 rotation matrices (sin/cos under the hood, scale via vector length, aim constraint built manually and via `make_transform`/`lookat`, matrix blending via `slurp`, orientation pitfalls with only N and no up, `dihedral` shortcut), local-vs-world matrix multiplication order (`A*B` vs `B*A`), 4×4 matrices (adding translation, row-centric storage), matrix inversion (undo, space-switching), pivot offset math, forward kinematics in a detail-wrangle for-loop, quaternions (`quaternion()`, `slurp`, `qrotate`, `qconvert`, angle-axis/w attribute, gimbal lock), and transform extraction (`crack_transform`, extracting N/up from packed-transform matrix or orient quaternion). Closes with Q&A on HDA packaging, namespace/versioning, MOPs in Unreal.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Vectors**
+- Normalize any vector used for orientation (divide by its own length → unit length)
+- `dot(a, b)`: ratio −1 to 1; parallel = 1, perpendicular = 0, opposite = −1; used in Lambert shading (`dot(N, lightDir)`) and Fresnel/facing-ratio (`dot(N, camDir)`)
+- Projection: `C = dot(a,b) * b` — projects vector A onto B
+- `cross(a, b)`: finds orthogonal vector; normalize inputs; not commutative; right-hand rule; becomes unstable when a ≈ b (aim-constraint up-vector selection matters)
+- **Double cross**: `cross(N, up)` → swirl force; `cross(cross(N,up), N)` → surface-following downward force
+
+**2. Trigonometry**
+- `sin(theta)` = opposite/hypotenuse; `cos(theta)` = adjacent/hypotenuse
+- Unit circle: coordinates of a point on a unit circle are `(cos θ, sin θ)` — full circle = 2π radians
+- `acos(dot(normalize(a), normalize(b)))` → angle in radians between two vectors
+- `radians()` / `degrees()` functions for conversion (VEX math wants radians)
+
+**3. 3×3 Transform Matrices**
+- Identity: X=(1,0,0), Y=(0,1,0), Z=(0,0,1) — "no operation"
+- Rotation around X: Y = (0, cos θ, sin θ); Z = (0, −sin θ, cos θ); X unchanged → `matrix3 M = set(X, Y, Z); P *= M;`
+- Scale = scale the row-vectors; skew = make them non-orthogonal
+- **Aim constraint (manual)**:
+  1. `vector aim = normalize(target - P)` — subtraction gives direction
+  2. `vector side = normalize(cross(up, aim))` — orthogonal to both
+  3. `vector up2 = cross(aim, side)` — re-orthogonalize up
+  4. `matrix3 M = set(side, up2, aim)` → bind to `3@transform`
+- **Aim shortcuts**: `make_transform(aim, up)` or `lookat(target, P)` — both handle cross products internally
+- **Matrix blending**: `slurp(identM, aimM, bias)` — Houdini converts to quaternion internally
+
+**4. Orientation Pitfalls**
+- Giving `copy_to_points` only an `N` attribute with no `up` → Houdini guesses up (rotates identity matrix to align Z→N) → unexpected pig-on-back orientation
+- `dihedral(oldN, newN)` → matrix that rotates oldN onto newN (wraps cross-product + arc-cosine in one call)
+- Copy-to-points reads `3@transform` (3×3 matrix), `4@transform` (4×4), or `v@N` + `v@up` — be explicit
+
+**5. Local vs World Space (Matrix Multiplication Order)**
+- `out = A * B` → apply A's local rotation first, then B → rotation happens in A's local space
+- `out = B * A` → apply B first, then A → translation/rotation in world space
+- This is literally the only difference between "local" and "world" space transforms
+
+**6. 4×4 Matrices**
+- Adds translation (4th row): rows are X, Y, Z, translate; extra column is zeros + 1 (math shortcut)
+- Row-centric in Houdini; column-centric in math textbooks/Wikipedia — transpose mentally when reading docs
+- `4@xform` binds a full matrix in VEX; `CH4("matrix")` reads a matrix parameter
+- Invert: `P *= invert(storedMatrix)` — undoes a previous transform; useful for space-switching
+
+**7. Pivot Math**
+- Rotation always happens around origin of current space
+- Manual pivot: `P -= pivot; P *= M; P += pivot;` — where pivot = `getbbox_center(0)` or known centroid
+- `pre_translate(M, -pivot)` — applies translation before other matrix transforms (avoids local-space weirdness)
+
+**8. Forward Kinematics (Detail Wrangle + For Loop)**
+- Point wrangles run in parallel — can't chain parent→child; use detail wrangle + `for(int i=0; i<npoints(0); i++)`
+- Per iteration: fetch `matrix A = getpackedtransform(0, i)`, build rotation `B = identity → rotate(B, angle, axis)`, compute `out = parentXform * A * B`, then `setpackedtransform(0, i, out)`, update `parentXform = out` and `pivot = point(0,"P",i)`
+- `pre_translate(A, -pivot)` before multiply to handle parent-relative pivot
+
+**9. Quaternions**
+- `quaternion(matrix3 M)` — convert 3×3 matrix to quaternion
+- `quaternion(radians(angle), axis)` — angle-axis constructor
+- `slurp(q1, q2, bias)` — spherical linear interpolation (shortest path, no gimbal lock)
+- `qrotate(q, P)` — rotate vector P by quaternion (like `P *= M` for matrices)
+- `qconvert(q)` → matrix3 (loses scale!) or vector (angle-axis notation)
+- **Angle-axis vector** (w attribute): direction = axis of spin, magnitude = spin amount; `vector rot = qconvert(q)` → `vector axis = normalize(rot); float angle = length(rot);` → `rotate(M, angle, axis)` to apply while preserving scale
+- Quaternions can't encode scale; use for blending then convert back via angle-axis → rotate the original matrix
+- Gimbal lock = Euler rotation order problem; quaternions avoid it internally
+
+**10. Transform Extraction**
+- Extract N/up from packed-transform: `v@N = M * {0,0,1}; v@up = M * {0,1,0};` (matrix times world Z/Y)
+- From orient quaternion: `v@N = qrotate(v@orient, {0,0,1}); v@up = qrotate(v@orient, {0,1,0});`
+- `crack_transform(xformorder, rotorder, pivot, M, translate, rotate, scale)` — writes T/R/S to output args (note ampersand args); `xformorder=0` (TRS), `rotorder=0` (XYZ) for defaults; see VEX docs for other constants in `math.h`
+
+**11. HDA Package Best Practices (Q&A)**
+- Namespace: `facility::toolname::major.minor` — prevents clashes, preserves old versions in user files
+- Directory structure: single root folder → `otls/`, `toolbar/`, `scripts/python/`, `icons/` → one path in `HOUDINI_PATH` loads everything
+- Asset manager: enable "Asset Definition Toolbar" under Configuration → see source OTL path + version dropdown
+- MOPs is open-source; pull requests welcome; MOPs+ tutorials on MOPs YouTube channel
+
+### Houdini Nodes / VEX / Settings
+- `normalize(v)` — unit vector from any vector
+- `dot(a, b)` — scalar similarity ratio
+- `cross(a, b)` — orthogonal vector (normalize inputs for orientation use)
+- `acos(dot(a,b))` — angle in radians between normalized vectors
+- `matrix3 M = set(X,Y,Z)` — build 3×3 from row vectors
+- `rotate(M, angle, axis)` — rotate matrix in-place (ampersand arg); `pre_rotate`, `pre_translate`, `pre_scale` for local-space ops
+- `make_transform(aim, up)` — build orthogonal 3×3 aim matrix
+- `lookat(target, from)` — one-liner aim matrix
+- `ident()` — identity matrix (matrix or matrix3 depending on context)
+- `slurp(M1, M2, bias)` — blend between two matrices/quaternions
+- `dihedral(oldN, newN)` — rotation matrix that aligns one vector to another
+- `primintrinsic(0, "transform", @ptnum)` — fetch 3×3 packed transform
+- `getpackedtransform(0, @ptnum)` / `setpackedtransform(0, @ptnum, M)` — 4×4 packed transform shortcuts (H18+)
+- `quaternion(M3)` / `quaternion(radians(angle), axis)` — create quaternion
+- `qrotate(q, v)` — rotate vector by quaternion
+- `qconvert(q)` → matrix3 or vector (angle-axis)
+- `crack_transform(xformorder, rotorder, pivot, M, &t, &r, &s)` — extract T/R/S from 4×4 matrix
+- `getbbox_center(0)` — centroid of input geometry (useful for pivot)
+- `4@xform` / `3@transform` — full 4×4 or 3×3 matrix attribute prefixes in VEX
+
+### Difficulty
+Intermediate–Advanced
+
+### Houdini Version
+H18.5+
+
+### Tags
+[mops, math, vectors, matrices, quaternions, vex, linear-algebra, trigonometry, aim-constraint, forward-kinematics, transform, dot-product, cross-product, slurp, quaternion, intermediate-advanced]
+
+---
+
+## Related Tutorials
+- mops-motion-operators-for-houdini-part-1.md (MOPs generators, modifiers, falloffs)
+- mops-motion-operators-for-houdini-part-2.md (Move Along Spline/Mesh, Delay, Spring, RBD/Vellum integration)
+- vops-02.md / vops-03.md / vops-04.md (VEX/VOPs deep dives)
+- noise.md (noise math in Houdini)
 
 ### Houdini Nodes / VEX / Settings
 [PENDING EXTRACTION]
