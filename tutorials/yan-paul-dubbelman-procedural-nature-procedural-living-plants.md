@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=xjf_mQKI3R8
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [procedural-nature, plants, trees, animation, growth, curl, labs-tree-tools, mops, guide-deform, rig-wrangle, orient-along-curve, sweep, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/yan-paul-dubbelman-procedural-nature-procedural-living-plants/
 frame_count: 13
 ---
@@ -93,27 +93,89 @@ frame_count: 13
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedural animated plant growth using Labs Tree tools for skeleton → Rig Attribute Wrangle curl (one VEX line using `prerotate` + `@life` attribute via `curveu` ramp) → MOPs Spread Falloff flowing through fused high-density curves to spread `life` attribute naturally from root → Guide Deform to connect branch levels so each level deforms the next. Result: fully procedural, real-time, no-simulation plant uncurling animation.
 
 ### Summary
-[PENDING EXTRACTION]
+73m59s Houdini.School live session by Yan Paul Dubbelman (intro to procedural nature series). Builds an animated growing/unfurling plant from scratch using only Labs Tree tools + one VEX line. Pipeline: Labs Tree Trunk Generator + Labs Tree Branch Generator (2–3 levels) for skeleton; Resample for even point spacing; Orient Along Curve (3×3 transform output renamed to "orient"); Rig Attribute Wrangle with `prerotate` + `@life` attribute for curl amount; MOPs Spread Falloff through fused curves to propagate life from root organically; Attribute Transfer back to simple curves; Guide Deform chains levels so parent branch deforms child; Sweep + Attribute Remap (radius→pscale) for renderable geometry; Copy to Points for fruits/flowers at endpoints. Fallback (no MOPs): Attribute Adjust Float with bounding box Y + fit() expression.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Viewport**: press D → Background=Dark (improves visibility of thin curves)
+2. **Tree skeleton**:
+   - Line → Labs Tree Trunk Generator → Labs Tree Branch Generator ×2–3
+   - **Name nodes** with meaningful names (e.g. "branch_one") → auto-creates group named after node
+   - Detangle: **OFF** (predictable branch control)
+   - Tropism: ON for plant feel (branches point upward toward sun); Gravotropism: bends branches along gravity
+   - Branching pattern: 90° for organized feel; edge length placement for predictable density
+3. **Resample**: even point spacing (maximum segments for trunk; segment length for branches ~0.01 for animation)
+4. **Orient Along Curve**: output attribute = "3×3 transform"; rename output to **"orient"** — required for Rig Attribute Wrangle to know how curve is oriented
+5. **Rig Attribute Wrangle** ("curl"): one VEX line:
+   ```vex
+   matrix m = local_transform();
+   prerotate(m, f@life, {0,1,0});
+   @orient = m;
+   ```
+   - `f@life` drives curl amount (0=straight, 0.5=full circle, 1=over-curled)
+6. **Create life attribute** (Attribute Adjust Float, shortcut `aasf`):
+   - Name="life"; Pattern=**Remap Attribute**; Source attribute=`curveu` (0 at base → 1 at tip)
+   - Ramp controls how much each part of the curve curls (base stays straight, tip curls most)
+   - Max value drives total curl amount
+7. **MOPs Spread Falloff** (free plugin — alternative at step 11):
+   - **Find root point**: Blast → trunk only → Group Expression: `primpoint(0, @primnum, 0)` (first point of primitive); group name="root"
+   - **Group Transfer**: transfer "root" group from trunk to full tree (threshold=0.01 since points overlap); prevents radius-based falloff
+   - Resample (segment length 0.01) → **Fuse** (snap distance ~0.05) → single connected mesh → connectivity check
+   - MOPs Spread Falloff: start group="root"; metric=connectivity; noise amplitude for organic variation
+   - Animate: `fit($F, 1, 200, 0, 1)` expression in Spread parameter
+   - MOPs Follow attribute drives life multiplier (right-click Copy Parameter → paste as Relative Reference for dynamic max)
+8. **Transfer spread to simple curves**:
+   - Null → Object Merge ("get spread") → Attribute Transfer to simple branch curves: transfer `life` + `Cd`
+   - In Attribute Adjust Float: change operation to **Multiply** → `life × mops_follow_attribute`
+9. **Guide Deform** (connect branch levels):
+   - Input 1 (geometry to deform): branch curves
+   - Input 2 (rest skin): Time Shift ($FEND) → Polywire (radius=0.01, up vector=constant {0,1,0}) → Attribute Delete (delete non-selected, keep only what's needed)
+   - Input 3 (animated skin): parent curves polywire
+   - Chain: trunk→polywire deforms branch1; deformed branch1→polywire deforms branch2
+   - Result: branches naturally follow parent as it animates
+10. **Renderable geometry**:
+    - Attribute Delete before sweep (keep only radius attribute + necessary attrs; remove orientation artifacts)
+    - Attribute Remap: rename `radius` → `pscale` (sweep uses pscale for width)
+    - **Sweep** (surface shape=tube/round): uses pscale for thickness; generates UVs automatically
+    - Turn off "mesh noise" in Labs Tree Branch Generator
+11. **Fruits/Flowers at endpoints**:
+    - Blast: keep branch2 curves (before sweep, geometry only)
+    - Group Expression: endpoint trick (Reverse → first point of primitive → Reverse back) → "end_points"
+    - Copy to Points: sphere in input 1; curves in input 2; target group="end_points"; enable "Pack and Instance" for performance
+12. **Fallback (no MOPs)**: Attribute Adjust Float → bounding box Y attribute → compute range → animate max value: `fit($F, 1, 200, 0, 0.5)` clamp via ramp
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Labs Tree Trunk Generator** / **Labs Tree Branch Generator**: detangle=OFF; name nodes for groups; edge length placement; tropism ON/OFF; gravotropism
+- **Resample**: maximum segments (trunk) or max segment length=0.01 (dense for spread/animation)
+- **Orient Along Curve**: output=3×3 Transform, renamed to "orient"
+- **Rig Attribute Wrangle**: `matrix m = local_transform(); prerotate(m, f@life, {0,1,0}); @orient = m;`
+- **Attribute Adjust Float** (aasf): name="life", pattern=Remap Attribute, source=curveu, ramp=0→1
+- **Group Expression**: `primpoint(0, @primnum, 0)` → first point of primitive (root or endpoint)
+- **Reverse SOP**: used around Group Expression to select last point (reverse → first=endpoint → reverse back)
+- **Group Transfer**: transfer root group between geometries (threshold=0.01 for overlapping points)
+- **Fuse SOP**: snap distance ~0.05; fuses branch curves into single connected mesh for MOPs spread
+- **MOPs Spread Falloff** (plugin): start group, connectivity metric, noise amplitude; animate Spread parameter with `fit($F, 1, 200, 0, 1)`
+- **Attribute Transfer**: transfer life + Cd from high-density spread mesh to simple curves
+- **Guide Deform**: 3-input node (deform geo, rest skin, animated skin); Polywire with up vector=constant {0,1,0}
+- **Polywire**: up vector=constant Y ({0,1,0}) critical for correct orientation; radius=0.01
+- **Attribute Remap**: rename radius → pscale for Sweep width
+- **Sweep**: surface shape=tube; generates UVs; requires Attribute Delete to remove orient artifacts
+- **fit() expression**: `fit($F, 1, 200, 0, 1)` — maps frame range to 0→1 for smooth animation
+- **Bounding Box Y attribute**: fallback without MOPs; compute range → animate max
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner-Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19+
 
 ### Tags
-[PENDING EXTRACTION]
+[procedural-nature, plants, trees, animation, growth, curl, labs-tree-tools, mops, guide-deform, rig-wrangle, orient-along-curve, sweep, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- yan-paul-dubbelman-procedural-nature-high-quality-custom-leaves.md (same artist: UV deform trick, leaf texture baking with Copernicus)
+- mops-motion-operators-for-houdini-part-3.md (MOPs spread attribute in different context)

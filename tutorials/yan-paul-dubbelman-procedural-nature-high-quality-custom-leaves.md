@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=d3pMfIsvAyQ
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20.5+"
+tags: [procedural-nature, leaves, copernicus, tree-branch-generator, uv-deform, voronoi, quad-remesh, texture-baking, tops-wedge, labs, patterns, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/yan-paul-dubbelman-procedural-nature-high-quality-custom-leaves/
 frame_count: 25
 ---
@@ -153,27 +153,80 @@ frame_count: 25
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedural high-quality leaf using Labs Tree Branch Generator for vein skeleton, UV-space deformation (one VEX line: `@P = uvsamploc(1, @uv, 0);`) to conform skeleton to any leaf shape, plus Voronoi cell pattern from Quad Remesh scatter. Bake both skeleton lines and cell pattern into Copernicus textures; apply to ultra-light Quad Remesh geometry (130 pts vs 90k). Export N variations via TOPs Wedge node (random noise offsets → unique leaf geometry + textures per wedge).
 
 ### Summary
-[PENDING EXTRACTION]
+100m33s Houdini.School live session by Yan Paul Dubbelman. Complete workflow for generating photorealistic procedural leaf models with textures for real-time (Unreal Engine) or render pipelines. Pipeline: define leaf shape with grid + Linear Taper; build vein skeleton with Labs tree tools; UV-deform skeleton to match any shape with one wrangle line; clean up overshooting curves via Proximity + Endpoint Fuse; generate Voronoi cell pattern (Quad Remesh + scatter + Voronoi Fracture); bake both into Copernicus textures; export lightweight geometry + texture variations with TOPs Wedge. Mac limitation: Copernicus Vulkan rendering preview doesn't work on Mac as of recording; Windows users can use Preview Material node directly.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Viewport setup**: press D → Background = Dark; split panes (two viewports: model left, COP network right)
+2. **Leaf base grid**: Grid (200×200) → Linear Taper (capture origin=−5, length=10; Bezier ramp control points for organic leaf shape)
+3. **Middle line**: Line (direction=Z) → Match Size (scale to fit Z axis against leaf grid)
+4. **Vein skeleton**: Labs Tree Trunk Generator (input: middle line) → Labs Tree Branch Generator ×2:
+   - Placement: **Edge Length** (predictable distribution, not scatter)
+   - Detangle: **OFF** (prevents unpredictable branch separation)
+   - Up Vector: **Y axis**; Branching angle 180°; Alternating → Opposite for realistic branching
+   - Second-level: smaller Length Scale; Alternate vs Opposite modes
+5. **UV deform trick** (conform skeleton to leaf shape):
+   - UV Project on base grid → **Attribute Promote**: vertex UV → point UV (name="uv"), for both grid and branch lines
+   - Reference leaf shape in second input of base promote
+   - Attribute Wrangle: `@P = uvsamploc(1, @uv, 0);` — repositions each point to match UV space of leaf grid
+   - Result: branches instantly conform to ANY deformed leaf shape
+6. **Apply deformation**: Mountain SOP on leaf shape (amplitude Y=0 keeps flat; any 2D deform works); branches follow automatically
+7. **Clean overshooting curves**:
+   - Group SOP on original grid → unshared edges → "leaf edges" group
+   - Blast → delete non-selected → isolated edge points
+   - Proximity SOP: branches as input, edge points as reference → creates "nearby" group
+   - Blast "nearby" group → removes overshooting line ends
+8. **Fix tip gap (endpoint fuse)**:
+   - Blast: keep only first branch (trunk) group
+   - Group Expression → "endpoints" group: Reverse curve → `primpoint(0, @primnum, 0)` → Reverse back (hack for last-point selection)
+   - Split → Merge → Fuse: endpoint group, "closest target point" mode → snaps branch tip to leaf edge
+9. **Cell pattern (Voronoi)**:
+   - Mask from Geometry (branches → grid): set to **Points** for interactive speed; adjust radius for falloff
+   - Color ramp on mask attribute → drive Scatter density
+   - Scatter → Voronoi Fracture → Blast outside → **Quad Remesh** (100 faces) for performance
+   - Relax iterations=100 for even distribution; invert density for correct biology (cells between veins, not on veins)
+10. **Copernicus network (COP)**:
+    - Sub-Import node → inline subnetwork: Object Merge branches/cells → Transform (−90° X) → Match Size (target 2×2)
+    - Grid (1000×1000) → Mask from Geometry (points, branches) → Attribute Promote → Rasterize Geometry (`leaf_lines` attribute) → "leaf lines" null
+    - Same pipeline for cell pattern → "cell structure" null
+    - Blend (screen mode, foreground+background) → combined leaf texture map
+    - Rasterize resolution = COP network resolution setting
+11. **Low-res output geo**: Quad Remesh (100 faces) on leaf skin → UV Project (base UV, square 0→1) → export geometry
+12. **TOPs export with variations**:
+    - TOP network → Wedge node: `noise_offset` attribute, random 0→1, N wedge counts
+    - Reference `@noise_offset` in Mountain SOP offset parameter: `1 * @noise_offset`
+    - Image Output nodes (leaf lines, cell structure): path `$HIP/export_leaf/\`num\`@wedgenum\`/main_structure.exr`
+    - Geometry Output: `geometry.obj` (or .bgeo.sc)
+    - Right-click → Cook (or Dirty and Cook) → generates all N variations
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Labs Tree Trunk Generator** / **Labs Tree Branch Generator**: placement=Edge Length; detangle=OFF; up vector=Y; branching angle=180°
+- **Linear Taper**: capture origin=−5, capture length=10; Bezier ramp control points for leaf shape
+- **Match Size**: scale to fit Z axis (for middle line) or XY (for UVs)
+- **Attribute Promote**: vertex→point, name="uv" (required before UV deform)
+- **Attribute Wrangle** (UV deform): `@P = uvsamploc(1, @uv, 0);`
+- **Group Expression** (endpoint hack): `primpoint(0, @primnum, 0)` with Reverse nodes around it
+- **Mask from Geometry**: set to Points (not Primitives) — dramatically faster for flat geometry
+- **Voronoi Fracture**: input: leaf skin (Quad Remesh) + scatter points; Blast outside
+- **Quad Remesh**: 100 target polygons — ultra-light base for texturing
+- **Scatter**: density from mask attribute; relax iterations=100 for even distribution
+- **Copernicus (COP Network)**: sub-import inline; Rasterize Geometry using custom attribute name
+- **TOPs Wedge**: `noise_offset` attribute (random, 0→1); drives Mountain SOP offset; backtick `\`num\`` wraps attribute value in path string
+- **Mountain SOP**: amplitude Y=0 (keep flat); noise along vector=OFF
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H20.5+
 
 ### Tags
-[PENDING EXTRACTION]
+[procedural-nature, leaves, copernicus, tree-branch-generator, uv-deform, voronoi, quad-remesh, texture-baking, tops-wedge, labs, patterns, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- yan-paul-dubbelman-procedural-nature-procedural-living-plants.md (same artist: animate growing plants, guide deform, MOPs spread)
+- mops-motion-operators-for-houdini-part-3.md (MOPs spread attribute used for animation)
