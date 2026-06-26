@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=pIp3cYSBZc4
 author: Fifo
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H19+)"
+tags: [procedural-modeling, vellum, wire-solver, copy-to-points, for-each, quaternion, golden-angle, phyllotaxis, sweep, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/model-a-procedural-flower-houdini-tutorial/
 frame_count: 10
 ---
@@ -78,25 +78,114 @@ frame_count: 10
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Full procedural animated flower pipeline: Vellum wire sim for animated stem wiggle → curveU-based mask attribute for growth animation → golden angle (137.508°) phyllotaxis arrangement via cross product + quaternion rotate → blossom copy with per-point time offset in a For-Each loop → Vellum cloth "into target" constraint to resolve petal intersections → swept stem, curved connections, and assembly merge.
 
 ### Summary
-[PENDING EXTRACTION]
+38-minute tutorial by Fifo building a complete procedural growing flower. Core innovations: using the golden ratio angle with quaternion rotation for realistic flower phyllotaxis; for-each loop TimeShift trick for sequential blooming (bottom-to-top); Vellum cloth constraints with "match animation" rest blend for intersection resolution. No rigid body physics — all Vellum. Final setup has animated growth, wind wiggle, sequential bloom, and intersection-free petals.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Animated Stem (Wire Vellum)**
+- Curve SOP (S-shape) → Transform (scale ×4) → Resample (subdivision curve, fine step)
+- `curveU` attribute via Resample (or manual Attribute Create): runs 0→1 along curve length
+- Resample again with "compute tangent U" only (no resampling) → generates tangent as N
+- Group By Range → select first point → invert → freeze that point
+- Vellum Wire: Gravity off; POP Wind force (low amplitude, large spiral size)
+- Hair Constraint → Pin Point = first point group → permanentpin
+- Vellum IO → cache to disk; Attribute Delete → keep only curveU + groups
+
+**2. Golden Angle Phyllotaxis (Point Warp)**
+- Node: Attribute VOP named "back_to_magic"
+- `cross_vector` parameter (vector): choose X or Z axis (or both combined)
+- `Cross Product` node: cross_vector × N → creates vector perpendicular to curve normal
+- `golden_angle` parameter (float) = 137.508 degrees
+- Multiply ptnum × golden_angle → convert degrees to radians → `Quaternion` node (axis=N, angle=radians) → `Rotate by Quaternion` on cross vector
+- Result: each point's cross vector rotates by golden angle × ptnum around the curve tangent
+- Bind Export the result to N (overwrites normals to point outward in golden-angle pattern)
+- Bind Export curveU as `up` vector (tangent along curve) → used for blossom orientation
+
+**3. Growth Mask Attribute (Point Warp)**
+- Node: "create_mask" Attribute VOP
+- Bind `curveU`; add parameters: `position` (float, 0–1) and `width` (float)
+- `fit(curveU, 0, 1, ...)` to remap → `smooth()` → fit to (position - width, position, 0, 1)
+- Bind Export as `mask`
+- Outside: animate `position` from 0 → 0.8 over 72 frames (never reach 1 = top always thin)
+- Attribute Delete → keep only mask → rename mask → pscale
+- Sweep node reads pscale for tapered stem; attach grid cross-section; clamp min 0.05
+
+**4. Blossom Copy Points Setup**
+- `pscale` attribute for blossom size: Attribute VOP with ramp on curveU (0.05 at base, peak in middle)
+- Multiply pscale by mask → growth-controlled sizing
+- Add SOP (geometry only = points, delete prims) → Keep normals + up vectors
+- Peak SOP: push points out from stem along normal by ~0.06 (uncheck recompute normals!)
+- Group Expand from base group → expand 125 steps = "bottom" safe zone
+- Object Merge blossom → Copy To Points with "everything but bottom" group as target
+
+**5. Sequential Blooming (For-Each Loop with TimeShift)**
+- For-Each Loop set to "foreach point" (or "foreach number")
+- Metadata Input node creates `iteration` detail attribute per iteration
+- Inside loop: Object Merge blossom → Time Shift with expression:
+  `$F - detail("../foreach_metadata1/", "iteration", 0) * offset`
+- `offset` parameter (float, default 1) = frame delay between each blossom
+- Result: blossom at point 0 opens first, then point 1, 2, etc. → bottom-to-top bloom wave
+
+**6. Vellum Intersection Resolution**
+- Group single center point of each blossom as `attach` group → propagate through loop
+- Null "blend_shape" = reference geometry for Vellum to follow
+- Vellum Configure Cloth: etch length scale small, stretch stiffness 10, bend stiffness 0.001
+- Vellum Constraint: type "into target", points = pin group, uniform thickness = etch length scale, pin/orientation type = soft, match animation enabled, stretch stiffness = 1, bend stiffness = 0.6–0.8
+  (1 = fully follow target; 0 = fully Vellum; blend controls how much intersection resolution is allowed)
+- Vellum Solver: gravity off, substeps 2, constraint iterations 32
+- Inside solver: Rest Blend → "update each frame" (or substep for bindings) → reference blend_shape null
+- Cache with Vellum IO
+- Post-process: Vellum Post Process → blur, subdivide; Detangle for artifacts; add thickness
+
+**7. Assembling the Flower**
+- Group Promote: attach point → primitives → Group Expand → blast to cap blossom base
+- Stem connections: blast center attachment points → point wrangle `i@id = @ptnum;`
+- Array SOP (minimum distance) → snap center points onto stem → Merge → Add SOP "by attribute" (id) → creates lines from each blossom base to its stem contact point
+- Resample lines, Point Warp with ramp on curveU → add Y displacement for S-curve shape
+- Sweep connections with small grid cross-section
+- Object Merge: stem_geo + blossoms + connections → Merge → out_flower null
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Curve SOP** → **Resample** (subdivision curve + tangent U only pass)
+- **curveU attribute** — 0→1 position along curve, central to all growth/placement
+- **Vellum Wire + Hair Constraint** — animated stem with wind wiggle; pin first point
+- **Group By Range** — select first/last point of primitive
+- **Cross Product (VOP)** — vector perpendicular to curve tangent → used for golden angle rotation
+- **Quaternion (VOP)** → **Rotate by Quaternion (VOP)** — rotate cross vector by golden_angle × ptnum around curve tangent
+- `degrees_to_radians(value)` — convert golden angle before passing to Quaternion
+- **Bind Export** — overwrite N with golden-angle rotated vectors; export curveU as `up`
+- **Fit Range (VOP)** — create growth mask from curveU + position/width sliders
+- **Attribute VOP "create_mask"** — mask attribute animated position drives 0→0.8 growth
+- **Sweep SOP** — uses `pscale` for tapered stem; requires grid cross-section input
+- **Peak SOP** — push blossom copy points outward along N; uncheck recompute normals
+- **Group Expand** — grow a named group by N point steps along connectivity
+- **For-Each Loop** — one iteration per blossom copy point
+- **Time Shift SOP** — `$F - detail("../foreach_metadata1/", "iteration", 0) * offset` = sequential bloom
+- **Vellum Configure Cloth** — small etch length scale, stretch=10, bend=0.001
+- **Vellum Constraint (into target)** — stretch/bend stiffness 1.0 = fully follow shape; blend to 0.6/0.8
+- **Rest Blend** — update each frame inside Vellum solver to track animated blossom targets
+- **Array SOP** — snap points to nearest location on another geometry (minimum distance)
+- **Add SOP "by attribute"** — create polylines between matched id points
+- **Point Warp + ramp parameter** — S-curve shape on stem connection lines
+- `i@id = @ptnum;` — assign unique ID for attribute-based Add SOP matching
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+any modern (H19+)
 
 ### Tags
-[PENDING EXTRACTION]
+[procedural-modeling, vellum, wire-solver, copy-to-points, for-each, quaternion, golden-angle, phyllotaxis, sweep, intermediate]
+
+---
+
+## Related Tutorials
+- intro-to-houdini-volumes---beginner-course.md (Vellum concepts appear in same skill set)
+- intro-to-vops---houdini-beginner-tutorial.md (VOP math: cross product, quaternion, fit range, ramp)
 
 ---
 

@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=7J-hDF0H6ck
 author: cgside
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+)"
+tags: [rigging, kinefx, mechanical, controls, wrangle, matrix, fit-range, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/
 frame_count: 4
 ---
@@ -33,27 +33,70 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Attaching custom handle-sphere controls to a procedural mechanical rig skeleton using name-based target points. Controls drive joint rotation by reading the control's local transform X translation and fitting it to a rotation angle via matrix manipulation in a detail-level for-each loop (iterating over numbers, not points).
 
 ### Summary
-[PENDING EXTRACTION]
+Short (13m) tutorial concluding part 1 of a procedural mechanical rigging series. Covers: creating named control points (Point Generate + Name SOP), spherical control shapes (Attach Control / Join Geo workflow), iterating over control count using a number-based for-each (not points), expanding named point groups to get specific joint indices, extracting local transform X position, fitting that to a rotation range, rotating the local xform matrix, and applying it back to the skeleton joints via set point transform.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Create Control Points**
+- Point Generate node → 2 points at origin
+- Name SOP → name point 0 as `starget_left`, point 1 as `starget_right`; run over points
+- Reposition with Read Post (repose) nodes: move left to (-1, 0.5, 0), right to (1, 0.5, 0)
+- Lock translation Y/Z to constrain controls to horizontal X-axis motion only
+
+**2. Attach Control Shape**
+- Sphere (primitive type, size 0.05) with color
+- Attach Control or Join Geo: connect control shape to named target point
+- This binds the visual sphere to each target point position
+
+**3. For-Each Loop (by Number)**
+- Iterate over a count (2 iterations) instead of over geometry points
+- Use "end points" / input count to drive loop count = 2
+- Provides `iteration` value (0 or 1) as a detail attribute on foreach_metadata node
+
+**4. Expand Points Group to Get Joint Indices**
+- `expand points group input zero` with group = channel string `group` (the named group)
+- This yields arrays of point numbers (e.g., [6, 16]) for left/right joint targets
+- Index into array with `Lm` (0 or 1 per iteration) to get the specific joint point number
+
+**5. Extract Control Translation → Fit to Rotation**
+- Get local transform of control point (input 1): `matrix xform = local xform(1, Lm)`
+- Extract X translation: `getcomp(xform, row, col)` — row/col for translate X component
+- Get skeleton joint's local xform (input 0): `matrix local_xform = local xform(0, pts[Lm])`
+- Read max angle from detail attribute (pre-calculated skeleton angle) × 2 (mirror)
+- Fit: `angle = fit(abs(tx), 0.6, 1.2, 0, maxAngle)` — abs() handles negative side controls
+- Rotate local xform: `rotate(local_xform, radians(angle), {0,0,1})`
+- Apply: `setpointtransform(0, pts[Lm], local_xform)` — writes back to skeleton joint
+
+**6. Mirror / Second Side**
+- Duplicate the control point setup for the right side with mirrored point selection
+- Carefully follow point indices: replicate the same sequence (0.0, 0.0 mirror, 0.6, 0.2, 0.1, 0.3, 0.4, 0.8 etc.) for the right-side chain
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Point Generate** — creates N points at origin
+- **Name SOP** — assigns string name attribute to geometry; used for control target names
+- **Attach Control / Join Geo** — binds control shape to named target point
+- **For-Each Loop (by Number)** — iterates N times with detail-level `iteration` counter
+- **Expand Points Group** — expands a named group into an array of point numbers
+- `localxform(input, ptnum)` — returns local transform matrix of a point
+- `getcomp(matrix, row, col)` — extracts a component from a matrix
+- `fit(value, srcMin, srcMax, dstMin, dstMax)` — remap translation range to angle range
+- `abs(value)` — handle negative translation (left-side control)
+- `rotate(matrix, radians(angle), axis_vector)` — rotate a matrix around an axis
+- `setpointtransform(input, ptnum, matrix)` — write back modified local xform
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+any modern (H18+)
 
 ### Tags
-[PENDING EXTRACTION]
+[rigging, kinefx, mechanical, controls, wrangle, matrix, fit-range, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- Part of the procedural mechanical rigging series by cgside
