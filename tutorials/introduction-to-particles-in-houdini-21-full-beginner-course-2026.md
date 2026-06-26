@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=041qemBc_1Q
 author: Pixel In The Frame
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H21 / any modern (H19+)"
+tags: [particles, pop, pop-solver, pop-force, pop-vop, pop-wrangle, collisions, instancing, karma, solaris, lops, motion-blur, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/introduction-to-particles-in-houdini-21-full-beginner-course-2026/
 frame_count: 22
 ---
@@ -138,25 +138,219 @@ frame_count: 22
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Full beginner POP pipeline covering every core particle node (source, solver, color, group, forces, collisions, orient/spin, replicate, VOP/wrangle, kill, advect-by-volumes) plus instancing in both SOPs and LOPs/Karma with motion blur. Final project: RBD box hits ground → drives pyro smoke → activates and colors scatter-based particle emission in Karma with velocity-colored rendering.
 
 ### Summary
-[PENDING EXTRACTION]
+165-minute comprehensive course by Pixel In The Frame for Houdini 21. Covers 22 sections end-to-end from POP network setup through final Karma render. Notable for: detailed collision setup (surface vs volume SDF), orient/quaternion hierarchy (orient > N > v), POP Look-at node, Particle Trail SOP, volume advection with velocity VDB, and a full instancing-in-LOPs workflow using Collection node. Final project integrates RBD, pyro, and particles into a cinematic dust render.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. POP Source**
+- Create geometry → go inside → Tab → "pop network" (auto-creates basic nodes)
+- Emission types: scatter-onto-surface / all-points / all-geometry / item-type-points
+- Geometry source: first input (default) or "use parameter" + paste node path
+- Source group: target specific polygon group for emission
+- Emission attribute: use a point attribute (e.g. turbulent noise → bind export) to weight probability
+- Remove overlapping: set to "existing" to kill duplicate particles at same position
+- Burst tab: activation expression (e.g. `$F==10`), constant burst rate (particles/sec), impulse (per-frame count)
+- Impulse activation expression `$F<10` = emit only before frame 10
+- Just born group: named group containing particles only on their birth frame; use with Split to isolate
+- Live expectancy (seconds) + live variance; set `$F==1` activation for single-frame emit
+- Inherit velocity: "use inherit velocity" reads v from source geo; set with Point Velocity SOP upstream
+- Add to inherited velocity: inherited + extra vector
+- Set initial velocity: explicit vector
+- ID attribute: keeps unique per-particle number even as ptnum reorders — always leave enabled
+- Stream tab: group name defaults to `$OS` (node name); duplicate sources → split by stream group
+
+**2. POP Solver**
+- Sub-steps: global in DOP network level; adaptive via min/max substeps + CFL condition in POP Solver
+- CFL requires `pscale` attribute on particles; create with Attribute Create node (name=pscale, value=0.01–1)
+- POP Properties node: sets uniform scale (pscale) conveniently
+- Timescale parameter: global simulation speed multiplier (animatable for slo-mo/fast-mo)
+- Stopped attribute: value=1 deactivates particle; POP Awaken / POP Wrangle can set to 0 to reactivate
+
+**3. POP Color**
+- Types: constant (uniform), random (by ID + seed), ramp (normalized age `@age/@life`), blend (two colors + ramp), alpha (opacity by ramp)
+- Ramp type uses `fit(@age, 0, @life, 0, 1)` in VEX to normalize age 0–1
+
+**4. POP Group**
+- Group by rule, by bounding object (sphere/box/volume), or random (add/remove from group)
+- Combine tab: union/intersect/subtract groups
+- Workflow: group → black color to just-born group via Source's just-born param; assign color inside group only on birth frame so color persists after leaving bounding area
+
+**5. Instancing Geometry (SOP level)**
+- POP Instance node: creates `instancepath` string attribute pointing to geometry path
+- In DOP: DOP Import Fields → choose pop object + particles preset → then Instance SOP reads `instancepath`
+- Attribute Randomize on `pscale` → vary sizes; must use "set attribute by ID" to prevent size flicker as particles die
+- Copy To Points: box/sphere/etc. on input 1, particles on input 2; enables Pack and Instance checkbox for memory
+- Multi-geometry library: merge geometries → Name SOP (auto-creates name attr per closed mesh) → Attribute From Pieces assigns name per point (random/cycle/etc.) → Copy To Points with "piece attribute name" enabled
+
+**6. POP Force, Wind, Drag, Wind Shadow**
+- POP Force: directional force + turbulent noise (roughness, attenuation, turbulence levels, subtle scale per axis)
+- POP Wind: same but has `resistance` parameter — resistance=1 alone acts as drag even with zero wind velocity; wind velocity drives directionality; resistance controls influence scale
+- POP Drag: wind with zero wind velocity; air resistance = drag scale
+- Multiple wind nodes: opposing equal resistances cancel; unequal → net direction
+- POP Wind Shadow: place after POP Wind; connect moving object to 3rd input + Point Velocity SOP for object velocity; creates wake effect (particles inherit collider velocity); requires POP Wind node above it
+
+**7. POP Awaken**
+- Awaken or put-to-sleep particles when entering a volume
+- Workflow: Attribute Create `stopped=1` (all deactivated) → POP Group with bounding VDB → POP Awaken reads group, activates within volume
+- Choose "activate group" in Awaken to prevent first-frame artifact of particles falling before volume grows
+
+**8. POP Axis Force**
+- Types: sphere (orbit around center), torus
+- Parameters: orbit speed (spin rate), lift speed (vertical), suction speed (pull toward center axis), radius, falloff (soft edge)
+- Air resistance: scales force influence
+
+**9. POP Curve Force**
+- Draw curve SOP (bezier) → connect to context geometry input
+- POP Curve Force: maximum influence radius, resistance (force strength), all scale (travel speed along curve), suction scale (keep particles near centerline), orbit scale (spin around curve)
+- All parameters have per-length ramps — set ramp to 1 for uniform force; default ramp tapers off at ends
+- `force long length multiplier` = global multiplier along curve length
+
+**10. POP Attract, POP Interact**
+- Types: position (attract to point in space — drag in viewport), particles (attract to another stream), points (attract to geometry points)
+- Force methods: accelerate (force toward goal), follow (pursue goal), predict intercept (lead the target)
+- Parameters: force scale, reverse at distance (repulsive zone), pick force distance (attraction scaling zone), maximum distance (influence radius)
+- Point-per-particle follow: uncheck "go ID" to enable
+- POP Interact: repulsive force between particles; position force = keep-apart strength
+
+**11. POP Collision Detect + POP Properties**
+- POP Collision Detect: connect collider to context geometry; response options: color hits, die, stop, stick, slide
+- POP Properties: uniform pscale, bounce, bounce forward, friction parameters; can target specific group
+- Static Object: use for bouncy collisions (non-DOP-detect); must set affect relationships correctly (mutual or left-affects-right)
+- "Use deforming geometry" checkbox required for animated colliders
+- Surface collision vs volume collision: volume needs VDB SDF (Collision Source node computes it + velocity); set proxy volume path
+- Volume collision setup: Collision Source → second output → null "proxy" → paste path into Static Object proxy volume field; change collision detection to "volume sample"
+- Bounce: energy retained on bounce (0.1 = 10%); friction / dynamic friction scale also apply
+
+**12. POP Replicate**
+- Spawns new particles from existing particles
+- Emission attribute: `hitnow` (1 during collision, 0 otherwise) → emit only on collision
+- Inherit velocity + add to inherit: splatter direction control
+- Shape options: sphere, lines, cylinder, etc.; noise option to randomize shape
+
+**13. POP VOP + POP Wrangle**
+- POP VOP: visual VOP inside particle sim; can use separate inputs (SOP input for reading external volumes)
+- Curl noise on velocity: normalize velocity → get direction + length → curl noise → add to direction → normalize → multiply by speed → mix with original (bias controls influence)
+- `if(ingroup(0,0,@ptnum,"stream_name"))` to apply VOP/wrangle only to specific stream
+- Volume advection in POP VOP: Volume Sample (density) + Volume Sample Vector (velocity) → compare density < 0 (inside VDB) → Two-Way Switch
+- POP Wrangle: VEX directly; `if(@hitnow==1) { @v += {5,5,0}; }` to add velocity on collision; `v@Cd = {1,0,0};` to set color on collision
+
+**14. POP Kill**
+- Kill by rule (VEX): `@age > 2.2` etc.
+- Kill by bounding box or sphere; invert checkbox
+- Random tab: probabilistic kill
+- Position in network matters: before POP Replicate affects main stream too
+
+**15. Orient, POP Spin, POP Speed Limit**
+- Orientation hierarchy: `orient` (quaternion vector4) > `N` (normal) > `v` (velocity)
+- `orient` is highest priority — always use it for reliable spinning
+- POP Spin: creates orient attribute; axis, spin speed (degrees/sec)
+- VEX expression for spin speed: `@spinspeed = fit(length(@v), 0, 10, 10, 360);` — faster particle = faster spin
+- Axis relative to particle orientation: local spinning mode
+- `maketransform(normalize(@v), {0,1,0})` → or use `dihedral({0,0,1}, normalize(@v))` to align orient to velocity direction (`@orient = dihedral({0,0,1}, normalize(@v))`)
+- Attribute Transfer from Orient-on-Curve SOP: transfer orient to particles that stick to surface → stops spin on contact
+- POP Speed Limit: clamp min/max velocity speed; clamp min/max spin speed; minimum speed = always-moving floor
+
+**16. POP Look At**
+- Creates orient pointing at target object (null); use up vector or disable it
+- Requires reference object path; animatable target
+
+**17. POP Location**
+- Emission from explicit position (drag in viewport) instead of geometry
+- Impulse activation + count for burst; supports variance in all velocity axes
+
+**18. SOP Particle Trail**
+- Creates geometry trails (lines) from particle velocity/history
+- Frame duration: how many frames to look back
+- Polywire: turns lines into geometry; use `width` attribute for radius control
+- Scale along length + ramp: taper/shape the trail
+- Scale over normalized age: fade trail over particle lifetime
+- Alpha ramp: fade opacity along trail length
+- Color: constant, ramp along length, ramp over age
+
+**19. POP Advect By Volumes**
+- Connect velocity VDB to node's volume input
+- Advection type: force (add velocity as force) vs update velocity (set velocity directly — more accurate) vs updated position
+- Blend velocity: mix between advected and other forces (0.5 = half-half)
+- CFL condition for number of voxels considered per substep
+- Pyro integration: pyresolver outputs velocity volume → feed into POP Advect By Volumes
+
+**20. Instancing in LOPs + Karma Motion Blur**
+- SOP instancing: Copy To Points → Name SOP → Attribute From Pieces → Copy To Points with piece attribute
+- LOPs instancing: SOP Import particles → Collection node (path = `/library/prototypes/*`) → Instancer → prototype primitives = collection name
+- Switch instancer prototype source from "random" to "name attribute" to match SOP distribution exactly
+- Karma velocity motion blur: in Karma Render Settings → Camera Effects → Motion Blur → "velocity blur"
+- For instanced geometry: set instance velocity blur in instancer settings (velocity blur or acceleration blur)
+- Acceleration blur: better for rotational/curved motion; requires `accel` attribute; use "velocity blur to acceleration"
+- Point Velocity SOP upstream (match by ID, central difference approximation) to recalculate v before export
+
+**21. Final Project Setup (RBD → Pyro → Particles)**
+- RBD box falls → Pyro Source (volume scatter, density attribute) → Volume Rasterize Attributes → Pyro Solver
+- Collision Source SOP: computes SDF + velocity for moving collider; feeds pyro solver collision input
+- Speed field in pyro: Turbulence threshold = density, control field = speed (use Compute Range first)
+- VDB Analysis → output name "speed" → Volume Sample "speed" → multiply density × speed → threshold with Fit Range (clip near-zero velocities)
+- Points From Volume → scatter points as static mesh → Attribute Create `activate=1` → Attribute Transfer to static points (distance threshold 0.1–0.2)
+- Attribute From Volume: transfer pyro velocity to static points
+- Attribute Delete non-activated points using If Block + Compare; also filter by speed threshold
+- POP Advect By Volumes with pyro velocity; Pop Kill for zero-velocity stragglers
+- Pop Color with ramp: `fit(length(@v), 0.2, 1.5, 0, 1)` → velocity-to-color ramp (yellow=fast, blue=slow)
+- Karma shader: Karma Material Builder → Geometry Property Value "displayColor" (Cd) → connect to color + emission color
+- Render opacity via constant parameter connected to opacity input
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **POP Network** — DOP container for particle sim
+- **POP Source** — emission node; scatter/all-points/all-geometry/item-type modes; burst/constant/impulse
+- **POP Solver** — timestep, CFL, substeps, timescale, sleep settings
+- **POP Properties** — uniform pscale, physical params (bounce/friction)
+- **POP Color** — constant/random/ramp/blend/alpha types
+- **POP Group** — bounding sphere/box/volume grouping + random + combine operations
+- **POP Force** — directional force + noise turbulence
+- **POP Wind** — directional wind + resistance (drag); resistance acts as drag even at zero wind velocity
+- **POP Drag** — pure drag node
+- **POP Wind Shadow** — wake effect behind moving collider
+- **POP Awaken** — activate/deactivate via volume; `stopped` attribute
+- **POP Axis Force** — orbit/lift/suction around axis
+- **POP Curve Force** — travel + orbit along curve; suction scale keeps particles near curve
+- **POP Attract** — attract to position/particles/points; follow/predict-intercept modes
+- **POP Interact** — repulsive inter-particle force
+- **POP Collision Detect** — detect hits; die/stop/stick/slide responses; `hitnow` attribute
+- **Static Object** — DOP collider for bouncy physics; surface vs volume collision
+- **Collision Source** — computes SDF + velocity for moving collider
+- **POP Replicate** — spawn child particles; emit from `hitnow`
+- **POP VOP** — visual VOP in sim; multi-input for external geometry
+- **POP Wrangle** — inline VEX (`@hitnow`, `@v`, `v@Cd` etc.)
+- **POP Kill** — kill by rule/bounds/random; position before/after replicate matters
+- **POP Spin** — creates orient quaternion; spin speed in degrees/sec; local-axis mode
+- **POP Speed Limit** — clamp velocity and spin speed ranges
+- **POP Look At** — orient particle toward target object
+- **POP Location** — emit from explicit position (no source geometry)
+- **SOP Particle Trail** — trail geometry from particle history; polywire for thickness
+- **POP Advect By Volumes** — advect particles by velocity VDB; force/update-velocity/updated-position modes
+- **Instancer (LOP)** — instance geometry in Solaris; Collection node for prototype library
+- **Collection (LOP)** — wraps SOP geometry prototypes for instancer
+- **Karma Render Settings** — velocity blur in motion blur tab; acceleration blur for rotational motion
+- `dihedral({0,0,1}, normalize(@v))` — align orient quaternion to velocity direction
+- `fit(length(@v), minSpeed, maxSpeed, 0, 360)` — map speed to spin rate
+- `if(@hitnow==1) { @v += ...; }` — collision-triggered velocity impulse in POP Wrangle
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H21 / any modern (H19+)
 
 ### Tags
-[PENDING EXTRACTION]
+[particles, pop, pop-solver, pop-force, pop-vop, pop-wrangle, collisions, instancing, karma, solaris, lops, motion-blur, beginner-intermediate]
+
+---
+
+## Related Tutorials
+- intro-to-houdini-particles---full-beginner-course.md (Voxyde VFX version — complementary POP intro)
+- intro-to-houdini-solaris---full-beginner-course.md (deeper Solaris/Karma/instancer coverage)
+- intro-to-houdini-pyro---full-beginner-course.md (pyro sim used in final project)
+- intro-to-vops---houdini-beginner-tutorial.md (VOP math used in POP VOP/wrangle)
 
 ---
 

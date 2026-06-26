@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Kx3CJJei_Vs
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+)"
+tags: [vops, attribute-vop, math, noise, ramp, fit-range, bind, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-vops---houdini-beginner-tutorial/
 frame_count: 6
 ---
@@ -33,27 +33,122 @@ frame_count: 6
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Comprehensive intro to Houdini VOPs (Attribute VOP context) covering all daily-use math nodes, attribute binding, noise displacement, fit range + ramp parameter, and trigonometric animation. Every operation runs per-point; understanding this mental model is central to the tutorial.
 
 ### Summary
-[PENDING EXTRACTION]
+Part 1 of a VOP series. Covers the full spectrum of foundational VOP nodes used in production VFX: vector/float types, all basic math ops (add/subtract/multiply/divide with constant shortcuts), parameter promotion, bind/bind export for attribute I/O, import point attribute for cross-geometry lookups, mix/blend, turbulent noise + displace-along-normal, fit range, ramp parameter (spline and color), negate/absolute/clamp/power/complement, min/max, ceiling/floor/round/frac/modulo, compare, and sine/cosine for animation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Attribute VOP Fundamentals**
+- Attribute VOP = generic container; set class (points/prims/verts) manually
+- Primitive VOP / Vertex VOP are just Attribute VOP with class pre-set; Volume VOP is different
+- Default inputs: P (position), N, v; default output: P
+- Per-point operation: every node runs independently on each point — visualize by blasting all but one point when troubleshooting
+
+**2. Data Types**
+- float: any number (5.64)
+- integer: whole number only (5, 6)
+- vector2/3/4: multiple components; vector3 is the workhorse (position, normals, velocity)
+- Float↔vector conversion: `vector to float` splits; `float to vector` assembles
+
+**3. Math Operations**
+- add, subtract, multiply, divide — each takes multiple inputs
+- `add constant` / `multiply constant`: shortcut when second operand is a literal
+- Middle-mouse on any input → "constant" to auto-create a wired constant
+- Promote parameter: middle-mouse on input → "promote parameter" to expose on parent node
+
+**4. Global Variables**
+- `time`, `timeInc`, `frame` — accessible anywhere in the VOP network
+- Animate with `time` (0→1 per second at 24fps); use multiply constant to scale speed
+
+**5. Bind / Bind Export**
+- `bind`: reads any existing attribute on the current geometry
+- `bind export`: writes/creates an attribute; presets "export = always" + type
+- Bind export sets attribute type from what you plug in — still good practice to set type field explicitly
+- `import point attribute`: read from a different geometry (second input); requires matching ptnum
+
+**6. Mix Node**
+- Blends between two values by bias (0–1+, not clamped)
+- Plug `time` into bias for temporal blends; `multiply constant` to slow the transition
+
+**7. Noise Displacement Workflow**
+- `turbulent noise` → plug position → output float noise value
+- `displace along normal` → plug noise into scale, set displacement amount as multiplier
+- Noise type Alligator: 0–1 range; Simplex: -1 to +1 (needed for bidirectional displacement)
+- Preview noise as CD by plugging into color and disabling lighting
+
+**8. Fit Range**
+- Maps source min/max → destination min/max
+- Use Z component of position (e.g., -5 to +5) as source to create spatial gradient
+- Multiply noise × fit result = spatially-varying amplitude
+- After fit keep dest min=0 / max=1 if feeding into a ramp (ramp clamps 0–1 input)
+
+**9. Ramp Parameter**
+- Drop `ramp parameter`; edit ONLY at the top level (Houdini auto-exposes it)
+- Two types: `spline ramp float` (most used, remaps 0–1 input to 0–1 output) and `color ramp`
+- Input is clamped to 0–1; do any scaling before the ramp, then scale again after if needed
+- Multiple ramps must have unique `name` field (not just label)
+- Ctrl+MMB on label to reset ramp to default
+
+**10. More Math Nodes**
+- `negate`: ×-1 (same as multiply constant -1)
+- `absolute`: removes sign from negative values (useful to fold noise below zero upward)
+- `clamp`: min/max hard limits; flatten values below 0 for mountain/heightfield look
+- `power`: raises value to exponent; low exponent → amplify peaks, values near zero unaffected
+- `complement`: computes 1–x (reverse a ramp); equivalent to subtract from constant 1
+- `maximum(a,b)` / `minimum(a,b)`: per-element max/min; useful for accumulation patterns
+- `ceiling`: jumps to next whole number above (2.3 → 3)
+- `floor`: rounds down to whole number (2.9 → 2)
+- `round to integer`: rounds to nearest — NOTE: still outputs float (1.0 not 1)
+- `float to integer`: actual int conversion — required before integer divisions to avoid zero result
+- `fraction`: removes integer part, returns decimal (1.7 → 0.7); creates 0–1 repeating loop from time
+- `modulo`: remainder of division; e.g., frame % 5 cycles 0–4; combine with compare to trigger every N frames
+
+**11. Compare Node**
+- Operations: equal, less-than, greater-than, ≤, ≥, not-equal
+- Output: 0 (false) or 1 (true) — use as activation flag
+
+**12. Trigonometric (Sine/Cosine)**
+- `sine`: takes growing value, outputs -1 to +1 oscillation
+- Use `trigonometric functions` node: controls frequency (multiply input) and offset (add)
+- Add `absolute` after sine → 0–1 bounce pattern
+- Add `clamp (min=0)` → only positive half of wave
+- Map sine result to Y position on a line → visual sine wave shape
+- Use `time` as input → looping animation driver (great for pulsating particle effects)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Attribute VOP** — main context; set "run over" class
+- **vector to float / float to vector** — split/assemble vector components
+- **add, subtract, multiply, divide** — standard math; multi-input
+- **add constant, multiply constant** — literal-value shortcuts
+- **bind / bind export** — read/write any point attribute
+- **import point attribute** — cross-geometry attribute lookup (needs ptnum match)
+- **mix** — bias blend between two values
+- **turbulent noise** — noise from position; Alligator (0–1), Simplex (−1 to +1)
+- **displace along normal** — pushes points along N by scale
+- **fit range** — remaps value range
+- **ramp parameter** — visual 0–1 mapping curve; edit at top level only
+- **negate, absolute, clamp, power, complement** — value shaping
+- **maximum, minimum** — per-element max/min
+- **ceiling, floor, round to integer, float to integer** — numeric rounding
+- **fraction** — decimal part only
+- **modulo** — division remainder; cycles 0 to N-1
+- **compare** — boolean output (0 or 1)
+- **trigonometric functions** — sine/cosine with frequency + offset controls
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+any modern (H18+)
 
 ### Tags
-[PENDING EXTRACTION]
+[vops, attribute-vop, math, noise, ramp, fit-range, bind, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- intro-to-houdini-volumes---beginner-course.md (Volume VOP context — extends these concepts)
+- intro-to-houdini-particles---full-beginner-course.md (applies VOP math in particle sims)
+- vops-02, vops-03, vops-04 series (continuation of this series)
