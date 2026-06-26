@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=6V7Y5aBmjo4
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [rendering, octane, material, sss, flakes, metal-bump, hdri, cop2, lighting, water-shader, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-lipstick-part-3-rendering/
 frame_count: 4
 ---
@@ -33,27 +33,85 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Octane path-trace render of lipstick product shot: emissive background plane, water (specular default), metal (metallic+reflectance), lipstick (specular+SSS random walk+flake shader), metal bump (4D turbulence noise), 3-light setup (gradient area light + 2 fills), HDR from polyhaven clamped in COP2 network (upper limit 35) to avoid clipping/purple artifacts.
 
 ### Summary
-[PENDING EXTRACTION]
+14m27s render tutorial by Alexander Eskin (continuation of Parts 1+2). Uses **Octane renderer** inside Houdini (not Mantra/Karma). Render settings: Contour=1, path tracing, spectral depth=24, max samples=200, adaptive, cryptomatte by material name. Materials: background=emissive (weight=3), water=specular (default), metal=metallic+roughness=0+reflectance=0.4, lipstick=specular+SSS (random walk, density=75)+flake shader (size=0.65, variance=1, blend=0.9, 3D transform). Metal bump via 4D noise (turbulence, scaled 0.01). Light rig: area light (gradient texture, power=16) + 2 smaller directional/area lights (front fill + highlight). HDR: COP2 network → load polyhaven sky → Clamp (upper 35) → render texture; gamma/color correction; rotated for environment. DOF: manual pick focus or aperture edge=0.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Render Settings (Octane)**
+- Octane Render Node: camera=Contour 1, render mode=path tracing
+- Spectral depth=24, max samples=200, adaptive sampling=on
+- Deep image=off, environment=off (until HDR added)
+- AOV: Cryptomatte by material node name
+
+**2. Background Material**
+- Standard Octane material: specular weight=0, emission=on, emission weight=3
+- Background plane: size=25×25, position Z=−12
+
+**3. Water / Droplets Material**
+- Octane specular material (default settings work)
+
+**4. Metal Material**
+- Metallic=1, specular roughness=0 (mirror-like), reflectance=0.4
+
+**5. Lipstick Shader**
+- Base specular: reflection=0.45
+- Transmission: 3–5 (glass-like interior for wax look)
+- SSS: enable, mode=Random Walk, density=75, albedo color=desaturated red (saturation≈0.95, value≈0.8)
+- Specular GGX, roughness=0.2
+- Fake shadows=on (faster preview render)
+- **Flake shader**: size=0.65, variance=1, blend factor=0.9, 3D transform ≈ 0.0002 (very small scale)
+  - Plug flakes into Normals input of lipstick shader
+
+**6. Metal Bump**
+- Octane **4D Noise** node: switch to turbulence mode; 3D transform scale 0.01 (correct axis)
+- Plug into bump channel of metal shader
+- Secondary specular layer: GGX, roughness=0.2, reflectance=0.75; also plug noise into bump
+
+**7. Light Setup (3-Light Rig)**
+- **Key light**: Area light, scale=25×5, rotate and position above-left; texture=gradient (1px black center); power=16; general exhibit=0, camera=0
+- **Fill light** (light0.10): smaller area light, front illumination; power=2
+- **Highlight/rim light**: third area light, rotated to graze edge
+
+**8. Camera**
+- Octane camera: Contour=1, autofocus=OFF (autofocus breaks on invisible light objects)
+- Pick focus: click "pick focus" → click on lipstick in viewport
+- Alternative: set aperture edge=0 (disables DOF entirely)
+
+**9. HDR Environment**
+- COP2 Network: **File COP** → load polyhaven HDRI (pure sky)
+- **Clamp COP**: upper limit=35 (prevents sun spike from turning purple in Octane)
+- Render COP output → save to `<hip>/textures/$OS.exr`
+- Load clamped HDRI into Octane Environment (HDRI Environment node)
+- Color adjust: gamma, contrast → rotate environment (pan=−9.2, tilt=−24.2, roll=0.056)
+- Increase HDR intensity=3 for environment contribution; reduce color saturation
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Octane renderer** (Houdini plugin) — NOT Mantra or Karma
+- Octane Render Node: path tracing, spectral depth=24, max samples=200
+- Octane materials: Specular, Standard
+- **Octane Flake Shader** — size=0.65, variance=1, blend=0.9, 3D transform=0.0002; plugged into Normals
+- **Octane 4D Noise** — turbulence mode, 3D transform=0.01 → metal bump
+- Octane Environment: HDRI Environment node, rotatable
+- **COP2 Network**: File + **Clamp COP** (upper limit=35) → write to hip textures folder for stable HDRI
+- 3-light rig: key area light (gradient, power=16) + front fill + rim highlight
+- Autofocus OFF + manual pick focus → avoid DOF on invisible lights
+- Camera aperture edge=0 → disable depth of field entirely
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[rendering, octane, material, sss, flakes, metal-bump, hdri, cop2, lighting, water-shader, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-lipstick-part-1-modeling.md (lipstick geometry)
+- tutorial-lipstick-part-2-flip-sim.md (FLIP droplet sim)
+- tutorial-glass-donut.md (Mantra equivalent lighting/material workflow by same author)

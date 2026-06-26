@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Zqle_HOS7Jg
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [modeling, revolve, boolean, trace, logo-emboss, vdb-remesh, uv, bevel, subdivide, procedural, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-lipstick-part-1-modeling/
 frame_count: 4
 ---
@@ -33,27 +33,94 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedural lipstick modeling: curve-to-revolve profile, Boolean tip cut, Trace logo embossed via Boolean subtraction (with VDB remesh to clean up), PolyBevel/Subdivide case tube, cylindrical UV, placeholder materials. Part of a 3-part series (Part 2: FLIP droplets, Part 3: Octane render).
 
 ### Summary
-[PENDING EXTRACTION]
+18m30s modeling tutorial by Alexander Eskin. Builds a complete lipstick product shot asset procedurally. Lipstick body: polygon curve drawn in front view → Revolve → clip overlap → Subdivide → Fuse; tip cut with Boolean (rotated box ~55°). Logo: Trace SOP on PNG alpha → Resample → Hole SOP → Divide (convex, crease); Raytrace project onto lipstick surface; lift 0.01 → PolyExtrude inward −0.025 → Boolean subtract → VDB remesh (res 0.0015, Smooth SDF 1 iter, Convert back) for clean topology; Attribute Blur normals 5 iters. Metal case tube: PolyExtrude (output back) → PolyBevel (crease, divs 2, dist 0.2, exclusions) → Fuse → PolyBevel (round, dist 0.011) → Subdivide. Cylindrical UVs on all parts. Placeholder shaders: lipstick red, metal gray, plastic dark, background, water. Camera: 200mm lens, portrait aspect ratio.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Lipstick Body**
+- Front view: Curve (polygon mode) → draw profile
+- Grid snap to align key points
+- **Revolve SOP** → clip top overlap → **Subdivide** → **Fuse**
+
+**2. Tip Cut**
+- **Boolean SOP**: subtract a rotated Box (~55°, scaled to cut diagonal angle) from lipstick → eyeball position
+- Note: Boolean transform 90° rotation on Y after position
+
+**3. Logo Emboss**
+- **Trace SOP**: load PNG, channel = Alpha; **Resample** step=0.001
+- **Hole SOP**: fix topology gaps in traced logo
+- **Divide SOP**: convex=on, crease=on, crease angle=0.031
+- Position/rotate logo onto lipstick surface
+- **Raytrace SOP** (or Ray): project logo onto lipstick surface
+- **Clean SOP**: fix sticking-out points
+- Lift logo 0.01 in normal direction (ensure polygon intersection for Boolean)
+- **PolyExtrude** logo: distance=−0.025 (inward), output back=on
+- **Boolean SOP**: subtract logo from lipstick
+- Remesh via VDB: **VDB from Polygons** (resolution 0.0015) → **Smooth SDF** (iterations=1) → **Convert VDB** → clean mesh
+- Adjust logo vertical position (~0.65) using procedural parameters
+
+**4. Surface Cleanup**
+- Do NOT use "smooth normals" — use **Add Normals to Points** first (point normals, not vertex)
+- **Attribute Blur** on N attribute: 5 iterations → smoother appearance at render res
+
+**5. UV Mapping**
+- **UV Project SOP**: cylindrical projection, initialize
+- Note: cylindrical UV needed because author couldn't map flake shader to object coordinates
+
+**6. Metal Case (Tube)**
+- **PolyExtrude**: output back=on, extrude distance=0.4
+- **PolyBevel** 1: fillet shape=Crease, divisions=2, distance=0.2, exclusions=on (prevent bubbling at joins)
+- **Fuse** overlapping points from bevel joins
+- **PolyBevel** 2: fillet shape=Round, divisions=2, distance=0.011, exclusions=on, ignore flat edges=on
+- **Subdivide** → **Merge** with lipstick body
+- UV: cylindrical projection, initialize
+
+**7. Plastic Inner Tube**
+- Duplicate case geo → adjust radius scale slightly smaller → position lower → UV + Merge
+
+**8. Placeholder Materials**
+- Material Builder nodes: lipstick (red), metal (gray), plastic (dark), background (light), water (blue)
+- Apply per-object in material node
+
+**9. Camera**
+- Null OBJ → Camera parented to null; selectable=off
+- Focal length=200; aspect ratio 80:90 (≈9:16 portrait); Z≈8, Y slightly above lipstick
+
+**10. Background**
+- XY plane Grid, rotate 180°, translate Z=−5
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Curve SOP** (polygon) + **Revolve SOP** + Clip to clean overlaps
+- **Boolean SOP** — subtract B from A; use for tip cut and logo emboss
+- **Trace SOP** — alpha channel, resample=0.001
+- **Hole SOP** — fill topology holes in traced curves
+- **Divide SOP** — convex=on, crease=on, angle=0.031
+- **Raytrace / Ray SOP** — project logo points onto surface
+- **Clean SOP** — remove stray/overlapping points
+- **PolyExtrude** — distance=−0.025, output back=on
+- **VDB from Polygons** (res=0.0015) → **VolumeBlur/Smooth SDF** (1 iter) → **Convert VDB** — remesh after Boolean
+- **Add Normals to Points SOP** — required before Attribute Blur on normals
+- **Attribute Blur** on N — 5 iterations for smooth shading
+- **UV Project** — cylindrical, initialize
+- **PolyBevel** — crease shape for hard edges, round shape for final smooth; exclusions=on; ignore flat edges
+- **Fuse SOP** — clean coincident points after bevel
+- **Subdivide SOP**
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[modeling, revolve, boolean, trace, logo-emboss, vdb-remesh, uv, bevel, subdivide, procedural, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-lipstick-part-2-flip-sim.md (droplet FLIP sim on this model)
+- tutorial-lipstick-part-3-rendering.md (Octane render of this scene)
+- tuna-can-procedural-modeling-and-rig-with-kinefx.md (procedural SOP modeling techniques)

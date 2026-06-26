@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=T1OTnyioFrA
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [flip, fluid, droplets, surface-tension, stick-field, velocity-field, vdb, collision, pscale, intermediate-advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-lipstick-part-2-flip-sim/
 frame_count: 4
 ---
@@ -33,27 +33,93 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+FLIP droplet sim on lipstick surface: multi-size scattered points (tiny/medium/big) displaced outward by normals × pscale, Points from Volume as FLIP source, VDB collision from lipstick, initial inward velocity (`−normalize(N)`), surface tension=2, stick-to-collision scale=1, custom velocity sticker field (tube → rest → force toward center), noise-based stick control field, viscosity=1 to dampen. Cache, then Particle SDF → Gaussian → Convert VDB for render mesh.
 
 ### Summary
-[PENDING EXTRACTION]
+26m21s FLIP tutorial by Alexander Eskin. Creates realistic water droplets that cling to the lipstick surface. Three passes of scatter (tiny ~0.03 pscale, medium, big ~0.05–0.8) with random pscale noise variation, displaced outward along surface normals proportionally to pscale. Points from Volume is the FLIP source (resolution from control null parameter `flip_res = 0.01`). Lipstick as VDB collider (Div Source). Initial velocity: inward (negate normals × 0.01 scale). DOP: FLIP Solver + FLIP Object (particle field). Surface tension=2, gravity Y=−2, density=200 (light), timescale tuned. Stick to collision (stick_scale=1, 1-voxel max). Custom velocity sticker: tube volume with rest attribute + force toward center axis → Volume Rasterize → Volume Source "source smoke". Spatially-varying stick control field: noise-based stick mask on VDB surface. Viscosity=1 to calm dynamics. Cache FLIP, then surface: Particle to SDF (res/2) → Gaussian smooth 3 iters → Convert VDB → normals + Attribute Blur 5 iters.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Source Geometry**
+- Import lipstick geo → VDB from Polygons → Convert back (clean normals)
+- Clip front half + clip on ZX axis → only visible surface area
+- Three scatter passes: **tiny** (55 pts, pscale≈0.03), **medium**, **big** (~10 pts, pscale≈0.05–0.8)
+- Random pscale variation: `pscale *= fit01(rand(@ptnum), 0, 0.2)` × noise (small element size)
+- **Displace along normals**: `P += N * pscale * ch("scale");` (N from lipstick surface, point carry normals before scatter)
+
+**2. Control Null**
+- Null OBJ named "Control" (red): add float attribute `flip_res`, range 0→0.1, default 0.01
+- Paste as relative reference into FLIP Object resolution
+
+**3. FLIP Source**
+- Copy spheres (scale=2) to scattered points for preview
+- **Points from Volume**: jitter_scale=1, point_separation = flip_res (~30K pts at 0.01)
+- **Div Source SOP** on lipstick geo: output1=DivGeo, output2=DivVolume (collision volume); resolution=flip_res
+
+**4. Initial Velocity**
+- Attribute Transfer: copy normals from lipstick onto scattered/source points
+- Wrangle: `v@v = -normalize(v@N) * ch("flow_scale");` (flow_scale=0.01) — inward velocity so droplets splash toward surface, not away
+
+**5. DOP FLIP Setup**
+- **FLIP Object**: particle field, resolution=flip_res from control null
+- **FLIP Solver**: connect div_geo + div_volume as collision inputs
+- **Static Object** (disk collider): use subgeo path, collision detection = volume, proxy volume = collision volume
+- Gravity Force: Y=−2 (reduced for light feel)
+- FLIP Object settings: surface_tension=2, density=200, timescale tuned down
+- Sim test: clip 3/4 of particles for faster iteration
+
+**6. Stick to Collision**
+- In FLIP Solver → Stick to Collision tab: stick_scale=1, max_distance=1 cell (1 voxel from collider surface)
+
+**7. Velocity Sticker Field (Keep Droplets on Surface)**
+- **Tube SOP**: covers lipstick, radius=1.5x, no caps
+- **Points from Volume** on tube: add scale attribute, **Add Rest Attribute** (store rest SOP)
+- Wrangle: flatten points (P.y=0 or similar), then `v@v = -normalize(@P) * 3;` (force toward center axis)
+- **Extract Rest SOP** → recover original positions
+- **Volume Rasterize Attributes**: vel attribute, voxel_size larger → velocity volume
+- **Volume Source** (DOP): source smoke mode, plug into FLIP Solver → provides velocity sticker field
+
+**8. Stick Control Field**
+- VOP network on points: `stick = fit(noise(@P * freq), minval, maxval, 0, 1)` → spatially-varying stick mask
+- Promote frequency, min/max values
+- **VDB from Polygons** (same resolution as collider) → subtract from collider VDB → **Add Surface Attribute** (`point_stick`) → VDB name="stick"
+- Merge with collider VDB → FLIP Solver reads stick control field → more interesting dynamics
+
+**9. Polish**
+- **Viscosity=1** in FLIP Solver physical properties → dampens violent velocities → more relaxed droplet motion
+- Kill clips, simulate full 150 frames at reasonable resolution, cache
+
+**10. Surface Reconstruction**
+- **Particle Fluid Surface** (or FLIP SDF): resolution = flip_res/2 → Gaussian smooth 3 iters → Convert VDB to polygons
+- **Add Normals to Points** → **Attribute Blur** N, 5 iterations → smooth shading
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Div Source SOP** — generates collision geo + volume from lipstick
+- **Points from Volume** — jitter_scale=1; point_separation = flip_res
+- `v@v = -normalize(v@N) * ch("flow_scale");` — initial inward velocity on scattered droplets
+- **FLIP Object** — particle field, resolution from control null parameter
+- **Static Object** (DOP): subgeo path + volume collisions + proxy_volume
+- FLIP Solver settings: surface_tension=2, gravity_y=−2, density=200, timescale
+- Stick-to-collision: stick_scale=1, max_distance=1 voxel
+- **Store Rest SOP** + **Extract Rest SOP** — for velocity field that returns to rest position
+- **Volume Rasterize Attributes** — create velocity volume from point field
+- **Volume Source** (DOP): "source smoke" mode → velocity sticker
+- Stick control field VOP: `fit(noise(P*freq), min, max, 0, 1)` → stick attribute on VDB surface
+- Viscosity=1 in FLIP Solver → physical property
+- **Particle Fluid Surface** → Gaussian smooth 3 iters → Convert VDB → normals + Attribute Blur 5 iters
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[flip, fluid, droplets, surface-tension, stick-field, velocity-field, vdb, collision, pscale, intermediate-advanced]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-lipstick-part-1-modeling.md (source lipstick geometry)
+- tutorial-lipstick-part-3-rendering.md (Octane render of this scene)
+- tutorial-pink-bubble-part-1.md (FLIP/fluid surface effects)
