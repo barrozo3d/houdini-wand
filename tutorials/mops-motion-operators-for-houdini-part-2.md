@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=J2g0v1k6MBs
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any (H18.5+, MOPs 1.7.1)"
+tags: [mops, motion-graphics, move-along-spline, move-along-mesh, delay, spring, sequences, pivot, reorient, apply-attributes, vellum, rbd, bullet, intermediate-advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/mops-motion-operators-for-houdini-part-2/
 frame_count: 50
 ---
@@ -278,27 +278,121 @@ frame_count: 50
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+MOPs Part 2: advanced modifiers and simulation integration. Key nodes: Move Along Spline (2-stage: attach then animate; arc length mode for multi-curve), Move Along Mesh (requires Orient Mesh for up vector; simulation-based), Delay (time-offset transforms by falloff weight; works on any point attribute), Spring (Hooke's law bounce; tune mass/K/damping per scene scale), Pivot (adjust pivot post-pack; negative Y for ground alignment; animate pivots for rolling), Reorient (remap local rotation axes without unpacking), Apply/Extract Attributes (core API nodes), sequence time control, Vellum + RBD integration.
 
 ### Summary
-[PENDING EXTRACTION]
+170m22s live class (Houdini.School, Part 2). Covers: Move Along Spline (attach/animate stages, arc length mode, maintain offset, vexpressions); Move Along Mesh (Orient Mesh up vector, simulation, blend orient, relax); VEX snippets in modifier nodes; MOPs Neighbors (plexus connections); MOPs Delay (time-offset any attribute by falloff); MOPs Spring (Hooke's law; mass/spring-K/damping); packed disk sequences + Alembic + instance file; MOPs Set Sequence Time (cycling, mirroring, attribute-based offsets for crowds); MOPs Pivot (bounding box alignment, world-space pivot, animate pivot for rolling objects, accurate bounds); MOPs Reorient (remap rotation axes, reference geometry mode); Apply/Extract Attributes API; RBD simulation integration (active attribute via falloff); Vellum constraint stiffness via falloff inside solver; common mistakes (ID conflicts, sort order, packed fragment preview, H19 orient bug, template interpolation for particles).
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**Move Along Spline**
+- Two stages: (1) Attach (where do primitives start on curve) and (2) Animate (how they move)
+- Attach methods: nearest point, distribute evenly, or attribute (goal_u = parametric 0-1 position)
+- Maintain offset/maintain orient offset: keep input position/orientation as the objects move (visualize offset = yellow markers)
+- Multiple curves: resample curve (avoid beziers), Reverse SOP to flip direction; curve select mode = primitive number or ID attribute
+- Animate tab: goal type = goal_u (0-1 parametric) or arc length (units); wrapping; acceleration ramp (ease in/out); goal attributes (keep goal_u/curve_num for downstream effects); vexpressions for per-prim control
+- Arc length mode: all curves move at same speed regardless of length (good for multi-spline setups)
+
+**Move Along Mesh**
+- Requires Orient Mesh on the template: disable auto up, enable cross up vector to wrap vectors around mesh; blur up vectors for smooth motion
+- Is a simulation (rewind required on input changes)
+- Animate tab: speed + random speed; blend orient (lower = less jitter); relax settings (keep low radius)
+- scatter/nearest surface/attribute attachment modes; source prim + source prim UV from scatter SOP
+
+**VEX Snippets in Modifiers**
+- Use vexpressions checkbox on any modifier; parameter hints appear as comments
+- Access: `translate *= sin($T*2 + @id)` or multiply `mass *= @mops_falloff`
+- Variables in expressions: channel values, `@id`, `@mops_falloff`, custom attributes
+
+**MOPs Neighbors (Plexus Effect)**
+- Two modes: Find Neighbors (create connection array) and Connect To Neighbors (draw polylines)
+- Reference frame: default `$F` = re-compute every frame (disappearing lines); set to specific frame = stable connections
+- Start/end groups: draw connections only from start group to end group (controlled plexus)
+
+**MOPs Delay**
+- Delays all upstream transforms (translate/rotate/scale) + any point attribute by `delay_amount * mops_falloff`
+- Works on any point geometry (even mocap characters → slit-scan effect)
+- Requires ID attribute on input points (use Enumerate SOP or wrangle `i@id = @ptnum`)
+- Is a simulation → reset simulation button if inputs change
+
+**MOPs Spring (Hooke's Law)**
+- Applies bouncy spring force to position/rotation/scale
+- Parameters: mass (resistance to change), K = spring constant (stiffness; higher = snappier), damping (energy loss; 1.0 = infinite bounce, 0.9 default)
+- All parameters are scale-dependent — must re-tune per scene
+- Use vexpressions to modulate mass/K/damping per point via falloff (remap falloff output min to avoid zero-mass instability)
+- Is a simulation → reset on input changes
+
+**Packed Disk Sequences**
+- File SOP → load all geometry → packed disk sequence; set frame range
+- Cycling modes: wrap, mirror, clamp; subframe interpolation supported (Mantra/Karma); not all third-party renderers support it
+- Alembic: widespread renderer support but no built-in cycling; frame range must be specified manually
+- Instance file: string attribute `s@instanceFile` on points; works with most third-party renderers; ugly to set up manually
+
+**MOPs Set Sequence Time**
+- Unifies packed disk sequence / Alembic / instance file → same interface
+- Override cycling mode (wrap/mirror/clamp), frame range; add/set/multiply time attribute
+- Attribute mode: provide `mops_falloff` (remapped 0→26 for sequence length) → offset each copy; mode = add → additive time offset per copy
+- Result: crowd-style varied animation from a single animated cache
+
+**MOPs Pivot**
+- Align to bounding box: negative Y = scale/rotate from base; any axis/min/max
+- World-space pivot: set all objects to pivot at world origin → transform as a block
+- Animate pivot over time + rotate = rolling cube (pivot changes per face as cube rotates)
+- Accurate bounds: slower but correct for non-box shapes; default = loose bounding box
+- Pivot-only mode vs. move primitive mode (toggle "pivots only")
+
+**MOPs Reorient**
+- Remaps local rotation axes for future transforms without unpacking
+- Orient source: point attribute (quaternion, or N+up vectors, or matrix) or reference geometry
+- Reference geometry mode: transfers orientation of a mesh (e.g., a sphere with Orient Mesh) to packed fragments → fragments explode outward along surface normals
+- MOPs orient attribute: stored as `mops_orient` (offset quaternion); Extract Attributes has "Extract MOPs Orient" flag to include/exclude it
+
+**Apply Attributes / Extract Attributes (Core API)**
+- Extract Attributes: converts packed primitive intrinsics → template point attributes (N, up, orient, scale, pivot); allows using copy-to-points with the result
+- Apply Attributes: takes template point attributes from input B and applies them to packed intrinsics in input A; respects falloff; modes: set/add/multiply
+- Use Apply Attributes to create custom MOPs-like operators or HDAs; drives everything internally in MOPs
+
+**RBD + Vellum Integration**
+- RBD: set `@active = (@mops_falloff > 0.99)` in wrangle → animate active attribute via falloff = procedural crumbling
+- Art direct sim: blast specific piece → freeze at TimeShift → Apply Attributes with Plain Falloff to blend frozen position in; no re-simulation needed
+- Vellum constraint stiffness via falloff inside solver: promote `mops_falloff` from points to primitives → Vellum Constraint Properties inside DOPs; vexpressions: read original stiffness by id, multiply by falloff → animate sweep over constraints (pins sweeping across cloth)
+
+**Common Mistakes**
+- Duplicate IDs when merging streams: set ID start number on second Instancer, or use MOPs Convert (packed prims mode + override ID/name)
+- Sort order desync: if point order is randomized, primitive order doesn't match; use MOPs Sort to fix
+- Packed fragment preview: can't show unique point colors; use display sprites mode instead
+- H19 RBD orient bug: bullet solver reads orient/pscale/scale on frame 1 and applies them additively; fix: Attribute Delete (orient, pscale, scale) before bullet sim
+- Instancer + particles: disable "Enable Template Interpolation" when point count changes (particle emission); otherwise only first-frame copies appear
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **MOPs Move Along Spline** — attach/animate stages; arc length mode; maintain offset; vexpressions
+- **MOPs Move Along Mesh** — requires Orient Mesh; simulation; blend orient; relax
+- **MOPs Neighbors** — find/connect modes; reference frame; start/end groups
+- **MOPs Delay** — simulation; delay amount × falloff; any point attribute; Enumerate SOP for ID
+- **MOPs Spring** — mass/K(spring constant)/damping; vexpressions for per-point; simulation
+- **MOPs Pivot** — bounding box align; world-space pivot; animate pivot; accurate bounds
+- **MOPs Reorient** — remap rotation axes; point attribute or reference geometry source; `mops_orient`
+- **Apply Attributes** — set/add/multiply; falloff weight; driving force behind all MOPs modifiers
+- **Extract Attributes** — intrinsics → template point attributes; "Extract MOPs Orient" flag
+- **MOPs Set Sequence Time** — cycling/mirror/clamp; frame range; attribute mode (add)
+- `s@instanceFile` — string attribute for loading disk sequences (compatible with RS/Arnold)
+- `i@active = (@mops_falloff > 0.99)` — RBD activation via falloff
+- Vellum Constraint Properties (inside DOP): `float falloff = prim(2, "mops_falloff", id_attr); stiffness = orig_stiffness * falloff;`
+- Attribute Delete (orient, pscale, scale) — required before Bullet sim in H19+
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+any (H18.5+, MOPs 1.7.1)
 
 ### Tags
-[PENDING EXTRACTION]
+[mops, motion-graphics, move-along-spline, move-along-mesh, delay, spring, sequences, pivot, reorient, apply-attributes, vellum, rbd, bullet, intermediate-advanced]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- mops-motion-operators-for-houdini-part-1.md (MOPs Part 1: foundation, instancer, falloffs, noise)
+- mops-motion-operators-for-houdini-part-3.md (MOPs Part 3: math/trigonometry/matrices)
+- module-ii-week-01-02-introduction-to-vellum-v1-1080p.md (Vellum constraint basics)
+- module-ii-week-01-01-basic-bullet-sim-v1-1080p.md (Bullet RBD basics)

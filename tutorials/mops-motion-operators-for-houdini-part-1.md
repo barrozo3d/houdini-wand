@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=g9eSle9IVjU
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any (H18.5+, MOPs 1.7.1)"
+tags: [mops, motion-graphics, instancing, packed-primitives, intrinsics, transform, falloff, spread, noise, animation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/mops-motion-operators-for-houdini-part-1/
 frame_count: 51
 ---
@@ -283,27 +283,92 @@ frame_count: 51
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+MOPs (Motion Operators) is a free Houdini plugin that unifies template point attributes (N, up, orient, pscale, pivot) with packed primitive intrinsic transforms so you can manipulate copies/instances either before or after the copy operation. Key design: MOPs modifiers run per-point in local space simultaneously, and all modifiers respect a `mops_falloff` float attribute (0–1) as a weight mask.
 
 ### Summary
-[PENDING EXTRACTION]
+165m31s live class (Houdini.School, Henry/ToadStorm). Part 1 of a 3-part MOPs series. Covers: MOPs philosophy + installation, instancing pipeline (template point attrs vs intrinsic transforms), generators (Instancer, Convert, Explode, Trails), modifiers (Transform, Aim, Randomize, Noise), and falloffs (Shape, Noise, Spline, Object, Spread, Transform Falloff). Also covers using MOPs falloffs as masks for vanilla Houdini SOPs (PolyExtrude, Guide Process, particle emission).
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**MOPs Architecture**
+- Template point attributes: N (forward = +Z), up (+Y), orient (quaternion, default 0001), scale (vector), pscale (float scalar multiplier), transform (3×3 matrix), pivot (local offset)
+- Intrinsic transforms: hidden per-primitive 4×4 matrix on packed primitives; MOPs sets BOTH at once so downstream operations see consistent data
+- MOPs modifier = sets transform intrinsics per-point individually in local space (not world transform of whole geo stream)
+- Always have geometry spreadsheet open — most important debugging tool
+
+**Installation (MOPs)**
+- Download from GitHub (github.com/toadstombs/mops) → releases → source code zip
+- Extract to a non-Documents, non-Houdini-install location (e.g., `D:/VFX/mops/`)
+- Copy `mops.json` package file → `Documents/Houdini/19.x/packages/`
+- Edit `mops.json`: set the path key to install location using forward slashes (Windows uses backslashes — must convert)
+- Update: MOPs shelf → MOPs Updater → select stable branch → Apply Update
+
+**Generators**
+- **MOPs Instancer**: multi-input (up to 999); distribution modes: grid/linear/sphere/radial/mesh/points; indexing mode = random OR point attribute (e.g., `mops_index`); template interpolation for deforming meshes (disable for changing point counts); creates ID + name attributes automatically
+- **MOPs Convert**: converts polygon chunks or packed prims → packed fragments with unique ID+name; for packed prims input mode: override ID/name to give each copy a unique identifier (prevents "solving as one object" in RBD); use after copy-to-points to make streams MOPs/RBD-ready
+- **MOPs Explode**: each polygon primitive → separate packed fragment; orients each face outward along its normal; define pieces by: primitive number / attribute / group / clustering; use MOPs Transform after explode to push faces outward (push along local Z)
+- **MOPs Trails**: temporally stable trails from animated points; solves jitter (uses internal solver); outputs stable UVs; length limit parameter; sweepable into tubes
+
+**Modifiers**
+- **MOPs Transform**: per-point local space transforms (rotate/translate/scale); local vs world space toggle; `$F * 5` on rotateY = each copy spins on its own axis
+- **MOPs Orient Mesh**: generates N+up on points so copies orient along surface normals; disable Auto Up + set explicit up to fix gimbal issues
+- **MOPs Aim**: all copies look at single object OR individual aim targets (matched by ID attribute); aim axis customizable; up vector separate (world/object/points); "constrain around up" = pin rotation to one axis
+- **MOPs Randomize**: per-axis min/max + seed; step parameter locks to increments (e.g., 90° = 4 cardinal directions); controlled by falloff attribute
+- **MOPs Noise Modifier**: simple (procedural) or Advect mode (simulation-like, accumulates over time); noise signature: vector (3D displacement) or float (along local Z = peak-like); time varying + looping noise (set loop period in seconds); falloff-aware
+
+**Falloffs (all write a float 0–1 point attribute)**
+- `mops_falloff`: default attribute name; can rename to create parallel streams that don't interfere
+- **Shape Falloff**: sphere/box/torus/linear/radial; drag manipulator; blend modes (multiply, add, etc.); built-in noise + remap/fit controls
+- **Noise Falloff**: float noise (not vector); time varying; remap to control contrast
+- **Spline Falloff**: distance-to-spline / distance × curve position / curve position only; resample curve to polygons first
+- **Object Falloff**: falloff inside/outside/by distance; volume sample mode (fog VDB); point cloud mode
+- **Spread Falloff**: infection-solver-style spreading without a solver; define start group; distance metric = radius (for packed prims) or connectivity (for mesh points); search radius controls neighbor detection; animate `spread` parameter; MOPs Clip By Attribute to erode mesh cleanly
+- **Transform Falloff**: animate the position of a falloff over time (spin, orbit) without complex expressions; chain multiple falloffs to same Transform Falloff for synchronized motion
+
+**MOPs Falloffs with Vanilla SOPs**
+- Promote falloff attribute from points to primitives → use as PolyExtrude distance scale (local control → distance scale → attribute name = `mops_falloff`)
+- Guide Process Bend: mask by guide attribute = `mops_falloff`
+- POP Source: use falloff-masked group as emission source for particles
+
+**ID Attribute — Key Gotcha**
+- Every point in a MOPs stream needs a unique `id` attribute; MOPs generators create it automatically; when merging two streams use ID start number to avoid collisions (e.g., 0–999 and 10000+)
+- MOPs Aim (aim at points mode) matches aim targets to copies by ID
+- Template interpolation only works on deforming meshes with constant point count — disable for particles
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **MOPs Instancer** — multi-input; distribution tab; indexing mode (random/point attr); template interpolation toggle
+- **MOPs Convert** — input type: packed primitives; override ID + name; generates RBD-ready fragments
+- **MOPs Explode** — polygon → per-face packed fragment; piece definition: primitive number/attribute/group/cluster
+- **MOPs Trails** — stable trails; uses internal solver; clean UVs; length limit
+- **MOPs Transform** — per-point local/world space rotate/translate/scale; do falloff checkbox
+- **MOPs Orient Mesh** — N+up generation; disable auto up; explicit up vector
+- **MOPs Aim** — aim at object/points; aim axis; constrain around up
+- **MOPs Randomize** — per-axis min/max; seed; step; uniform scale; falloff-aware
+- **MOPs Noise Modifier** — simple/advect mode; vector/float; time varying; loop period; falloff; amplitude per axis
+- **MOPs Shape Falloff** — sphere/box/torus/linear; manipulator; remap; blend mode; noise
+- **MOPs Noise Falloff** — float noise; time varying; remap
+- **MOPs Spline Falloff** — resample curve first; distance/distance×pos/pos modes
+- **MOPs Object Falloff** — inside/outside/distance/volume/point cloud modes; noise
+- **MOPs Spread Falloff** — start group; radius vs connectivity mode; search radius; spread parameter (animate); noise
+- **MOPs Transform Falloff** — animate falloff position; chain multiple falloffs together
+- **MOPs Clip By Attribute** — removes points below threshold; smooth erosion edges
+- **MOPs Pivot** — adjust pivot after packing (e.g., Y minimum = scale from base)
+- **MOPs Index From Attribute** — remap float attribute to integer index for instancer
+- `setprimintrinsic(0, "transform", prim, m)` — the VEX behind what MOPs does under the hood
+- `orient` attribute (vector4): quaternion; default `{0,0,0,1}`; supersedes N+up in copy-to-points
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+any (H18.5+, MOPs 1.7.1)
 
 ### Tags
-[PENDING EXTRACTION]
+[mops, motion-graphics, instancing, packed-primitives, intrinsics, transform, falloff, spread, noise, animation, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- mops-motion-operators-for-houdini-part-2.md (MOPs Part 2: advanced nodes)
+- mops-motion-operators-for-houdini-part-3.md (MOPs Part 3: math/trigonometry/linear algebra)
+- intro-to-vops---houdini-beginner-tutorial.md (VOP math: vectors, quaternions, matrices)
