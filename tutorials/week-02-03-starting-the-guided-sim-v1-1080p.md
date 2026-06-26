@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=9qkYzPC9IKM
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H17.5+"
+tags: [rbd, guided-sim, bullet, constraints, cables, hard-constraints, active-attribute, bridge, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-02-03-starting-the-guided-sim-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,50 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Horizontal cable bullet sim with Guided Simulation: name attribute on cable blocks → Constraints From Rules (hard constraints) → RBD Configure → ABD Bullet Solver; plug Week 1 bridge sim as Guide input; enable Use Guides. Inactive attribute set via two box bounds at X=±19 (tower anchor points).
 
 ### Summary
-[PENDING EXTRACTION]
+6m47s VFX School Archive module. Part of Manhattan Bridge Destruction Week 2. Sets up horizontal cable simulation with Bullet + Guided Sim workflow. Creates name attributes, hard constraints between cable blocks (no plasticity, stiff behavior), RBD Configure with inactive regions at bridge towers (boxes at ±19 X). ABD Bullet Solver with Guided Simulation tab: imports Week 1 bridge simulation as guide geometry. Guided pieces follow the animation until release conditions are met (angular/linear thresholds). Constraint breaking when bridge falls too fast to be fixed in next lesson.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Name attribute** — each cable block gets unique name (for constraint creation between adjacent pieces)
+2. **Constraints From Rules** — surface points; connects edges between adjacent cable blocks; avoid inter-cable constraints; add Constraint Properties node
+3. **Hard constraints** (not soft/plasticity) — stiff, rigid behavior; best for cables; soft constraints better for deforming metal
+4. **RBD Configure SOP** — packs everything for bullet simulation
+5. **Inactive regions** (tower anchor points):
+   - Two transform boxes at X=+19 and X=−19 → merge → plug into last input of RBD Configure
+   - Active attribute = use bounds → pieces inside boxes are inactive (held in place by towers)
+6. **ABD Bullet Solver** — connect: constraints, main geometry, proxy geometry
+7. **Guided Simulation** (Bullet Solver → last input):
+   - Guided Sim tab → check **Use Guides**
+   - Visualize tab → **Show Guided** (highlights guided pieces in blue)
+   - Guide geometry = Week 1 bridge simulation (object merge/copy, plug into last solver input)
+   - Guided pieces follow the animation internally constrained to guide
+   - Guide release controlled by angular + linear thresholds in Guided Sim settings
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Name attribute (SOP) — unique per cable block
+- **Constraints From Rules** — surface points mode, constraint properties node
+- **Hard Constraints** — stiff, no plasticity; use for cables vs soft constraints for deforming metal
+- **RBD Configure SOP** — packs + prepares geo; last input = active bounds
+- Two box SOPs (X=±19) → Merge → last input → active=bounds → inactive anchor points
+- **ABD Bullet Solver** — inputs: constraints, main geo, proxy geo, guide geo
+- Guided Sim tab → **Use Guides** (introduced in H17/17.5)
+- Visualize tab → **Show Guided** (blue = guided pieces)
+- Guide Release Thresholds: angular threshold + linear threshold
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H17.5+
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, guided-sim, bullet, constraints, cables, hard-constraints, active-attribute, bridge, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- week-02-04-finishing-the-horizontal-cable-sim-v1-1080p.md (completion: strength attr, weak group, air resistance, cache)
+- week-01-11-rbd-configure-v1-1080p.md (RBD Configure setup in Week 1)
+- week-02-01-intro-v1-1080p.md (week 2 overview)

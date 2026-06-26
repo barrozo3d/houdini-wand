@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ykTr02tft_k
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H17.5+"
+tags: [rbd, guided-sim, bullet, cables, air-resistance, file-cache, strength-attribute, bridge, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-02-04-finishing-the-horizontal-cable-sim-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,51 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Fix guided sim constraint popping (disable Remove Intro-Guide Constraint). Add `f@weak` attribute: default=4 (strongly guided), override=0 in active/falling zone → feed into Guided Sim strength VEX (`strength = f@weak`); pieces in falling zone release from guide naturally. Air Resistance=5 for scale-appropriate cable drag. File Cache: rest.geo + sim $F3.bgeo.sc.
 
 ### Summary
-[PENDING EXTRACTION]
+9m3s VFX School Archive module. Continuation of Week 2 horizontal cable sim. Fixes constraint popping by disabling "Remove Intro-Guide Constraint" in the Guided Sim constraints tab. Introduces `weak` group: wrangle sets `f@weak=4` on all proxy points, then `f@weak=0` for points inside the active/falling zone (object-merged from Week 1 active boundary). Feeds `f@weak` into Guided Sim strength via VEX expression. Reduces gravity for scale; sets Air Resistance=5 (high for constrained cables). Caches rest geometry + sim frames.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Fix constraints popping**: Guided Sim → Constraints tab → uncheck **Remove Intro-Guide Constraint** → constraints restored
+2. **Strength attribute control**: Guided Sim → strength parameter slider; 0 = pieces drop immediately (no guide); 1 = fully guided; use to tune release
+3. **Guide Release Thresholds** (Guided Sim settings): angular + linear thresholds — pieces break from guide when moved too far/fast
+4. **"Weak" group setup** (on proxy geo points):
+   - Object Merge: import active boundary from Week 1 sim
+   - Attribute Wrangle: `f@weak = 4;` on all points (strong guide)
+   - Group SOP using bound → "weak" group for points inside falling zone
+   - Another Attribute Wrangle: select "weak" group → `f@weak = 0;` (or 1 — easier to break away)
+5. **Connect to Guided Sim**: Guided Sim → Setup → VEX Expression: `strength = f@weak;`
+6. **Bullet Solver settings for scale**: reduce gravity; **Air Resistance = 5** (very high drag for constrained cable objects — prevents flopping; would not use this value for freely tumbling pieces)
+7. **File Cache**:
+   - Rest geometry: `horizontal/cables/rest.geo` (static, no $F)
+   - Simulation: `horizontal/sim/$F3.bgeo.sc` ($F3 = 3-digit frame number)
+   - 125 frames; Save to Disk
+   - Important: constraint attributes on primitives; simulation attributes (velocity, force, gravity) on proxy geometry points
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Guided Sim → Constraints tab → **Remove Intro-Guide Constraint**: OFF (fix constraint popping)
+- Guided Sim → strength: slider 0→1; 0 = no guide; VEX expression override
+- Guide Release Thresholds: angular + linear
+- Attribute Wrangle: `f@weak = 4;` (all points), `f@weak = 0;` (weak group)
+- VEX in Guided Sim: `strength = f@weak;`
+- Bullet Solver: gravity reduced for bridge scale; **Air Resistance = 5** (high for constrained cables)
+- **File Cache**: rest.geo path + sim path with `$F3`; constraint attrs on prims; sim attrs on proxy geo points
+- Object Merge: bring in active boundary (Week 1 sim)
+- Group SOP: bound mode → "weak" group
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H17.5+
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, guided-sim, bullet, cables, air-resistance, file-cache, strength-attribute, bridge, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- week-02-03-starting-the-guided-sim-v1-1080p.md (setup: constraints, RBD configure, guided sim start)
+- week-02-07-starting-the-vellum-sim-v1-1080p.md (next: vertical cables Vellum sim)
+- week-01-11-rbd-configure-v1-1080p.md (active attribute animated boundary, Week 1)
