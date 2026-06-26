@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=LKhBUByCqJw
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [vellum, cloth, soft-body, struts, string, glue, pin, remesh, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-01-02-introduction-to-vellum-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,73 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Vellum overview: mixing cloth, strut soft body, string, and glue constraints all in one Vellum Solver. Key concepts: Remesh for triangles (better folds), Configure Cloth generates distance + bend constraints as primitives, zero-mass = pin, mass from area gotcha (degenerate triangles), matching animation for partial pinning, glue constraint to attach different vellum objects.
 
 ### Summary
-[PENDING EXTRACTION]
+15m34s hands-on Vellum introduction. Drops a grid, demonstrates Configure Cloth (with Remesh for triangles), Vellum Solver with Torus collider. Shows zero-mass pinning, the mass-from-area gotcha (degenerate triangles after Remesh become zero-mass and freeze), strut soft body constraints (lines bridging geometry to prevent volume collapse), string constraints on a line primitive with partial pin + match-animation, and glue constraints to attach objects together. All four types run in one Vellum Solver simultaneously.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Vellum Cloth Setup**
+- Grid → Remesh (triangles only — better cloth folds; increase iterations for cleaner mesh) → Vellum Configure Cloth → Vellum Solver
+- Configure Cloth outputs: left = geometry (with mass/pscale attributes), middle = constraints (distance + bend constraint primitives), right = collision pass-through
+- Constraint attributes: `stiffness`, `rest_length`, `compression_stiffness`, `type` (distance or bend)
+- Geometry attributes: `mass` (varies by polygon area), `pscale` (thickness)
+
+**2. Mass-from-Area Gotcha**
+- Default mass calculation: varies by polygon area → tiny/degenerate triangles → mass ≈ 0 → those points freeze (same as pin)
+- Symptom: triangle-shaped fold or stuck corners after Remesh with low iterations
+- Fix 1: change mass to "uniform" (e.g. 0.1) — less physically accurate but stable
+- Fix 2: increase Remesh iterations (e.g., 10) → cleaner triangles with non-zero area
+
+**3. Pinning**
+- Select points → Vellum Configure Cloth with pin group → sets mass = 0 for those points
+- Mass = 0 = pinned (won't move, but still collides)
+- Can use Group node to procedurally select points (e.g., first point for hanging)
+
+**4. Strut Soft Body**
+- Vellum Configure Strut Soft Body: adds strut constraints (lines spanning across the mesh interior)
+- Struts prevent geometry from collapsing in on itself → gives a spongy/volumetric soft body feel
+- Combine cloth constraints (surface) + strut constraints (volume) in the same Vellum Solver for a soft object that holds shape
+
+**5. String Constraints**
+- Line SOP (with N points) → Vellum Configure (constraint type = string) + pin top point group
+- String constraint: simulates hair/rope/string
+- Pin + match animation: pin a point → enable "match animation" → that point follows the original SOP animation; rest of string simulates freely
+- Use case: animated string/hair/rope where attachment point is keyframed
+
+**6. Glue Constraints**
+- Vellum Constraints node (constraint type = glue) → attaches two separate vellum objects together
+- Without groups: glues everything to everything
+- With groups: specify which object sticks to which (e.g., cloth to string endpoint)
+
+**7. One Solver, All Types**
+- Merge all geometry + constraints → single Vellum Solver handles cloth + struts + string + glue simultaneously
+- Previously required separate solvers; Vellum's key advantage is mixing constraint types freely
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Remesh** — creates triangulated mesh for cloth; increase iterations for cleaner triangles (avoids mass=0 gotcha)
+- **Vellum Configure Cloth** — generates distance + bend constraint primitives; `mass` (area-varying or uniform), `pscale` (thickness), pin group
+- **Vellum Configure Strut Soft Body** — generates strut lines spanning mesh interior
+- **Vellum Constraints** — generic constraint node; change type to: string, glue, etc.
+- **Vellum Solver** — single solver for all types; substeps for stability
+- `mass = 0` → pinned point; set via Configure Cloth with point group
+- "match animation" checkbox on pinned points → follows SOP keyframes
+- constraint geometry: primitives = constraint lines; attributes: stiffness, rest_length, compression_stiffness, type
+- **VDB from Polygons** / static object: collider input (right input of Vellum Configure or Solver)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, cloth, soft-body, struts, string, glue, pin, remesh, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-ii-week-01-04-tetrahedral-soft-bodies-v1-1080p.md (tetrahedral soft bodies)
+- module-ii-week-01-06-updating-the-rest-blend-v1-1080p.md (rest blend)
+- module-i-week-06-01-introduction-to-grains-v1-1080p.md (Vellum grains)
