@@ -187,7 +187,3 @@ any modern (H19+)
 - intro-to-houdini-volumes---beginner-course.md (Vellum concepts appear in same skill set)
 - intro-to-vops---houdini-beginner-tutorial.md (VOP math: cross product, quaternion, fit range, ramp)
 
----
-
-## Related Tutorials
-[PENDING EXTRACTION]

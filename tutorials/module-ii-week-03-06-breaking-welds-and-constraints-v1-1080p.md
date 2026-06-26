@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=dfD5FUdMCTc
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [vellum, cloth, breaking-welds, vellum-constraint-property, wrangle, break-threshold, caching, vellumio, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-03-06-breaking-welds-and-constraints-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,59 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Breaking Vellum constraints during sim: (1) Vellum Constraint Property node to delete boot-attachment constraints at frame 170; (2) Geometry Wrangle inside solver to animate the `break_threshold` attribute on weld constraints (weakening over time via fit($F, 140, 200, 0.075, 0.05)) so cloth rips. Cache using VellumIO.
 
 ### Summary
-[PENDING EXTRACTION]
+11m46s lesson. Final setup before caching the full crocodile attack Vellum sim. Two constraint-breaking techniques: (A) Vellum Constraint Property node inside the DOP — enable "remove" at `$F > 170` to delete the boot attachment constraints and let the boot fly off; (B) Geometry Wrangle on weld streams — animate `break_threshold` using fit() so welds progressively break from frame 140 to 200, causing cloth to rip. Post-collision passes set to 5 for overlapping cloth layers. Cache using VellumIO with custom file paths.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Vellum Constraint Property — Delete Boot Constraints**
+- Inside DOP network → Vellum Constraint Property node (connected into constraint stream)
+- Set group = `left_boot` (the boot attachment constraint group)
+- Enable "Remove" checkbox
+- Condition: `$F > 170` → at frame 170+, constraints are deleted → boot flies free
+- Note: welds are NOT regular constraints; can't be controlled with Constraint Property
+
+**2. Geometry Wrangle — Animate Break Threshold on Welds**
+- Geometry Wrangle inside DOP (connected after cloth stream, not tetrahedrals)
+- Group = all except hunter (avoid touching tet constraints)
+- `@break_threshold` attribute is created automatically when "breaking" is enabled on the weld constraint node
+- Expression: `@break_threshold = fit($F, 140, 200, 0.075, 0.050);`
+  - At frame 140: threshold = 0.075 (still fairly strong)
+  - At frame 200: threshold = 0.050 (very weak; most welds break → cloth rips open)
+- Note: use fit() not fit01() since values are not 0-1
+
+**3. Solver Settings**
+- Post collision passes: set to 5 (recommendation: number of stacked cloth layers + 2; here: tet + cloth + boot layer = 3 layers → push to 5 for safety)
+- Sub steps: 5 (outside solver and inside)
+
+**4. Cache with VellumIO**
+- VellumIO node: strips sim-only attributes that waste disk space
+- Start frame: 140 (sim starts here); end: 250
+- Output path: `sim/body_and_fluff.v001/$F3.bgeo.sc` (auto-creates folder if "create missing dirs" is checked)
+- File name: `body_and_fluff.v001.bgeo.sc` with `$F3` for frame padding
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Vellum Constraint Property** — delete/modify constraints inside DOP; "remove" checkbox + `$F > N` condition; works on constraint groups (not welds)
+- **Geometry Wrangle** (inside DOP, cloth stream) — `@break_threshold = fit($F, start, end, v0, v1);`; controls weld-breaking strength over time
+- `break_threshold` attribute: created on weld constraint prims when "breaking" is enabled on Vellum Configure node; lower = breaks sooner
+- **VellumIO** — efficient cache node; strips internal sim attributes; use for final sim output
+- `fit($F, 140, 200, 0.075, 0.050)` — remap frame range to threshold range (not fit01)
+- Post collision passes: Vellum Solver parameter; set to num_cloth_layers + 2
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, cloth, breaking-welds, vellum-constraint-property, wrangle, break-threshold, caching, vellumio, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-ii-week-03-01-introduction-v1-1080p.md (week 3 intro: combining everything)
+- module-ii-week-01-02-introduction-to-vellum-v1-1080p.md (Vellum constraint overview)
+- module-ii-week-01-06-updating-the-rest-blend-v1-1080p.md (rest blend in DOP)

@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=cvAuweF1fvg
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, fracture, path-attribute, split-sop, material-separation, building, area-attribute, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-03-01-splitting-by-material-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,48 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Use the path attribute (from Alembic import) with Split SOP + wildcard patterns to separate a building into material-based groups (glass, wood, fiberglass/concrete, small bits) before fracture. Small bits identified by area attribute threshold.
 
 ### Summary
-[PENDING EXTRACTION]
+5m31s lesson. Splits a Brooklyn building Alembic into material-based geometry streams for selective fracturing. Workflow: Connectivity SOP (set to primitives) → Convert (polysoups to polygons) → Split SOP chain using path attribute wildcards. Groups created: glass (windows), bits (small area pieces < 0.5), wood, fiberglass. Each split feeds its own fracture operation for variety. Uses exploded view to verify splits visually.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Setup**
+- Start from saved week-2 project; new file "nuclear explosion v1"; delete old sim nodes but keep building import
+- Connectivity SOP: mode = primitives (not points)
+- Convert SOP: polysoup → normal polygons (required for path attribute access)
+
+**2. Split by Material via Path Attribute**
+- Split SOP: use "path" attribute with wildcard pattern `* glass *` → all prims where path contains "glass" → glass/windows group
+- Split SOP: area attribute < 0.5 → small bits group (tiles, small panels); invert → bigger pieces
+- Split SOP: `* wood *` → wood panels
+- Split SOP: `* fiber *` → fiberglass panels + concrete remainder
+
+**3. Visual Verification**
+- Add Exploded View after each Split SOP to visually inspect what's in each group
+- Select a prim in viewport → jump to Geometry Spreadsheet → filter "show only selected" → read path attribute value → build wildcard from it
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Connectivity SOP** — set to primitives; required before Split path-based workflow
+- **Convert SOP** — polysoup to polygons (unlocks primitive attribute access)
+- **Split SOP** — pattern mode on `path` string attribute: `* glass *`, `* wood *`, `* fiber *`; numeric mode on `area` attribute with threshold (e.g., 0.5)
+- `path` primitive attribute: material/object path string from Alembic import; wildcard `*` matches any substring
+- `area` primitive attribute: polygon area; use to isolate small vs large pieces for different fracture treatment
+- **Exploded View SOP** — verify split results visually; confirms piece separation and count
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, fracture, path-attribute, split-sop, material-separation, building, area-attribute, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-ii-week-02-01-importing-the-geometry-v1-1080p.md (building import + path attribute intro)
+- module-ii-week-03-06-breaking-welds-and-constraints-v1-1080p.md (breaking cloth welds/constraints)
+- module-i-week-01-09-setting-the-active-attribute-v1-1080p.md (RBD active attribute + border ring)

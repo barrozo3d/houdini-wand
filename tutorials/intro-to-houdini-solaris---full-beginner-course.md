@@ -257,9 +257,11 @@ Intermediate — requires prior Houdini SOP knowledge; beginner-friendly for art
 Houdini (any modern, H19.5+); Labs tree tools require SideFX Labs installation; AMD material X library requires download; some features (material variation node, explore variants) added in H20+
 
 ### Tags
-[PENDING EXTRACTION]
+[solaris, lops, usd, scene-assembly, instancer, component-builder, look-dev, karma, aov, materials, lighting, rendering, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- introduction-to-particles-in-houdini-21-full-beginner-course-2026.md (Karma/LOPs instancing + particles in Solaris)
+- intro-to-houdini-volumes---beginner-course.md (complementary beginner course)
+- intro-to-vops---houdini-beginner-tutorial.md (VOP math for procedural materials)

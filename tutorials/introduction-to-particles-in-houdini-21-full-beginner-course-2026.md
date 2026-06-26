@@ -352,7 +352,3 @@ H21 / any modern (H19+)
 - intro-to-houdini-pyro---full-beginner-course.md (pyro sim used in final project)
 - intro-to-vops---houdini-beginner-tutorial.md (VOP math used in POP VOP/wrangle)
 
----
-
-## Related Tutorials
-[PENDING EXTRACTION]

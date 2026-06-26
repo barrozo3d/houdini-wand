@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=161Gcdsi6Nw
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [vellum, cloth, tearing, stitching, drape, remesh, course-intro, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-02-01-introduction-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only — Module II Week 2: Vellum cloth simulation including draping onto body using T-pose, geometry prep (Remesh, groups), cloth tearing (pre-cut + weld/stitch), drape sim in Vellum SOP solver, and stiff cloth areas trick (scale polygons on same mesh).
 
 ### Summary
-[PENDING EXTRACTION]
+1m40s intro for Module II Week 2 of the VFX School Renaissance program. Focus: Vellum cloth simulation for the crocodile attack project. Week covers: draping cloth onto body starting from T-pose (precise fit at sim start), geometry prep (Remesh, groups, constraint setup), cloth tearing (pre-fracturing / pre-cutting), welding and stitching, full drape simulation in Vellum SOP solver, bonus stiff cloth areas (scale polygons locally to vary stiffness).
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Start from T-pose of character: cloth drapes onto body to fit accurately at sim start
+- Geometry prep: Remesh for triangle mesh, group assignment, constraint prep
+- Pre-cut cloth for tearing + weld/stitch cloth seams together
+- Full drape sim in Vellum SOP solver
+- Stiff cloth areas: change polygon scale on same mesh to create locally stiff regions (tricky in Vellum otherwise)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Vellum SOP solver — cloth drape simulation
+- Remesh — triangle mesh for cloth
+- Groups — for constraints (pin, tear, etc.)
+- Weld / stitch constraints — joining cloth pieces
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, cloth, tearing, stitching, drape, remesh, course-intro, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-ii-week-01-02-introduction-to-vellum-v1-1080p.md (Vellum overview)
+- module-ii-week-03-01-introduction-v1-1080p.md (week 3: first complete sim)
+- module-ii-week-03-01-splitting-by-material-v1-1080p.md (splitting geo by material)

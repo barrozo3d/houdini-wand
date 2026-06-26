@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=F2vdSX1Dzgk
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [vellum, cloth, soft-body, point-deform, collisions, pin, breaking-welds, course-intro, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-03-01-introduction-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,37 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only — Module II Week 3: first complete simulation combining soft body, cloth, and crocodile collider; key trick = pin the body part inside the croc's mouth to the croc's animation (avoiding impossible collision layers), then Point Deform the render geometry using the sim result.
 
 ### Summary
-[PENDING EXTRACTION]
+1m41s intro for Module II Week 3. This week brings everything together into a complete simulation: soft body hunter + cloth + crocodile collider. Key problem solved: the part of the body inside the croc's mouth is pinned to the croc's animation (not simulated) to avoid unsolvable collision stacking between two colliders. Also covers: VEX for breaking welds/constraints (cloth tearing), Point Deform to transfer sim deformation onto clean render geometry.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Pin body section inside crocodile's mouth to croc animation (prevents collision stack failure)
+- Only exposed body parts simulate; mouth-interior part follows croc jaw animation exactly
+- Breaking welds/constraints via VEX (cloth ripping)
+- Point Deform: use simulated low-res body to deform high-res render geometry
+- First complete end-to-end sim in the course
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Point Deform SOP — deform render geo using sim result
+- Vellum SOP solver — soft body + cloth combined
+- VEX — break weld/constraint attributes procedurally
+- Pin to animation — body part inside mouth follows croc jaw
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, cloth, soft-body, point-deform, collisions, pin, breaking-welds, course-intro, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-ii-week-02-01-introduction-v1-1080p.md (week 2: cloth setup)
+- module-ii-week-03-01-splitting-by-material-v1-1080p.md (splitting geo by material)
+- module-ii-week-03-06-breaking-welds-and-constraints-v1-1080p.md (VEX constraint breaking)
+- module-ii-week-01-06-updating-the-rest-blend-v1-1080p.md (rest blend / soft body)
