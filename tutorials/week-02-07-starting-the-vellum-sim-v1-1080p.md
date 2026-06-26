@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=cecNdA8cLTo
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H17.5+"
+tags: [vellum, cables, cloth, constraints, pin, rest-length, tension, bridge, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-02-07-starting-the-vellum-sim-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,47 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Vellum Configure Cloth for vertical cables: rest length scale=0.8 (cables under tension, spring up on release); pin group + match animation (top follows bridge); Vellum Attach to Geometry (max dist=0.01, group="attach", breaking enabled, threshold=0.01) for road connection; fix intersection issue with `i@disable_external=2` (ignore external at start, re-enable after release).
 
 ### Summary
-[PENDING EXTRACTION]
+8m7s VFX School Archive module. Sets up Vellum cloth sim for vertical bridge cables. Key parameters: rest length scale=0.8 (shorter than actual → under tension → spring up violently when released); compression stiffness=max; bend stiffness=1M; pin group (top of cables) + match animation; Vellum Attach to Geometry (cables → bridge road, group="attach", breakable at threshold 0.01). Fix for cables not releasing: geometry intersects collision geo at frame 1 → `i@disable_external=2` disables collision initially, re-enables after release.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Vellum Configure Cloth** — distance along edges; pin group (top of cables); Match Animation=ON; stretch stiffness=default (very stiff)
+2. **Rest Length Scale = 0.8** — makes constraint rest length 80% of current length → cables under tension; when released, they spring upward (matching bridge cable physics)
+3. **Compression Stiffness** — set to maximum → prevents cables from squashing together
+4. **Bend Stiffness = 1,000,000** — high but cables still bend substantially
+5. **Collision geometry**: Object Merge bridge simulation → Connect to collision input of Vellum Solver; unpack packed geo first
+6. **Vellum Attach to Geometry** — connects cables to bridge road:
+   - Max distance=0.01 (only connect what's very close at bottom)
+   - Group name="attach"
+   - Enable breaking; break threshold=0.01 (low → cables break under stress)
+7. **Vellum Solver** — connect: geometry, constraints, collision geo at correct inputs
+8. **Fix intersection issue**: cables intersect bridge at frame 1 → constraints break immediately → add wrangle before solver: `i@disable_external = 2;` 
+   - value 1 = never collide external
+   - value 2 = disable external collision at start, re-enable after constraint is released
+   - Result: cables release freely, then collide with everything else
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Vellum Configure Cloth**: pin group=pin group; Match Animation=ON; rest length scale=0.8
+- Compression stiffness=maximum; Bend stiffness=1,000,000
+- **Vellum Attach to Geometry**: max distance=0.01, group="attach", breaking=ON, threshold=0.01
+- Vellum Solver: inputs = geometry, constraints, collision geometry (unpacked)
+- Attribute Wrangle: `i@disable_external = 2;` — fix initial intersection collision disabling
+- H17.5+: "Calculate Varying Thickness" option in Vellum Configure significantly improves behavior
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H17.5+
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, cables, cloth, constraints, pin, rest-length, tension, bridge, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- week-02-08-setting-the-strong-constraints-and-the-breaking-threshold-v1-1080p.md (completion: strong group, break thresholds, timescale)
+- week-02-04-finishing-the-horizontal-cable-sim-v1-1080p.md (horizontal cables Bullet sim)
+- tutorial-pink-bubble-part-1.md (Vellum Pack/Unpack, Vellum Balloon — different Vellum context)

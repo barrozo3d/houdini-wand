@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=9TNDsfFNoq4
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H17.5+"
+tags: [vellum, cables, constraints, breaking, timescale, file-cache, vdb, bridge, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-02-08-setting-the-strong-constraints-and-the-breaking-threshold-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,59 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Add all cables; create "strong" constraint group (non-falling bridge end) via VDB selection + Group Promote points→primitives; inside Vellum Solver add Vellum Constraint Property nodes: animate break threshold on "attach" group (0.03→0.1 over frames 1→120); "strong" group threshold=0.2 (never breaks). Scale: timescale=0.35, gravity=−15, drag reduced. Cache 250 frames.
 
 ### Summary
-[PENDING EXTRACTION]
+12m37s VFX School Archive module. Final step of vertical cable Vellum sim. Brings in all cables (disable blast node). Creates "strong" constraint group for cables near non-falling bridge section (conservative VDB selection + Group Promote to primitives). Inside Vellum Solver: two Vellum Constraint Property nodes — one animates break threshold for "attach" group (strengthens then weakens over time for progressive breaking); one sets very high threshold for "strong" group. Timescale=0.35 and gravity=−15 balance scale vs floaty look. Standard File Cache 250 frames.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Disable blast node** → all cables come through (previously only one for testing)
+2. **Select non-falling bridge section** (conservative — avoid any piece that falls):
+   - Select geometry from back part of bridge (shift+click, drag)
+   - Delete non-selected → isolated non-falling section
+3. **VDB group around cables** to keep near that section:
+   - VDB from Polygons → VDB Reshape SDF (dilate, increase size) to encompass nearby cables
+   - Group SOP (on cable points) → connect VDB volume
+   - Name group "strong"
+   - **Group Promote**: from points to primitives (constraints live on primitives)
+4. **Inside Vellum Solver → Vellum Constraint Property** (two nodes):
+   - Node 1: group="attach" (all attach constraints); enable **Break Threshold** animation:
+     - Frame 1: threshold=0.03 (fairly strong)
+     - Frame 90: threshold=0.03 (hold)
+     - Frame 120: threshold=0.1 (weaker — cables start breaking more easily)
+     - Set keyframes linear in animation editor
+   - Node 2: group="strong" → break threshold=0.2 (very high → never breaks under normal sim stress)
+5. **Scale parameters** (Vellum Solver):
+   - **Timescale = 0.35** (slow motion feel for large bridge; 0.25 was too slow/floaty)
+   - **Gravity = −15** (stronger than default −9.8; compensates for timescale)
+   - Wind Drag: reduce slightly (allow cables to sway longer)
+6. **File Cache** (standard, not Vellum IO):
+   - Path: `VirtCableCache/cable_cache.$F3.bgeo.sc`
+   - 250 frames; Save to Disk
+   - Note: standard file cache fine; no need for Vellum IO unless saving collision geo + constraints
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- VDB from Polygons → **VDB Reshape SDF** (dilate mode, default) → Group SOP → Group Promote (points → primitives)
+- **Vellum Constraint Property** (inside solver): group, break threshold, animate over frames
+- "attach" group break threshold: keyframes 0.03 at f1 → 0.03 at f90 → 0.1 at f120 (linear)
+- "strong" group break threshold: 0.2 (constant — non-falling section)
+- Vellum Solver: **Timescale=0.35**, **Gravity=−15** (adjusted from default −9.8)
+- Wind Drag: reduce from default for more natural sway
+- **Standard File Cache** (not Vellum IO): `VirtCableCache/cable_cache.$F3.bgeo.sc`; 250 frames
+- Group Promote SOP: from points to primitives (constraints are primitive attributes)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H17.5+
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, cables, constraints, breaking, timescale, file-cache, vdb, bridge, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- week-02-07-starting-the-vellum-sim-v1-1080p.md (previous: Vellum setup, rest length, attach geometry)
+- week-03-01-intro-v1-1080p.md (next week intro)
+- week-01-11-rbd-configure-v1-1080p.md (active attribute animated boundary, same project)
