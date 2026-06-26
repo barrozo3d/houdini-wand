@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Mjw4gT36Ub4
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [scatter, project-setup, beginner, course-intro]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-01-creating-a-new-project-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,31 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only — Week 2 project setup (scatter systems). No technical content.
 
 ### Summary
-[PENDING EXTRACTION]
+1m53s intro for Module I Week 2 of The VFX School Renaissance course. Describes two projects: (1) scatter geometry built in Houdini over a surface using new nodes/workflows, (2) scatter Megascans models over a head. Setup steps: create new project "week2_scatters", save with version number using `$JOB`.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Week 2 topic: scattering objects over a surface
+- Project 1: build geometry in Houdini, scatter it with new workflow nodes
+- Project 2: use Megascans models scattered over a head geometry
+- Standard project setup: File → New Project → `$JOB` for save path + version number
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+None (intro/setup only)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner (context video)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[scatter, project-setup, beginner, course-intro]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-01-01-intro-v1-1080p.md (Week 1 intro)
+- module-i-week-01-01-your-first-houdini-project-v1-1080p.md (project setup pattern)

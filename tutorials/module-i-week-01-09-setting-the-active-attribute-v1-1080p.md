@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=VXkmQAGzBbA
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, destruction, active-attribute, rbd-configure, attribute-transfer, speed-limit, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-01-09-setting-the-active-attribute-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,56 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+RBD simulation setup: using RBD Configure to set physical material properties and the `active` attribute, then transferring `active=0` to border pieces using edge geometry + Attribute Transfer to create a static perimeter around the fractured area. Speed limit + randomized `speedmax` attribute to control RBD chaos.
 
 ### Summary
-[PENDING EXTRACTION]
+10m22s lesson (VFX School Module I, Week 1, lesson 9). Covers the full RBD Configure node setup for an explosion simulation: packing geometry, applying concrete material presets, activating the `active` attribute (1=simulates, 0=collides but doesn't move), creating a border ring of inactive pieces by attribute-transferring from edge geometry (delete by normal to isolate sides), and adding randomized speed/spin limits via Attribute Randomize.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. RBD Configure Node**
+- Multi-input node (main geometry, constraints, proxy geometry) — part of the new RBD workflow
+- Hover over inputs to see labels: geometry, constraints, proxy, static bound geometry
+- Sets simulation attributes: packs geometry (12K points instead of 2M), assigns physical material
+- Physical presets available: concrete (dry + clean surfaces default) → sets density, bounce on proxy geo
+
+**2. Active Attribute**
+- Enable "active" in RBD Configure → all pieces get `active=1` (simulates, moves with forces)
+- `active=0`: piece still collides with other objects and can be constrained to, but won't move
+- Goal: inner area active (explodes), outer border inactive (stays put = natural jagged edge)
+
+**3. Creating Border of Inactive Pieces**
+- Object Merge the original pre-fracture floor geometry
+- Delete by Normal (facing up, value 1): removes top faces → keep side faces only
+- Delete by Normal (value -1, push down): removes bottom faces → left with just edge ring geometry
+- Attribute Create: `i@active = 0` (integer, value 0) on this edge geometry
+- Attribute Transfer: transfer `active` attribute from edge ring onto fractured packed pieces (distance threshold 1, blend width 0)
+- Visualize: Delete by expression `@active==0` to confirm which pieces are inactive
+
+**4. Speed/Spin Limits + Randomization**
+- In RBD Configure → Speed Limit tab: set `speedmax=20`, `spinmax=20` to prevent tiny pieces flying unrealistically fast
+- Attribute Randomize (at end of network) → find `speedmax` attribute → mode: multiply, range 0.8–1.2, dimension 1 (float)
+- Result: each piece has slightly different max speed (16–24) → avoids wall-of-same-speed movement
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **RBD Configure** — packs geo, sets physical material (concrete preset = density/bounce), enables active attribute, speed/spin limits; multi-input (geo/constraints/proxy)
+- **`active` attribute** (integer, per point/piece) — 1=simulates, 0=static collider
+- **Delete SOP by Normal** — isolate edge ring geometry by removing top/bottom-facing polygons
+- **Attribute Create** — `i@active = 0` to mark border pieces as inactive
+- **Attribute Transfer** — copies `active` attribute from edge ring to matching packed pieces by proximity; distance threshold + blend width
+- **Attribute Randomize** — multiply mode on `speedmax` (range 0.8–1.2) for varied speed limits
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, destruction, active-attribute, rbd-configure, attribute-transfer, speed-limit, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-01-01-intro-v1-1080p.md (course intro / project overview)
+- module-i-week-01-01-your-first-houdini-project-v1-1080p.md (Week 1 basics)
