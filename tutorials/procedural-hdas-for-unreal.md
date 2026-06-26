@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rKcH4oIfoVw
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [hda, unreal, procedural-modeling, building-generator, splines, cables, houdini-engine, ue5, materials, sessions-sync, intermediate-advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-hdas-for-unreal/
 frame_count: 4
 ---
@@ -33,27 +33,34 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course trailer only — Houdini.School class by Julian (Cloud Imperium Games / Star Citizen): build a procedural building-generator HDA deployable in Unreal Engine via Houdini Engine, covering spline-driven modeling, procedural cable system, asset randomization + art directable controls, parameter UI for other artists, Houdini attributes exposed in Unreal (mesh import, material assignment), and Sessions Sync for real-time debugging.
 
 ### Summary
-[PENDING EXTRACTION]
+1m9s promotional trailer. Instructor is Julian, technical artist at Cloud Imperium Games (Star Citizen, Berlin sidewalk generator, office table generator). Course topics: (1) building generator HDA using splines/curves; (2) procedural modeling; (3) automated organic cable system; (4) randomized asset creation with art-director control; (5) simple parameter interface for artist-facing HDA; (6) Houdini Engine import to Unreal — Houdini attributes controlling mesh import slots and material assignment from UE side; (7) Sessions Sync for real-time Houdini↔Unreal communication and tool debugging.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- (Trailer only — no step-by-step content)
+- Topics: spline-based modeling → procedural building gen → cables → randomization → HDA parameter UI → Houdini Engine export → Unreal attribute-driven mesh/material → Sessions Sync
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- HDA (Houdini Digital Asset) — packaged reusable tool
+- Curve/spline SOPs — building generator base
+- Houdini Engine — plugin linking Houdini HDA into Unreal
+- Houdini attributes — drive Unreal-side mesh bounding / material assignment
+- Sessions Sync — real-time Houdini↔Unreal communication for debugging
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19+
 
 ### Tags
-[PENDING EXTRACTION]
+[hda, unreal, procedural-modeling, building-generator, splines, cables, houdini-engine, ue5, materials, sessions-sync, intermediate-advanced]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- procedural-growth-with-kinefx-and-the-labs-tree-tools.md (HDA + procedural pipeline)
+- tuna-can-procedural-modeling-and-rig-with-kinefx.md (procedural modeling + HDA)
+- scientific-phenomena-in-houdini.md (procedural SOP workflows)

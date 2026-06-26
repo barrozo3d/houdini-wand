@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=j5XxDiG25wQ
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [kinefx, labs, tree-tools, procedural, growth, vex, chops, rigging, animation, vegetation, intermediate-advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-growth-with-kinefx-and-the-labs-tree-tools/
 frame_count: 4
 ---
@@ -48,27 +48,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course trailer only — Houdini.School class by Mark Fancher: procedural tree generation with SideFX Labs Tree Tools, rigged and animated using KineFX, with a VEX+CHOPs procedural growth and wind system, plus advanced Labs tool modding for more flexibility.
 
 ### Summary
-[PENDING EXTRACTION]
+1m22s promotional trailer. Course covers: (1) SideFX Labs Tree Tools (free, built into Houdini) for procedural vegetation generation; (2) KineFX rigging of the generated tree; (3) VEX + CHOPs procedural growth and wind animation; (4) advanced module: modding Labs tree tool internals for more flexibility. Instructor: Mark Fancher. Intermediate–Advanced level; requires prior VEX and general Houdini knowledge.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- (Trailer only — no step-by-step content)
+- Topics: Labs Tree Tools → KineFX rig → VEX growth system → CHOPs wind → Labs tool modding
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- SideFX Labs Tree Tools (procedural vegetation)
+- KineFX (skeleton rigging/animation inside SOPs)
+- VEX (growth and wind proceduralism)
+- CHOPs (animation channel operations for wind)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19+
 
 ### Tags
-[PENDING EXTRACTION]
+[kinefx, labs, tree-tools, procedural, growth, vex, chops, rigging, animation, vegetation, intermediate-advanced]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tuna-can-procedural-modeling-and-rig-with-kinefx.md (KineFX rigging workflow)
+- mops-motion-operators-for-houdini-part-3.md (math/matrices for animation)
+- rain-effect-in-houdini-houdini-tutorial.md (procedural natural effects)
