@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=wR0SDptfygg
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+)"
+tags: [volumes, vdb, sdf, velocity-field, vop, point-cloud, volume-rasterize, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-volumes---beginner-course/
 frame_count: 15
 ---
@@ -103,27 +103,103 @@ frame_count: 15
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini volumes = 3D grids of voxels storing float (scalar) or vector values. VDBs are sparse grids (only non-zero voxels stored) — always prefer VDB over standard volumes. Two VDB classes: fog (float=density/temp, or vector=velocity) and level-set/SDF (signed distance). Volume VOP operates per-voxel using voxel center position; always multiply noise by existing density to preserve borders. For SDF: add/subtract float values to push surface in/out; fill interior critical for operations inside mesh. Velocity fields: VDB node (fog, vector float, velocity type) + VDB Activate for container; animate with curl noise 4D; use PC Open + PC Filter to borrow direction from curve geometry. Volume Rasterize Attributes = preferred way to turn particle attributes (density, v, CD) into volumes.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX comprehensive volumes beginner course (137m16s, 15 sections). Covers voxel math and resolution control (by-size mode, 0.1 = 10 voxels per unit), VDB sparse grids vs standard, SDF (signed distance field — positive outside, negative inside), Volume VOP internals (position = voxel center; bind/bind export; density vs field name), practical fog VOP examples (gradient fade via bounding box ramp, position fade via sphere + distance, animated noise with $D expression), working with multiple named fields (bind name=temperature/velocity; fields must pre-exist for bind export), Volume Visualization + Pyro Bake Volume for viewport display, SDF VOPs (add/subtract, fill interior, Convert VDB, VDB Smooth SDF, VDB Reshape SDF), SDF from noise patterns (cellular, hexagon, Voronoi, Worley = rock), velocity field types and construction (VDB + VDB Activate, Volume Trail visualization, POP Advect by Volume), curve-based velocity field with PC Open, SDF from particles (VDB From Particles → VDB Smooth → mesh), and Volume Rasterize Attributes for particle-to-volume conversion with velocity blur.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**VDB Fundamentals:**
+- Always use VDB from Polygons (not ISO Offset) for geometry → volume conversion
+- By size mode: voxel size = 1 unit ÷ N voxels; smaller value = more voxels = better quality
+- Exterior/interior band voxels: use world space units; fill interior = ON for inward operations
+- Standard volume = full bounding box filled; VDB = sparse (only active voxels, 10× fewer)
+
+**Volume VOP Essentials:**
+- Position (P) = center of each voxel — same coordinate system as scene
+- Default exports to "density" — change with bind export + explicit name
+- Bind export CANNOT create new volumes; field must pre-exist (merge two VDB from Polygons first)
+- Always multiply noise result by existing density: `density × noise` — otherwise fills entire bounding box
+- Copy nodes freely between Volume VOP and Attribute VOP (same VOP architecture)
+
+**SDF Operations:**
+- `add constant`: positive → push surface IN; negative → push surface OUT (opposite intuition)
+- `multiply constant`: no visible effect on SDF (values change but surface position unchanged)
+- Noise displacement: use 1D (float) not 3D (vector) — SDF is a scalar field
+- Fill interior: required when pushing surface in more than exterior band allows
+- Convert VDB → polygons: adaptivity controls mesh density; tied to voxel size resolution
+- VDB Smooth SDF: blur/smooth surface; operations: mean curvature flow best for fluid meshing
+- VDB Reshape SDF: dilate (expand) or erode; same as add/subtract but more control
+
+**Velocity Field Construction:**
+- VDB node: name=vel, class=fog volume, type=vector float, vector type=displacement/velocity/acceleration
+- VDB Activate: reference mode uses bounding box of reference geo (not surface); expand mode adds padding
+- Volume VOP inside: bind export vel (3 float); turbulent noise must be 3D signature for vector
+- Volume Trail + Points From Volume = visualization; POP Advect by Volume = actual simulation use
+- Advection type: "update velocity" more accurate than default; particles maintain last registered velocity after escaping field
+
+**Curve-Based Velocity Field:**
+- Sweep + end caps → VDB from Polygons (fog) → Convert VDB (vector float, velocity type)
+- Polyframe SOP on curve: tangent attribute named "dir" (direction along curve)
+- PC Open: position=voxel P, search_radius must reach geometry, num_points=4-5
+- PC Filter: channel="dir" → gives averaged curve direction per voxel
+- Negate vector to correct direction; subtract position for push-back-to-curve vector
+- Curl noise 4D (pos → float4 + time) → animated organic direction
+
+**SDF from Particles / Fluid Meshing:**
+- VDB from Particles: point_radius_scale × pscale = effective radius; minimum_radius_in_voxels = 1.5 (minimum to avoid artifacts)
+- Lower minimum_radius_in_voxels to match your usage if needed
+- Typical meshing chain: VDB from Particles → VDB Reshape SDF (dilate) → VDB Smooth SDF → Convert VDB (polygons)
+- Mean curvature flow smoothing preferred for fluid look
+
+**Volume Rasterize Attributes:**
+- Set density attribute on points first (value=1 or noisy); specify attribute name in node
+- Particle scale = pscale multiplier; no minimum radius threshold concern (unlike VDB from Particles)
+- Velocity blur: shutter controls smear length; shutter offset = -1 (trail backward); samples for quality
+- Multiple attributes: density + v (velocity field) listed together; use Volume Trail on fused points to preview velocity
+- More points = smoother volume; more points allow lower voxel size
+
+**Practical VOP Patterns:**
+- Gradient fade by height: Relative to Bounding Box → Vector to Float (Y) → Ramp → multiply density
+- Animated noise: turbulent noise with $D expression on offset (div by speed factor)
+- Ground fog: bounding box + ramp + noise + box geometry
+- Position fade from object: Import Point Attribute (sphere P) → Distance → Fit Range → multiply density
+- SDF reveal animation: Relative to Bounding Box Z → Compare (> value) → add to surface; noise displaces bounding box lookup
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **VDB from Polygons**: fog VDB or distance VDB (SDF); exterior/interior band voxels; fill interior; world space units
+- **Volume VOP**: per-voxel operations; position = voxel center; bind (input) + bind export (output); density default output
+- **Volume Visualization**: smoke tab (density ramp, density scale, diffuse color) + emission tab (emission field, emission scale, emission color ramp); viewport-only, no actual data change
+- **Pyro Bake Volume**: smoke + fire + scatter tabs; render-preview-grade quality in viewport
+- **VDB Activate**: reference mode (bounding box of geo) + expand mode (add rows of voxels); expand distance = world units
+- **VDB node**: create empty VDB container; class=fog volume; type=float/vector float; vector type=color or velocity
+- **Volume Trail**: visualize velocity field; 2nd input = velocity volume; V Volume = specify by name when multiple volumes
+- **POP Advect by Volume**: 2nd input or sub-path to velocity volume; advection type = update velocity
+- **VDB Smooth SDF**: smooth SDF surface; mean curvature flow for fluid; iterations controls smoothness
+- **VDB Reshape SDF**: dilate (expand), erode (shrink), smooth; expand before smooth in meshing workflow
+- **VDB from Particles**: pscale × point_radius_scale = effective sphere size; minimum_radius_in_voxels threshold
+- **Volume Rasterize Attributes**: converts point attributes to volumes; velocity blur (shutter, shutter offset, samples)
+- **PC Open / PC Filter**: sample curve/geometry attributes at each voxel position; search_radius must contain nearest point
+- **Convert VDB**: polygons or VDB; class/type conversion; fog→SDF and SDF→fog possible; adaptivity for polygon density
+- **Polyframe SOP**: tangent attribute for curve direction; name it "dir" for velocity field workflow
+- Relative to Bounding Box: gives 0–1 range per axis; use with ramp for gradient fades
+- Name SOP: renames VDB field (string attribute "name")
+- **VDB Activate** expand mode vs VDB Reshape SDF: functionally similar; reshape has more options
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner-to-intermediate — conceptually approachable but many subtle behaviors require hands-on experimentation
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern, H18+); VDB operations and Volume VOP stable across versions
 
 ### Tags
-[PENDING EXTRACTION]
+#volumes #vdb #sdf #velocity-field #vop #point-cloud #volume-rasterize #beginner-intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `intro-to-vops---houdini-beginner-tutorial.md` — prerequisite: VOP fundamentals
+- `intro-to-houdini-pyro---full-beginner-course.md` — builds directly on volumes foundation; pyro target fields and micro-solvers
+- `intro-to-houdini-particles---full-beginner-course.md` — particles + velocity field + POP Advect by Volume
+- `improve-solaris-performance---houdini-tutorial.md` — proxy VDB workflows for Solaris pipeline
+- `houdini-tutorial---wispy-smoke.md` — practical velocity field application for smoke FX

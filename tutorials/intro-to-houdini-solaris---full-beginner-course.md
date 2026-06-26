@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=3BX97YIQERE
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H19.5+)"
+tags: [solaris, lops, usd, scene-assembly, instancer, component-builder, look-dev, karma, aov, materials, lighting, rendering, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-houdini-solaris---full-beginner-course/
 frame_count: 19
 ---
@@ -123,22 +123,138 @@ frame_count: 19
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Solaris = LOP context built around USD: everything is an opinion layered on a scene graph with paths as identifiers. Same path on two nodes = later overrides earlier (not additive). Preferred pipeline: SOP create for geometry inside LOPs → component builder (render/proxy/seam proxy + material variants + geo variants via @GEO_VARIANT_INDEX) → save to USD asset → reference/instancer in scene. Instancer is more powerful than layout LOP for populating scenes procedurally; stage manager preferred for hand-placing hero assets. Material variation at instance level uses USD prim var reader + use snippet mode with `random(index)` expression.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX comprehensive Solaris beginner course (286m6s, 19 sections). Part 1 covers each ingredient in isolation: USD & scene graph (paths, opinion layering, character workflow), scene assembly (SOP import/create, path prefix, name vs path attribute), stage manager (hand-placement, duplicates, groups, physics collision), material library (karma material builder, material linker, AMD material X), component builder (render/proxy/seam proxy, geo variants via @GEO_VARIANT_INDEX, material variants, USD asset save/reference), light types (physical sky, dome, area, spotlight, light tool placement), light mixer, volumetric lights (karma fog box), emissive lights (treat as light source), instancer (scatter millions procedurally, prototype path slash star, explore variants + configure layer flatten, asset variants), layout LOP (paint mode). Part 2 builds a complete magical forest scene: ground/water geometry (SOP level, attribute transfer + curve-based river), camera rig (orbit null + look-at constraint + noise shake), ground/water materials (MTLX fractal 3D, height-to-normal, animated noise via MTLX time + combine), grass (SOP create curves, pscale ramp, frosting cam HDA scatter, karma hair + ID-based hue randomize), tree asset (Labs tree tools + leaf mesh + component builder + class attribute), geo variants (6 variants with @GEO_VARIANT_INDEX), material variation (hue prim var reader + snippet random), instancer for BG trees (explore variants + configure layer, arc scatter geometry), particles in Solaris (SOP level sim, rotate matrix per-strand, CD by age, LOP import, emissive material with display color prim var, widths attribute), render settings & AOVs (path trace samples, limits, depth of field, motion blur, LPE tags, cryptomatte, Nuke compositing workflow).
 
 ### Key Steps
-[PENDING EXTRACTION]
+**USD & Scene Graph:**
+- All paths must start with `/`; `$OS` = current node name in expressions
+- Same path on two nodes = opinion layering; second input overrides first (useful for animation+lookdev merge)
+- Name SOP at SOP level → recognized by Solaris as mesh name; Path SOP attribute overrides name
+- Path prefix in SOP import/create: organize as `/ENV/ground/geo`, `/assets/hero/rubber_toy`
+- geometry context and stage context are separate; SOP import or SOP create bridge them
+
+**Scene Assembly Workflow:**
+- SOP create: step inside → full SOP network → output node specifies what's brought to LOPs
+- SOP import: reference existing SOP network via path; faster but less flexible
+- Merge preferred over chain for clean left-to-right top-down organization
+- Camera: always add camera path to Karma render settings node immediately
+- USD render rop: single frame or sequence; delegate must match render settings engine
+
+**Stage Manager:**
+- Hold S → select object → release S → transform gizmo; or use T/E/R keys
+- Ctrl+D = duplicate; Ctrl+G = group; Insert = move pivot; use underscores in group names
+- Multiple stage managers stacked = multiple layout versions (disable to switch)
+- Performance: preview directly from stage manager node, not from end of chain
+
+**Materials:**
+- Material library → double-click inside → karma material builder → step inside
+- Material path prefix: `ENV/ground/materials`; autofill materials to batch-expose slots
+- Material linker: drag material (left) onto geometry path (right); exclusion list available
+- Quick surface material: prototyping only; needs assign material node for actual assignment
+- AMD material X library: download from cogwheel in material catalog
+
+**Component Builder:**
+- Component geometry: 3 outputs — render (high quality), proxy (poly-reduce + leaf SDF mesh), seam proxy (shrink wrap for physics)
+- Component material: auto-assigns all materials to geometry; specify proxy+render path together with space separator
+- Geo variants: source mode=number → @GEO_VARIANT_INDEX in switch or seed parameters → procedural variation
+- Material variants: duplicate component material, rename to color name → set variant (mtl set)
+- Save to disk → use reference node with file pattern to bring USD asset into scene
+- Explore variants (spacing=0) + configure layer (flatten input stage) = required before instancer
+
+**Lighting:**
+- Physical sky: solar_altitude (sunset angle), solar_azimuth (direction), angular_size (shadow sharpness), atmospheric mode (volumetric scattering)
+- All light parameters: set or create before editing (gray = not written to USD)
+- Light tool: click = place on normal; S = place; hold ctrl = distance; ctrl+shift = intensity; B key cycles size axis
+- Light mixer: drag lights to list; solo/mute; LPE tag per light for split AOVs
+- Karma fog box: density (0.01 for subtle), scattering_phase (bias toward sun), shadow_density, tint; must contain full scene
+- Emissive: emission strength + `treat as light source` = yes (10× faster clean); zero-intensity real light to remove headlight
+
+**Instancer:**
+- Right input = geometry/USD prototypes; left input = scene chain; step inside for SOP scatter setup
+- Prototype primitive path: `/assets/geo/*` (slash star) to cycle through all components in group
+- Explore variants: mode=explore_variants, spacing=0 → configure layer (flatten input stage) → use in instancer
+- p-scale, N, orient, color all recognized by instancer (same as Copy to Points)
+- Scatter and align: add attributes to existing point clouds mode; min/max radius scale, max rotation
+
+**Ground/Water Materials (MTLX):**
+- World position: MTLX position → multiply (scale noise) → MTLX fractal 3D
+- UV coordinates: MTLX texture coordinates → multiply → fractal 3D (for trunk bark)
+- Animated noise: MTLX time → MTLX combine (float to vec3, second component only) → MTLX add to position
+- Height-to-normal: scale 0.03-0.1 (world units); connect to normal map node → geometry normal slot
+- Water: base=0, transmission=1, specular=1, roughness=0, IOR=1.33, depth=2 (world units)
+
+**Grass / Hair Material:**
+- Frosting cam HDA: traces camera path through animation; use bounding box to limit scatter region
+- Scatter + density noise attribute for patch distribution; clip below water level
+- Karma hair: melanin (color base), diffuse=1 (combine with standard surface), roughness
+- ID randomize: attribute wrangle `@id = @ptnum`; scatter inherits; prim var reader (int, "id") → random float → karma ramp constant
+
+**Tree + Variants:**
+- Labs tree trunk/branch generator: randomize seed via @GEO_VARIANT_INDEX in seed field
+- Leaf mesh: grid → linear taper (ramp for leaf shape) → bend; split by leaf group for separate material
+- Proxy for leaves: connectivity → extract centroid → VDB from particles → Convert VDB (poly) + merge with poly-reduced trunk
+- attribute delete + group delete before component output for clean import
+- Class attribute from Connectivity SOP → kept through attribute delete → prim var reader (int "class") for leaf color
+
+**Material Variation at Instances:**
+- Stage manager objects: material variation node, type=primitives and native instances, path=`/*/geo/render/leaf_geo`, use snippet `value = fit(random(index+seed),0,1,-0.1,0.1);`
+- Instancer objects: material variation node, type=point instances, path with `[*]` selector, use snippet with same expression
+- Multiple prim vars: add hue, gamma, etc. by duplicating prim var reader and adding more slots to material variation
+
+**Particles in Solaris:**
+- Build at SOP level for camera/scene reference access via LOP import node
+- Rotate matrix per leading point: `rotate(matrix, time, normalize(gaussian_rand(ptnum, 3)))`
+- Class attribute `@class = @ptnum` → inherited through copy to points and popnet; re-cache after adding
+- Clean export: attribute delete (keep CD, v, pscale/width); SOP import → `/effects/particle_sim`
+- Material: MTLX prim var reader (float3, "displayColor" — capital C) → emission color + emission=50
+- Render geometry settings: treat_as_light_source=yes; widths attribute (not pscale) in LOPs
+- pscale adjust channel: attribute wrangle `@widths *= chf("pscale_adjust")` + run on element of array attributes
+
+**Render Settings & AOVs:**
+- Camera path: update immediately after adding Karma render settings
+- Limits: reflection 4→2 (fine for most), SSS 0/1 (leaf quality vs speed), volume 0/1 (emissive volume contribution), color limit 10→50 for bright emissives
+- DOF: camera edit node → shift+F focus select → f-stop; instance velocity blur for particles
+- AOV list: combined_diffuse, combined_glossy, combined_emission, combined_volume, visible_lights (for treated-as-light emissives), subsurface, AO, albedo, cryptomatte (material name)
+- LPE tag: set or create on each light → "Split per LPE tag" in AOV
+- Depth + fog box: disable karma fog box during depth render (fog fills entire depth with noise)
+- Nuke composite: D-noise per pass → shuffle all → grade per layer → merge; diffuse+glossy+emission+volume+SSS = beauty
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **SOP Create / SOP Import**: bridge SOP↔LOP; SOP create preferred (more options, output node)
+- **Stage Manager**: hand placement; S+select workflow; Ctrl+D/Ctrl+G; physics via seam proxy; Enter/Escape to enter/exit
+- **Material Library**: container for karma material builders; material path prefix; autofill materials
+- **Karma Material Builder**: MaterialX shader; step inside; standard surface node; emission; subsurface; specular roughness
+- **Material Linker**: batch assign materials to geometry; exclusion list
+- **Assign Material**: explicit path assignment; strength override; vexpression mode for procedural assignment
+- **Component Builder**: auto-generates component output+geometry+material chain; variants via geo/material variant sets
+- **Component Geometry Variants**: source mode=number; @GEO_VARIANT_INDEX expression; switch to cycle geometry
+- **Set Variant**: choose variant from geo or mtl set; can chain for geo+material combos
+- **Explore Variants**: spacing=0 for overlap; configure layer (flatten input stage) required before instancer
+- **Instancer**: point instances; prototype primitive path; pscale/N/orient attributes all recognized; material variation type=point instances path `[*]`
+- **Layout LOP**: layout asset gallery; place/paint/delete modes; less flexible than stage manager+instancer
+- **Karma Physical Sky**: atmospheric mode; solar_altitude/azimuth/angular_size/exposure
+- **Light Tool**: S+click diffuse/specular/shadow mode; B=resize; ctrl=distance; ctrl+shift=intensity
+- **Light Mixer**: drag lights to list; solo/mute; attribute step; LPE tag
+- **Karma Fog Box**: density; scattering_phase; shadow_density; tint; scale to contain entire scene
+- **Render Geometry Settings**: primitive path filter; treat_as_light_source; per-object render settings override
+- **Karma Render Settings**: path_trace_samples; limits (reflection/SSS/volume/color); dicing; camera path
+- **Camera Edit**: focus distance via shift+F viewport click; f-stop; depth of field
+- **Material Variation**: type=primitives_and_native_instances or point_instances; path + star; use snippet mode
+- **USD Prim Var Reader**: var_name (e.g. "displayColor", "class", "hue"); signature (float/float3/int); fallback_value
+- MTLX nodes: position, multiply, fractal_3D, remap, time, combine, add, ramp_constant, color_correct, texture_coordinates
+- @GEO_VARIANT_INDEX: expression inside component geometry (source mode=number) for procedural geo variants
+- `random(index)` + `fit(v,0,1,min,max)` in use snippet for material variation expressions
+- Labs tree trunk/branch generator: randomize seed, noise intensity, branch length/radius ramp
+- Connectivity SOP → Extract Centroid (over pieces, point elements) → VDB from Particles for leaf proxy
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — requires prior Houdini SOP knowledge; beginner-friendly for artists with Houdini fundamentals; production-ready techniques throughout
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini (any modern, H19.5+); Labs tree tools require SideFX Labs installation; AMD material X library requires download; some features (material variation node, explore variants) added in H20+
 
 ### Tags
 [PENDING EXTRACTION]
