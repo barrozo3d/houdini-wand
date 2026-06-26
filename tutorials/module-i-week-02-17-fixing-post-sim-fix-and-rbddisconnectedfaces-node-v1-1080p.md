@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=R-ay-5fX_Os
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, post-sim, glass, disconnected-faces, blend-shapes, destruction, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-17-fixing-post-sim-fix-and-rbddisconnectedfaces-node-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,61 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Post-sim finalization: RBD Disconnected Faces node progressively reveals fractured glass faces over time (delete-connected hides interior faces until they're exposed by breaking); Blend Shapes trick between two Time Shifts smooths out a jittery wood break; final merge of glass/wood/metal/collider with materials and colors.
 
 ### Summary
-[PENDING EXTRACTION]
+10m44s finishing lesson for the Week 2 bus stop project. Covers: splitting geometry by name attribute into metal/glass/wood streams; RBD Disconnected Faces node (set to "delete connected") for progressive glass crack reveal; blending two frozen simulation frames with Blend Shapes + animation + Switch to fix a jarring wood jitter at break moment; final merge of all components with materials/colors and flipbook preview.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Split Geometry by Name**
+- Delete by expression: `name == "big_metal"` → removes the heavy metal (already handled)
+- Split node: `name == "glass"` → separates glass stream; assign glass shader
+- Split node: `name == "wood"` → separates wood stream
+
+**2. RBD Disconnected Faces (Glass Crack Reveal)**
+- Node: RBD Connect Disconnected Faces (after glass split)
+- Set to "smooth shade" display mode to see effect properly
+- "Delete connected" option: interior faces hidden when fragments are touching; visible faces appear as glass cracks/breaks
+- Result: glass looks intact at start, cracks progressively appear as fragments separate over time
+
+**3. Wood Jitter Fix (Blend Shapes Trick)**
+- Problem: wood breaks with a jarring jolt/bounce at the break frame
+- Solution: isolate the problematic frame range (e.g., frames 41–44) and blend through it smoothly
+- Time Shift A: `$FSTART = 41`, "clamp to last" → holds frame 41 (state just before break)
+- Time Shift B: `$FSTART = 44`, clamp off → plays from frame 44 onward (state just after break settles)
+- Blend Shapes: blend between Time Shift A and Time Shift B; animate blend value 0→1 over frames 41–44
+- Animation editor: set blend curve to linear (remove ease-in/ease-out)
+- Switch: `$F > 44` → after frame 44, switch back to normal sim; before 44, use blended result
+- Result: smooth transition through the break moment, no pop/jolt
+
+**4. Final Assembly**
+- Unpack collider geometry → Add Normals → Subdivide → color black
+- Assign colors per material: metal = gray, glass = glass shader, wood = brown, small metal = blue
+- Merge glass + wood (blend-fixed) + metal bits + collider → out_final
+- Flipbook/preview full sequence
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Delete SOP by Expression** — `name == "big_metal"` etc.; filter by name attribute per geometry stream
+- **RBD Connect Disconnected Faces** — hides interior (connected) faces of glass; "delete connected" = progressive crack reveal as fragments separate
+- **Time Shift SOP** — freeze/clamp to specific frame for blend shapes trick
+- **Blend Shapes** — interpolate between two geometry states; animate blend value 0→1
+- Animation editor: linear interpolation (remove default ease curves)
+- **Switch SOP** — `$F > 44` expression to revert to normal sim after blend window
+- **Unpack SOP** → **Normal SOP** → **Subdivide** — finalize collider geo for render
+- Principal Shader → glass preset for glass visualization
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, post-sim, glass, disconnected-faces, blend-shapes, destruction, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-02-15-starting-the-post-sim-setup-v1-1080p1.md (post-sim setup)
+- module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md (point deform step)

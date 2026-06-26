@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=oZh_MAnZyaQ
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, post-sim, point-deform, rbd-deform-pieces, destruction, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,45 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Post-sim deformation: RBD Deform Pieces node bends the pre-fracture metal mesh to follow simulated fractured proxy (replacing manual For-Each capture loops); Point Deform bends the unbroken glass pane. Both require Divide SOP to subdivide for deformation resolution. Cluster attribute isolates each structural section so only relevant sim pieces drive each part of the metal.
 
 ### Summary
-[PENDING EXTRACTION]
+5m15s lesson. Introduces the new RBD Deform Pieces node (H18.5+) which dramatically simplifies per-piece mesh bending that previously required a complex For-Each capture/deform loop. Metal pre-fracture is subdivided with Divide (brick polygons, 0.05 size) then fed into RBD Deform Pieces with "match proxy by attribute" enabled (cluster attribute keeps each structural section self-contained). Glass is deformed using standard Point Deform with a Time Shift on the rest frame (frame 1).
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Metal — RBD Deform Pieces**
+- Input 0 (left): pre-fracture metal mesh (non-fractured render geometry)
+- Input 1 (right): sim output (fractured animated proxy pieces)
+- First subdivide metal with Divide SOP → Brick Polygons mode, size 0.05 → adds dense geometry for bending fidelity
+- RBD Deform Pieces settings: rest frame = 1; "match proxy by attribute" = on; use cluster attribute
+- Cluster attribute = pre-defined sections (each bar/panel is its own cluster) so only its own sim pieces drive it
+- Tweak deformation amount (up to ~0.2) to taste
+
+**2. Glass — Point Deform**
+- Glass panel is unbroken; it needs to flex slightly to follow the metal collision
+- Divide glass mesh (Brick Polygons, 0.05) for deformation resolution
+- Point Deform: input 0 = rest glass, input 1 = sim-animated fractured pieces (driver), input 2 = Time Shift at frame 1 (rest pose of driver)
+- Plug Time Shift into 3rd (rest) input of Point Deform
+- Result: glass follows sim animation, may flex slightly but doesn't intersect
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **RBD Deform Pieces** (H18.5) — bends render mesh per-piece following simulation proxy; replaces For-Each capture loop; inputs: (0) mesh to deform, (1) sim result; "match proxy by attribute" = cluster
+- **Divide SOP** → Brick Polygons mode, polygon size 0.05 → adds dense geo for bending
+- **Point Deform** — deforms mesh following driver geometry motion; inputs: (0) rest geo, (1) animated driver, (2) rest driver via Time Shift frame 1
+- **Time Shift** — set to frame 1, "clamp to range" off → provides rest pose for Point Deform
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, post-sim, point-deform, rbd-deform-pieces, destruction, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-02-15-starting-the-post-sim-setup-v1-1080p1.md (setup step)
+- module-i-week-02-17-fixing-post-sim-fix-and-rbddisconnectedfaces-node-v1-1080p.md (next: disconnected faces + wood fix)

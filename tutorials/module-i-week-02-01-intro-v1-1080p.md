@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=G1JI3ACUZN4
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, destruction, glass, metal, wood, plasticity, course-intro, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,34 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only — Week 2 RBD bus stop destruction with mixed materials (metal/glass/wood), RBD Material Fracture, plasticity for soft constraints, and two separate simulations.
 
 ### Summary
-[PENDING EXTRACTION]
+1m41s intro for Module I Week 2. Bus stop destruction project: metal frame, glass panels, and wood benches all destroyed together. Key new tools introduced: RBD Material Fracture node for glass and wood fracture, plasticity (H18) for soft metal constraints that bend/creak/pop instead of springing back. Two simulations: first the heavy metal, then glass and wood driven by the metal result.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Project: bus stop with metal frame + glass + wood bench
+- RBD Material Fracture node: generates glass and wood fracture patterns
+- Plasticity (H18 feature): soft constraints that plastically deform — metal bends and stays bent, creaks/pops
+- Pipeline: Sim 1 (heavy metal frame) → use metal result to drive Sim 2 (glass + wood)
+- Focus: mixing RBD materials and their interaction in a single destruction sequence
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **RBD Material Fracture** — fractures based on material type (glass/wood patterns)
+- **Plasticity** (H18) — constraint property for permanent plastic deformation (metal bending)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (context video)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, destruction, glass, metal, wood, plasticity, course-intro, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-02-15-starting-the-post-sim-setup-v1-1080p1.md (post-sim setup continuation)
+- module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md (deforming metal/glass post-sim)
+- module-i-week-02-17-fixing-post-sim-fix-and-rbddisconnectedfaces-node-v1-1080p.md (RBD disconnected faces + wood fix)

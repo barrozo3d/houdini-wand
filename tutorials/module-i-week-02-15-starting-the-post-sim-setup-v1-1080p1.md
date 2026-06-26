@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=XFOd1dy92Eg
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, post-sim, object-merge, destruction, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-02-15-starting-the-post-sim-setup-v1-1080p1/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Post-sim network setup: creating a dedicated geometry node ("post_sim") and object-merging all required simulation outputs (fractured cache, pre-fracture metal, unbroken glass, collider) into one place for deformation and finalization.
 
 ### Summary
-[PENDING EXTRACTION]
+2m13s lesson covering the organizational step of post-sim setup. Creates a null after the simulation cache, then a new geometry node "post_sim" with Object Merges of: (1) sim output (fractured animated geometry), (2) pre-fracture metal (for Point Deforming), (3) unbroken glass (for deforming to follow sim), and (4) collider geometry. Sets up the input infrastructure for the deformation steps that follow.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Drop null after sim cache → named anchor point
+2. Create new geometry node "post_sim"
+3. Inside: Object Merge the sim cache output (gets all animated fractured bits)
+4. Object Merge pre-fracture metal geometry (non-fractured, will be point-deformed)
+5. Object Merge unbroken glass (will follow sim animation via Point Deform)
+6. Object Merge collider geometry (needed for final composite)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Null** — named cache anchor after simulation
+- **Object Merge** — reference other nodes by path; avoids long wires across network
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, post-sim, object-merge, destruction, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-02-01-intro-v1-1080p.md (project intro)
+- module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md (next step: deform pieces)
+- module-i-week-02-17-fixing-post-sim-fix-and-rbddisconnectedfaces-node-v1-1080p.md (RBD disconnected faces)
