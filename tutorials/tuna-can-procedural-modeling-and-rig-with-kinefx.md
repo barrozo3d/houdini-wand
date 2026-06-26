@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=hHLH7pr_eZo
 author: cgside
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [kinefx, procedural-modeling, rigging, bone-deform, capture-proximity, sweep, quadremesh, polyfill, animation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tuna-can-procedural-modeling-and-rig-with-kinefx/
 frame_count: 4
 ---
@@ -33,27 +33,74 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedural tuna can modeling (line → Sweep cap, QuadRemesh inset interior, staircase lid via point-number-divide P.y + pscale pattern → Skin, body from Sweep+PolyExtrude) + KineFX rigging with two systems: Bone Deform / Capture by Proximity for soft lid animation, and Capture Packed + point-transform copy for rigid cap following the lid.
 
 ### Summary
-[PENDING EXTRACTION]
+13m21s tutorial by cgside. Full procedural workflow for a tuna can with two-part KineFX rig. Modeling: line-based Sweep creates the cap profile; QuadRemesh builds the smooth interior inset panel; lid uses a mathematical staircase pattern (point_number/2 for Y-offset, point_number-1/2 for pscale) to drive concentric curves that skin into the stepped lid geometry. Body is built from unshared-edge Sweep + PolyExtrude with primcol-based selection. Rigging: lid uses KineFX Bone Deform with Capture by Proximity on a resampled curve rig; animation drives rotation via `fit(time, 0.1, 0.35, 0, 1)` with nonlinear remap. Cap uses Capture Packed (rigid); its transform is copied from the animated lid rig point using `getpointtransform` / offset correction / `setpointtransform`.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**Modeling: Cap**
+1. Line at Z-axis center → **Sweep SOP** (ribbon mode, columns, end caps = grid, adjust roundness + scale) → Resample → Fuse → Smooth → base cap shape
+2. Select desired section with small expression iterating over points → **PolyExtrude** → **QuadRemesh** (symmetry X, edge flow = Edge not Face — face = mess) → Smooth → Thickness → Smooth → Subdivide → Soften normals
+
+**Modeling: Interior Panel**
+3. From QuadRemesh output: group n-chair (unshared) edges, promote to edge group → **PolyFill** → **Extrude** (inset) → **Circle from Edges** on that group → Extrude → Blast → PolyFill (quads) → Bevel → extrude outer edge (to close gaps on subdivision)
+
+**Modeling: Lid (staircase)**
+4. Create 10 points (5 levels × 2); apply staircase math:
+   - `P.y offset = int(ptnum/2) * amplitude` (pairs: 0,0,1,1,2,2,3,3,4,4)
+   - `pscale = int((ptnum-1)/2) * scale_factor` (offset by 1 so pairs start at pt1,pt2, then pt3,pt4…)
+5. Copy concentric circles to these 10 points → **Skin SOP** → staircase lid profile
+6. Smooth → group center prims → PolyFill center (quadrilateral grid) → Bevel, Subdivide, Soften normals
+
+**Modeling: Body**
+7. Group unshared edges from can top → Convert to Line → **Sweep SOP** (square tube profile) → scale axes
+8. Output `primcol` attribute to cycle and target each prim by expression for selective extrude
+9. Extrude → Mirror → PolyBevel → Subdivide
+
+**Modeling: Bottom**
+10. Take extrude front seam line → Convert to Line → Sort by Proximity (interior prim = 0) → Blast → PolyFill (watery light grids) → Blast curve → Match size → Subdivide → Merge
+
+**Rigging: Lid (Bone Deform, soft)**
+11. From lid geometry: manipulate bounding box min/max → build polyline → **Resample** (high count for smooth deform) → **Reverse** (change deformation start direction) → **Initialize Transforms** → **Rig Doctor**
+12. **Capture by Proximity**: tune drop-off and max point influence
+13. Animation Wrangle: `curveU` (0→1 ramp along curve) → angle parameter → `float anim = fit(time, 0.1, 0.35, 0.0, 1.0)` → remap (nonlinear, jumps to final fast) → `rotate(localxform, angle * anim, {1,0,0})` → `setpointtransform(0, ptnum, newxform)` → offset so only tip rotates
+14. Lid opening: same setup, animate offset linearly, small angle, negate for opposite direction
+
+**Rigging: Cap (Capture Packed, rigid)**
+15. Create single point at bounding box max position → **Rig Doctor** → Initialize transforms + name → **Capture Packed** (single-point-to-geo binding)
+16. **Copy transform from animated lid rig**: `matrix animXform = getpointtransform(1, 0)` → compute offset between initial positions → add offset to result → `setpointtransform(0, ptnum, correctedXform)` → cap rigidly follows lid
+17. **Bone Deform** (lid geo): input1=rest geo, input2=rest skeleton, input3=animated skeleton → merge with animated cap
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Sweep SOP** — line → surface; ribbon mode, grid end caps, roundness control
+- **QuadRemesh SOP** — remesh to quads; symmetry X; edge flow = Edge (not Face)
+- **Circle from Edges** — create circle from selected edge loop
+- **Skin SOP** — skin concentric curves into a surface (staircase lid)
+- **PolyFill SOP** — fill boundary with polygon grid
+- **Capture by Proximity** (KineFX) — attach geo points to nearest skeleton points
+- **Bone Deform** (KineFX) — deform geo using skeleton animation; inputs: rest geo, rest rig, animated rig
+- **Rig Doctor** (KineFX) — initialize transforms and name attributes on skeleton
+- **Capture Packed** (KineFX) — rigid-body attachment of packed geo to single skeleton point
+- `getpointtransform(input, ptnum)` — fetch world transform matrix from point
+- `setpointtransform(input, ptnum, matrix)` — set world transform on point
+- `fit(time, t0, t1, 0, 1)` — map time range to 0-1 animation value
+- `primcol` attribute — assign primitive color/ID for expression-based group selection
+- `int(ptnum/2)` pattern — staircase Y offset for lid modeling
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19+
 
 ### Tags
-[PENDING EXTRACTION]
+[kinefx, procedural-modeling, rigging, bone-deform, capture-proximity, sweep, quadremesh, polyfill, animation, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- procedural-growth-with-kinefx-and-the-labs-tree-tools.md (KineFX for procedural vegetation)
+- mops-motion-operators-for-houdini-part-3.md (matrix/transform math underlying KineFX)
+- model-a-procedural-flower-houdini-tutorial.md (procedural SOP modeling)

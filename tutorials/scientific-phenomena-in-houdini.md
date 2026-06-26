@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=g-EDNX2uaXo
 author: Houdini.School
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [volumes, procedural, simulation, clouds, ocean, planetary, fractals, fluid, vfx, intermediate-advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/scientific-phenomena-in-houdini/
 frame_count: 4
 ---
@@ -33,27 +33,33 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course trailer only — Houdini.School class by Kate Sagarar (NPC Toronto; Umbrella Academy, The Boys, Raised by Wolves, The Witcher): using real scientific phenomena as the foundation for VFX builds — clouds/storm systems (volumetric sim), procedural planetary system (astronomy integration), fractals/nature's patterns (procedural shapes from fungi to cosmos), deep-sea ecosystems (hydrothermal vents, marine simulation), nebula formations (scientific structure visualization), and spacecraft/flight physics (buoyancy, aerostatic/aero simulations).
 
 ### Summary
-[PENDING EXTRACTION]
+1m57s promotional trailer. Instructor Kate Sagarar (VFX artist, NPC Toronto; credits: Umbrella Academy, The Boys, Raised by Wolves, The Witcher) teaches how science informs and improves VFX builds. Each session covers the real science then applies it in Houdini. Topics: cloud types and storm systems (volumetric simulation), procedural planetary system based on astronomy, fractal/procedural shapes from smallest to cosmic scale, deep-sea ecosystem visualization (geo-hydrothermal vents), nebula structure visualization, buoyancy/dynamics for spacecraft/flight (aerostatic and aero simulations).
 
 ### Key Steps
-[PENDING EXTRACTION]
+- (Trailer only — no step-by-step content)
+- Module topics: storm clouds (volumes), solar system (procedural/astronomy), fractals/patterns, ocean/marine ecosystems, nebula formations, flight simulation (buoyancy + dynamics)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Volume/VDB simulation (cloud, storm)
+- Procedural geometry (planetary system, fractals, nebula)
+- Fluid/ocean simulation (marine ecosystem)
+- Dynamics (buoyancy, aerostatic/aero flight)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19+
 
 ### Tags
-[PENDING EXTRACTION]
+[volumes, procedural, simulation, clouds, ocean, planetary, fractals, fluid, vfx, intermediate-advanced]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- noise.md (noise systems for procedural phenomena)
+- rain-effect-in-houdini-houdini-tutorial.md (natural particle effects)
+- tutorial-pink-bubble-part-1.md (fluid/surface effects)
