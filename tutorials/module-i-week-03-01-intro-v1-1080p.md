@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=QkzF0SC76qY
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, destruction, car-crash, metal, glass, constraints, course-intro, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-03-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,32 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only — Week 3 of a 2-week car crash RBD project: organizing complex car geometry, isolating metal bending pieces, wheel suspension with constraints.
 
 ### Summary
-[PENDING EXTRACTION]
+1m37s intro for Module I Week 3. Two-week car crash project: animated car slides sideways and slams into a post. Week 3 = metal setup (geometry organization, selecting pieces for plasticity bending, efficiency optimization, wheel constraints). Week 4 = rest of simulation (glass, other elements). Wheels use control constraints + soft constraints for suspension bounce and free spin around axis.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Complex car geometry → select/isolate pieces for RBD simulation
+- Metal bending: plasticity/soft constraints for permanent deformation
+- Wheels: controlled with constraints (spin on axis, suspension bounce via soft constraints)
+- Week 3: metal only. Week 4: rest of sim (glass, etc.)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Plasticity / soft constraints — wheel and metal bending
+- Control constraints — wheel spin axis
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (context video)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, destruction, car-crash, metal, glass, constraints, course-intro, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-02-01-intro-v1-1080p.md (Week 2 bus stop project)
+- module-i-week-04-01-intro-v1-1080p.md (Week 4: continuation of car crash)

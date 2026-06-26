@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=hEcmhhNlpzY
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [volumes, vdb, sdf, fog-volume, velocity-field, vdb-reshape, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-03-01-introduction-to-volumes-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,62 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Introduction to Houdini volumes: Houdini native volume (ISO Offset) vs VDB from Polygons (sparse, more efficient); fog VDB vs surface/SDF VDB; storing velocity vectors in volumes; visualization with Volume Slice, Volume Trail, VDB Visualization Tree; VDB boolean union for geometry blending; VDB Reshape SDF for dilation/swelling.
 
 ### Summary
-[PENDING EXTRACTION]
+15m11s intro lesson (VFX School Week 3, module-i) introducing volume concepts before cloud simulation. Covers native Houdini volumes vs VDB (efficiency = VDB only stores non-empty voxels); fog VDB vs surface/SDF VDB; storing velocity as a vector inside a volume (for simulation); multiple visualization methods (Volume Slice, Volume Trail, point generation from volume, VDB Viz Tree); boolean merge of VDBs to blend intersecting geometry; VDB Reshape SDF dilate for swelling/grouping use case.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Houdini Volume vs VDB**
+- ISO Offset: creates native Houdini volume — bounding box filled with voxels (even empty space has voxels) → memory-inefficient
+- VDB from Polygons: sparse grid — only non-empty voxels stored → much more efficient
+- In pyro/simulations: simulation output is Houdini native volume; can convert to VDB afterward
+- Rule of thumb: for static geometry/non-sim work, always use VDB
+
+**2. Fog VDB vs Surface VDB (SDF)**
+- VDB from Polygons has two outputs: distance VDB (SDF) and fog VDB
+- Turn off distance VDB, turn on fog VDB → looks like a cloud/smoke (density field)
+- SDF / Surface VDB: stores signed distance values (negative inside, positive outside) → looks like a surface; useful for geometry work and boolean operations
+- Name attribute in Volume Wrangle: `density` for fog, custom names for SDF
+
+**3. Storing Vector Attributes (Velocity)**
+- VDB from Polygons → add Point Velocity node (adds v velocity vector) → Volume Slice to visualize density slice
+- Volume Trail: visualize velocity vectors as trails (requires points + volume inputs)
+- VDB Visualization Tree: shows volume extent/padding
+- Scatter points from volume → display as trails = clean velocity visualization
+
+**4. VDB Boolean Union (Geometry Blending)**
+- Merge two geometry pieces (intersecting) → VDB from Polygons → they blend together seamlessly, with hollow interior
+- Convert VDB back to polygons (Convert SOP) → clean mesh, hollow interior preserved
+- Open geometry (holes): Fix with Poly Fill or Poly Extrude (Add Caps) before VDB conversion
+
+**5. VDB Reshape SDF (Dilate)**
+- VDB Reshape, type SDF → Dilate: inflates/swells the volume outward by specified amount
+- Use case: creating selection groups from geometry by swelling (avoids polygon-based proximity artifacts)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **ISO Offset** — native Houdini volume from polygons (legacy, avoid for static work)
+- **VDB from Polygons** — sparse VDB; fog output = density field; distance output = SDF
+- **Volume Wrangle** — write code on volume voxels; access voxel attribute by name (`density`)
+- **Volume Slice** — cross-section visualization of a volume field
+- **Volume Trail** — velocity visualization via trail geometry (requires points + volume)
+- **VDB Visualization Tree** — shows volume extent and padding bands
+- **Convert SOP** — convert VDB → polygons; creates clean closed mesh
+- **Poly Fill / Poly Extrude** — close holes in open geometry before VDB conversion
+- **VDB Reshape** → SDF type → Dilate: swells volume outward; useful for proximity grouping
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[volumes, vdb, sdf, fog-volume, velocity-field, vdb-reshape, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- intro-to-houdini-volumes---beginner-course.md (deeper dive into volumes/VDB, Voxyde VFX)
+- module-i-week-03-01-intro-v1-1080p.md (same week, project intro)
