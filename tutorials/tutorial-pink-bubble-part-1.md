@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ypJL4PXxQpg
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [vellum, balloon, grains, ripple-solver, pop, scatter, pscale, vellum-pack, wind, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-pink-bubble-part-1/
 frame_count: 4
 ---
@@ -33,27 +33,90 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Two-tier Vellum bubble system inside a sphere: large bubbles (Vellum Balloon, wobble stiffness=100) scattered from VDB interior; small spherical grains (Vellum Ring, 55K) scattered from polygon surface, with boundary-based deletion to avoid inter-penetration; Vellum Pack/Unpack for clean constraint merging; ripple solver on outer sphere driven by 2-particle POP network (activation `$F < 100`, conservation=0.8 for wave decay). All cached, split into big (deforming geo) and small (instanceable) streams.
 
 ### Summary
-[PENDING EXTRACTION]
+25m54s tutorial by Alexander Eskin. Builds a complex "pink bubble" scene: large deforming Vellum Balloon spheres scattered inside a VDB shell, plus 55K small Vellum Ring grain-spheres on the surface, inside a collider sphere with zero gravity + wind (upward, noise-driven). Vellum Pack → merge → Vellum Unpack avoids the tedious manual constraint merging. Solver: uncheck "Assume Uniform Radius in Green Collision" for mixed-scale grains. Pop Drag on 25% random group for variation. Ripple Solver on outer sphere surface driven by a 2-particle POP emitter (birth only < frame 100, conservation=0.8 for wave decay). Time Shift for loop offset. Part 2 is Octane rendering.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Big Bubbles (Vellum Balloon)**
+- Sphere (scale=2, polygon, freq=64) → **Peak SOP** (slight stretch so interior scatter doesn't intersect outer surface)
+- **VDB from Polygons** (type=distance-to-fog, reduce voxelsize) → **Scatter** (65 pts, pscale=0.1)
+- **Attribute Adjust Float** (x2): Attribute=pscale, multiply by noise; element size 1.3 + offset 0.2 for variation
+- **Blast**: delete `pscale < 0.2` (remove tiny barely-visible bubbles)
+- Source sphere (smaller) → polygon type, higher frequency → **Copy to Points** on 65 points
+- **Vellum Configure Balloon**: cloth constraint multiplier=**100** (allows wobble/jiggle)
+
+**2. Small Bubbles (Vellum Ring / Grains)**
+- Scatter 55,000 pts on sphere surface (no relax iterations)
+- pscale base=0.01; two Attribute Adjust Float nodes with different sizes/offsets for size variation
+- Blast tiny particles
+- **Group SOP**: input1=small points, input2=big spheres (with slight scale boost to 110%); group type=points; boundary object mode → marks points inside spheres as "blaster"
+- **Blast** group → remove interior small points from big bubble volumes
+- **Fuse** with radius attribute → remove any remaining intersecting duplicates
+- Name group: `bubble_small`
+- **Vellum Configure Ring**: uncheck "particle size" checkbox → restores pscale
+
+**3. Vellum Pack / Merge (Correct Method)**
+- **Vellum Pack** on each stream → **Merge** packed geo → **Vellum Unpack**
+- (Avoids manual separate merge of geo+constraints streams)
+- Connect to **Vellum Solver**
+
+**4. Vellum Solver Settings**
+- Advanced tab → Green Collision → uncheck **"Assume Uniform Radius"** (required for mixed-scale grains/bubbles)
+- Gravity tab: set to **0** (floating bubbles)
+- Add **Vellum Wind Force**: velocity=0.15 (upward), noise amplitude=0.3, swirl size=0.25, pulse length=2
+- Collider: sphere from SOP (Object Merge node) → "Purple Sphere Collider" label
+- **Pop Drag** (two nodes): one for all points; one targeting random 25% group (`drag` group, distance=4)
+
+**5. Cache**
+- File Cache: select attributes pscale, velocity, sphere_points only (skip rest)
+- 150 frames
+- **Time Shift** to add 50-frame offset (loop from middle of cache for cleaner start)
+
+**6. Split Streams for Render**
+- Separate `bubble_small` group (points) → can be rendered as **instances** (no deform, just transform)
+- Big bubble geometry → must render as **deforming geometry** (Vellum Balloon shape changes)
+- Outputs: `out_spheres_big`, `out_spheres_small`
+
+**7. Ripple Solver on Outer Sphere**
+- Outer sphere branch: output1=rest geo, output2=deforming geo
+- **Attribute Transfer**: transfer "mask" attribute (radius-limited point on sphere → point attribute=1.0 near emission source, 0 elsewhere)
+- **Point VOP**: import mask → scale displacement=0.25 → apply to N direction
+- **Ripple Solver** SOP: input1=rest, input2=deform; check "use input animated displacement"
+- **Pop Network** as ripple source: sphere surface in input1; birth rate=2 points; life=0.1; activation=`$F < 100` (stop emitting after frame 100)
+- Ripple Solver: conservation=**0.8** (waves decay over time — at 1.0 they persist forever)
+- Decrease displacement for elegance; animate activation for controlled wave emission
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Peak SOP** — push surface outward to avoid interior scatter intersection
+- **VDB from Polygons** (distance-to-fog) → **Scatter** inside volume
+- **Attribute Adjust Float** — multiply pscale by noise (element size, offset for variation)
+- **Group SOP** — boundary object mode (second input = volumes/spheres)
+- **Vellum Configure Balloon** — cloth constraint multiplier=100
+- **Vellum Configure Ring** — uncheck "particle size" for pscale preservation
+- **Vellum Pack** → **Merge** → **Vellum Unpack** — clean constraint pipeline (preferred over manual merge)
+- Vellum Solver → Advanced → uncheck "Assume Uniform Radius in Green Collision"
+- **Vellum Wind Force**: velocity, noise amplitude, swirl size, pulse length
+- **Pop Drag**: group-based, distance parameter
+- **Ripple Solver SOP**: input1=rest, input2=animated; conservation=0.8; "use input animated displacement"
+- POP Network: activation=`$F < 100`, birth rate=2, life=0.1 → minimal ripple source emitter
+- **File Cache** — select attributes: pscale, velocity, sphere_points
+- **Time Shift** — offset cached animation start frame
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, balloon, grains, ripple-solver, pop, scatter, pscale, vellum-pack, wind, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-pink-bubble-part-2.md (Octane render of this bubble setup)
+- tutorial-lipstick-part-2-flip-sim.md (FLIP + surface tension for fluid droplets)
+- module-ii-week-01-02-introduction-to-vellum-v1-1080p.md (Vellum fundamentals)

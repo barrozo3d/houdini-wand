@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=uztbmUElafA
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [rendering, octane, glass, dispersion, specular-material, instancing, lighting, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-pink-bubble-part-2/
 frame_count: 4
 ---
@@ -33,27 +33,45 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Octane render setup for pink bubble scene: Object Merge into OBJ-level geo nodes, Octane Specular material for glass bubbles, reversed normals on small sphere geo, reversed-normals box as background env, circle area light (uncheck camera/general vis), pink transmission + dispersion on big bubble.
 
 ### Summary
-[PENDING EXTRACTION]
+10m13s render tutorial by Alexander Eskin (Part 2 of Pink Bubble series). Sets up an Octane renderer for the bubble scene from Part 1. Uses Octane Specular material (glass-like). Small bubble spheres were just points — fix by Copy to Points of actual sphere geo (scale=2, polygon). Reverse normals on small spheres for correct reflections. Background: large reversed box (blast two open faces). Light: 15m circle area light, uncheck camera/general visibility in Octane. Pink transmission color on big bubble + small dispersion for rainbow effect.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **OBJ context setup**: Create geo nodes: bubble_base (base sphere), bubbles_big (Vellum big bubbles), bubbles_small (small Vellum grains); Object Merge each from the simulation geo
+2. **Camera**: Null at Z=6 → Camera parented; square aspect ratio (1:1 not 16:9); focal length=100
+3. **Octane Render Target** (in render out context): path tracing kernel; environment=texture; image=Asus; rest default
+4. **Background box**: large box → reverse normals → blast 2 bottom/open faces → bevel + subdivide; apply background Octane material
+5. **Apply shaders**: background → box; bubble_base → base sphere; big/small → Octane Specular
+6. **Light**: area light (circle shape), 15×15m; Octane tab → uncheck camera visibility + general visibility; transmission=5, power=6
+7. **Small bubbles fix**: small bubble stream = just scattered points (no geometry) → Copy to Points: copy source sphere (scale=2, polygon type, higher freq) → apply Octane Specular material → **Reverse SOP** on source sphere → correct reflections
+8. **Big bubble material**: Octane Specular → Transmission tab → color=pink, saturation=0.5; enable Dispersion (small value for subtle rainbow)
+9. Fake shadows: enable in Octane material → faster renders without real shadow ray cost
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Object Merge** — bring simulated geo into render OBJ-level nodes
+- Camera: square aspect ratio; focal length=100; Z=6
+- **Octane Render Target** — path tracing; environment=texture; image=Asus
+- **Octane Specular material** — for glass/bubble look; transmission + dispersion controls
+- **Reverse SOP** — flip normals on small bubble sphere geo for correct Octane reflections
+- **Copy to Points** — copy sphere geo (polygon, scale=2) onto small bubble point cache
+- Area light (circle, 15m) — Octane tab → uncheck camera/general visibility
+- Transmission color=pink, saturation=0.5; Dispersion = small value for rainbow effect
+- Fake shadows checkbox — speeds up Octane renders
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[rendering, octane, glass, dispersion, specular-material, instancing, lighting, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-pink-bubble-part-1.md (Vellum balloon + grains + ripple solver setup)
+- tutorial-lipstick-part-3-rendering.md (Octane rendering setup by same author)
+- tutorial-glass-tiles.md (Mantra glass/transparency rendering by same author)
