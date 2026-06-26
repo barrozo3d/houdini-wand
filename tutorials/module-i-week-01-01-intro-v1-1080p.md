@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ZYFlDsFBxhA
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, destruction, fracture, debris, pyro, course-intro, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-01-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,32 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course introduction — no hands-on content. Overview of Module 1 project: street scene explosion with RBD boolean fracture → debris sourcing from simulation velocity/size → pyro sourced from edge cracks.
 
 ### Summary
-[PENDING EXTRACTION]
+1m38s intro video for Week 1, Module 1 of The VFX School Renaissance Course. Describes the project pipeline: boolean-based fracture for interesting shapes, RBD simulation, debris secondary simulation sourced from the RBD velocity and object size, and a tertiary pyro simulation sourced from crack edges. No technical instruction — context only.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Project: street explosion with RBD rubble, secondary debris, and pyro layering
+- Fracture method: boolean system (not Voronoi) for variety of big/small shapes
+- Debris sourced from RBD velocity + size
+- Pyro sourced from edge cracks at speed threshold
+- Goal: layered FX approach (primary RBD → secondary debris → tertiary pyro)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+None (intro overview only)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner (context video)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, destruction, fracture, debris, pyro, course-intro, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-01-01-your-first-houdini-project-v1-1080p.md (Week 1 first project)
+- module-i-week-01-09-setting-the-active-attribute-v1-1080p.md (same course, Week 1)

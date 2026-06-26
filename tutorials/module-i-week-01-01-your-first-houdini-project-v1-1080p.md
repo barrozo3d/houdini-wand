@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Mq1snWFUBj0
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [beginner, ui, navigation, project-setup, contexts, solaris, karma, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-01-01-your-first-houdini-project-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,51 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini first-launch orientation: viewport navigation, context hierarchy (OBJ > SOP > Stage/LOP), parameter window, and project folder setup for H18.5.
 
 ### Summary
-[PENDING EXTRACTION]
+9m34s intro lesson from The VFX School Renaissance Programme Vol.1 (H18.5). Covers the absolute basics: viewport navigation controls (Alt+LMB tumble, MMB pan, RMB zoom), the context hierarchy (OBJ, SOP, Chops, Stage/LOP), switching contexts, parameter window usage (floating vs corner P key), dropping geometry nodes, and setting up a project folder + saving the hip file.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Viewport Navigation**
+- Alt + LMB: tumble/orbit
+- Alt + MMB: pan
+- Alt + RMB: zoom
+- Ctrl + RMB: reset/back
+- View display toolbar: smooth shaded, wireframe overlay, point/vertex normals, lighting quality
+
+**2. Context Hierarchy**
+- OBJ context: objects (geometry nodes, cameras, lights) — move/rotate/scale only
+- SOP context (inside a geo node): surface operators, geometry modification, simulations
+- Press I to go in, U to go up, or click breadcrumb path
+- Stage (LOP): USD-based scene composition; new workflow in H18.5 for lighting, materials, Karma rendering
+
+**3. Parameter Window**
+- Default floating panel or press P to get floating corner panel
+- Tip: close floating panel, use P to show compact corner window
+
+**4. Project Setup**
+- File → New Project: sets project name + save location; creates standard subfolders (geo, render, tex, etc.)
+- File → Save As: use `$JOB` to navigate to project folder; save .hip there
+- This structure is critical for portable projects and Houdini variable resolution
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Sphere** — first geometry node placed to demonstrate OBJ/SOP workflow
+- **Grid** — second object placed alongside sphere
+- `$HIP`, `$JOB` — Houdini path variables for current hip file location and project root
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[beginner, ui, navigation, project-setup, contexts, solaris, karma, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-01-01-intro-v1-1080p.md (course intro overview)
+- module-i-week-01-09-setting-the-active-attribute-v1-1080p.md (same course continuation)
