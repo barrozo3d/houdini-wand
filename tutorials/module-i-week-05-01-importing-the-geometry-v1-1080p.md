@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Fo3HaNq9f8M
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [alembic, import, time-shift, flip-fluids, pop-fluid, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-05-01-importing-the-geometry-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,36 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Import Alembic animated horse geometry into Houdini, convert to polygons, and slow down time with Time Shift (×0.3, float frames via `$FF`) for use as a POP fluid source.
 
 ### Summary
-[PENDING EXTRACTION]
+2m42s setup lesson (VFX School Module I Week 5: horse POP fluid). Creates new project, imports Alembic horse animation, drops Convert SOP to get access to polygons, then uses Time Shift with `$FF` (float frame variable) and multiplier 0.3 to slow animation to 30% speed — critical for proper fluid sourcing with substeps.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. New project → horse_pop_fluid scene
+2. Alembic SOP: import horse.abc; press P → browse to file
+3. Convert SOP → select polygons (unlocks geometry access from Alembic container)
+4. Time Shift: turn off integer frames; multiply `$FF` by 0.3 → slows animation to 30%
+   - `$FF`: float frame (includes sub-frame values between integers, unlike `$F`)
+   - Required so the slow animation is smooth when solver cooks at sub-frame intervals
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Alembic SOP** — import animated .abc file; Press P to set file path
+- **Convert SOP** → select polygons — unlock geometry from Alembic container for manipulation
+- **Time Shift SOP** — `$FF * 0.3` — use `$FF` (float frame) not `$F` for sub-frame accuracy; "integer frames" = off
+- `$FF` vs `$F`: `$FF` includes fractional frame values for substep evaluation
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[alembic, import, time-shift, flip-fluids, pop-fluid, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-04-01-introduction-to-particles-v1-1080p.md (Week 4 particles intro)
+- module-i-week-06-01-introduction-to-grains-v1-1080p.md (Week 6: grains)

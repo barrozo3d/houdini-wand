@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=XPDsqVutqDw
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [grains, vellum, vellum-configure-grain, points-from-volume, substeps, attraction, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-i-week-06-01-introduction-to-grains-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,64 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Vellum grains introduction: Vellum Configure Grain fills geometry volume with points (pscale = radius, grain_size = diameter), feeds into Vellum Solver. Key distinction from particles: grains enforce non-interpenetration (stack/pile) and support attraction (clumping). Requires minimum 4–5 substeps for stability; adjust attraction_weight for clumping vs repulsion.
 
 ### Summary
-[PENDING EXTRACTION]
+9m56s intro lesson (VFX School Module I Week 6: zombie grains). Imports FBX zombie, creates grain setup from volume. Covers: Vellum Configure Grain (create points from volume, pscale/grain_size attributes, `grain` attribute for solver identification), Poly Fill for non-watertight geometry, Vellum Solver (no constraints required for basic grains), grain vs particle difference (interpenetration prevention → pileup), substep requirement (≥4–5 for stability), attraction/repulsion parameters inside solver HDA.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Import + Setup**
+- FBX import: File → Import → FBX; press P → scale to 0.1 for human-scale
+- Object Merge into a new geometry node (avoids long wires)
+- Time Shift → right click → delete channels → freeze at frame 1 (no animation needed)
+
+**2. Vellum Configure Grain**
+- Enable "create points from volume" → fills mesh interior with grain points
+- Grain size: diameter of each grain (e.g. 0.1); pscale = radius (half grain size)
+- Creates attributes: `pscale` (radius), `grain_size` (diameter), `mass`, `grain` (flag attribute for solver)
+- `grain` attribute = tells Vellum Solver to treat these as grains (not cloth or other constraint type)
+- Non-watertight geometry fix: add Poly Fill (single polygon / endgons mode) before Configure Grain
+
+**3. Sprite Display**
+- Vellum Configure Grain applies a sprite material per point → each looks like a lit sphere but it's just a billboard image
+- Not the actual grain render; turn off if confusing
+
+**4. Vellum Solver**
+- Plug Configure Grain output into Vellum Solver geometry input; constraints input can be empty (no constraints)
+- Enable ground position → collide with floor
+- Grain difference from particles: grains know their pscale and enforce non-overlap → they pile up instead of passing through each other
+
+**5. Substeps (Critical)**
+- Grains require minimum 4–5 substeps for stability (explode/bounce without enough substeps)
+- More substeps = slower but more stable; most grain instability is solved by increasing substeps
+
+**6. Attraction/Repulsion (Clumping)**
+- Inside Vellum Solver HDA: right-click → allow editing of content → enter
+- Vellum Solver → Advanced → Grain Collisions: attraction weight, repulsion parameters
+- `attraction_weight` close to 1 → grains stick together and clump
+- Use for organic grain effects (sand clumping, etc.)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **FBX Import** (File → Import → FBX) — import character for grain fill geometry
+- **Poly Fill** — fills holes in non-watertight geometry; use "single polygon" (endgon) mode
+- **Vellum Configure Grain** — "create points from volume" option; grain_size (diameter); pscale = radius; `grain` attribute
+- **Vellum Solver** — grain simulation; substeps (min 4–5); ground position toggle; no constraints required
+- `attraction_weight` (inside Vellum Solver advanced → grain collisions) — clumping strength
+- `grain` attribute — flags points as grains for Vellum Solver type detection
+- `pscale` — radius (half of grain_size diameter)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[grains, vellum, vellum-configure-grain, points-from-volume, substeps, attraction, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-05-01-importing-the-geometry-v1-1080p.md (Week 5 geometry import)
+- module-ii-week-01-01-basic-bullet-sim-v1-1080p.md (Module II Week 1)
