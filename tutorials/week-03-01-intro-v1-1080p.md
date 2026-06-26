@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=OnBsOG4SwIU
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5+"
+tags: [rbd, bullet, cars, scatter, scatter-align, attribute-from-pieces, constraints, suspension, bridge, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/week-03-01-intro-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,41 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only. Week 3 of Manhattan Bridge Destruction: cars simulated with Bullet; groups for wheels/bodies (suspension); Scatter Align + Attribute From Pieces (H18.5) to place cars on road with correct direction + variation; procedural intersection-removal; soft + twist constraints for suspension sim.
 
 ### Summary
-[PENDING EXTRACTION]
+1m22s week intro by VFX School Archive. Week 3 of Manhattan Bridge Destruction: vehicle simulation. Topics previewed: import multiple vehicle variations; group into wheels vs bodies for suspension simulation; Scatter Align SOP (H18.5) to place cars on road pointing in correct direction with variation; Attribute From Pieces SOP (H18.5) for attribute propagation; procedural system for removing intersecting cars; quick initial sim to settle cars against each other (initial state for main sim); soft constraints + twist/angular constraints for wheel/body suspension behavior.
 
 ### Key Steps
-[PENDING EXTRACTION]
+*(Week introduction — see other week-03-xx lessons for specifics)*
+
+Week 3 pipeline:
+1. Import vehicle variations → group wheels and bodies
+2. Scatter Align SOP (H18.5) — place cars on road with correct orientation + variation
+3. Attribute From Pieces SOP (H18.5) — propagate attributes across vehicle pieces
+4. Procedural intersection removal system
+5. Quick pre-sim to settle/press cars against each other
+6. Soft constraints + twist (angular) constraints → suspension behavior
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Scatter Align SOP** (H18.5) — scatter with alignment direction + variation
+- **Attribute From Pieces SOP** (H18.5) — attribute propagation from pieces
+- Bullet solver for vehicle simulation
+- Soft constraints + twist/angular constraints for suspension
+- Groups: wheels vs bodies (separate constraint types)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5+
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, bullet, cars, scatter, scatter-align, attribute-from-pieces, constraints, suspension, bridge, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- week-01-01-intro-v1-1080p.md (week 1: bridge destruction overview)
+- week-02-01-intro-v1-1080p.md (week 2: cables Bullet+Vellum)
+- week-04-06-cull-by-speed-v1-1080p.md (week 4: rain particles on bridge)

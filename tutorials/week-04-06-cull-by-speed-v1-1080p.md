@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=UFrvmv0rwQI
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [particles, rain, vex, wrangle, cull, velocity, speed, file-cache, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/week-04-06-cull-by-speed-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,46 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Cull exploding particles from cached rain sim using speed threshold: `float speed = length(@v); if (speed > ch("speed_cull")) { removepoint(0, @ptnum); }` — removes particles going faster than ~10-20 units/frame (collision artifacts) while keeping normal rain fall.
 
 ### Summary
-[PENDING EXTRACTION]
+7m0s VFX School Archive module. Part of Week 4 rain particle sim on the Manhattan Bridge. Loads cached point sim, adjusts viewport display (pixels or small points, size 1.5). Discovers points flying upward from bridge geometry collision artifacts. Fix: Attribute Wrangle after file cache reads velocity length as speed; `removepoint` for points exceeding threshold (ch("speed_cull") ≈ 10-20). Flipbook preview shows rain interacting with bridge, bouncing off road, with filtered-out erroneous flying particles.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Load from disk**: File Cache → enable "Load from Disk" → fast playback (points only)
+2. **Viewport display**: press D → Geometry → Particles display=Pixels (tiny); or Points, size=1.5
+3. **Diagnose problem**: some particles fly upward (collision with bridge geometry produces wrong velocity)
+4. **Cull by speed** (Attribute Wrangle after cache):
+   ```vex
+   float speed = length(@v);
+   if (speed > ch("speed_cull")) {
+       removepoint(0, @ptnum);
+   }
+   ```
+   - `length(@v)` → scalar speed from velocity vector
+   - `ch("speed_cull")` → creates slider; set to ≈10-20 to remove only fast/exploding points
+   - Normal rain ≈ 0–10 speed; exploding artifacts ≈ 100–160+
+5. **Flipbook** preview — confirm normal particles preserved, flying artifacts removed
+6. Note: if adding motion blur at render, worth checking that no streaks from culled particles remain visible
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- File Cache: "Load from Disk" checkbox for fast cached playback
+- Viewport: D → Geometry → Particle display = Pixels or Points; point size = 1.5
+- **Attribute Wrangle**: `float speed = length(@v);` + `removepoint(0, @ptnum);` based on speed threshold
+- `ch("speed_cull")` → slider parameter for threshold (≈10-20 units/frame for rain)
+- `length(@v)` → extracts scalar speed from velocity vector
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+[particles, rain, vex, wrangle, cull, velocity, speed, file-cache, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- week-03-01-intro-v1-1080p.md (week 3: cars on bridge)
+- rain-effect-in-houdini-houdini-tutorial.md (different rain tutorial with POP + VDB collision)
