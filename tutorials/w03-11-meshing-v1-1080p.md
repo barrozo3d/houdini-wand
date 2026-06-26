@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=H56dPbE3S2E
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [flip, meshing, vdb, particles, attribute-transfer, color-ramp, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/w03-11-meshing-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,41 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+FLIP particle mesh: VDB from Particles (voxel 0.025, radius scale 1) → VDB Smooth SDF → Convert VDB to polygon. Color ramp from viscosity attribute on particles → Attribute Transfer to mesh.
 
 ### Summary
-[PENDING EXTRACTION]
+7m49s VFX School Archive module. Part of a chocolate-over-ice-cream FLIP sim tutorial. Meshes cached FLIP particles using the VDB workflow: VDB from Particles (requires small voxel size ~0.025 and radius scale ~1 — don't go below 1.5 without smoothing planned) → VDB Smooth SDF → Convert VDB. Colors particles by viscosity attribute (ramp, range 0–250, brown tones for different chocolate viscosities) → Attribute Transfer to mesh. Flipbook preview confirms different viscosity materials behave differently (yellowy one thicker, brown one flows faster).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **VDB from Particles** — connect FLIP particle cache; reduce voxel size (try 0.1 → 0.025); set radius scale ≈1; small voxel = high resolution but slow
+2. **VDB Smooth SDF** — connect after VDB from Particles → smooths rough particle surface; simple default settings work
+3. **Convert VDB** — converts SDF to polygon mesh; default settings auto-generate geometry
+4. **Color ramp on particles (separate stream)**:
+   - Color SOP: mode = "From Attribute"; attribute = viscosity; range 0–250 (max velocity seen in sim)
+   - Set ramp colors: brown (0.69, 0.024, 0) at position 0, white at 0.45, yellowy-brown (0.525, 0.227, 0) at higher position
+5. **Attribute Transfer** — source: colored particles; target: polygon mesh; distance=small, blend threshold=0.25 → transfers Cd to mesh
+6. **Flipbook** — 100 frames to preview result; compare different viscosity flows in same shot
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **VDB from Particles**: voxel size=0.025; radius scale=1 (don't go too low without smoothing)
+- **VDB Smooth SDF**: default settings; connect after VDB from Particles
+- **Convert VDB**: default polygon output
+- **Color SOP**: mode=From Attribute; attribute=viscosity; range 0–250; ramp with brown/white/yellowy-brown
+- **Attribute Transfer**: source=colored particles; target=mesh; distance low; blend threshold=0.25
+- Flipbook for preview before full render
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+[flip, meshing, vdb, particles, attribute-transfer, color-ramp, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- w03-04-adding-viscosity-v1-1080p.md (same course, adding viscosity to FLIP)
+- w04-11-viscosity-and-surface-tension-v1-1080p.md (same course, advanced viscosity+surface tension)
+- tutorial-lipstick-part-2-flip-sim.md (FLIP meshing with VDB + Particle SDF approach)

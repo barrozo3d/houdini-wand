@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=S4VjdIf5BKQ
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [flip, fluid, viscosity, surface-tension, meshing, vdb, rendering, arnold, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/w04-01-introduction-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,38 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only. Week 4 of VFX School Tabletop Course: strawberry colliding with milk. FLIP fluid with animated emitter, viscosity + surface tension, VDB meshing, Arnold render (strawberry SSS + noise roughness + transparency; milk SSS shader).
 
 ### Summary
-[PENDING EXTRACTION]
+1m42s week introduction by VFX School Archive. Week 4 of the "Tabletop Course": simulates a strawberry colliding with poured milk. Topics previewed: animated FLIP emitter geometry; viscosity and surface tension (important for milk); VDB meshing for high-quality milk surface; Arnold renderer with complex strawberry shader (subsurface, transparency, noise-driven roughness map, SSS) and milk SSS shader. Pre-made animated strawberry geometry provided to students.
 
 ### Key Steps
-[PENDING EXTRACTION]
+*(Week introduction — no step-by-step content; see other w04-xx lessons for specifics)*
+
+Topics covered in Week 4:
+- Animated FLIP fluid emitter (milk pouring into scene)
+- Strawberry collision geometry (pre-animated, updated mid-course)
+- Viscosity and surface tension for milk fluid behavior
+- VDB meshing for fluid geometry
+- Arnold shading: strawberry (SSS, transparency, noise roughness) + milk (SSS)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- FLIP Fluids with viscosity + surface tension
+- VDB from Particles → Convert VDB for mesh
+- Arnold renderer: SSS material, transparency, noise-driven roughness
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+[flip, fluid, viscosity, surface-tension, meshing, vdb, rendering, arnold, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- w04-11-viscosity-and-surface-tension-v1-1080p.md (same week, viscosity and surface tension detail)
+- w03-04-adding-viscosity-v1-1080p.md (previous week viscosity intro)
+- w03-11-meshing-v1-1080p.md (previous week FLIP meshing)
