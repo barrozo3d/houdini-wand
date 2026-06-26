@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Ps6ZOKEdDos
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [glass, tiles, animation, orient, quaternion, attribute-transfer, pop, trails, material, blend-material, rendering, mantra, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-glass-tiles/
 frame_count: 4
 ---
@@ -33,27 +33,88 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Glass tile wall animation: bevel+subdivide box tile → Copy to Points on a grid wall → "rotor" float attribute driven by Attribute Transfer from a noisy grid → animate orient rotation with `qmultiply` quaternion per-frame → Blend Material (tiles → emissive → glass) driven by the same rotor ramp; particle Trail SOP rendered as strands with incandescent shader for sparkle effect.
 
 ### Summary
-[PENDING EXTRACTION]
+25m6s tutorial by Alexander Eskin. Builds an animated glass tile wall that flips from opaque tiles to glowing emissive to transparent glass in a wave. Tile: Box + PolyExtrude + Bevel + Subdivide. Wall: Copy to Points on grid (128×128 pts, P_scale control). "Rotor" attribute driven by Attribute Transfer from a Mountain-noised grid (undisplaced transfer + Attribute Copy trick). Orient rotated each frame via `@orient = qmultiply(@orient, quaternion(radians(amount), axis))`. Blend Material uses rotor+ramp for three-phase wave (tiles → emissive + color → glass), Fresnel ramp for highlight. POP trail particles rendered as Mantra strands with incandescent material, curveU-based alpha.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Model the Tile**
+- Box 0.1 × 0.5; color primitive 5 red (reference side)
+- PolyExtrude prim 4 by small amount; inset by fair amount
+- **Bevel** (critical for glass refraction to look good) → **Subdivide** (crease mode, 2 divisions)
+
+**2. Build the Wall**
+- Grid 10×2.5, XY, 128×128 rows/cols, points only (no polygons needed)
+- **Copy to Points** (check "pack and instance" for performance) → tiles are huge
+- Add `pscale` attribute to scale them down
+
+**3. Animation Attribute "Rotor"**
+- Add attribute `rotor` = 0 on tile wall points; set to 1 as target
+- Driving grid: large grid with some rotation, different axis
+- **Mountain SOP** on grid (noise along vector only; X axis excluded to keep flat)
+- **Attribute Transfer** from noised grid → copies displaced position
+- **Attribute Copy**: takes undisplaced points + displaced points → copies "rotor" attribute back to original (clean points, noisy attribute)
+- Animate **Attribute Transfer** node's time over timeline for wave motion
+
+**4. Orient Rotation**
+- In Attribute Wrangle (runs each frame):
+  `@orient = qmultiply(@orient, quaternion(radians(chramp("amount", @rotor)), {0,0,1}));`
+- Change axis vector to change rotation axis; B key to bend/view orientation
+- Rotor attribute controls how much each tile has rotated (0→full rotation)
+
+**5. Render Setup**
+- New geo node for render: import tiles, set instance type = "instance or compatible" (not "packed") for faster load
+- Background: Grid 5×5 XY, "floor" shader
+- Light: disk shape, size=0.5, spread=0.5
+
+**6. Materials**
+Three materials: tiles (opaque), trails (strand), background
+- **Blend Material** for tiles:
+  - Input 1: tiles shader (opaque)
+  - Input 2: Standard Surface emissive → color via `chramp("color", @rotor)` (green→blue→white) plugged into emission color; Fresnel ramp plugged into perpendicular color for edge highlight
+  - Input 3: glass (100% transmission, slight roughness)
+  - Blend driven by `@rotor` attribute + ramp (wave front: tiles → emissive; wave back → glass)
+
+**7. Trails (POP + Trail)**
+- Source grid: XY plane, rotated, offset slightly; 5×0.5 scale
+- **POP Network**: ~10 points emitted; velocity = `{5, 4, 2}` with 0 variance; life = 7s ± 2s
+- Add `id` attribute (keep); delete velocity + unused attributes
+- Trail SOP: 20 points trailing; add Time Shift (+500 frames offset for pre-roll)
+- Color: `@Cd = chramp("color", @id)` (float to vector → color ramp: green, blue, red)
+- Alpha: `@Alpha = chramp("alpha", @curveU)` (direction reversed so head is bright)
+- Curve View attribute (0→1) needed for curveU
+- Render as Mantra strands: type=0 subdivisions; trail width controlled directly
+- **Trails material**: Incandescent (emissive); `Cd` → color, `Alpha` → alpha; intensity=4
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **PolyExtrude** — inset + extrude tile face
+- **Bevel** — smooth edges for glass refraction
+- **Subdivide** — crease mode, 2 divisions
+- **Copy to Points** — instance/pack mode for performance; `pscale` attribute for size
+- **Mountain SOP** — noise driven along vector (X excluded); animatable
+- **Attribute Transfer** — animated to drive wave motion; transfers `rotor` value from noised grid
+- **Attribute Copy** — copies attribute from displaced to undisplaced points (attribute-only transfer)
+- `@orient = qmultiply(@orient, quaternion(radians(ch("amount")), axis))` — per-frame orient rotation; `chramp` for amount-per-tile
+- **Blend Material** — 3-way blend (tiles → emissive → glass) driven by `@rotor` + ramp
+- `chramp("color", @rotor)` / `chramp("alpha", @curveU)` — ramp color/alpha lookups
+- **POP Network** — source + solver; velocity, life, id attribute
+- **Trail SOP** — N=20, Time Shift offset for pre-roll
+- **Mantra incandescent material** — strand rendering; Cd+Alpha attributes
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[glass, tiles, animation, orient, quaternion, attribute-transfer, pop, trails, material, blend-material, rendering, mantra, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-glass-donut.md (glass material by same author)
+- mops-motion-operators-for-houdini-part-3.md (quaternion math for orient rotation)
+- tutorial-lipstick-part-3-rendering.md (material blending, glass-like rendering)

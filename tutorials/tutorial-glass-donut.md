@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=j5Ew_6-W8DE
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [glass, torus, noise, flow-noise, rendering, mantra, hdri, material, subdivision, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-glass-donut/
 frame_count: 4
 ---
@@ -33,27 +33,43 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Torus with loopable anti-aliased flow noise displacement → PolyExtrude for double-layer thickness → glass material (transmission=1, reflection=1, diffuse=0) → HDR dome lit from two hand-painted gradients (After Effects) → Mantra render with displacement-based subdivision to fix polygon interpolation artifacts.
 
 ### Summary
-[PENDING EXTRACTION]
+13m28s tutorial by Alexander Eskin. Creates a glass donut (torus) with animated, loopable noise displacement. Flow noise (anti-aliased) cycles from 0→1 over 300 frames for a seamless loop. Two-layer extrusion thickens the surface. Glass shader: full transmission + reflection, zero diffuse. Lighting uses two custom gradient HDRIs (painted in AE with circle feather, color grading, Video Copilot Color Vibrance). Mantra subdivision solves dark polygon artifacts by setting min edge length = 0, max subdivisions = 2, disabling screen-space adaptive.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Torus**: Torus SOP → orientation X, size 0.5 × 0.15, rows 400, columns 800
+2. **Noise**: Point Noise SOP → type = Anti-Aliased Flow Noise; roughness 0.6, octaves 4, frequency 4, amplitude 0.025; add noise to P
+3. **Loopable animation**: promote flow parameter → animate 0→1 over frames 1→301 at 30 FPS, linear; move end keyframe to 301 so frame 1 ≠ frame 300 (avoids bump)
+4. **Thicken**: PolyExtrude 0.05, enable "Open Back" → double-layer glass wall
+5. **Camera**: 120mm focal length
+6. **Glass material**: Material Builder → Standard Surface; diffuse=0, reflection=1, roughness=0, transmission=1
+7. **HDRI creation (After Effects)**: 4000×2000px; solid + circle gradient (feathered out); Exposure adjustment layer; colorize with Video Copilot Color Vibrance (hue shifts with intensity). Two variants: circular and horizontal stretch
+8. **Dome light**: Dome Light SOP → load HDRIs; resolution 1920×1080; rotate to find best angle; create 2 lights with complementary color contrast
+9. **Fix dark artifacts**: In Mantra → Displacement → minimum edge length = 0, maximum subdivisions = 2; disable screen-space adaptive → polygon subdivision before render fixes surface interpolation breakup
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Torus SOP** — orientation X, size 0.5×0.15, rows 400, cols 800
+- **Point Noise SOP** — Anti-Aliased Flow Noise; roughness=0.6, octaves=4, freq=4, amplitude=0.025; flow param promoted for animation
+- **PolyExtrude** — 0.05 offset, "Open Back" enabled
+- **Standard Surface material** — diffuse=0, reflection=1, roughness=0, transmission=1 (glass)
+- **Dome Light** — 2 custom gradient HDRIs; adjust rotation + color for contrast
+- **Mantra displacement settings** — min edge length=0, max subdivisions=2, screen-space adaptive OFF
+- Flow noise loop: animate flow 0→1 over frames 1–301 (30 FPS); frame 300 and frame 1 differ by one step to avoid loop seam
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[glass, torus, noise, flow-noise, rendering, mantra, hdri, material, subdivision, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-glass-tiles.md (glass material + complex scene by same author)
+- tutorial-lipstick-part-3-rendering.md (rendering glass-like materials)
+- tutorial-pink-bubble-part-1.md (transparent/refractive surfaces)
