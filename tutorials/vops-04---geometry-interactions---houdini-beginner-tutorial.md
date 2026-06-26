@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=qDtKmbCDn3k
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [vops, geometry-interaction, distance, nearpoint, point-cloud, pcopen, intersect, attribute-transfer, particles, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/vops-04---geometry-interactions---houdini-beginner-tutorial/
 frame_count: 6
 ---
@@ -58,27 +58,99 @@ frame_count: 6
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+VOPs deep-dive on geometry-to-geometry communication: Import Point Attribute (single point lookup), Distance (float scalar for gradients), Nearpoint (closest point from multi-point input), Find Attribute Value (ID-based matching for shuffled point numbers), Minimum Position (closest position on primitive), XYZDist + Primitive Attribute (interpolated attribute from any primitive), Intersect (ray-cast for directional queries), PCOpen + PCFilter (smooth interpolated average from point cloud).
 
 ### Summary
-[PENDING EXTRACTION]
+44m22s VOPs Part 4 by Voxyde VFX. Six sections covering all major ways geometry can communicate with geometry in Houdini:
+
+1. **Distance & Import Point Attribute** — distance node for float gradient; import point attribute recap; turbulent noise on position for organic density source
+2. **Nearpoint** — nearest point number from multi-point second input; must combine with import point attribute to retrieve actual attributes
+3. **Find Attribute Value** — ID attribute pattern to handle shuffled point numbers; find attribute value searches second geometry; negative one return for missing points
+4. **Minpos, XYZDist, PrimUV** — minimum position for closest point on primitive; XYZDist for distance + primitive number + UV; primitive attribute for interpolated attribute retrieval
+5. **Intersect** — ray-cast direction-controlled query; fix minimum position failures on non-flat surfaces; ray must be long enough (multiply by large value)
+6. **PCOpen & PCFilter** — smooth interpolation across point clouds; search radius + number of points balance; PC Filter retrieves averaged attribute; compare: nearpoint (snap) vs PCFilter (smooth)
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Distance & Import Point Attribute**
+- Add node outside VOP (single point at origin) → second input
+- Inside VOP: **Import Point Attribute** (file=second input, ptnum=0, attribute=P) → position of target point
+- **Distance** node: input1=P (own position), input2=imported position → float distance
+- Plug distance → Fit Range → Cd for gradient visualization
+- Fit Range reverse (dest min=1, max=0) → black at center, white at edges
+- Add Turbulent Noise (3D, simplex) to P before distance → organic/irregular source shape
+- Animate noise offset with time → animated organic gradient source for sims
+
+**2. Nearpoint**
+- Multiple points as second input (scatter from same grid)
+- **Near Point** node: position=P, file=second input → returns closest point number (integer)
+- Plug result into Import Point Attribute ptnum → retrieve that point's attributes
+- Increase second-input scatter count for denser, more interesting pattern
+- Used to find closest agent/particle from a separate set of points
+
+**3. Find Attribute Value**
+- Problem: when second geometry has reordered/deleted points, ptNum no longer matches
+- **Solution: ID attribute** — before branching, add Attribute VOP → ptnum → Bind Export → integer → named "id"
+- This ID persists through blasts, sorts, simulations, etc. on either branch
+- **Find Attribute Value** node: file=second input, attribute type=integer, name=id, search value=own id (Bind "id")
+- Returns correct ptnum in second geometry even if reordered
+- Returns **−1** if no match found → use Compare (== −1) + If Block + Remove Point to handle unmatched
+- Particles have built-in `id` attribute for exactly this reason (point numbers change frame-to-frame)
+
+**4. Minimum Position, XYZDist, Primitive Attribute**
+- **Minimum Position**: file=second input, P=own position → returns closest point on any primitive (smooth, subdivision-independent)
+- Result: position on primitive surface; use in Mix to visualize travel path
+- Works regardless of primitive count — interpolates smooth result
+- **Limitation**: on non-flat/curved geometry, distance-closest ≠ directional-closest (see Intersect)
+- **XYZDist**: file=second input, P=own position → returns distance (float), primitive number (int), primitiveUV (vector)
+- **Primitive Attribute** node: file=second input, attribute name (P/N/V/any), plug prim number + UV → returns **interpolated** attribute value at that UV location
+- Always returns smooth average — same as Minpos for position but supports any attribute
+- Enable normal attribute on second geometry to retrieve interpolated normals for smooth transitions
+
+**5. Intersect**
+- **When to use**: Minimum Position fails on curved geometry (picks wrong side); need directional control
+- **Intersect** node: file=second input, ray origin=P (own position), ray direction=vector → find intersection
+- Ray direction: specify as {0,−1,0} for downward cast; must be **long enough** to reach geometry (multiply by 100 or 1000: `{0,-1,0}*100`)
+- Returns primitive number + primitiveUV → plug into **Primitive Attribute** to get interpolated result
+- Alternative: plug intersect result position directly into Mix for travel visualization
+- Use case: rain hitting terrain, particles projecting onto non-flat surface from above
+
+**6. PCOpen & PCFilter**
+- **When to use**: second input has only points (no primitives); need smooth/interpolated result
+- **PC Open** node: file=second input, P=own position; key parameters: **search radius** (imaginary sphere size) and **number of points** (how many from within radius to consider)
+- Returns handle integer (not a point number)
+- **PC Filter** node: handle from PC Open, channel=attribute name (P, N, v, temperature, etc.) → returns **averaged/interpolated** value from all points within radius
+- Effect: set `max points=1` → same as near point (snaps to individual); increase to 18+ → smooth interpolation retaining original shape
+- Performance: keep radius and max points as low as possible; 5M points → very sensitive; use minimum needed
+- Also: PC Find (retrieve point numbers from cloud), PC Get (grab specific attribute)
+- Vs Near Point: nearpoint snaps; PCFilter smoothly blends — prefer PCFilter for particle formations
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Import Point Attribute** (VOP) — file=input, ptnum, attribute name; manual ptnum for single point
+- **Distance** (VOP) — float scalar between two positions; combine with Fit Range + Cd
+- **Near Point** (VOP) — closest point number from second geometry; combine with import point attribute
+- **Find Attribute Value** (VOP) — search integer/float attribute by value; returns −1 if not found
+- ID pattern: Attribute VOP → ptnum → Bind Export → integer "id" (before branching)
+- **Minimum Position** (VOP) — closest position on primitive (smooth, interpolated)
+- **XYZDist** (VOP) — distance + prim number + prim UV from closest primitive
+- **Primitive Attribute** (VOP) — interpolated attribute at prim number + UV (any attribute name)
+- **Intersect** (VOP) — ray origin + direction → prim number + UV; direction must be long (multiply by 100+)
+- **PC Open** (VOP) — open point cloud; search radius + number of points parameters
+- **PC Filter** (VOP) — average attribute from opened point cloud; channel = attribute name
+- Particles: built-in `id` attribute stays consistent across frames (ptNum changes)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19+
 
 ### Tags
-[PENDING EXTRACTION]
+[vops, geometry-interaction, distance, nearpoint, point-cloud, pcopen, intersect, attribute-transfer, particles, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- vops-03---vector-operations---houdini-beginner-tutorial.md (Part 3: vector operations)
+- vops-02---random-noise---houdini-beginner-tutorial.md (Part 2: random and noise)
+- tutorial-heavy-chic-part-1.md (near point / VOP binding in production context)

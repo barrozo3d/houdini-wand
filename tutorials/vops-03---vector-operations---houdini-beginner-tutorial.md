@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=oT6qzs-Vffk
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [vops, vectors, cross-product, dot-product, normalize, particles, simulation, beginner-intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/vops-03---vector-operations---houdini-beginner-tutorial/
 frame_count: 4
 ---
@@ -48,27 +48,74 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+VOPs tutorial on the four core vector operations: Subtract (direction vector), Normalize (unit length for consistent speed), Length (scalar from vector), Cross Product (perpendicular vector for spinning/tornado effects), Dot Product (alignment angle −1 to 1 for snow/gradients), Reflect (bounce). Practical focus on combining these in particle simulations and geometry operations.
 
 ### Summary
-[PENDING EXTRACTION]
+31m12s VOPs Part 3 by Voxyde VFX. Four sections:
+1. **Subtract, Normalize, Length** — Create direction vectors with subtract; normalize for uniform speed; length for scalar from vector; interactive point via Add node + Import Point Attribute; turbulent noise for randomization; scale with multiply (vector must be first input).
+2. **Cross Product** — Perpendicular vector to plane formed by two inputs; Normal × Up vector = spinning-around-surface motion; tornado: Subtract(P, center) + Up → cross product + add upward offset; normalize subtract input; combine with curl noise + Mix.
+3. **Dot Product** — Compares alignment of two vectors; result −1 (opposite) to 0 (perpendicular) to 1 (same direction); Normal dot Up → snow/rain falloff gradient; Fit Range −1→1 → 0→1; ramp for stylized control; turbulent noise on position for organic edge; import point attribute for interactive target.
+4. **Reflect** — Bounces a vector off a plane normal; rarely used; usually cross product achieves same result more flexibly.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Subtract, Normalize, Length**
+- Create direction vector: Subtract → plug P into first input, promote second to tri-float constant (target position)
+- Interactive target: Add node outside VOP (single point) → plug as second input → Import Point Attribute inside VOP (file=second input, ptnum=0, attribute=P) → replace constant with result
+- Reverse subtract order with Shift+R to flip direction
+- **Normalize**: unit length 1 for all vectors → consistent particle speed regardless of distance
+- **Length**: float scalar from any vector; use for color (Fit Range), particle speed coloring
+- **Multiply**: scale vector magnitude (speed control); **vector MUST be first input** — if float is first, output becomes float (dotted wire warning)
+- Add turbulent noise (3D simplex) to subtract result before normalizing for randomized direction
+
+**2. Cross Product**
+- `cross(A, B)` → vector perpendicular to plane formed by A and B
+- Pattern: `Normal × {0,1,0}` (up vector) → vector spins around geometry surface
+- Swap second input to `{1,0,0}` or `{0,0,1}` → spins around different axis
+- In Pop Network: Cross Product inside Geometry VOP → plug into V → spinning particle effect
+- **Tornado setup**: Subtract(P, {0,0,0}) → Normalize → Cross Product with {0,1,0} → plug into V; add constant up-vector after cross product (Add) → upward spiral; scale with Relative Bounding Box for speed variation
+- Combine cross product with Curl Noise (4D) + Mix for organic fluid spiral
+- `Pop Axis Force` SOP exists but all its controls can be recreated in Geometry VOP for full flexibility
+
+**3. Dot Product**
+- `dot(A, B)` → scalar from −1 to 1; measures angle alignment
+- **Snow/rain effect**: dot(Normal, {0,1,0}) → faces pointing up = 1 (white), sides = 0, down = −1 (black)
+- Fit Range: source min=−1, max=1 → dest 0 to 1 for usable gradient
+- Import Point Attribute for interactive target point
+- Turbulent noise (3D simplex) added to P before dot comparison → organic/textured border
+- Squeeze fit range min/max for sharper contrast
+- Use in particle sims: dot(V, target direction) → how fast are particles going in a particular direction
+
+**4. Reflect**
+- `reflect(incident, normal)` — bounces incident vector off a normal plane
+- First input: direction vector (incident); second input: plane normal
+- Result: reflected direction (like light off a mirror)
+- Rarely needed in practice; cross product + mix usually gives more control
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Subtract** (VOP) — direction vector from B to A; Shift+R to reverse order
+- **Normalize** (VOP) — unit length 1; required before cross/dot product inputs
+- **Length** (VOP) — float scalar from vector; use for speed coloring or falloff
+- **Multiply** (VOP) — scale vector; **vector MUST be first input** (green input = vector output)
+- **Cross Product** (VOP) — perpendicular vector; normalize A first; B can be {0,1,0} for up
+- **Dot Product** (VOP) — alignment scalar −1→1; Fit Range source min=−1 after
+- **Reflect** (VOP) — bounce vector off plane; rarely used
+- **Import Point Attribute** — grab position/attribute from other geometry; ptnum=0 for single point
+- **Add SOP** (interactive point) + Import Point Attribute → interactive viewport handle
+- Pop Axis Force SOP — exists but Geometry VOP gives more control; prefer VOP approach
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19+
 
 ### Tags
-[PENDING EXTRACTION]
+[vops, vectors, cross-product, dot-product, normalize, particles, simulation, beginner-intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- vops-02---random-noise---houdini-beginner-tutorial.md (Part 2: random and noise)
+- vops-04---geometry-interactions---houdini-beginner-tutorial.md (Part 4: geometry interactions)
+- mops-motion-operators-for-houdini-part-3.md (advanced vector math: dot/cross/matrices/quaternions in VEX)
