@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=vQSQgkSvm8g
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [rbd, bullet, packed-geometry, dop, rigid-body-solver, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-01-01-basic-bullet-sim-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,56 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Basic Bullet RBD simulation two ways: (1) SOP-level via RBD Bullet Solver node (H18.5+ convenience wrapper), and (2) manual DOP network (RBD Packed Object + Rigid Body Solver + Gravity + Ground Plane + merge). Key requirement: geometry must be packed (Pack SOP) before entering a DOP bullet solver.
 
 ### Summary
-[PENDING EXTRACTION]
+7m21s intro to RBD bullet simulation (VFX School Module II Week 1). Demonstrates the same falling box sim two ways: quick SOP-level RBD Bullet Solver (H18.5 wrapper node, 2 nodes total) vs. manual DOP network approach. Explains why packed geometry is required (bullet works only with packed prims), how Pack SOP changes geometry representation (intrinsic packed transform attributes), and the standard DOP simulation pattern: object → solver → forces → ground → merge → output.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. SOP-Level RBD Bullet Solver (Quick Method)**
+- Box SOP → RBD Bullet Solver SOP → Ground Plane option inside node
+- Result: 2-node simulation — complete RBD with gravity + collision
+- H18.5+ wrapper; internally packs geometry and runs a full DOP under the hood
+
+**2. Manual DOP Network Method**
+- DOP network SOP → go inside
+- Rigid Body Solver (not ABD Solver) — always use this for Bullet; uses Bullet physics engine
+- RBD Packed Object → first input; set source = "first context geometry" → shows box
+- Error "no packed primitive types": geometry must be packed first
+- Pack SOP (before DOP input): changes geometry to 1 point / 1 prim / 1 vertex with packed intrinsic attrs
+- Packed geometry intrinsics: `packedfulltransform` and related — store position/rotation efficiently
+- Add Gravity DOP (force) + Ground Plane DOP → Merge → both into left input of Rigid Body Solver
+- DOP pattern: object → solver → gravity + ground → merge → output
+
+**3. Key Concepts**
+- Bullet requires packed geometry — never feed raw polygons to Bullet solver
+- Pack SOP compresses geometry for efficient collision calculation; Unpack SOP to access points/prims again
+- Geometry spreadsheet → Primitives → Intrinsic: shows packedfulltransform values
+- Merge input order: left/right matters (forces affect objects when wired correctly)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **RBD Bullet Solver SOP** (H18.5) — 2-node complete simulation; wraps full DOP internally
+- **DOP network** — manual approach; enter with double-click
+- **Rigid Body Solver** (DOP) — Bullet physics; always prefer over "ABD Solver" or "fracture solver"
+- **RBD Packed Object** (DOP) — geometry container for bullet; requires packed source
+- **Pack SOP** — packs geometry to single primitive; required before Bullet solver
+- **Unpack SOP** — restores access to points/prims after simulation
+- **Gravity** (DOP) — downward force (9.8)
+- **Ground Plane** (DOP) — infinite floor collider; left input of Merge
+- Intrinsic attr `packedfulltransform` — per-packed-prim transform matrix
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[rbd, bullet, packed-geometry, dop, rigid-body-solver, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-i-week-01-09-setting-the-active-attribute-v1-1080p.md (active attribute + RBD Configure)
+- module-ii-week-01-01-introduction-v1-1080p.md (Module II intro: Vellum)

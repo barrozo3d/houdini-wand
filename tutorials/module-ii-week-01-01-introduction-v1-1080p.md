@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Y00rlBFqpxQ
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18.5"
+tags: [vellum, cloth, soft-body, tetrahedral, grains, rest-blend, course-intro, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/module-ii-week-01-01-introduction-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,35 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Course intro only — Module II: Vellum module (all in one solver: cloth, string, hair, soft bodies, grains). Project: crocodile attack — tetrahedral soft body hunter + cloth + grains (post-sim collider).
 
 ### Summary
-[PENDING EXTRACTION]
+2m46s intro for Module II of the VFX School Renaissance program (Volume 2). Module focus: Vellum simulation — all solver types in one system (cloth, string, hair, tetrahedral soft bodies, grains). Project: crocodile attack sequence. Week 1 sets up: Vellum overview (quick cloth/grain/soft body/string intro), soft body of the human hunter using tetrahedral mesh (H17/18 feature), rest blend for soft body relaxation, cloth constraints for leather shoes.
 
 ### Key Steps
-[PENDING EXTRACTION]
+- Vellum advantages: fast + versatile; one solver for cloth/string/hair/soft body/grains
+- Project pipeline: soft body hunter + clothes in one sim → grains as a separate pass using sim result as collider
+- Tetrahedral soft bodies: new system for realistic volume-preserving soft body deformation
+- Rest blend: controls how geometry wants to relax back toward its rest shape during simulation
+- Cloth for shoes: high stiffness for leather-like cloth behavior
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Vellum Configure Cloth, Vellum Configure Grain — covered in upcoming lessons
+- Tetrahedral soft bodies — Vellum Configure Tet Soft Body (H17/18+)
+- Rest Blend — controls constraint rest length targeting during sim
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (context video)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18.5
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, cloth, soft-body, tetrahedral, grains, rest-blend, course-intro, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- module-ii-week-01-02-introduction-to-vellum-v1-1080p.md (Vellum quick overview)
+- module-ii-week-01-04-tetrahedral-soft-bodies-v1-1080p.md (tet soft bodies)
+- module-ii-week-01-06-updating-the-rest-blend-v1-1080p.md (rest blend)
