@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Ohj4ag8DZRo
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [sweep, weave, sine-wave, curveU, blend, attribute-transfer, hair, redshift, vellum, point-deform, intermediate-advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-soft-weave/
 frame_count: 4
 ---
@@ -33,27 +33,91 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedural weave from 2D sine waves on a line (curveU-based X/Y offsets with different frequencies, every-other-primitive Z-flip) → multiple Sweep SOPs (different radii/twists) → pscale animation via blending P between radius-0 and radius-N sweeps (lerp avoids spinning artifact) → Attribute Transfer from animated sphere drives blend → Mountain noise adds propagation variation → Point Deform on Vellum cloth grid for wind. Rendered in Redshift as hair (polygon strands → Hair mode, Global Hair distillation 8 steps).
 
 ### Summary
-[PENDING EXTRACTION]
+36m17s tutorial by Alexander Eskin. Builds a soft weaving fabric animation entirely from procedural SOP geometry (no simulation for the weave itself). Lines with CurveU-based sine-wave offsets create a weave pattern; alternating line direction prevents uniformity. Multiple Sweep SOPs (5 passes at different radii/twists) create strand variety. pscale grow animation via P lerp (not direct pscale on sweep — causes spinning); Attribute Transfer from animated sphere drives propagation blend. Third sweep (4× radius) enables 3-stage blend. Mountain noise on blend attribute. 1% random fuzzy strand group with Move Along Spline. Source variation via Mountain. Vellum wind animation via Point Deform on a simulated cloth grid. Redshift hair shader (much lighter than polygon rendering); Global Hair distillation 8 steps; custom width ramp.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Base Wiring (Sine Wave Weave)**
+- Line SOP: Z-axis, 2000 pts, centered
+- **CurveU** attribute (do not resample, just generate)
+- Wrangle: `P.y = sin(curveU * freq_y) * amp_y; P.x = sin(curveU * freq_x / 2.0) * amp_x;` — halving X frequency creates interweaving crossover pattern
+- `P.z += curveU * amp_z;` (plus = not flat)
+- Parameterize: base_scale, amp_x/y/z, freq_x/y/z (float + integer channels)
+- Second line on X-axis; 8 total lines → copy/paste parameters
+- Every other primitive: `P.z = ((@primnum % 2 == 0) ? 1 : -1) * freq_z * amp_z;` — alternate Z direction so lines interweave
+
+**2. Sweep SOP (Initial)**
+- **Sweep SOP**: surface type=Columns, radius=0.05, columns=6, twist=170
+- Object context → Miscellaneous → enable "Shade Open Curves in Viewport" → thickness preview
+- 5 sweep passes with different radii (0.2, 0.4, 0.25, 0.1, 0.05) and twist values (170, 256, 512…)
+
+**3. pscale Grow Animation (Blend Method)**
+- Direct pscale on Sweep causes spinning — don't use for complex/animated weaving
+- **Method**: create "Sweep 0" (same params but radius=0, same point count as source sweeps)
+- Blend wrangle: `float blend = chramp("blend", curveU + ch("time") * 0.1); P = lerp(v@P, point(1, "P", @ptnum), blend);` → geometry blends from radius-0 to full radius without spinning
+- For simple non-animated cases: pscale ramp on curveU → Sweep pscale exception in UV tab → works fine
+
+**4. Attribute Transfer Blend (Sphere Driver)**
+- Add `f@blend = 0` on wires; set `f@blend = 1` on a second copy
+- **Attribute Transfer** from large animated sphere → radius controls propagation wave
+- Add `time` parameter to animate transfer; Mountain noise on blend → noisy propagation edges
+
+**5. Three-Stage Blend (Transitional)**
+- Create "big sweep" (4× radius) as third input to blend wrangler
+- Refit blend: `fit(blend, 0, 0.5, 0, 1)` → drives lerp from thin→medium; `fit(blend, 0.5, 1.0, 0, 1)` → drives lerp medium→big
+- Adds wave height variation; adjust sphere position and Mountain noise on blend
+- Move transitional big sweep vertically slightly (scale=0.15) for subtle effect
+
+**6. Fuzzy Strands (1% Variation)**
+- **Primitive Group** (random 1% of strands) → **Move Along Spline** with small amplitude (0.5) → group named "fuzzy"
+- Adds organic variation; percentage and amplitude tunable
+
+**7. Source Variation**
+- **Mountain SOP** on source lines (large fractal size, subtle) → base wiring not perfectly straight → more natural
+
+**8. Vellum Wind via Point Deform**
+- Grid 150×50 → **Vellum Cloth** sim: kill gravity, add Vellum Wind (amplitude=0.2, swirl=0.3, pulse length=5)
+- **Point Deform SOP**: input1=wires, input2=rest grid, input3=deformed grid → wires inherit cloth cloth deformation without full sim
+- Time Shift to use pre-deformed frames as start
+
+**9. Redshift Hair Render**
+- Materials: background (Standard, white, no reflection) + weaving (RS Hair Shader — much lighter to render than polygon strands)
+- Render settings → **Render Polygons = Hair** → converts curve strands to hair primitives
+- **Global Hair distillation**: 8 steps → smoother curves, natural look
+- Custom width ramp: Attribute Wrangle `width *= chramp("w", curveU) * 0.001;` — taper strand ends; blast width=0 strands (invisible but still render)
+- Transparency on hair shader → better look but slower render
+- Lights: two RS lights (one for background, one for weaving only via visibility settings)
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `P.x = sin(curveU * freq_x / 2.0) * amp_x;` — half-frequency for X to create weave crossover
+- `P.z += curveU * amp_z;` — add (not assign) Z offset
+- `@primnum % 2 == 0` → alternate Z direction per line
+- **CurveU SOP** — attribute generate (no resample)
+- **Sweep SOP** — surface=columns, radius, twist; 5 passes at different settings
+- P lerp blend wrangle: `P = lerp(P, point(1,"P",@ptnum), chramp("blend", curveU + ch("time")*0.1));` — no spinning
+- **Attribute Transfer SOP** — sphere-driven propagation; animated by animating sphere position
+- `fit(blend, 0, 0.5, 0, 1)` + `fit(blend, 0.5, 1, 0, 1)` — three-stage blend
+- **Mountain SOP** on blend → noisy propagation
+- **Point Deform SOP** — deform wires by cloth sim (rest → deformed)
+- Redshift Render: **Render Polygons = Hair**; **Global Hair distillation** 8 steps
+- RS Hair Shader vs RS Standard Material — hair is 10× faster to render
+- Width ramp wrangle: `width *= chramp("w", curveU) * 0.001;`
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[sweep, weave, sine-wave, curveU, blend, attribute-transfer, hair, redshift, vellum, point-deform, intermediate-advanced]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-purple-sponge.md (instanced geo + Redshift render by same author)
+- mops-motion-operators-for-houdini-part-2.md (Move Along Spline, Move Along Mesh)
+- tuna-can-procedural-modeling-and-rig-with-kinefx.md (procedural SOP modeling)

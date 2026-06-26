@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=O5cFGKp0n_A
 author: Alexander Eskin
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19"
+tags: [vellum, grains, clustering, instancing, redshift, noise, rest-attribute, cotton, attraction-weight, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tutorial-purple-sponge/
 frame_count: 4
 ---
@@ -33,27 +33,78 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Vellum grains from box→VDB→cloud-noise→Points from Volume; grain collision fixed by P.y += pscale offset; attraction_weight from cluster node for wet-sand clumping variation; rest-attribute color noise; time warp for slow motion; 3 cotton-ball instance variants randomized via instance string attribute (`"bowl0" + str(int(rand(@ptnum)*3))`); Redshift progressive render with point-color-driven shader.
 
 ### Summary
-[PENDING EXTRACTION]
+29m17s tutorial by Alexander Eskin (inspired by Mark's work on Instagram). Creates a "purple sponge" cotton-ball mound effect. Box → VDB (cloud noise) → Points from Volume (400K pts, pscale=0.5) with bounding region blast + Y=0 delete + additional positional noise. Vellum Grains sim: fix ground intersection with `P.y += pscale`, interaction_weight=1 for wet-sand clumping, Cluster Points (32) + attraction_weight ramp for varied clumping. Rest attribute for color. Color via Point VOP noise on rest position + ramp. Time Warp (frames 6–37 → 1–100). Three cotton ball curve variants instanced with random orient and randomized instance string (bowl00/01/02). Rendered in Redshift: dome+disc lights, color from point attribute into reflections/transmission/transparency, progressive render (bucket too slow with this geo type).
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Source Points**
+- Box (0.7×0.15, pos=0) → **VDB from Polygons** → **Cloud Noise** (default) → **Points from Volume** (voxelsize=0.07, density=0.75 → ~400K pts)
+- Add `pscale=0.5` attribute; GL sphere preview
+- **Group SOP**: bounding region (0.5, expand 2) → **Blast** (invert = keep non-group) → delete points below Y=0
+- **Point VOP**: get X component of `P * 15` (frequency) → add to P, multiply constant 0.05 → subtle warp
+
+**2. Vellum Grains**
+- **Vellum Configure Grains**: Attribute Copy `pscale` from source
+- **Vellum Solver**: gravity Y=−1, ground collision on, sub steps=4
+- Fix intersection: Wrangle `P.y += pscale;` to lift all points above ground by their radius
+- Green collision tab: **interaction weight=1** → wet-sand clumping
+- **Cluster Points** (32 clusters): creates `cluster` integer attribute
+- Wrangle: `f@attraction_weight = chramp("attraction", rand(@cluster));` → min=0.2 → different clusters attract at different strengths (visual variety)
+- Add **rest attribute** (for post-sim color)
+- Cache: keep pscale, velocity, sphere_points only; 100 frames
+
+**3. Color**
+- **Point VOP**: bind `rest` attribute (not P) → Turb Noise on rest position → ramp → output `Cd`
+- Edit parameter interface: hide intermediate params, add separator
+
+**4. Time Warp**
+- **Time Warp SOP**: input frames 6–37 stretched/remapped to output frames 1–100 → slow motion
+
+**5. Cotton Ball Instances**
+- **Curve SOP** (polygon, subdivision) → draw 2D cotton ball outline → move Z so non-flat
+- Copy to Points (single point replicate 55) → **Attribute Randomize**: orient (−1 to 1 uniform, "use first dimensions for all")
+- Three variants (bowl_00, bowl_01, bowl_02): change seed, slight scale variations
+- On simulation points: add random orient; add string attribute:
+  `s@instance = "bowl0" + itoa(int(rand(@ptnum) * 3));` → values "bowl00", "bowl01", "bowl02"
+- **Instance OBJ node**: instance all three bowl geos by name
+
+**6. Redshift Render**
+- Background: Standard Surface, no reflection, white, weight=0.8
+- Cotton shader: Redshift Standard Material (defaults, then color from point attribute)
+- Camera: 1920px, position and rotate (45° tilt, slightly elevated)
+- Lights: Dome light (dim) + Disc area light (spread=0.5, intensity=50)
+- Color shader: import Cd from instance points → Point Attribute node → ramp → plug into trimatter reflections, transmission, transparency
+- pscale fix: `pscale *= 1.1` (slight scale boost for better coverage)
+- **Progressive render** (not bucket): bucket renders take 40+ min/frame with instanced fur-like geo; progressive is much faster for animation
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **VDB from Polygons** → **Cloud Noise** → **Points from Volume** (voxelsize=0.07)
+- `P.y += pscale;` — lift grains off ground by their own radius
+- **Cluster Points** (32 clusters) — creates integer `cluster` attribute
+- `f@attraction_weight = chramp("attraction", rand(@cluster));` — per-cluster attraction strength ramp
+- **Add Rest Attribute SOP** — stores rest position for post-sim color
+- Point VOP: **noise on rest** → ramp → `Cd`
+- **Time Warp SOP** — frames 6–37 → output 1–100 (time stretch for slow motion)
+- `s@instance = "bowl0" + itoa(int(rand(@ptnum) * 3));` — randomize instance variant (0,1,2)
+- **Instance OBJ node**: "Instancing" mode, objects named bowl_00/01/02
+- Redshift: progressive render mode (faster than bucket for complex instanced geo)
+- Point Attribute node in RS shader → drives ramp for color variation
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19
 
 ### Tags
-[PENDING EXTRACTION]
+[vellum, grains, clustering, instancing, redshift, noise, rest-attribute, cotton, attraction-weight, intermediate]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- tutorial-pink-bubble-part-1.md (Vellum grains in different context by same author)
+- tutorial-soft-weave.md (fiber/cloth simulation by same author)
+- tutorial-heavy-chic-part-1.md (particles + height field + noise color)
