@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=mORz1y05T7E
 author: Voxyde VFX
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [vops, noise, random, vex, particles, simulation, turbulent-noise, curl-noise, worley-noise, flow-noise, bounding-box, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/vops-02---random-noise---houdini-beginner-tutorial/
 frame_count: 6
 ---
@@ -58,27 +58,91 @@ frame_count: 6
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+VOPs deep dive on randomness and noise in Houdini: Random node (ptnum seed), Gaussian Random (true random vector without fit range), Turbulent Noise (simplex most useful, fit range −0.6→0.6 to 0→1, animate via time offset or 4D vector), Anti-Aliased Flow Noise (4D = position + time for non-repeating evolution, flow rate), Curl Noise (organic/fluid motion in solvers, step size 0.01), Worley/Voronoi noise (seed cluster coloring, turbulent position distortion for rock formations), Relative Bounding Box (0→1 per axis, offset constant for growth animation).
 
 ### Summary
-[PENDING EXTRACTION]
+45m51s beginner VOPs tutorial by Voxyde VFX (Part 2 of VOPs series). Covers 6 major topics:
+
+1. **Random & Gaussian Random** — Random node with ptnum seed; 1D float and 3D vector outputs; Fit Range for negative-to-positive; Gaussian Random for direct negative values / true random vector.
+2. **Turbulent Noise** — Noise types (alligator default, simplex preferred, sparse convolution for terrain); 1D vs 3D outputs; frequency/amplitude/roughness/turbulence/attenuation; time-offset animation; Fit Range simplex (−0.6 → 0.6 → 0 → 1).
+3. **Anti-Aliased Flow Noise** — Flow + flow rate for noise evolution; 4D vector input (VectorToVector4: position + time) for truly non-repeating noise; per-component time frequency control.
+4. **Curl Noise** — 4D input for organic fluid-like motion; step size fix (0.01) eliminates flickering; solver accumulation for continuous organic motion; surface effect settings for volumes.
+5. **Worley Noise** — Cell/Voronoi pattern from scattered points; D1/D2/D3 distance outputs; Euclidean method (default); seed → Random node for per-cluster color; turbulent noise distortion of input position for organic rock/terrain patterns; displacement along normal.
+6. **Relative Bounding Box** — Returns 0→1 per axis regardless of geometry size/position; split component Y for vertical gradient; Fit Range + ramp + offset constant → growth/travel attribute animation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+**1. Random Node**
+- Inside Attribute VOP → Random node; plug `ptnum` into `pos` (seed) for per-point randomness
+- 1D output: float 0–1; 3D vector output: all components 0–1 (need Fit Range → −1,1 for true vector)
+- **Gaussian Random**: directly outputs negative values; 3D vector already fully random (no Fit Range needed); std deviation controls spread
+
+**2. Turbulent Noise**
+- Plug `P` into position input
+- Default signature: 1D noise (float); switch to 3D noise and add to `P` for displacement
+- Noise types: alligator (0→1), **simplex** (preferred; ≈ −0.6→0.6), sparse convolution (terrain/rock peaks)
+- After simplex 1D: always Fit Range source min=−0.6, max=0.6 → dest min=0, max=1
+- Animate via time offset: plug `$T` → Float to Vector → plug into offset input (directional movement)
+- Parameters: frequency (resolution), amplitude (scale), roughness (detail; prefer over turbulence), attenuation (flatten extremes)
+
+**3. Anti-Aliased Flow Noise**
+- Drop **Anti-Aliased Flow Noise** node; switch to 4D input + 3D noise signature
+- Build 4D input: **VectorToVector4** node — plug `P` into vector3, `$T` into fourth component
+- Plug VectorToVector4 result into noise position
+- `flow` value: use `$T` for non-repeating evolution (vs 3D which repeats 0→1→0→1)
+- `flow rate`: higher = faster noise frequency; to slow evolution, scale fourth component of the VectorToVector4 (e.g. `time * 0.2`)
+- Higher noise frequency also speeds up time evolution (they share the frequency multiplier)
+
+**4. Curl Noise**
+- Use 4D input same as Flow Noise (VectorToVector4)
+- Signature auto-switches to 4D when plugging VectorToVector4
+- Noise type → **Simplex** (recommended)
+- **Step size**: increase from default to ≈ 0.01 to eliminate flickering artifacts
+- Inside a Solver SOP: plug Attribute VOP (curl noise → velocity) into solver; accumulates for continuous organic motion
+- Surface effect parameters: interact with volumes (radius, distance to surface, surface normals) — for velocity fields chapter
+
+**5. Worley Noise**
+- Generates cell/Voronoi pattern; outputs: D1 (distance to nearest point), D2, D3, seed
+- Method: Euclidean (default/95% of cases), Manhattan, Minkowski
+- **Seed → Random**: plug `seed` output into Random node → per-cluster random color (`Cd`)
+- **Position distortion**: add Turbulent Noise (3D, sparse convolution or simplex) to P before plugging into Worley position → organic cell shapes
+- **Rock formation**: Worley + turbulent position distortion + Displace Along Normal (use D1 as amount); reduce frequency, increase displacement scale
+- Subtract D2−D1 for inverted/cracked pattern; Shift+R to reverse order
+- Layer multiple Worley nodes with Multiply Constant for individual control
+
+**6. Relative Bounding Box**
+- Drop **Relative to Bounding Box** node inside Attribute VOP; plug `P` into position; set input to "first input"
+- Outputs 3D vector: each component is 0→1 mapped to that axis's extent
+- Split with **Vector to Float** → use Y component (index 1) for vertical gradient
+- Works on any geometry regardless of scale
+- After split: **Fit Range** (squeeze gradient) + **Spline Ramp** parameter for custom falloff shape
+- Add offset constant before RelBBox → `offset` parameter → increase/decrease to travel attribute along geometry → growth animation
+- Add Turbulent Noise (3D) to P before RelBBox → organic edge on gradient
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Random** (Attribute VOP) — ptnum seed → 1D float or 3D vector; Fit Range −1→1 for vectors
+- **Gaussian Random** — outputs negative values directly; 3D signature = true random vector
+- **Turbulent Noise** — noise type: simplex (preferred); roughness for detail; Fit Range after simplex (−0.6→0.6 → 0→1)
+- **Fit Range** — source min/max + destination min/max remap; very frequent pattern with noise
+- **Anti-Aliased Flow Noise** — 4D input; `flow` for evolution; `flow rate` for speed
+- **VectorToVector4** — combine `P` (xyz) + time (w) for 4D noise input
+- **Curl Noise** — 4D input; simplex type; step size 0.01; accumulate in Solver for fluid motion
+- **Worley Noise** — D1/D2/D3 + seed outputs; seed → Random for cluster color
+- **Displace Along Normal** — amount from Worley D1 for rock/terrain displacement
+- **Relative to Bounding Box** — returns 0→1 per axis; split component → Fit Range → Ramp → animated gradient/growth
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H19+
 
 ### Tags
-[PENDING EXTRACTION]
+[vops, noise, random, vex, particles, simulation, turbulent-noise, curl-noise, worley-noise, flow-noise, bounding-box, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- vops-03---vector-operations---houdini-beginner-tutorial.md (Part 3: vector operations)
+- vops-04---geometry-interactions---houdini-beginner-tutorial.md (Part 4: geometry interactions)
+- mops-motion-operators-for-houdini-part-3.md (advanced vector math and quaternions in VEX)
