@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=9N9CavpgoB4
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [flip, fluid, viscosity, simulation, chocolate, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/w03-04-adding-viscosity-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,40 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Enable viscosity in FLIP Solver (viscosity tab) + set viscosity value in FLIP Object (Physical tab); value 100 = thick fluid, 10000 = clay-like. Volume Limits on FLIP Solver to prevent stray particle computation waste.
 
 ### Summary
-[PENDING EXTRACTION]
+4m45s VFX School Archive module. Part of a chocolate-over-ice-cream FLIP sim tutorial. Shows how to add viscosity: enable in FLIP Solver viscosity tab, set value in FLIP Object Physical tab (100 for chocolate, 10000 for clay). Mentions importing viscosity attributes from outside (multi-fluid workflow for later). Demonstrates velocity-based color visualization in guides. Sets Volume Limits to 2×2×2 to prevent stray particles from wasting compute. Adjusts flip object scale to 0.8.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **FLIP Solver → Viscosity tab** — check "Enable Viscosity" (required first)
+2. **FLIP Object → Physical tab** → set viscosity value:
+   - 100 → thick chocolate-like fluid
+   - 10,000 → clay / putty behavior
+3. **Initial Velocity demo** (optional): FLIP Object → Initial tab → set velocity (e.g. {0, 10, 0}) to see color change (velocity-based Cd visualization)
+4. **Guides tab** → visualize particles → displays velocity-based color in viewport
+5. **Volume Limits** (FLIP Solver): set to 2, 2, 2 → constrains sim volume; stray escaping particles won't waste calculation resources
+6. **FLIP Object scale** → raise to 0.8 after reducing volume limits
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **FLIP Solver → Viscosity tab**: enable viscosity checkbox
+- **FLIP Object → Physical tab**: viscosity value (100=thick, 10000=clay)
+- FLIP Object → Guides tab → visualize particles → velocity color preview
+- FLIP Solver → Volume Motion → Volume Limits: 2,2,2 for tighter sim bounds
+- Note: viscosity attribute can also be imported from emitter geometry (future lesson)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+[flip, fluid, viscosity, simulation, chocolate, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- w02-05-deforming-with-velocity-v1-1080p.md (same course, velocity deformation)
+- w03-11-meshing-v1-1080p.md (same course, FLIP meshing)
+- w04-11-viscosity-and-surface-tension-v1-1080p.md (same course, advanced viscosity)

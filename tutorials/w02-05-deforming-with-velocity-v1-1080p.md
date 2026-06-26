@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=IuvtudgbzLw
 author: The VFX School Archive
 ingested: 2026-06-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [velocity, attribute-transfer, deformation, trail, vex, wrangle, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/w02-05-deforming-with-velocity-v1-1080p/
 frame_count: 4
 ---
@@ -33,27 +33,42 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Use Trail SOP (Compute Velocity mode) to generate `v` attribute on animated geometry → Attribute Transfer velocity Y component to grid as color → Attribute Wrangle deforms grid Y position by color with a ch() slider: `@P.y += @Cd.r * ch("mult");`
 
 ### Summary
-[PENDING EXTRACTION]
+7m30s VFX School Archive module lesson. Part of a blueberry/yogurt tutorial series. Shows how to derive velocity from animated geometry using the Trail SOP, transfer that velocity to a deformable grid as color (via Attribute Transfer + Vector to Float), then use an Attribute Wrangle to displace grid points along Y proportional to the velocity-derived color. Creates a ch() parameter slider for real-time artistic control.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Trail SOP** — set mode to **Compute Velocity** → adds `v` (velocity) vector attribute to geometry; velocity scale = 2 for more pronounced values; also useful for motion blur on animated meshes without intrinsic velocity
+2. **Attribute Transfer** — source: animated geo (velocity attribute); target: static grid → transfers `v` to grid points
+3. **Vector to Float** — split `v` vector into X, Y, Z components; grab Y component
+4. **Color (Cd)** — plug Y velocity into Cd channel for viewport visualization and downstream use
+5. **Attribute Wrangle** — deform grid:
+   ```vex
+   @P.y += @Cd.r * ch("mult");
+   ```
+   - `@Cd.r` = same float on all channels (greyscale from Y velocity); `.r`/`.x` either works
+   - `ch("mult")` creates slider parameter; click gear button → creates slider → middle-click drag for values above 1
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Trail SOP**: mode=Compute Velocity; velocity scale=2 → adds `v` attribute
+- **Attribute Transfer**: from animated geo → grid; select velocity attribute
+- **Vector to Float** (VOP): split vector into X/Y/Z float components
+- **Attribute Wrangle**: `@P.y += @Cd.r * ch("mult");`
+- `ch("name")` → creates float channel/slider parameter on the node
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+[velocity, attribute-transfer, deformation, trail, vex, wrangle, beginner]
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- w03-04-adding-viscosity-v1-1080p.md (same VFX School course, FLIP viscosity)
+- velocity-forces-20-advanced.md (advanced velocity field techniques)
+- tutorial-heavy-chic-part-1.md (Attribute Bind VOP technique for height field → density)
