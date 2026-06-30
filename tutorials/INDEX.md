@@ -173,7 +173,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** particles, dop, sop, vex, instancing, simulation, rendering, karma, lop, solaris, beginner, houdini-21
 - **Summary:** A 165-minute beginner-to-intermediate walkthrough covering virtually every node in the POP (Particle Operator) toolset in H21. The viewer builds up a DOP network from scratch, learning POP Source emission types (scatter on surface, all points, location), all force nodes (Force, Wind, Drag, Axis Force, Curve Force, Attract, Interact, Advect by Volume), collision handling (POP Collision Detect +...
 - **File:** tutorials/introduction-to-particles-in-houdini-21-full-beginner-course-2026.md
-- **File:** tutorials/introduction-to-particles-in-houdini-21-full-beginner-course-2026.md
 
 
 ### Houdini UV Unwrapping Fundamentals
