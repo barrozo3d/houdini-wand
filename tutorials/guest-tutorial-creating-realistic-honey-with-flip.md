@@ -1,12 +1,12 @@
 ---
-title: Guest Tutorial: Creating realistic honey with FLIP
+title: "Guest Tutorial: Creating realistic honey with FLIP"
 source: YouTube
 url: https://www.youtube.com/watch?v=5oHU1bmYKs0
-author: Entagma
+author: Entagma (Philip Danger)
 ingested: 2026-07-01
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18+"
+tags: [flip, viscosity, fluid-sim, gas-field-vop, custom-vop, per-particle-viscosity, stickiness, honey, bubbles, octane, rendering, advanced]
+extraction_status: done
 frames_dir: tutorials/frames/guest-tutorial-creating-realistic-honey-with-flip/
 frame_count: 4
 ---
@@ -48,27 +48,51 @@ frame_count: 4
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Viscous FLIP simulation for honey using two custom systems: (1) per-particle velocity-based viscosity that makes fast-moving particles more viscous (for folding) and slow-moving ones less viscous (for sliding/coating), combined with noise-based viscosity variation for layered sheets; (2) a custom Gas Field VOP stick-on-collision that adds an attraction velocity toward the nearest collision surface point rather than blending toward zero — giving honey its characteristic wrap-and-coat behavior without becoming static.
 
 ### Summary
-[PENDING EXTRACTION]
+29m49s Entagma guest tutorial by Philip Danger. Builds a realistic honey simulation from scratch: custom per-particle viscosity driven by particle speed remapped through a channel ramp (fast = high viscosity for folding; slow = low viscosity for sliding), plus a noise-based per-particle viscosity factor for layered variation. A custom Gas Field VOP computes a stick-on-collision force by stepping each velocity cell in its current direction, finding the nearest collision surface point, and adding a distance-falloff velocity vector toward it. Post-processing integrates Alvaro Moreira's small-scale FLIP meshing setup and Tom Taylor's bubble technique. Final rendering in Octane uses a specular material with transmission + scatter medium and four carefully placed lights.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Reference analysis**: Identify key honey properties — density (40% denser than water), viscous folding/layering, sticky coating behavior, trapped air bubbles, golden color. Note what to avoid (maple syrup: too runny, wrong color).
+2. **Base scene**: Animate a honey dipper mesh (from Sketchfab); prepare surface + VDB representations with velocity attribute on points for accurate collision. Source particles from an animated sphere using FLIP Source with downward velocity.
+3. **Flip Solver settings**: Enable Viscosity + Viscosity by Attribute, set Velocity Transfer to APIC, enable Surface Tension = 50, set Collision Detection to Move Outside Collision, add ID and H attributes, tune receding values for small scale.
+4. **Per-particle velocity viscosity** (Point Wrangle inside DOP): Get particle speed (`length(vel)` → `speed`), fit speed 0→2 to 0→1, feed through a channel ramp (`follow`) with near-exponential shape (leftmost = 0.1, add point at 0.5=0.1), multiply result by base viscosity 2000 → write to `viscosity` attribute.
+5. **Noise-based viscosity variation** (Point Wrangle before DOP): Anti-aliased noise with `P + Time` offset, max octaves = 3; fit noise values from (−0.1, 0.5) to (0, 1); remap 0→1 to range 0→604,000; store as `viscFactor`. In the solver wrangle, multiply velocity remap by `viscFactor` instead of the static 2000 base.
+6. **Custom stick-on-collision** (Gas Field VOP → Volume Velocity input of FLIP Solver): For each velocity cell: (a) `stepPos = P + vel * timeInc`; (b) `xyz_dist(collision_geo, stepPos, maxDist=0.15)` → get `primNum`, `primUV`, `dist`; (c) `primP = primuv(collision_geo, "P", primNum, primUV)`; (d) `offsetVec = primP - P`; (e) `falloff` = b-spline ramp over `dist` (0→1, extra point at 0.1=0.1); (f) `vel += offsetVec * falloff * factor` (factor = 15).
+7. **Cache simulation**: FileCache with Fluid Compress; disable Cull Bandwidth to keep all particles; add `age` attribute for future stretchy bubbles.
+8. **Meshing**: Copy Alvaro Moreira's small-scale FLIP meshing setup; adjust voxel size; increase VDB Smooth iterations; blur velocity attribute to remove motion blur artifacts.
+9. **Bubbles**: Copy Tom Taylor's bubble technique; tune piecewise values and ramp for more small bubbles; reduce bubble threshold. Merge bubble geometry with honey; flip normals on sphere bubbles so renderer treats them as air pockets (accurate refraction).
+10. **Octane rendering**: Specular material, low roughness, Fake Shadows ON. Color = transmission (desaturated blue + brighter via gamma) + scattering medium (density, single scatter %, anisotropy). HDRI as backplate only (no diffuse) for interesting reflections. Four lights: background, key (top-left warm), rim, back (for dark stream area). Studio image textures on lights for non-flat reflections. Wood shader from NewPlastic's OSL-based tutorial.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **FLIP Source** — sources flip particles from animated sphere
+- **Static Object** — collision from VDB; requires velocity attribute on source mesh
+- **FLIP Solver** — Viscosity + Viscosity by Attribute ON; APIC velocity transfer; Surface Tension = 50; Move Outside Collision; start frame = 26
+- **Point Wrangle (DOP pre-pass)** — per-particle noise viscosity factor: `fit(noise(P + {0,0,Time}, 3octaves), -0.1, 0.5, 0, 1)` → `viscFactor` mapped to 0–604,000
+- **Point Wrangle (DOP)** — velocity-based viscosity: `viscosity = chrampe("follow", fit(length(vel),0,2,0,1)) * viscFactor`
+- **Gas Field VOP** (volume velocity input) — custom stick-on-collision attraction force
+- `xyzdist()` — find nearest collision surface point from stepped position
+- `primuv()` — look up position on collision geometry at prim UV
+- **Channel Ramp** (b-spline, `follow`) — remaps normalized speed to viscosity multiplier
+- **Fluid Compress** — post-sim caching; Cull Bandwidth disabled
+- **VDB Smooth** — meshing pass (iterations increased from default)
+- **FileCache** — simulation caching
+- **Octane Specular material** — Fake Shadows ON, transmission + scatter medium
+- **Octane Null material** — used to preview scatter medium in isolation
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H18+
 
 ### Tags
-[PENDING EXTRACTION]
+flip, viscosity, fluid-sim, gas-field-vop, custom-vop, per-particle-viscosity, stickiness, honey, bubbles, octane, rendering, advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `w03-04-adding-viscosity-v1-1080p.md`
+- `w04-11-viscosity-and-surface-tension-v1-1080p.md`
+- `tutorial-lipstick-part-2-flip-sim.md`

@@ -1333,10 +1333,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ### Guest Tutorial: Creating realistic honey with FLIP
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=5oHU1bmYKs0
-- **Author:** Entagma
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Entagma (Philip Danger)
+- **Houdini Version:** H18+
+- **Tags:** flip, viscosity, fluid-sim, gas-field-vop, custom-vop, per-particle-viscosity, stickiness, honey, bubbles, octane, rendering, advanced
+- **Summary:** Builds a realistic honey FLIP sim using per-particle velocity-based viscosity (fast particles = higher viscosity for folding; slow = lower for sliding/coating) plus noise variation for layered sheets. Custom Gas Field VOP adds attraction velocity toward the collision surface instead of vanilla blend-to-zero stick. Post-processing integrates Alvaro Moreira's meshing setup and Tom Taylor's bubble technique. Rendered in Octane with transmission + scatter medium.
 - **File:** tutorials/guest-tutorial-creating-realistic-honey-with-flip.md
 
 ---
