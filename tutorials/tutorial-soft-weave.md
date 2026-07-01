@@ -5,7 +5,7 @@ url: https://www.youtube.com/watch?v=Ohj4ag8DZRo
 author: Alexander Eskin
 ingested: 2026-06-23
 houdini_version: "H19"
-tags: [sweep, weave, sine-wave, curveU, blend, attribute-transfer, hair, redshift, vellum, point-deform, intermediate-advanced]
+tags: [sweep, weave, sine-wave, curve-u, blend, attribute-transfer, hair, redshift, vellum, point-deform, intermediate-advanced]
 extraction_status: complete
 frames_dir: tutorials/frames/tutorial-soft-weave/
 frame_count: 4

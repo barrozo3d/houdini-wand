@@ -65,7 +65,7 @@ Procedural tuna can modeling (line → Sweep cap, QuadRemesh inset interior, sta
 **Rigging: Lid (Bone Deform, soft)**
 11. From lid geometry: manipulate bounding box min/max → build polyline → **Resample** (high count for smooth deform) → **Reverse** (change deformation start direction) → **Initialize Transforms** → **Rig Doctor**
 12. **Capture by Proximity**: tune drop-off and max point influence
-13. Animation Wrangle: `curveU` (0→1 ramp along curve) → angle parameter → `float anim = fit(time, 0.1, 0.35, 0.0, 1.0)` → remap (nonlinear, jumps to final fast) → `rotate(localxform, angle * anim, {1,0,0})` → `setpointtransform(0, ptnum, newxform)` → offset so only tip rotates
+13. Animation Wrangle: `curve-u` (0→1 ramp along curve) → angle parameter → `float anim = fit(time, 0.1, 0.35, 0.0, 1.0)` → remap (nonlinear, jumps to final fast) → `rotate(localxform, angle * anim, {1,0,0})` → `setpointtransform(0, ptnum, newxform)` → offset so only tip rotates
 14. Lid opening: same setup, animate offset linearly, small angle, negate for opposite direction
 
 **Rigging: Cap (Capture Packed, rigid)**

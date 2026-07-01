@@ -78,7 +78,7 @@ frame_count: 10
 ## Structured Notes
 
 ### Core Technique
-Full procedural animated flower pipeline: Vellum wire sim for animated stem wiggle → curveU-based mask attribute for growth animation → golden angle (137.508°) phyllotaxis arrangement via cross product + quaternion rotate → blossom copy with per-point time offset in a For-Each loop → Vellum cloth "into target" constraint to resolve petal intersections → swept stem, curved connections, and assembly merge.
+Full procedural animated flower pipeline: Vellum wire sim for animated stem wiggle → curve-u-based mask attribute for growth animation → golden angle (137.508°) phyllotaxis arrangement via cross product + quaternion rotate → blossom copy with per-point time offset in a For-Each loop → Vellum cloth "into target" constraint to resolve petal intersections → swept stem, curved connections, and assembly merge.
 
 ### Summary
 38-minute tutorial by Fifo building a complete procedural growing flower. Core innovations: using the golden ratio angle with quaternion rotation for realistic flower phyllotaxis; for-each loop TimeShift trick for sequential blooming (bottom-to-top); Vellum cloth constraints with "match animation" rest blend for intersection resolution. No rigid body physics — all Vellum. Final setup has animated growth, wind wiggle, sequential bloom, and intersection-free petals.
@@ -87,12 +87,12 @@ Full procedural animated flower pipeline: Vellum wire sim for animated stem wigg
 
 **1. Animated Stem (Wire Vellum)**
 - Curve SOP (S-shape) → Transform (scale ×4) → Resample (subdivision curve, fine step)
-- `curveU` attribute via Resample (or manual Attribute Create): runs 0→1 along curve length
+- `curve-u` attribute via Resample (or manual Attribute Create): runs 0→1 along curve length
 - Resample again with "compute tangent U" only (no resampling) → generates tangent as N
 - Group By Range → select first point → invert → freeze that point
 - Vellum Wire: Gravity off; POP Wind force (low amplitude, large spiral size)
 - Hair Constraint → Pin Point = first point group → permanentpin
-- Vellum IO → cache to disk; Attribute Delete → keep only curveU + groups
+- Vellum IO → cache to disk; Attribute Delete → keep only curve-u + groups
 
 **2. Golden Angle Phyllotaxis (Point Warp)**
 - Node: Attribute VOP named "back_to_magic"
@@ -102,19 +102,19 @@ Full procedural animated flower pipeline: Vellum wire sim for animated stem wigg
 - Multiply ptnum × golden_angle → convert degrees to radians → `Quaternion` node (axis=N, angle=radians) → `Rotate by Quaternion` on cross vector
 - Result: each point's cross vector rotates by golden angle × ptnum around the curve tangent
 - Bind Export the result to N (overwrites normals to point outward in golden-angle pattern)
-- Bind Export curveU as `up` vector (tangent along curve) → used for blossom orientation
+- Bind Export curve-u as `up` vector (tangent along curve) → used for blossom orientation
 
 **3. Growth Mask Attribute (Point Warp)**
 - Node: "create_mask" Attribute VOP
-- Bind `curveU`; add parameters: `position` (float, 0–1) and `width` (float)
-- `fit(curveU, 0, 1, ...)` to remap → `smooth()` → fit to (position - width, position, 0, 1)
+- Bind `curve-u`; add parameters: `position` (float, 0–1) and `width` (float)
+- `fit(curve-u, 0, 1, ...)` to remap → `smooth()` → fit to (position - width, position, 0, 1)
 - Bind Export as `mask`
 - Outside: animate `position` from 0 → 0.8 over 72 frames (never reach 1 = top always thin)
 - Attribute Delete → keep only mask → rename mask → pscale
 - Sweep node reads pscale for tapered stem; attach grid cross-section; clamp min 0.05
 
 **4. Blossom Copy Points Setup**
-- `pscale` attribute for blossom size: Attribute VOP with ramp on curveU (0.05 at base, peak in middle)
+- `pscale` attribute for blossom size: Attribute VOP with ramp on curve-u (0.05 at base, peak in middle)
 - Multiply pscale by mask → growth-controlled sizing
 - Add SOP (geometry only = points, delete prims) → Keep normals + up vectors
 - Peak SOP: push points out from stem along normal by ~0.06 (uncheck recompute normals!)
@@ -144,20 +144,20 @@ Full procedural animated flower pipeline: Vellum wire sim for animated stem wigg
 - Group Promote: attach point → primitives → Group Expand → blast to cap blossom base
 - Stem connections: blast center attachment points → point wrangle `i@id = @ptnum;`
 - Array SOP (minimum distance) → snap center points onto stem → Merge → Add SOP "by attribute" (id) → creates lines from each blossom base to its stem contact point
-- Resample lines, Point Warp with ramp on curveU → add Y displacement for S-curve shape
+- Resample lines, Point Warp with ramp on curve-u → add Y displacement for S-curve shape
 - Sweep connections with small grid cross-section
 - Object Merge: stem_geo + blossoms + connections → Merge → out_flower null
 
 ### Houdini Nodes / VEX / Settings
 - **Curve SOP** → **Resample** (subdivision curve + tangent U only pass)
-- **curveU attribute** — 0→1 position along curve, central to all growth/placement
+- **curve-u attribute** — 0→1 position along curve, central to all growth/placement
 - **Vellum Wire + Hair Constraint** — animated stem with wind wiggle; pin first point
 - **Group By Range** — select first/last point of primitive
 - **Cross Product (VOP)** — vector perpendicular to curve tangent → used for golden angle rotation
 - **Quaternion (VOP)** → **Rotate by Quaternion (VOP)** — rotate cross vector by golden_angle × ptnum around curve tangent
 - `degrees_to_radians(value)` — convert golden angle before passing to Quaternion
-- **Bind Export** — overwrite N with golden-angle rotated vectors; export curveU as `up`
-- **Fit Range (VOP)** — create growth mask from curveU + position/width sliders
+- **Bind Export** — overwrite N with golden-angle rotated vectors; export curve-u as `up`
+- **Fit Range (VOP)** — create growth mask from curve-u + position/width sliders
 - **Attribute VOP "create_mask"** — mask attribute animated position drives 0→0.8 growth
 - **Sweep SOP** — uses `pscale` for tapered stem; requires grid cross-section input
 - **Peak SOP** — push blossom copy points outward along N; uncheck recompute normals

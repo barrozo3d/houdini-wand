@@ -1,4 +1,4 @@
-﻿# Houdini Wand — Tutorial & Knowledge Base Index
+# Houdini Wand — Tutorial & Knowledge Base Index
 
 This is the skill's growing knowledge base. Every ingested tutorial, article, and book excerpt is listed here.
 
@@ -11,19 +11,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ## How to Read This Index
 
 ```
-### [Title]
-- **Source:** YouTube / Article / Book
-- **URL / Reference:** link or book citation
-- **Author:** creator name
-- **Houdini Version:** version shown
-- **Tags:** #technique #context #level
-- **Summary:** 2-3 sentence description
-- **File:** tutorials/filename.md
-```
-
----
-
-## Entries
 
 ### Intro To Houdini for VFX - Beginner Course
 - **Source:** YouTube

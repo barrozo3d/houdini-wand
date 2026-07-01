@@ -36,7 +36,7 @@ frame_count: 4
 Glass tile wall animation: bevel+subdivide box tile → Copy to Points on a grid wall → "rotor" float attribute driven by Attribute Transfer from a noisy grid → animate orient rotation with `qmultiply` quaternion per-frame → Blend Material (tiles → emissive → glass) driven by the same rotor ramp; particle Trail SOP rendered as strands with incandescent shader for sparkle effect.
 
 ### Summary
-25m6s tutorial by Alexander Eskin. Builds an animated glass tile wall that flips from opaque tiles to glowing emissive to transparent glass in a wave. Tile: Box + PolyExtrude + Bevel + Subdivide. Wall: Copy to Points on grid (128×128 pts, P_scale control). "Rotor" attribute driven by Attribute Transfer from a Mountain-noised grid (undisplaced transfer + Attribute Copy trick). Orient rotated each frame via `@orient = qmultiply(@orient, quaternion(radians(amount), axis))`. Blend Material uses rotor+ramp for three-phase wave (tiles → emissive + color → glass), Fresnel ramp for highlight. POP trail particles rendered as Mantra strands with incandescent material, curveU-based alpha.
+25m6s tutorial by Alexander Eskin. Builds an animated glass tile wall that flips from opaque tiles to glowing emissive to transparent glass in a wave. Tile: Box + PolyExtrude + Bevel + Subdivide. Wall: Copy to Points on grid (128×128 pts, P_scale control). "Rotor" attribute driven by Attribute Transfer from a Mountain-noised grid (undisplaced transfer + Attribute Copy trick). Orient rotated each frame via `@orient = qmultiply(@orient, quaternion(radians(amount), axis))`. Blend Material uses rotor+ramp for three-phase wave (tiles → emissive + color → glass), Fresnel ramp for highlight. POP trail particles rendered as Mantra strands with incandescent material, curve-u-based alpha.
 
 ### Key Steps
 
@@ -83,8 +83,8 @@ Three materials: tiles (opaque), trails (strand), background
 - Add `id` attribute (keep); delete velocity + unused attributes
 - Trail SOP: 20 points trailing; add Time Shift (+500 frames offset for pre-roll)
 - Color: `@Cd = chramp("color", @id)` (float to vector → color ramp: green, blue, red)
-- Alpha: `@Alpha = chramp("alpha", @curveU)` (direction reversed so head is bright)
-- Curve View attribute (0→1) needed for curveU
+- Alpha: `@Alpha = chramp("alpha", @curve-u)` (direction reversed so head is bright)
+- Curve View attribute (0→1) needed for curve-u
 - Render as Mantra strands: type=0 subdivisions; trail width controlled directly
 - **Trails material**: Incandescent (emissive); `Cd` → color, `Alpha` → alpha; intensity=4
 
@@ -98,7 +98,7 @@ Three materials: tiles (opaque), trails (strand), background
 - **Attribute Copy** — copies attribute from displaced to undisplaced points (attribute-only transfer)
 - `@orient = qmultiply(@orient, quaternion(radians(ch("amount")), axis))` — per-frame orient rotation; `chramp` for amount-per-tile
 - **Blend Material** — 3-way blend (tiles → emissive → glass) driven by `@rotor` + ramp
-- `chramp("color", @rotor)` / `chramp("alpha", @curveU)` — ramp color/alpha lookups
+- `chramp("color", @rotor)` / `chramp("alpha", @curve-u)` — ramp color/alpha lookups
 - **POP Network** — source + solver; velocity, life, id attribute
 - **Trail SOP** — N=20, Time Shift offset for pre-roll
 - **Mantra incandescent material** — strand rendering; Cd+Alpha attributes
