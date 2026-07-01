@@ -71,4 +71,4 @@ Not specified.
 
 ## Related Tutorials
 - `houdini-tutorial---simple-disintegration-fx.md` and other RBD-focused entries — shares Bullet/RBD simulation territory
-- `mops-motion-operators-for-houdini-part-1.md`, `-part-2.md`, `-part-3.md` — shares MOPs node usage (Randomize)
+- `mops-motion-operators-for-houdini-part-1.md`, `mops-motion-operators-for-houdini-part-2.md`, `mops-motion-operators-for-houdini-part-3.md` — shares MOPs node usage (Randomize)

@@ -422,5 +422,5 @@ H18.5+
 ## Related Tutorials
 - mops-motion-operators-for-houdini-part-1.md (MOPs generators, modifiers, falloffs)
 - mops-motion-operators-for-houdini-part-2.md (Move Along Spline/Mesh, Delay, Spring, RBD/Vellum integration)
-- vops-02.md / vops-03.md / vops-04.md (VEX/VOPs deep dives)
+- vops-02---random-noise---houdini-beginner-tutorial.md / vops-03---vector-operations---houdini-beginner-tutorial.md / vops-04---geometry-interactions---houdini-beginner-tutorial.md (VEX/VOPs deep dives)
 - noise.md (noise math in Houdini)

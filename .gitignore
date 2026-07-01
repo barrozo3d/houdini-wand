@@ -1,3 +1,7 @@
 tutorials/frames/
 cookies.txt
 references/*.pdf
+
+cookies.txt.stale-disabled
+__pycache__/
+_houdini_urls.txt
