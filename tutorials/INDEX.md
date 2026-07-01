@@ -1329,6 +1329,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Rigs and animates a Gaussian-splat scan (a fly) via KineFX skeleton + Harmonic Capture + APEX rig, then re-deforms the original splat points with Gaussian Splat Deform (since direct skin-driven deformation fails to reorient splats), finally rendering in Karma XPU with no materials, just camera DoF/motion blur and a shadow-catcher plane.
 - **File:** tutorials/animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md
 
+
+### Guest Tutorial: Creating realistic honey with FLIP
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=5oHU1bmYKs0
+- **Author:** Entagma
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/guest-tutorial-creating-realistic-honey-with-flip.md
+
 ---
 
 ## Tag Reference
