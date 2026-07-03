@@ -1339,6 +1339,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Builds a realistic honey FLIP sim using per-particle velocity-based viscosity (fast particles = higher viscosity for folding; slow = lower for sliding/coating) plus noise variation for layered sheets. Custom Gas Field VOP adds attraction velocity toward the collision surface instead of vanilla blend-to-zero stick. Post-processing integrates Alvaro Moreira's meshing setup and Tom Taylor's bubble technique. Rendered in Octane with transmission + scatter medium.
 - **File:** tutorials/guest-tutorial-creating-realistic-honey-with-flip.md
 
+
+### How to make a Short Film in Houdini | Magnus Møller & Jesper Andkjær |
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=EPIdMwuMK-M
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/how-to-make-a-short-film-in-houdini-magnus-møller-jesper-andkjær.md
+
 ---
 
 ## Tag Reference
