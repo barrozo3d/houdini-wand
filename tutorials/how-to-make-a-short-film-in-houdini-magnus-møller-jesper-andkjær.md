@@ -1,12 +1,12 @@
 ---
-title: How to make a Short Film in Houdini | Magnus Møller & Jesper Andkjær |
+title: "How to make a Short Film in Houdini | Magnus Møller & Jesper Andkjær"
 source: YouTube
 url: https://www.youtube.com/watch?v=EPIdMwuMK-M
-author: Houdini
+author: Houdini (official channel) — Magnus Møller & Jesper Andkjær, Studio Tumblehead
 ingested: 2026-07-03
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 20 / 20.5"
+tags: [pipeline, production, short-film, usd, solaris, kinefx, apex, rigging, animation, compositing, copernicus, karma-xpu, hda, python, automation, lookdev, lighting, lpe-aov, hair-grooming, blendshapes, tumblehead, houdini-20, conference-talk, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/how-to-make-a-short-film-in-houdini-magnus-møller-jesper-andkjær/
 frame_count: 10
 ---
@@ -78,27 +78,91 @@ frame_count: 10
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+**Conference talk, not a step-by-step tutorial.** Studio Tumblehead (Viborg, Denmark) presents "Stormelpipe" — a fully custom, open-source Houdini production pipeline built from scratch in Python for their short film *Turbulence* (made with SideFX). The core philosophy: **everything in Solaris/USD, no Object mode**, rigging and animation in KineFX/APEX, compositing in Copernicus/COPs. All departments (model → blendshapes → lookdev → rig → layout → animation → CFX → effects → lighting → comp) are unified under a single custom Project Browser HDA with one-click scene loading, publishing, and iteration tracking via USD metadata. The pipeline is free and open-source on GitHub.
 
 ### Summary
-[PENDING EXTRACTION]
+68m35s SideFX HOUDINI HIVE talk by Magnus Møller and Jesper Andkjær of Studio Tumblehead (14 artists total, incl. programmer Søren and TD Remy) presenting their full Houdini production pipeline developed for the short film *Turbulence* (H20/20.5, made with SideFX). Covers the complete asset workflow (modeling from NomadSculpt/ZBrush/QuilVR, blendshapes via GoZ or SkullThings, LookDev with Karma, tube-to-hair HDA, KineFX/APEX auto-rigger) and the full shot workflow (layout with import-asset HDA, animation with Build Shot HDA + transient constraints + global transform mode + bone jiggle/geometry noise HDAs, CFX/seat belt tricks, LPE-AOV lighting in Karma XPU with render gallery, Copernicus compositing with auto-built comp trees and custom AOV/outline HDAs). Pipeline available free on GitHub and documented on Notion. Project site: sidefx.com/tech-demos/turbulence.
 
 ### Key Steps
-[PENDING EXTRACTION]
+
+#### Pipeline Architecture
+1. **Stormelpipe package**: A standard Houdini package (environment variable + folder structure). No installer. Contains all HDAs, Python modules (thousands of lines), icons, and config files. Updating = `git pull` and override the package folder.
+2. **Project Browser HDA**: Central UI open in every scene. Left panel: select Project → Assets or Shots → Department. One click opens the scene, saves, publishes. Automatically loads the correct recipe (template) per department.
+3. **Project structure**: Assets / Shots / Kits (collections of assets). Each asset/shot has departments, each department produces "products" (published USD layers). Metadata stored as USD attributes + text files on disk — no external database required (ShotGrid/FTrack integration is planned but not yet implemented).
+4. **Loading strategy**: "Latest" mode = pulls latest published version of every layer automatically (default). "Strict" mode = pinned versions (safer, needs more frequent publishing).
+5. **All departments run in Solaris**: Zero switching back to Object mode. Everything is USD sub-layers stacked in the Build Shot HDA.
+
+#### Asset Workflow
+6. **Modeling**: Click Model in browser → scene opens with a SOP subnet + Export node. Import from NomadSculpt (OBJ/FBX), ZBrush (GoZ), QuilVR (Alembic). Use **T-tumblehead cache HDA** to embed a single frame or simulation directly in the scene file. Connect subnet output → Export Model node → hit Export. Done.
+7. **Blendshapes**: Click Blendshape department → import model → isolate head → GoZ round-trip for external blendshapes, or use **SkullThings sub** (H20.5 sculpt node) directly in Houdini for one-click blendshape creation. Cache → Export.
+8. **LookDev**: Click LookDev → Import Model node auto-loads the character (knows asset context from metadata). Add **Material Library** node → create materials inside (procedural noises, geometry color, or texture files from Procreate/ZBrush/Substance Painter). Use **LookDev Studio HDA** (by Remy) for quick preview: buttons 0–5 switch environments, rotate light/camera in viewport, choose podium shape (disk/slab/box/cylinder), topology/flat-shade shader modes. Connect to Export LookDev → Export.
+9. **Hair**: Sculpt hair volume shape with tubes in a dedicated HDA → **tube-to-hair conversion HDA** fills the volume with strands (sliders for styling, length, clumping, flyaways, noise). Split into multiple groups for different hair regions with different settings. Can be used as base for vanilla grooming nodes.
+10. **Rigging (KineFX/APEX)**: Click Rig department → model auto-loaded via "get latest." All rigging in a SOP subnet using KineFX/APEX. Input skeleton with a strict naming convention + **tags/labels** (now called "tags" in vanilla H20.5) to mark IK, bendy setups, etc. → **joint-by-harmonic capture** HDA for skinning (attached geometry guides skinning zones). **One-node autorig**: a Python module generates the full APEX rig from the tagged skeleton — all characters share the same rig, just different skeleton proportions. Export.
+
+#### Shot Workflow
+11. **Layout**: Click Layout → **Import Asset HDA**: dropdown to choose characters/props/sets, slider to add multiple instances. Pipeline auto-renames duplicate characters in USD (e.g. three babies from one rig). Hit Import → all assets appear in Solaris stage. Add camera (naming convention critical for downstream automation). Use simple Edit node to pose characters. Export Layout.
+12. **Build Shot HDA** (by Søren): Core of the shot pipeline. Vertical axis = asset (e.g. Jimmy, prop, set). For each asset, stacks USD sub-layers per department (model on top, lookdev below, etc.). Shot departments (animation, CFX, effects, lighting) also slot in as layers. "Exclude Shot Department" auto-toggles so you never load your own department's output. Downstream departments also auto-excluded. Multiple shots can coexist in one file (add a second Build Shot HDA, point it to a different shot).
+13. **Procedures**: Custom variant of USD procedurals. An HDA runs live on animation output (e.g. wrinkle deformer) without baking until render submission. Saves iteration time.
+14. **Animation — scene setup**: In animation department, Build Shot auto-excludes animation layer. **Import Ricks node** reads the USD stage to identify which characters are in the shot and loads their rigs automatically — no manual rig assignment. Select rig overrides are optional.
+15. **Animation — interface**: Channel box (middle-mouse drag for precision), timeline with key saturation (fully-keyed = bright green, partial = pale green), curve editor. **Selection sets** = named groups of controls (act like pickers); create custom sets for eyes-only, spine-only, etc. **Animation layers** (additive or override, weight-blendable).
+16. **Animation toolbar**: Built-in Houdini tools — Blend to Neighbor, Ease In/Out, Push and Pull for quick curve shaping. **Global Transform Mode**: select multiple objects → hold Ctrl+Shift → all pivot around the last-selected object's joint. Useful for posing props relative to characters without constraints.
+17. **Transient Constraints**: Select child + parent → select frame range on timeline → press **A** = constraint applied. Press **Shift+A** = offset parent (child stays put while parent moves; offset baked to all keys). **Dense mode** = constraint baked to every frame; **Update mode** = baked only to existing keyframes. Constraints visible as colored bars on timeline.
+18. **CFX / Bone jiggle**: **CFX and HDA** adds procedural noise to joints (noise type, amplitude, frequency sliders). Applied to joints, not geometry. Separate **jiggle HDA** adds settle/bounce (wobbly secondary motion) to the full rig — can completely replace hand-keyed secondary animation for stylized characters.
+19. **Effects / Geometry deformation**: In Effects department: **Attribute Noise** node on geometry for skin-crawl effects. **Wrinkle Deformer** for skin folding on face deformation. **H-Paint HDA** (third-party) = paint geometry instances directly onto mesh surface (used for Mike's gross-up: warts, bubbles, extra geometry painted onto the face). **Peak node** on lips for bubbly lip effect.
+20. **Effects / Seat belts without rigging**: Import default seat belt mesh → **ScatterMatch (Scott) node** snaps it to the character for one frame of animation → **Point Deform** carries it through the full animation. No skeleton, no constraints needed.
+21. **Effects / Particles**: Sub-Create node for tears/sweat/debris → instancer HDA with animated points (noise-driven positions) → instanced geometry rendered as part of the shot. Wet maps via Copernicus (Chris Rutledge's H20.5 demo file on SideFX content library).
+22. **Lighting (Karma XPU)**: ACES color space. **Light Viewer State modes**: Diffuse (click to set diffuse highlight), Specular (click for specular), or Intersection+Shadow (two clicks: intersection point + shadow terminator). **Solaris Light Linker** (a node, drag-and-drop): drag asset into a light's lane to restrict that light to just that asset. **Render Gallery**: save snapshots while working; right-click a thumbnail → restore all light settings from that snapshot.
+23. **AOVs and LPEs**: Use Tumblehead AOV HDA and **LPE HDA** (by Remy) to define light groups → each group gets its own AOV so you can tweak lights in comp. Also POSOMATTS (cryptomatte alternative used here). HDA handles naming/format conventions automatically for comp integration.
+24. **Render Layers**: Branch the lighting output into multiple render layers (e.g. "normal" + "hallucination"). In comp, blend between them. Each layer submitted as a separate farm job. **Render Submission HDA**: loads full USDC for preview + validation before farm dispatch (via Deadline). First/middle/last frames submitted first as validation pass → result auto-posted to Discord. Full render → converted to MP4 → also posted to Discord.
+25. **Compositing (Copernicus/COPs)**: **Tumblehead Build Comp HDA**: click Update → reads metadata to find all render layers, auto-builds the entire comp tree (all LPEs, AOVs, render layers imported and wired). Remy composes all shots using this as base. Custom HDAs: **depth+mask noise compositor** (non-random noise anchored to scene depth and character mask, for hallucination shots); **Outline HDA** (extends Houdini's built-in outline compositor with noise, AOV blending, and stylized variations).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **T-tumblehead cache** (custom HDA) — embed single-frame or sim in scene file; avoids external file dependencies
+- **LookDev Studio** (Remy's HDA) — environment/lighting preview with viewport-interactive controls; podium shape picker; shader display modes
+- **Material Library** (Solaris node) — all materials for a character authored inside; supports procedural noises, geometry color, and external textures
+- **Build Shot HDA** (custom, Søren) — USD sub-layer stacker for all asset + shot departments; exclude toggles; multi-shot support
+- **Import Asset HDA** (custom) — layout scene population; multi-instance with auto-rename for duplicate rigs
+- **Import Ricks** (custom) — reads USD stage to auto-discover and load rigs for the current shot
+- **Procedures** (custom HDA variant) — live effects on animation (e.g. wrinkle deform) without baking until render
+- **CFX and HDA** (custom) — joint-level procedural noise (type, amplitude, frequency)
+- **Jiggle HDA** (custom) — secondary motion (settle, bounce) applied to full rig; can replace hand-keyed secondary animation
+- **H-Paint** (third-party HDA by SideFX community) — paint geometry instances directly onto mesh surface
+- **GoZ integration** — round-trip to ZBrush for blendshape sculpting
+- **SkullThings sub** (H20.5, vanilla) — in-Houdini sculpt node for direct blendshape creation
+- **Joint-by-Harmonic Capture HDA** (custom) — harmonic-based skinning with helper geometry to define capture regions
+- **Tube-to-Hair HDA** (custom) — converts tube-sculpted hair volumes to Houdini hair grooms with styling sliders
+- **ScatterMatch / Scott node** — snaps mesh to one frame of animation for rigid follow via Point Deform
+- **Point Deform** (vanilla Houdini) — deforms mesh to follow animated source skeleton/mesh
+- **Attribute Noise** (vanilla SOP) — adds procedural geometric noise to deform mesh
+- **Wrinkle Deformer** (vanilla Houdini) — skin wrinkling on facial deformation
+- **Peak** (vanilla SOP) — extrude vertices along normals; used for bubbly lip effect
+- **Instancer HDA** (custom) — noise-driven point animation + geometry instancing for tears/sweat/debris
+- **LPE HDA** (Remy's custom) — light path expression AOV groups; auto-handles naming/format for comp
+- **Tumblehead Build Comp HDA** (Remy's custom) — Copernicus auto-comp-builder from render layer metadata
+- **Depth+Mask Noise Compositor HDA** (Remy's custom) — non-random compositing noise anchored to depth AOV and character mask
+- **Outline HDA** (Remy's custom) — extends vanilla Houdini outline compositor with noise and AOV blending
+- **Render Submission HDA** (custom) — USDC preview, validation, Deadline farm dispatch, first/middle/last frame validation pass
+- **Solaris Light Linker** (vanilla Solaris node) — drag-drop light-to-object assignment
+- **Render Gallery** (vanilla Solaris) — snapshot + restore light settings from any saved version
+- **Transient Constraints** (vanilla KineFX) — A key = constrain, Shift+A = offset parent; dense/update modes
+- **Global Transform Mode** (vanilla KineFX animation) — Ctrl+Shift multi-object pivot; pose objects together without constraints
+- **Animation Layers** (vanilla KineFX) — additive or override, weight-adjustable
+- **Selection Sets** (vanilla KineFX) — named control groups acting as pickers
+- **Animation Toolbar** (vanilla KineFX) — Blend to Neighbor, Ease In/Out, Push/Pull sliders
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (conference talk; assumes Houdini/USD fluency; no hand-holding on individual node parameters)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 20 / 20.5 (started in H20 Alpha; Copernicus/SkullThings added in 20.5)
 
 ### Tags
-[PENDING EXTRACTION]
+pipeline, production, short-film, usd, solaris, kinefx, apex, rigging, animation, compositing, copernicus, karma-xpu, hda, python, automation, lookdev, lighting, lpe-aov, hair-grooming, blendshapes, tumblehead, houdini-20, conference-talk, advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `understanding-solaris-and-usd-in-houdini.md` — USD/Solaris foundations underpinning the entire Stormelpipe workflow
+- `houdini-kinefx-rigging-for-beginners.md` — KineFX rigging system used in the Turbulence auto-rigger
+- `apex-rigging-system-houdini.md` — APEX rig architecture referenced throughout
+- `copernicus-compositing-houdini.md` — Copernicus/COPs used for all shot compositing in Turbulence

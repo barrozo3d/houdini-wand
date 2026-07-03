@@ -1340,13 +1340,13 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/guest-tutorial-creating-realistic-honey-with-flip.md
 
 
-### How to make a Short Film in Houdini | Magnus Møller & Jesper Andkjær |
+### How to make a Short Film in Houdini | Magnus Møller & Jesper Andkjær
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=EPIdMwuMK-M
-- **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Houdini (official) — Magnus Møller & Jesper Andkjær, Studio Tumblehead
+- **Houdini Version:** Houdini 20 / 20.5
+- **Tags:** pipeline, production, short-film, usd, solaris, kinefx, apex, rigging, animation, compositing, copernicus, karma-xpu, hda, python, automation, lookdev, lighting, lpe-aov, hair-grooming, blendshapes, tumblehead, houdini-20, conference-talk, advanced
+- **Summary:** SideFX HIVE conference talk — Studio Tumblehead's complete open-source Houdini pipeline "Stormelpipe" for their short film *Turbulence* (H20/20.5). Covers every department: modeling (NomadSculpt/ZBrush/QuilVR import), blendshapes (GoZ or in-Houdini SkullThings sculpt), LookDev (Karma + LookDev Studio HDA), tube-to-hair HDA, KineFX/APEX auto-rigger (one Python module builds APEX rig from tagged skeleton), layout with Import Asset HDA, animation with Build Shot HDA (USD sub-layer stacker) + transient constraints + global transform mode + bone jiggle + geometry noise HDAs, CFX/seat belt tricks (Scott node + Point Deform), LPE AOV lighting in Karma XPU, Copernicus compositing with auto-built comp tree (Tumblehead Build Comp HDA). Pipeline is free and open-source on GitHub. Project site: sidefx.com/tech-demos/turbulence.
 - **File:** tutorials/how-to-make-a-short-film-in-houdini-magnus-møller-jesper-andkjær.md
 
 ---
