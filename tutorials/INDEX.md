@@ -1354,9 +1354,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rVogGr7f0Cg
 - **Author:** June Chevalier
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H20–H20.5 UI)
+- **Tags:** sop, curves, attributes, procedural, vex, wrangler, modelling, beginner, intermediate
+- **Summary:** An 85-minute beginner-friendly end-to-end hair grooming tutorial covering: mesh import + scale correction, density mask painting and mirroring, VDB collision setup, guide sculpting with the Draw tool, hair generation, and three realism layers — primary/secondary/tertiary clumping (including a VEX mask-invert trick for lower-section clumps), guide-process frizz noise, and stray/flyaway hairs via a random guide mask. Result: a realistic short men's hairstyle. Explicitly compared to and positioned as less buggy than Maya XGen.
 - **File:** tutorials/the-only-hair-grooming-tutorial-you-need-houdini-for-artists.md
 
 ---

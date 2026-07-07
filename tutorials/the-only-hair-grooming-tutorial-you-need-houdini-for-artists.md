@@ -4,9 +4,9 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rVogGr7f0Cg
 author: June Chevalier
 ingested: 2026-07-07
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H20–H20.5 UI)"
+tags: [sop, curves, attributes, procedural, vex, wrangler, modelling, beginner, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/the-only-hair-grooming-tutorial-you-need-houdini-for-artists/
 frame_count: 11
 ---
@@ -83,27 +83,72 @@ frame_count: 11
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+End-to-end hair grooming in Houdini SOPs using `guidegroom`, `hairgenerate`, `hairclump`, and `guideprocess` to produce realistic short human hair with layered clumping, frizz noise, and stray flyaway hairs.
 
 ### Summary
-[PENDING EXTRACTION]
+An 85-minute beginner-friendly tutorial by June Chevalier covering the full pipeline for character hair grooming in Houdini. Starting from mesh import and unit-scale correction, the tutorial builds a density mask, VDB collision volume, sculpted guides, and generated hair strands, then layers in the three key realism drivers: layered clumping (primary, secondary, tertiary), guide-process noise to break up CG smoothness, and stray/flyaway hairs via a random guide mask. The result is a convincing short men's hairstyle, with the workflow explicitly compared to and positioned as less buggy than Maya XGen.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Mesh import & scale** — Add a `geometry` object → `file` SOP → `transform` SOP, set Uniform Scale to `0.01` to convert Maya centimeters to Houdini meters. Check the bounding box size in the viewport (target: ~0.3 m height for a head).
+2. **Paint density mask** — Inside the mesh geometry network, add `attribpaint` SOP. Paint in the viewport (Ctrl = erase). Rename the painted attribute to `density_mask`.
+3. **Mirror the mask** — Add `attribreorient` (Attribute Mirror) SOP. Set Mirroring Method to **Topology** (mesh is not spatially symmetric, but topology is). Double-click the middle-axis point, press Enter. Set Attribute Name to `density_mask`. Cap with a `null` named `out_mask`.
+4. **Build VDB collision** — Still in the mesh network: add `polyfill` to seal any open holes → `vdbfrompolygons` (set voxel size to `0.001` for dense collision voxels) → `null` named `out_VDB`.
+5. **Create guide groom object** — At the object level, add a `guidegroom` node. In its parameters, set Skin Attribute to `density_mask`. Set Scatter Seed to `0` (manual sculpt mode). Dive in, add a second nested `guidegroom` — this is the sculpting layer. Use the **Paint/Draw** tool in the viewport to draw individual guide strands; press **S** to select specific guides before sculpting.
+6. **Add guide deform** — After sculpting, add a `guidedeform` SOP and connect the skin geometry. This binds guides to the skin for animated characters.
+7. **Generate hair** — Add `hairgenerate` SOP. Connect the `out_mask` and `out_VDB` inputs. Enable Guided Hair; set Skin Attribute to `density_mask`. Set density to ~500,000. Add a thickness ramp: lower the root point value slightly to make hair appear to grow out of skin. Enable Use Clump Mask for the mask attribute.
+8. **Color ramp for art-direction** — Before clumping, add `resample` SOP (sets `curveu` attribute; drag all values to 0 but check **Color View Attribute**) → `color` SOP set to **Ramp from Attribute**, attribute: `curveu`, preset: `black2oranz`. This makes root/tip color art-directable.
+9. **Primary clumping (largest)** — Add `hairclump` SOP. Connect guides to the Custom Clump Curves input, VDB to the collision input. Apply `clump_mask` to the Blend field. Adjust Tightness ramp to low values for thick, loose primary clumps.
+10. **Secondary clumping (medium, guide-driven)** — Duplicate or add a second `hairclump`. Connect within-existing-clumps mode. Apply `clump_mask` again. Tune Tightness for tighter secondary grouping. Enable the `curling` / frequency parameters to add directional turbulence.
+11. **Invert mask for lower-section clumping** — Add `attribwrangle` (Point context) to create a new mask for the bottom section of hair:
+    ```vex
+    f@inv_clump_mask = 1.0 - f@clump_mask;
+    ```
+    Add a third `hairclump` using `inv_clump_mask` as the skin attribute and a low clump size (~4).
+12. **Tertiary clumping workaround** — If clump size cannot go small enough, feed the guides into a secondary `hairgenerate` to create ultra-dense guide strands, then pipe those into a fourth `hairclump` as the custom curves input. Control scatter seed for art direction.
+13. **Noise / frizz** — Add `guidemask` SOP (random mask mode); adjust amount. Then add `guideprocess` SOP, Operation: **Noise**, Type: **Sine Per Direction**, Frequency ~100. Apply the random mask in the Masking tab. This breaks up CG-smooth hair strands across almost all hairs.
+14. **Stray / flyaway hairs** — Add another `guidemask` (random, low percentage). Add `guideprocess`, Operation: **Set Length**, Mode: **Subtract**, value ~0.3. Apply the random mask. This shortens only selected strands to create flyaway ends that break the silhouette.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+
+| Node | Key Settings |
+|------|-------------|
+| `geometry` (object) | Container for the mesh and mask sub-networks |
+| `file` SOP | Import mesh (.obj / .fbx / .abc) |
+| `transform` SOP | Uniform Scale: `0.01` (Maya cm → Houdini m) |
+| `attribpaint` SOP | Attribute Name: `density_mask`; Ctrl to erase |
+| `attribreorient` SOP | Mirroring Method: Topology; Attribute: `density_mask` |
+| `null` SOP | Named `out_mask`, `out_VDB` for output clarity |
+| `polyfill` SOP | Seals open mesh boundaries before VDB conversion |
+| `vdbfrompolygons` SOP | Voxel Size: `0.001`; fog volume for collision |
+| `guidegroom` SOP (×2) | Outer: Skin Attribute = `density_mask`, Scatter Seed = 0; Inner: sculpt layer with Paint/Draw |
+| `guidedeform` SOP | Bind guides to animated skin |
+| `hairgenerate` SOP | Density: ~500,000; Guided Hair: on; thickness ramp with lower root value; Skin Attribute: `density_mask` |
+| `resample` SOP | Drag all values to 0; check **Color View Attribute** → creates `curveu` |
+| `color` SOP | Color Type: Ramp from Attribute; Attribute: `curveu`; preset: `black2oranz` |
+| `hairclump` SOP (×3-4) | Layer 1: primary, thick, `clump_mask`; Layer 2: secondary, guide-driven; Layer 3: inverted mask for bottom section; tightness ramp controls density |
+| `attribwrangle` SOP | Point context; creates inverted mask |
+| `guidemask` SOP | Mode: Random; Amount: ~10-20% for noise, lower for stray |
+| `guideprocess` SOP | Noise: Type = Sine Per Direction, Frequency ~100; Set Length: Mode = Subtract, value ~0.3 |
+
+**VEX Snippet (Point Wrangle):**
+```vex
+// Invert clump_mask to target the lower/unmasked section of hair
+f@inv_clump_mask = 1.0 - f@clump_mask;
+```
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — marketed as beginner-friendly, but assumes the user knows basic Houdini navigation, the SOP context, and node-wiring. No VEX knowledge required (one wrangle is copy-pasted verbally). A total Houdini newcomer would struggle without completing a basic Houdini introduction first.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified. UI appearance and node availability (Guide Groom, Hair Generate, Hair Clump as standalone SOPs) is consistent with **H20 or H20.5**. Compatible with Houdini Apprentice (free).
 
 ### Tags
-[PENDING EXTRACTION]
+`sop`, `curves`, `attributes`, `procedural`, `vex`, `wrangler`, `modelling`, `beginner`, `intermediate`
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[how-to-make-a-short-film-in-houdini-magnus-møller-jesper-andkjær]] — Studio Tumblehead's production pipeline includes a `tube-to-hair` HDA and a full hair grooming pipeline for their short film *Turbulence* (H20/H20.5, KineFX/APEX, Karma XPU). Shares: `sop`, `curves`, `attributes`, `modelling`.
+- [[model-a-procedural-flower-houdini-tutorial]] — Shares `sop`, `curves`, `procedural`, `attributes`; uses `resample` + `curveu` for curve-based geometry, directly analogous to how `curveu` is used to drive the hair color ramp here.
+- [[houdini-tutorial-make-any-geometry-knitted]] — Shares `sop`, `curves`, `attributes`; sweep-based strand generation and `curveu`-driven attributes closely parallel the hair strand pipeline.
+- [[урок-мягкая-ткань]] / [[tutorial-soft-weave]] — Shares `sop`, `curves`, `attributes`, `procedural`; demonstrates sine-driven curve deformation, relevant as an alternative way to add noise/frizz to strands without `guideprocess`.
