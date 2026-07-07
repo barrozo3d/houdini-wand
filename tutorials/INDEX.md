@@ -1349,6 +1349,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** SideFX HIVE conference talk — Studio Tumblehead's complete open-source Houdini pipeline "Stormelpipe" for their short film *Turbulence* (H20/20.5). Covers every department: modeling (NomadSculpt/ZBrush/QuilVR import), blendshapes (GoZ or in-Houdini SkullThings sculpt), LookDev (Karma + LookDev Studio HDA), tube-to-hair HDA, KineFX/APEX auto-rigger (one Python module builds APEX rig from tagged skeleton), layout with Import Asset HDA, animation with Build Shot HDA (USD sub-layer stacker) + transient constraints + global transform mode + bone jiggle + geometry noise HDAs, CFX/seat belt tricks (Scott node + Point Deform), LPE AOV lighting in Karma XPU, Copernicus compositing with auto-built comp tree (Tumblehead Build Comp HDA). Pipeline is free and open-source on GitHub. Project site: sidefx.com/tech-demos/turbulence.
 - **File:** tutorials/how-to-make-a-short-film-in-houdini-magnus-møller-jesper-andkjær.md
 
+
+### The Only HAIR GROOMING Tutorial You Need! (Houdini for Artists)
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=rVogGr7f0Cg
+- **Author:** June Chevalier
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/the-only-hair-grooming-tutorial-you-need-houdini-for-artists.md
+
 ---
 
 ## Tag Reference
