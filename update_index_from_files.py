@@ -2,7 +2,7 @@
 """Sync tutorials/INDEX.md entries from completed tutorial file frontmatter + Summary section."""
 import re, os
 
-BASE = r"C:\Users\KABUM\.claude\skills\houdini-wand"
+BASE = os.path.dirname(os.path.abspath(__file__))
 TUT_DIR = os.path.join(BASE, "tutorials")
 INDEX_PATH = os.path.join(TUT_DIR, "INDEX.md")
 

@@ -143,8 +143,9 @@ Do NOT wait to be asked for step 2 — run it immediately after step 1 completes
 
 ### Step 1 — Data collection (run ingest.py)
 
+Run from this skill's own directory (the folder containing this SKILL.md — works on any machine):
 ```bash
-python C:/Users/KABUM/.claude/skills/houdini-wand/ingest.py "[URL]"
+python ingest.py "[URL]"
 ```
 
 This runs without any API calls. It:
@@ -176,9 +177,8 @@ After ingest.py completes, run the full extraction pass without being asked:
 5. **Update frontmatter**: set `houdini_version:`, `tags:`, `extraction_status: complete`
 6. **Find related tutorials**: scan `INDEX.md` for entries sharing 2+ tags, add cross-links in `## Related Tutorials`
 7. **Update INDEX.md entry**: replace `[PENDING]` fields with real version, tags, and summary
-8. **Commit and push**:
+8. **Commit and push** (from this skill's own directory):
 ```bash
-cd C:/Users/KABUM/.claude/skills/houdini-wand
 git add tutorials/<slug>.md tutorials/INDEX.md
 git commit -m "extract: [tutorial title]"
 git push

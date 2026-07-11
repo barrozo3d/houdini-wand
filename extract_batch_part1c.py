@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re, os
 
-BASE = r"C:\Users\KABUM\.claude\skills\houdini-wand\tutorials"
+BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tutorials")
 
 def update_file(path, frontmatter_updates, structured_notes, related_entries):
     with open(path, 'r', encoding='utf-8-sig') as f:
