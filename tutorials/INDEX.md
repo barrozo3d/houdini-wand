@@ -1719,6 +1719,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more.md
 
+
+### Dusty Bottles - Bridging procedural workflows in Houdini and Solaris
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=CHySFnWfKLk
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris.md
+
 ---
 
 ## Tag Reference
