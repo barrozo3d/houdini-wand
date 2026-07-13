@@ -2549,6 +2549,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-tips-solaris-vdbs-cops-and-more.md
 
+
+### Bake room maps in karma from HDRI interiors H20
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=6hbyMIxU1oI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/bake-room-maps-in-karma-from-hdri-interiors-h20.md
+
 ---
 
 ## Tag Reference
