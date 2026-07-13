@@ -1779,6 +1779,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/jellyfish-procedural-animation-with-houdini-and-vex-patreon-july-trailer.md
 
+
+### Procedural Boat in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=050av2q2ihg
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-boat-in-houdini.md
+
 ---
 
 ## Tag Reference
