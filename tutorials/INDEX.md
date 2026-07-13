@@ -2259,6 +2259,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-tips-and-tricks-in-houdini-205.md
 
+
+### The Donut Tutorial in Cops | Houdini 20.5
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=meX4fLnITR0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/the-donut-tutorial-in-cops-houdini-205.md
+
 ---
 
 ## Tag Reference
