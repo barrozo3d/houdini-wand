@@ -2299,6 +2299,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/displacement-maps-in-cops-houdini-205.md
 
+
+### Useful Vex snippets | Houdini tips and tricks
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=_C6-g1C--ws
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/useful-vex-snippets-houdini-tips-and-tricks.md
+
 ---
 
 ## Tag Reference
