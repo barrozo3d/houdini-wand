@@ -1829,6 +1829,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/creating-a-procedural-rock-wall-with-houdini-patreon-may---trailer.md
 
+
+### From sops to final render with Karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=O_oxVn-YVB0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/from-sops-to-final-render-with-karma.md
+
 ---
 
 ## Tag Reference
