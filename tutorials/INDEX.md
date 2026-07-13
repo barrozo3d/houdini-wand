@@ -3019,6 +3019,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/chocolate-split-patreon-january-25-trailer.md
 
+
+### Procedural Animation with RBD
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=RbiH315adq8
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-animation-with-rbd.md
+
 ---
 
 ## Tag Reference
