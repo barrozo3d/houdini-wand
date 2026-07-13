@@ -1929,6 +1929,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vex-quick-tips-overhang-look-with-channel-ramps.md
 
+
+### Procedural Modeling, Rigging and Animation with Houdini | Patreon February Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=08lvfWum09M
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-modeling-rigging-and-animation-with-houdini-patreon-february-trailer.md
+
 ---
 
 ## Tag Reference
