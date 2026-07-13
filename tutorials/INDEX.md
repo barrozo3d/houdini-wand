@@ -2879,6 +2879,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-assets-and-shading-with-houdini-and-materialx.md
 
+
+### Python in Houdini  | Create a texture importer for Solaris
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=zZBkR8rk-_s
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/python-in-houdini-create-a-texture-importer-for-solaris.md
+
 ---
 
 ## Tag Reference
