@@ -2979,6 +2979,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-modeling-first-steps-with-houdini.md
 
+
+### Cookies and chocolate | Modeling, shading and Sim
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=c90ervPv5ro
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/cookies-and-chocolate-modeling-shading-and-sim.md
+
 ---
 
 ## Tag Reference
