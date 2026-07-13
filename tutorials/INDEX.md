@@ -2069,6 +2069,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/product-shot-in-houdini-part-1-patreon-november.md
 
+
+### Wood Barrel Texturing in COPS
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=O6T5eVYJHsA
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/wood-barrel-texturing-in-cops.md
+
 ---
 
 ## Tag Reference
