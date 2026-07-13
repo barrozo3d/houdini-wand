@@ -3229,6 +3229,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/prodecural-cliffs-with-heighfields-vdb-and-materialx.md
 
+
+### Procedural VDB Cookies
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=WKs4KHfHpyA
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-vdb-cookies.md
+
 ---
 
 ## Tag Reference
