@@ -3159,6 +3159,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/add-details-with-regions-from-image-labs-tool.md
 
+
+### Roman Bridge - Procedural Asset Creation - Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=G4Fb8jKQ3WM
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/roman-bridge---procedural-asset-creation---trailer.md
+
 ---
 
 ## Tag Reference
