@@ -1919,6 +1919,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vex-quick-tips-2-iterating-over-numbers.md
 
+
+### Vex quick tips | Overhang look with channel ramps
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=SHAgvzji9vM
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vex-quick-tips-overhang-look-with-channel-ramps.md
+
 ---
 
 ## Tag Reference
