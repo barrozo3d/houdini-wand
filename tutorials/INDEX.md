@@ -1699,6 +1699,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/heightfields-and-cops-workflow-in-houdini-21---patreon-september-25-trailer.md
 
+
+### Houdini 21 | Opacity vs Stencil vs Geometry
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ha85low9Bmo
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-21-opacity-vs-stencil-vs-geometry.md
+
 ---
 
 ## Tag Reference
