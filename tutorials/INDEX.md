@@ -1789,6 +1789,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-boat-in-houdini.md
 
+
+### Quick object merge with Python in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=fDV8SQegEDc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/quick-object-merge-with-python-in-houdini.md
+
 ---
 
 ## Tag Reference
