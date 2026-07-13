@@ -2809,6 +2809,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/python-multi-asset-loader-in-houdini.md
 
+
+### Python in Houdini | Absolute to relative paths
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=N5DN6SwYFVs
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/python-in-houdini-absolute-to-relative-paths.md
+
 ---
 
 ## Tag Reference
