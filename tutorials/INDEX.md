@@ -1479,6 +1479,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/volume-rays-in-cops-for-houdini-21.md
 
+
+### Creating assets from default geometry in Houdini 21
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=oEIXFY-Kxdk
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/creating-assets-from-default-geometry-in-houdini-21.md
+
 ---
 
 ## Tag Reference
