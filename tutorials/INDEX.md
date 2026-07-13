@@ -3239,6 +3239,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-vdb-cookies.md
 
+
+### Patreon Exclusive  | Add side details to cliffs | Preview
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=qzs3LnMeYEE
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/patreon-exclusive-add-side-details-to-cliffs-preview.md
+
 ---
 
 ## Tag Reference
