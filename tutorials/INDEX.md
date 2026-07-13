@@ -1839,6 +1839,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/from-sops-to-final-render-with-karma.md
 
+
+### Quick CG integration with Houdini and Karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=kxg05cfgdQI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/quick-cg-integration-with-houdini-and-karma.md
+
 ---
 
 ## Tag Reference
