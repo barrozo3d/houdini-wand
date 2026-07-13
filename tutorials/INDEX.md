@@ -1589,6 +1589,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-duct-tape-in-houdini.md
 
+
+### Tips and Tricks to level up your Houdini Skills
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=DV0ABu_-yvc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tips-and-tricks-to-level-up-your-houdini-skills.md
+
 ---
 
 ## Tag Reference
