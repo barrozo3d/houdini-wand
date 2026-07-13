@@ -1889,6 +1889,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-graffiti-in-houdini-and-cops-mardini.md
 
+
+### Procedural UVS and Texturing in COPS | Patreon March Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=-lVYE0LRu6w
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-uvs-and-texturing-in-cops-patreon-march-trailer.md
+
 ---
 
 ## Tag Reference
