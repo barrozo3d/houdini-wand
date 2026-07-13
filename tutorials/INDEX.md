@@ -1959,6 +1959,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-pizza-in-cops.md
 
+
+### Quick CGI Integration with Houdini and Solaris
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=xm9d-Un3Hrg
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/quick-cgi-integration-with-houdini-and-solaris.md
+
 ---
 
 ## Tag Reference
