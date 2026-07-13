@@ -2469,6 +2469,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-tips-tileable-noises-cam-from-stage-tops-and-more.md
 
+
+### Husk Chair - Modeling and Simulating in Houdini - Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=S5sKJaPU7C8
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/husk-chair---modeling-and-simulating-in-houdini---trailer.md
+
 ---
 
 ## Tag Reference
