@@ -3139,6 +3139,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-grapes-and-how-to-avoid-intersections.md
 
+
+### Procedural Champions League football in 2 minutes
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=kpWtT6tPvP0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-champions-league-football-in-2-minutes.md
+
 ---
 
 ## Tag Reference
