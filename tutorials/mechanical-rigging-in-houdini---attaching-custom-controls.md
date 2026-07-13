@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=7J-hDF0H6ck
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+)"
+tags: [rigging, kinefx, mechanical, controls, wrangle, matrix, fit-range, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Mechanical rigging in Houdini - Attaching custom controls
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py mechanical-rigging-in-houdini---attaching-custom-controls <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -193,30 +189,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:08] tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/frame_000.jpg
+- [1:49] tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/frame_001.jpg
+- [2:22] tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/frame_002.jpg
+- [4:26] tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/frame_003.jpg
+- [7:14] tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/frame_004.jpg
+- [8:12] tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/frame_005.jpg
+- [11:06] tutorials/frames/mechanical-rigging-in-houdini---attaching-custom-controls/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
-
-### Summary
-[PENDING EXTRACTION]
+Attaches sphere-shaped animation controls to a mechanical rig and drives symmetric pairs of joint rotations by extracting each control's translation distance, fitting it to a precomputed max-rotation-angle range, and writing the resulting rotated matrix back onto the rig points — all done in parallel over a "number of points" wrangle rather than looping per-point manually.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build simple sphere controls: create two points (via a **Point Generate**, name them e.g. `target_left` / `target_right` via a **Name** node set to Points mode), run them through **Rig Doctor** for transforms, then instance a small **Sphere** (Primitive type, scale ~0.05, given a distinct color) per point, named and set to Primitive mode.
+2. **Attach Control / Attach Joint Geo**: join the control geometry to the rig geometry (disable resting both inputs), wiring the named target attribute so each sphere attaches to its corresponding named point.
+3. Use **Rig Pose** to position each control sphere relative to its target (e.g. offsets like 1 / 0.5 on Y and -1 on the mirrored side), then **lock rotation and lock Y/Z translation** on the controls so animators can only translate them along the intended single axis.
+4. **Driving the rig from the controls (the core trick):** rather than iterating per-point with a for-each loop, use a **Rig Attribute Wrangle** iterating over **numbers** (`npoints(1)`) instead of points, so both symmetric points are processed together in one parallel pass.
+5. Select the relevant rig points into an array (e.g. `expandpointgroup` with a **channel string group**, resolving to specific point numbers like 6 and 16 for a mirrored pair), then pull each point's **local transform matrix** (from the second input) and use **getcomp** to extract the translate components (row/column of the matrix) needed for the fit.
+6. Compute the **max rotation angle** once, in detail mode: grab the local transform of the same selected points from the *first* input (the un-driven rest rig), extract the angle via `matrix → makesingle` style decomposition, and multiply by two (to account for mirroring the rotation to the opposite side).
+7. Per point: **Fit** the absolute value of the control's translate-X (since one side is negative) between an empirically-found distance range (e.g. 0.6 to 1.2) onto an output range of 0 to the max angle computed in step 6 — this converts "how far did you drag the control" into "how much should the joint rotate."
+8. **Pre-rotate** the point's local transform by that fitted angle (in radians) around the relevant axis (Z in this example), then explicitly **set the point transform** back onto the correct point using the current-point index from the numbers iteration (`@ptnum`/`i@elemnum`-equivalent local variable) — necessary because working in "numbers" mode (parallel over an array) doesn't automatically write per-point like a native points-context wrangle would.
+9. Verify: opening/closing the control causes the rig to rotate symmetrically and align correctly at the driven positions; note that a control can end up needing to be constrained to only one side (dragging too far the wrong way can flip it to the opposite equivalent solution).
+10. **Repeat symmetrically for the remaining rig points**: capture remaining joints one at a time (using Name+color for clarity), following the same point-selection/mirrored-fit logic established above but with different empirically-tuned values per joint pair (the video walks through several joints such as 0.0/mirror-0.0, 0.6, 0.2, 0.1, 0.3/0.4, 0.8 as example distance-fit tuning values).
+11. Once all points are captured and driven, the base rig is functional with just two controls demonstrated — the presenter notes this pattern scales to as many controls as needed for a full production rig.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Point Generate → Name (Points mode, target_left/target_right) → Rig Doctor (init transforms) → Sphere (Primitive, small scale, colored) → **Attach Control/Attach Joint Geo** (join geo, no resting) → **Rig Pose** (position offsets, lock Rotate + lock Translate Y/Z) → **Rig Attribute Wrangle** in "numbers" mode (`npoints(1)` iteration instead of per-point) → `expandpointgroup` (channel string group → point array) → local transform matrix extraction (`getcomp`) → detail-mode max-angle calc (matrix decomposition ×2 for mirroring) → **Fit** (abs(translateX) between empirical distance bounds → 0..max_angle) → matrix pre-rotate (radians, chosen axis) → explicit **set point transform** by current-array-index point number → **Capture Period Geometry** for the remaining joints.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — requires comfort with VEX matrix functions (`getcomp`, transform extraction, `prerotate`/similar), the "iterate over numbers instead of points" wrangle pattern, and general rig-control setup; conceptually more advanced than typical point-wrangle work due to the parallel-array indexing trick.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; uses standard KineFX/rigging nodes (Rig Doctor, Rig Pose, Rig Attribute Wrangle, Capture Period Geometry) available in any modern Houdini (H18+).
 
 ### Tags
-[PENDING EXTRACTION]
+#rigging #kinefx #mechanical #controls #wrangle #matrix #fit-range #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [Tuna Can | procedural modeling and rig with KineFX](tuna-can-procedural-modeling-and-rig-with-kinefx.md) — shares #kinefx #rigging; that tutorial's point-transform-copy-with-offset trick for making one piece follow another's animation is a related matrix-manipulation pattern to this video's fit-driven rotation setup.

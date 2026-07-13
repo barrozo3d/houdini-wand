@@ -457,9 +457,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=7J-hDF0H6ck
 - **Author:** cgside
-- **Houdini Version:** unspecified
-- **Tags:** "kinefx", "rigging", "controls", "mechanical", "joints", "sop", "procedural-rigging"
-- **Summary:** This cgside tutorial demonstrates the practical process of attaching custom control shapes to a mechanical rig in Houdini using KineFX SOP-level rigging. The workflow uses Add SOP or Point Generate to create named target points, initializes transforms with Rig Doctor, creates custom control geometry (sphere, any shape), and connects everything through the Attach Joint Geo node. The tutorial...
+- **Houdini Version:** any modern (H18+)
+- **Tags:** #rigging #kinefx #mechanical #controls #wrangle #matrix #fit-range #intermediate
+- **Summary:** Attaches sphere controls to a mechanical rig and drives symmetric joint pairs by extracting each control's translation distance, fitting it to a precomputed max-rotation-angle range, and writing the rotated matrix back onto the rig points — done in parallel via a "numbers" wrangle (npoints iteration) instead of a per-point loop, using getcomp/matrix decomposition and explicit point-transform writes.
 - **File:** tutorials/mechanical-rigging-in-houdini---attaching-custom-controls.md
 
 
