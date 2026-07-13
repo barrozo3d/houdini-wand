@@ -1429,6 +1429,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/camera-match-tool-for-houdini-21.md
 
+
+### Layered Textures in Karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=GQMsl6TiFXY
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/layered-textures-in-karma.md
+
 ---
 
 ## Tag Reference
