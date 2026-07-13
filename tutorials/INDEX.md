@@ -3089,6 +3089,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-hard-surface-modeling-tips.md
 
+
+### Procedural Tips: Flow Maps, RBD Emit and more
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=XFOiCiljWh8
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-tips-flow-maps-rbd-emit-and-more.md
+
 ---
 
 ## Tag Reference
