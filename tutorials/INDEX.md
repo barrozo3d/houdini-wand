@@ -2049,6 +2049,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-mini-course-cops-vex-and-karma.md
 
+
+### Vex Problem Solving in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Fiw_NedtssQ
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vex-problem-solving-in-houdini.md
+
 ---
 
 ## Tag Reference
