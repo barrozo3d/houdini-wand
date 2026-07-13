@@ -2679,6 +2679,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-20-procedural-shading-features.md
 
+
+### Export a full scene from Houdini to Unreal
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=BUJg3ILS1Aw
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/export-a-full-scene-from-houdini-to-unreal.md
+
 ---
 
 ## Tag Reference
