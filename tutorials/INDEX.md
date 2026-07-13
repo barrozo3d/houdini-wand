@@ -3269,6 +3269,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/quick-asset-creation-with-vdb.md
 
+
+### VDB Procedural Cliffs
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=fBhtlmCGrK4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vdb-procedural-cliffs.md
+
 ---
 
 ## Tag Reference
