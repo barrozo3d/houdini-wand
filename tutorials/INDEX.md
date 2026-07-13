@@ -2179,6 +2179,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/cliff-face-in-houdini.md
 
+
+### Resample Color Ramps in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=P-2FPlUJO60
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/resample-color-ramps-in-houdini.md
+
 ---
 
 ## Tag Reference
