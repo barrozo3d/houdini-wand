@@ -1909,6 +1909,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/environments-in-houdini-part-5---solaris-and-rendering-with-karma.md
 
+
+### Vex quick tips #2 | Iterating over numbers
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=7PHYAnZbTvM
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vex-quick-tips-2-iterating-over-numbers.md
+
 ---
 
 ## Tag Reference
