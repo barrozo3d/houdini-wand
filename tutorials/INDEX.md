@@ -1679,6 +1679,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/handy-houdini-tips-vellum-uvs-modeling-and-more.md
 
+
+### Procedural Favela in Houdini  | Tips and Tricks
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Nmnf_3mp1OU
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-favela-in-houdini-tips-and-tricks.md
+
 ---
 
 ## Tag Reference
