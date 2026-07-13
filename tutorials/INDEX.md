@@ -1579,6 +1579,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/matrix-color-transform-in-cops-for-houdini-21.md
 
+
+### Procedural Duct Tape in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=D6449n2Pvcc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-duct-tape-in-houdini.md
+
 ---
 
 ## Tag Reference
