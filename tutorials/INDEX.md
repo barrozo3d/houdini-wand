@@ -2899,6 +2899,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/5-tips-and-tricks-for-modeling-in-houdini.md
 
+
+### Controlling instance probability in Solaris
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=OWMKqhVaFF8
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/controlling-instance-probability-in-solaris.md
+
 ---
 
 ## Tag Reference
