@@ -2429,6 +2429,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/materialx-and-karma-procedural-networks.md
 
+
+### Let's make soap! Houdini and Karma beginner course
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Y-CjDhFmclQ
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/lets-make-soap-houdini-and-karma-beginner-course.md
+
 ---
 
 ## Tag Reference
