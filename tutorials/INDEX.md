@@ -1559,6 +1559,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/think-procedural-think-houdini.md
 
+
+### Double Sided Leaf Animation using Cops in Houdini 21
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=yeA_0tL3GlU
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/double-sided-leaf-animation-using-cops-in-houdini-21.md
+
 ---
 
 ## Tag Reference
