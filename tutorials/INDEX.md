@@ -2669,6 +2669,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-shading-tips-2-in-houdini-20.md
 
+
+### Houdini 20 Procedural Shading Features
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=NHD3VbE2y00
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-20-procedural-shading-features.md
+
 ---
 
 ## Tag Reference
