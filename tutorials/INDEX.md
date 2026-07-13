@@ -3049,6 +3049,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-coffee-beans---preview.md
 
+
+### Procedural Cliff Techniques
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=YLrE1Zww_uc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-cliff-techniques.md
+
 ---
 
 ## Tag Reference
