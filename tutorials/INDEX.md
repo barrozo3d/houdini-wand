@@ -2139,6 +2139,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/enhance-your-renders-in-houdini.md
 
+
+### Houdini Beginner Tutorial | Creating a perfume bottle
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=conZuTxHnoc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-beginner-tutorial-creating-a-perfume-bottle.md
+
 ---
 
 ## Tag Reference
