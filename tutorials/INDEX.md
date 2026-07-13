@@ -2969,6 +2969,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-bricks-with-houdini.md
 
+
+### Procedural Modeling  | First steps with Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=L3Rvvv6pZ_8
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-modeling-first-steps-with-houdini.md
+
 ---
 
 ## Tag Reference
