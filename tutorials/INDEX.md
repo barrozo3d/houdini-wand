@@ -3079,6 +3079,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/environment-technical-tips-and-tricks.md
 
+
+### Procedural Hard Surface Modeling Tips
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=pTQGJM0k9b0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-hard-surface-modeling-tips.md
+
 ---
 
 ## Tag Reference
