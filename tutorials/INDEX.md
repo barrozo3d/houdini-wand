@@ -2579,6 +2579,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-anisotropy-in-karma.md
 
+
+### Modeling Assets With Vellum
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=d2Qgcbzup2s
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/modeling-assets-with-vellum.md
+
 ---
 
 ## Tag Reference
