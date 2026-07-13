@@ -1599,6 +1599,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/tips-and-tricks-to-level-up-your-houdini-skills.md
 
+
+### Procedural Materials in Houdini 21 | Patreon December '25  - Free Lesson
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=iZwfnJGQUlI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-materials-in-houdini-21-patreon-december-25---free-lesson.md
+
 ---
 
 ## Tag Reference
