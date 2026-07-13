@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=enW-PwgBWE4
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+)"
+tags: [vex, python, hda, editor-scripting, tool-development, radial-menu, beginner, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/building-tools-in-houdini-with-vex-and-python-flatten-loop/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Building Tools in Houdini with vex and python | Flatten Loop
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py building-tools-in-houdini-with-vex-and-python-flatten-loop <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -287,30 +283,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/building-tools-in-houdini-with-vex-and-python-flatten-loop/frame_000.jpg
+- [3:38] tutorials/frames/building-tools-in-houdini-with-vex-and-python-flatten-loop/frame_001.jpg
+- [4:03] tutorials/frames/building-tools-in-houdini-with-vex-and-python-flatten-loop/frame_002.jpg
+- [6:23] tutorials/frames/building-tools-in-houdini-with-vex-and-python-flatten-loop/frame_003.jpg
+- [10:43] tutorials/frames/building-tools-in-houdini-with-vex-and-python-flatten-loop/frame_004.jpg
+- [13:46] tutorials/frames/building-tools-in-houdini-with-vex-and-python-flatten-loop/frame_005.jpg
+- [17:23] tutorials/frames/building-tools-in-houdini-with-vex-and-python-flatten-loop/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Builds a small interactive Houdini tool ("Flatten X/Y/Z") from scratch: a VEX wrangle that averages selected points' positions along a chosen axis, packaged as an HDA, then wired to a Python **Script Action** on a radial menu so selecting points and hitting a hotkey creates, positions, connects, and configures the node automatically — turning a one-off SOP trick into a reusable, one-keystroke modeling tool.
 
 ### Summary
-[PENDING EXTRACTION]
+A "meta" tutorial about tool-building rather than modeling itself: starts from a simple VEX averaging wrangle (select points, compute their average position, snap them to it along one axis) and evolves it step by step into a fully productionized interactive tool. Key beats: iterating over a point *group* parameter with `expandpointgroup`, building an array of positions to feed to VEX's `avg()` function, exposing an Axis choice via an ordered-menu string parameter resolved to an index with `find()`, wrapping the whole wrangle in a Subnet → HDA, then writing a Python **Script Action** that grabs the current node/selection from the scene viewer, creates the HDA node, positions it in the network view, wires its input, sets its parameters (group + axis) from the current selection, sets its display/render flags, and finally binding three copies of that script (X/Y/Z) to radial-menu hotkeys with custom icons — so the whole "select points → flatten along an axis" workflow becomes instant.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Prototype the averaging wrangle**: on a Grid + Mountain SOP, select some points into a group and write an Attribute Wrangle: build `string group = chs("group")`, resolve it to actual point numbers via `int pts_grp[] = expandpointgroup(0, group)`, loop `for (int pt : pts_grp)` pulling `point(0, "P", pt)` into a growing `vector pos_array[]` via `append()`, then average with `vector avg = avg(pos_array)` and assign the result to `@P.x` (or the target axis) for every point in the group.
+2. **Debug with printf**: use `printf("%s\n", pos_array)` (and similar prints of point numbers) inside the wrangle to visually confirm the array is being populated correctly before trusting the average — a good habit for verifying VEX array logic interactively.
+3. **Make the axis selectable**: add a **Channel String** parameter ("axis") set to an **Ordered Menu** with entries `x`, `y`, `z`; in VEX, resolve the chosen string to a numeric index with `int axis_index = find("xyz", axis)` (a simple 3-character lookup trick), which the code then uses to write to the correct position component instead of a hardcoded axis.
+4. **Package as a tool**: wrap the wrangle chain in a **Subnet**, promote/expose only the `group` and `axis` parameters via Edit Parameter Interface (hide the rest), and make sure the `group` parameter's geometry type is explicitly set to **Points** (`AL.geometryType.points` equivalent) so the selector only picks points.
+5. **Publish as an HDA**: Create Digital Asset from the subnet (e.g. named `flatten_demo`), confirming it now appears under Tab → Digital Assets and can be dropped manually.
+6. **Automate placement with a Python Script Action** (Utilities → Script Action, bound to a radial menu entry): 
+   - Get the current context node via `hou.pwd()` (import `hou`), and the scene viewer via `hou.ui.paneTabOfType(hou.paneTabType.SceneViewer)`, then call its point/geometry **select** method to capture (or prompt for) the current point selection.
+   - Save the source node's `.position()` so the new node can be offset from it.
+   - Create the new node with `parent_node.createNode("flatten_demo")` (matching the exact HDA type name — a name/underscore mismatch was a real gotcha hit during the walkthrough).
+   - Position it via `new_node.setPosition(hou.Vector2(x, y))`, offset from the source node's saved position (e.g. +1 in Y) so it doesn't overlap.
+   - Wire it in with `new_node.setInput(0, source_node)`.
+   - Push the current selection and chosen axis into the HDA's exposed parameters: `new_node.parm("group").set(selection_string)` (cast the selection to a string) and `new_node.parm("axis").set("x")` (or "y"/"z" depending on which radial menu entry is invoked).
+   - Set the new node's **flags**: `setGenericFlag` / `setDisplayFlag(True)` and `setRenderFlag(True)` so it becomes the active/visible node in the chain immediately.
+7. **Bind to radial menus**: create three near-identical Script Action entries (Flatten X / Flatten Y / Flatten Z), each differing only in the hardcoded axis value passed to the parameter, and assign each to its own radial-menu slot/hotkey (the walkthrough uses F7 as the trigger key during testing). Optionally customize each entry's icon via Edit Icons for a polished look.
+8. **End result**: select points in the viewport, press the assigned hotkey, and the tool creates + wires + configures + activates the flatten node automatically — no manual node creation or parameter setting needed for repeated use.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Grid + Mountain (test geometry) → Attribute Wrangle (`chs("group")`, `expandpointgroup`, `for` loop + `append()` building a `vector[]`, `avg()`, ordered-menu `axis` Channel String parameter, `find("xyz", axis)` for axis-index resolution) → Subnet (exposed `group`/`axis` params, group geometry type = Points) → **Digital Asset** (HDA) → Python **Script Action** (`hou.pwd()`, `hou.ui.paneTabOfType(SceneViewer)`, `createNode`, `setPosition(hou.Vector2(...))`, `setInput`, `parm(...).set(...)`, `setDisplayFlag`/`setRenderFlag`) bound to **radial menu** hotkeys (one per axis) with custom icons.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner / Intermediate — the VEX averaging logic is simple, but building the HDA + Python Script Action + radial menu pipeline is a genuinely useful intermediate skill for anyone wanting to script custom interactive tools rather than just build one-off node networks.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; uses long-standing HDA, Python `hou` module, and radial menu / Script Action features available in any modern Houdini (H18+).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #python #hda #editor-scripting #tool-development #radial-menu #beginner #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers HDA/Python tool-building or radial-menu Script Actions — cross-link with any future Python-scripting or custom-tool tutorials once extracted from this batch.

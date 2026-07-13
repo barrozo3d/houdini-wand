@@ -1984,9 +1984,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=enW-PwgBWE4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H18+)
+- **Tags:** #vex #python #hda #editor-scripting #tool-development #radial-menu #beginner #intermediate
+- **Summary:** Builds a reusable "Flatten X/Y/Z" tool: a VEX wrangle averages selected points' positions along a chosen axis (expandpointgroup + avg() + find()-based axis lookup), packaged as an HDA, then wired to a Python Script Action that creates/positions/connects/configures the node from the current viewport selection and binds it to a radial-menu hotkey — turning a one-off SOP trick into an instant, reusable tool.
 - **File:** tutorials/building-tools-in-houdini-with-vex-and-python-flatten-loop.md
 
 
