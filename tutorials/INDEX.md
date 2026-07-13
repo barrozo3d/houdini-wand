@@ -2779,6 +2779,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-modeling-tips-in-houdini-2.md
 
+
+### RBD rock surfaces with Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=015fds0mdyk
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/rbd-rock-surfaces-with-houdini.md
+
 ---
 
 ## Tag Reference
