@@ -2329,6 +2329,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-and-organic-modeling-in-houdini.md
 
+
+### Direct and Procedural Modeling in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=t1QemBG462g
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/direct-and-procedural-modeling-in-houdini.md
+
 ---
 
 ## Tag Reference
