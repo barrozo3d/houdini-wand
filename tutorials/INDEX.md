@@ -1639,6 +1639,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/new-houdini-course---procedural-product-shots-part-1-free.md
 
+
+### Tips and tricks in Houdini 21
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=gv_gXOSjCN0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tips-and-tricks-in-houdini-21.md
+
 ---
 
 ## Tag Reference
