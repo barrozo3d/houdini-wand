@@ -3189,6 +3189,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-rock-surfaces-patreon-exclusive.md
 
+
+### Ruins randomized brick wall
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=QEvlyVTk4Jw
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/ruins-randomized-brick-wall.md
+
 ---
 
 ## Tag Reference
