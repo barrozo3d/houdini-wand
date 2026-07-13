@@ -2449,6 +2449,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/still-life-scene-breakdown-houdini-tips.md
 
+
+### Hard Surface Techniques in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=qtzO_NoQbtE
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/hard-surface-techniques-in-houdini.md
+
 ---
 
 ## Tag Reference
