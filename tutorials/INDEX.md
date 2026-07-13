@@ -2289,6 +2289,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/designer-like-materials-in-cops-houdini-205.md
 
+
+### Displacement maps in cops | Houdini 20.5
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=xOeZncLWztc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/displacement-maps-in-cops-houdini-205.md
+
 ---
 
 ## Tag Reference
