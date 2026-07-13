@@ -1969,6 +1969,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/quick-cgi-integration-with-houdini-and-solaris.md
 
+
+### Environments in Houdini | Part 4 - Vines, Rocks and Fog
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=cXbdFwd3u9o
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/environments-in-houdini-part-4---vines-rocks-and-fog.md
+
 ---
 
 ## Tag Reference
