@@ -2339,6 +2339,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/direct-and-procedural-modeling-in-houdini.md
 
+
+### Procedural techniques in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=PcP9Eieij1g
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-techniques-in-houdini.md
+
 ---
 
 ## Tag Reference
