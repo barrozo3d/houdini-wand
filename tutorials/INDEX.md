@@ -2459,6 +2459,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/hard-surface-techniques-in-houdini.md
 
+
+### Houdini Tips | Tileable Noises, Cam from Stage, TOPS and more
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=zItss8TuZMo
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-tips-tileable-noises-cam-from-stage-tops-and-more.md
+
 ---
 
 ## Tag Reference
