@@ -1799,6 +1799,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/quick-object-merge-with-python-in-houdini.md
 
+
+### Vex Quick Tips #4 - Pineapple Crown
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=oDXQsMo2aaQ
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vex-quick-tips-4---pineapple-crown.md
+
 ---
 
 ## Tag Reference
