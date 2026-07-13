@@ -1649,6 +1649,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/tips-and-tricks-in-houdini-21.md
 
+
+### Optimizing Baked Trees with Instancing in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=0C8ek1aDe8o
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/optimizing-baked-trees-with-instancing-in-houdini.md
+
 ---
 
 ## Tag Reference
