@@ -1999,6 +1999,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md
 
+
+### Environments in Houdini  | Part 2  - Stone Bridge
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=kPtCgMWIBj4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/environments-in-houdini-part-2---stone-bridge.md
+
 ---
 
 ## Tag Reference
