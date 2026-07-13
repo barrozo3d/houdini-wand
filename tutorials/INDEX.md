@@ -3259,6 +3259,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/uv-randomizer---texturing-multiple-objects.md
 
+
+### Quick asset creation with VDB
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=j0s0HkBCaQQ
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/quick-asset-creation-with-vdb.md
+
 ---
 
 ## Tag Reference
