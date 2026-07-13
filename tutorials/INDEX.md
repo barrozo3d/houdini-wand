@@ -2619,6 +2619,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/time-saving-tips-in-houdini.md
 
+
+### Infinite Mirror in Karma XPU
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=5jfjCGDdbqs
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/infinite-mirror-in-karma-xpu.md
+
 ---
 
 ## Tag Reference
