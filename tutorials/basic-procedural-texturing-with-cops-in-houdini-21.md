@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=AB9rwjcX0Xg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 21 (Copernicus/COPS)"
+tags: [cops, texturing, procedural, materials, triplanar, mardini, normal-map, intermediate, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/basic-procedural-texturing-with-cops-in-houdini-21/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Basic Procedural Texturing with Cops in Houdini 21
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py basic-procedural-texturing-with-cops-in-houdini-21 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -232,30 +228,60 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:32] tutorials/frames/basic-procedural-texturing-with-cops-in-houdini-21/frame_000.jpg
+- [2:26] tutorials/frames/basic-procedural-texturing-with-cops-in-houdini-21/frame_001.jpg
+- [5:55] tutorials/frames/basic-procedural-texturing-with-cops-in-houdini-21/frame_002.jpg
+- [7:15] tutorials/frames/basic-procedural-texturing-with-cops-in-houdini-21/frame_003.jpg
+- [9:14] tutorials/frames/basic-procedural-texturing-with-cops-in-houdini-21/frame_004.jpg
+- [12:14] tutorials/frames/basic-procedural-texturing-with-cops-in-houdini-21/frame_005.jpg
+- [16:28] tutorials/frames/basic-procedural-texturing-with-cops-in-houdini-21/frame_006.jpg
+- [24:44] tutorials/frames/basic-procedural-texturing-with-cops-in-houdini-21/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Full procedural texturing pipeline in COPS (Houdini 21's Copernicus image-compositing context): bake utility maps (AO, curvature, edge, cavity, position, normal) from a low-poly mesh, fix UV-seam artifacts with Extrapolate Boundaries, build tileable materials with Triplanar (x-tile) projection fed by Megascans textures and procedural noise, layer in wear/rust via a Substance-Designer-style Slope Blur (from the "Cobstance" plugin), hand-build a multi-scale normal map from blended fractal noises, and imprint procedural text into the normal map via a hand-modeled Sweep-based text mesh with its own UVs.
 
 ### Summary
-[PENDING EXTRACTION]
+A warts-and-all, full-workflow walkthrough (not a polished-result tutorial) texturing a previously-modeled asset (a Mardini pen/vessel) entirely inside COPS. Covers baking a full utility-map set from geometry (important gotcha: bake from a *subdivided* low-poly proxy, or curvature/displacement bakes show visible low-poly faceting), fixing UV-seam bleeding on every baked map at once via **Extrapolate Boundaries** (masked by the fill-area alpha, with an Edge Offset tweak), building the base material from a Megascans texture projected through a **Triplanar x-tile** node (randomized scale/rotation/seed to hide tiling, fed by *absolute* position + *signed* world normal — using the wrong space/format on either input causes visible stretching), layering procedural noise and a "Slope Blur"-style COPS node (from the **Cobstance** plugin, a Substance-Designer-node port for Houdini) driven by the edge map to fake directional wear, blending in a second Megascans rust texture via an edge-derived mask, hand-building a normal map from three blended fractal noises at different scales (each converted to a normal via a "height to normal"-type node and combined with **Combine Normals**), building a basic roughness map from the same triplanar height data, and finally modeling a small 3D text card (Sweep + UV Flatten + Font) to imprint custom lettering into the normal map via its own UV space, transform, and blur.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Import geometry into COPS**: build a `copnet`, create a Null named "out" on the SOP side, and use **SOP Import** to bring the mesh in.
+2. **Bake utility maps** with **Bake Geometry Textures**: connect the mesh to the "low" input, set bake type to Single Mesh (Low Poly only, since there's no high-poly to bake from). Bake, in turn: Ambient Occlusion, Curvature, Edge, Cavity, World Normal (must be the *signed* variant for triplanar use later, not the default), World Position (must be *absolute*, not relative), and Edge Normal. Increase sample counts (e.g. 128) on AO/Curvature/Edge to reduce noise.
+3. **Gotcha — low-poly faceting:** baking curvature/displacement directly from the low-poly mesh prints visible facet/wireframe patterns into the map; fix by ducking into the SOP network and subdividing the proxy (e.g. twice) before baking.
+4. **Cable Pack** all the baked maps together (edge normal, world normal, position, occlusion, curvature, edge, cavity, plus alpha), then **Set Fields from Inputs** to expose them as named image planes.
+5. **Fix UV-seam bleeding**: baked maps (especially Position, viewed flat) show ugly seams at UV island borders. Fix with an **Extrapolate Boundaries** node applied to the whole packed bundle (not per-map) — feed it the fill-area alpha as a mask and tune the **Edge Offset** parameter until seams disappear across all maps simultaneously.
+6. **Base color:** import a Megascans "platter" texture, **Remap** it (raise input-mean for contrast), then feed it through a **Triplanar (x-tile)** node along with the baked *absolute* position and *signed* world normal — getting either input's space/format wrong (e.g. relative position or offset-format normal) causes stretching artifacts. Randomize Scale, Random Rotate, and Random Seed on the triplanar to eliminate visible tiling.
+7. Build color variation with an RGB/color node sampled from a reference image (Sample Screen Colors), refine via a Hue/Saturation-type node (desaturate, adjust value) to taste.
+8. **Procedural tiling noise:** duplicate the maps fetch, add a **Fractal Noise 3D** driven by the *position* map (not UVs) so it tiles perfectly regardless of UV layout; tune scale (~0.3) as a base wear-pattern driver.
+9. **Directional wear via Cobstance (Substance Designer nodes for Houdini):** use the **Slope Blur** node from the Cobstance plugin, feeding the baked Edge map as the "source" and the fractal noise as the "slope" input — this fakes directional edge-wear streaking; increase samples/intensity to taste (a plain Distort node can approximate this if Cobstance isn't installed).
+10. Build a wear **mask** from the edge map, blended with additional fractal noise (tune Amplitude, Element Size, Coverage, Softness, and optionally invert) to control where the effect concentrates.
+11. **Rust layer:** import a second Megascans rust texture, run it through its own Triplanar x-tile (scale/seed tuned independently), then **Blend** it with the base color using the wear mask (Blend mode: Maximum) as the mix control — tune mask Coverage/Element Size to balance how much rust shows.
+12. **Hand-built normal map:** duplicate the maps fetch three times, each driving a separate **Fractal Noise** (using position, for tiling) at a different Element Size/Roughness (progressively smaller/rougher per layer), Slope-Blur each with decreasing amplitude, then convert each to a normal (a "height/normal" style node) at different overall scales (e.g. 0.018, 0.079, 0.01) and merge all three with **Combine Normals** — chained combines let each subsequent detail layer add fine surface variation without washing out the previous one. A global normal-map intensity control (e.g. 0.75) tones down the combined result if it reads too strong.
+13. Blend in a separate normal contribution for the rust-affected areas (decrease/invert its height so it reads as recessed, ~0.5 strength) via another Combine Normals pass.
+14. **Basic roughness map:** quick-and-dirty — feed the same triplanar height data through a Remap (raise output-mean, tune further) directly into the roughness input; explicitly called out as *not* a proper roughness workflow, just a fast approximation for this demo.
+15. **Procedural text imprint:** model a small text-card mesh from scratch in the SOP context — draw a **Card/Curve** with snapping enabled, refine tangents (F then 3 to edit tangents), **Resample** (~0.1), **Sweep** (Ribbon mode, ~0.5), **UV Flatten** (with Rectify) to get clean UVs, then **Polydoctor**/Resize Geometry to normalize.
+16. Add a **Font** node for the actual text/lettering, set its Layer Property to non-tiling (**Constant border**) so the text doesn't repeat, wire it into a new value-set field ("texture"), and use **UV Transform** to position/scale/rotate it into place on the model's UV layout (adjusting pivot as needed to get correct placement and avoid unwanted tiling).
+17. Convert the text layer to a normal (**Image to Normal**-style node), **Fuse**, and **Combine Normals** it into the main normal map stack, with a small Blur pass beforehand to soften the imprint edges; adjust the combine's blend strength so the text reads as an embossed/debossed detail rather than overpowering the surface.
+18. Final pass: tune overall AO strength and normal-map intensity down if the combined result reads too extreme; the presenter is explicit the final look isn't meant to be a polished hero texture — the point of the video is demonstrating the full technical workflow end-to-end.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+**Bake Geometry Textures** (AO, Curvature, Edge, Cavity, signed World Normal, absolute World Position, Edge Normal) → Cable Pack + Set Fields from Inputs → **Extrapolate Boundaries** (alpha-masked, Edge Offset) → **Triplanar (x-tile)** ×multiple (Scale, Random Rotate, Random Seed, Blend — driven by absolute position + signed normal) → Remap (contrast/levels) → RGB/Hue-Saturation color grading → **Fractal Noise 3D** (position-driven for tiling) → **Cobstance Slope Blur** (Substance-Designer-node plugin for Houdini) → mask-driven **Blend** (Maximum mode) for rust layering → multi-scale Fractal Noise → height-to-normal conversion → **Combine Normals** (chained, multiple passes) → basic Remap-based roughness → Card/Curve + Resample + Sweep (Ribbon) + UV Flatten (Rectify) + **Font** node (Constant border) + UV Transform for the procedural text-imprint mesh.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — assumes familiarity with COPS/Copernicus, triplanar projection math (position/normal space requirements), and layered normal-map compositing; the text-imprint sub-workflow additionally requires SOP curve/sweep/UV modelling skills. Not a beginner-friendly single-concept tutorial.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21 (COPS/Copernicus is Houdini 21's new image-compositing context used throughout this tutorial); relies on the third-party **Cobstance** plugin (Substance Designer node ports) for the Slope Blur effect.
 
 ### Tags
-[PENDING EXTRACTION]
+#cops #texturing #procedural #materials #triplanar #mardini #normal-map #intermediate #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers a full COPS texturing pipeline this comprehensively — cross-link with any other COPS/Copernicus or triplanar-materials tutorials once extracted from this batch.

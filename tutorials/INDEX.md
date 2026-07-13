@@ -1504,9 +1504,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=AB9rwjcX0Xg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 21 (Copernicus/COPS)
+- **Tags:** #cops #texturing #procedural #materials #triplanar #mardini #normal-map #intermediate #advanced
+- **Summary:** Full COPS texturing pipeline: bake utility maps (AO/curvature/edge/cavity/position/normal) from a subdivided low-poly proxy, fix UV-seam bleeding with Extrapolate Boundaries, build tileable materials with Triplanar x-tile fed by Megascans textures, layer wear via a Cobstance Slope Blur node, hand-build a multi-scale Combine-Normals normal map, and imprint procedural text into the normal map via a hand-modeled Sweep+UV text mesh.
 - **File:** tutorials/basic-procedural-texturing-with-cops-in-houdini-21.md
 
 
