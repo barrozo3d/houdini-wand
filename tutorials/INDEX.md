@@ -1979,6 +1979,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/environments-in-houdini-part-4---vines-rocks-and-fog.md
 
+
+### Building Tools in Houdini with vex and python | Flatten Loop
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=enW-PwgBWE4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/building-tools-in-houdini-with-vex-and-python-flatten-loop.md
+
 ---
 
 ## Tag Reference
