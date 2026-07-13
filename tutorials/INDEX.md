@@ -2269,6 +2269,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/the-donut-tutorial-in-cops-houdini-205.md
 
+
+### Shoe Laces in Houdini | Vex and Vellum
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=rlrWEjoO8jQ
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/shoe-laces-in-houdini-vex-and-vellum.md
+
 ---
 
 ## Tag Reference
