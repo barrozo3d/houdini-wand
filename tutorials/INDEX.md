@@ -1459,6 +1459,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-food-in-houdini-mardini-2026.md
 
+
+### Creating Cliff Shapes in Cops | Free Lesson
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=62Mo7udZM_o
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/creating-cliff-shapes-in-cops-free-lesson.md
+
 ---
 
 ## Tag Reference
