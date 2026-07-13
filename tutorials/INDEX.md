@@ -3069,6 +3069,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-cookie---model-simulate-and-render---trailer.md
 
+
+### Environment Technical tips and tricks
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=bqyaPvWT5Gc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/environment-technical-tips-and-tricks.md
+
 ---
 
 ## Tag Reference
