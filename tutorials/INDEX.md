@@ -1469,6 +1469,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/creating-cliff-shapes-in-cops-free-lesson.md
 
+
+### Volume rays in Cops for Houdini 21
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=nCS6sy53_aw
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/volume-rays-in-cops-for-houdini-21.md
+
 ---
 
 ## Tag Reference
