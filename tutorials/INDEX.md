@@ -1809,6 +1809,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vex-quick-tips-4---pineapple-crown.md
 
+
+### Interactive Tools with Houdini Python States | Draw pts on geo
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ARJFJC79k3k
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/interactive-tools-with-houdini-python-states-draw-pts-on-geo.md
+
 ---
 
 ## Tag Reference
