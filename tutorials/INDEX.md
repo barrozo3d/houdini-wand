@@ -1379,6 +1379,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson.md
 
+
+### Houdini techniques to improve your level
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=zWlJ8QLkFH4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-techniques-to-improve-your-level.md
+
 ---
 
 ## Tag Reference
