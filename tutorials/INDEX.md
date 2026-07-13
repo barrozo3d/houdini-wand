@@ -2869,6 +2869,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/opacity-maps-vs-geo-in-karma.md
 
+
+### Procedural assets and shading with Houdini and MaterialX
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=fSouWuGd_Tg
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-assets-and-shading-with-houdini-and-materialx.md
+
 ---
 
 ## Tag Reference
