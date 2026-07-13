@@ -2719,6 +2719,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-wicker-basket-in-houdini.md
 
+
+### Procedural Tips #3 VEX Shading and Loops
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=bgUI52CFMLU
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-tips-3-vex-shading-and-loops.md
+
 ---
 
 ## Tag Reference
