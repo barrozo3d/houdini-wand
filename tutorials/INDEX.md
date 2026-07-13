@@ -2129,6 +2129,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-uvs-in-houdini.md
 
+
+### Enhance your renders in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=c193tsyLH-0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/enhance-your-renders-in-houdini.md
+
 ---
 
 ## Tag Reference
