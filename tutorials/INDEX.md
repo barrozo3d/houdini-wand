@@ -2589,6 +2589,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/modeling-assets-with-vellum.md
 
+
+### Vellum Balloon Text in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=T-_L6BeLSkg
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vellum-balloon-text-in-houdini.md
+
 ---
 
 ## Tag Reference
