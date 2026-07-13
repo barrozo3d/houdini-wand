@@ -2439,6 +2439,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/lets-make-soap-houdini-and-karma-beginner-course.md
 
+
+### Still Life Scene Breakdown | Houdini tips
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=peBkuU0Es1Q
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/still-life-scene-breakdown-houdini-tips.md
+
 ---
 
 ## Tag Reference
