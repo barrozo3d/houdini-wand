@@ -3109,6 +3109,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-uvs---uv-layout-node-in-depth.md
 
+
+### Procedural House Generator
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=rzWUiyF9EJI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-house-generator.md
+
 ---
 
 ## Tag Reference
