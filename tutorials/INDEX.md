@@ -1619,6 +1619,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-environment-assets-in-houdini-21.md
 
+
+### CGI Integration | The Indie Way with Houdini(USD) and Nuke
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=RchQ9K5QXtI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/cgi-integration-the-indie-way-with-houdiniusd-and-nuke.md
+
 ---
 
 ## Tag Reference
