@@ -2989,6 +2989,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/cookies-and-chocolate-modeling-shading-and-sim.md
 
+
+### All* the Procedural Modeling tricks in one video
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Ba3Py4lodL8
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/all-the-procedural-modeling-tricks-in-one-video.md
+
 ---
 
 ## Tag Reference
