@@ -1689,6 +1689,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-favela-in-houdini-tips-and-tricks.md
 
+
+### Heightfields and Cops workflow in Houdini 21 -  Patreon September 25 Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=pbwra2esNqc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/heightfields-and-cops-workflow-in-houdini-21---patreon-september-25-trailer.md
+
 ---
 
 ## Tag Reference
