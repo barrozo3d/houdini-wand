@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=qS5uDc8EePQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20.5+ (Labs Regions from Image tool)"
+tags: [vellum, cloth, labs-tools, procedural, texturing, image-based, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/add-details-with-regions-from-image-labs-tool/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Add details with regions from image labs tool
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py add-details-with-regions-from-image-labs-tool <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -66,30 +62,51 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:23] tutorials/frames/add-details-with-regions-from-image-labs-tool/frame_000.jpg
+- [0:40] tutorials/frames/add-details-with-regions-from-image-labs-tool/frame_001.jpg
+- [1:04] tutorials/frames/add-details-with-regions-from-image-labs-tool/frame_002.jpg
+- [1:18] tutorials/frames/add-details-with-regions-from-image-labs-tool/frame_003.jpg
+- [2:21] tutorials/frames/add-details-with-regions-from-image-labs-tool/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Uses the **Labs Regions from Image** tool to auto-generate separate named pieces from a flat color-coded reference image (e.g. a clothing flat), then curvature-selects corner points on each piece and pins/brushes them into shape with basic Vellum cloth simulation.
 
 ### Summary
-[PENDING EXTRACTION]
+A quick workflow for turning a 2D color-coded reference image (made in Photoshop, with each intended piece painted a distinct flat color for easy separation) into a set of simulated cloth props. The Labs Regions from Image node auto-detects each color region as a separate named piece, which are then resampled/remeshed, corner-selected via curvature analysis, pinned, and brushed into a draped pose with Vellum. The presenter is explicit this is a fast/rough workflow suited for background props, not hero assets.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Prepare a reference image in Photoshop where each intended piece (e.g. a shirt, a pair of pants) is painted a distinct flat color — flat, separable colors are what let the tool auto-detect regions correctly.
+2. Add the **Labs Regions from Image** node, plug in the image, and wait a few seconds for it to auto-generate one region/piece per distinct color, discarding the black background and its associated color.
+3. Add a **Name** attribute and rename each generated piece so they can be looped over individually afterward.
+4. In a for-each loop over the named pieces: **resample** and **remesh** each piece, then recenter it.
+5. **Measure** curvature (Gaussian) on each piece, then use a **Group** node to select corner points based on the curvature attribute values — subtract out the bottom-edge selection since it isn't a real corner.
+6. **Group Expand** the corner selection to grow it slightly — these expanded points become the pin points for the Vellum sim (the presenter notes forgetting this step initially, which they had to fix afterward).
+7. Set up a **Vellum Cloth** constraint network, then use the **Vellum Brush** tool (radius/mode/simulation controls in the brush's floating panel) to interactively drag/simulate each piece into a draped pose — press **Enter** then **G** to simulate as you brush.
+8. Set **Pinning** on the Vellum constraints (a step that was initially missed and had to be corrected) so pinned points stay anchored while the rest of the cloth simulates/drapes.
+9. If resolution looks too low/blocky while brushing, go back and add more subdivisions to the source mesh before re-simulating.
+10. For quick manual pinning during brushing, use **Shift + Middle-click** to pin specific areas directly in the viewport.
+11. To place multiple copies efficiently: use a for-each loop that copies points-with-attribute from the finished pieces at randomized positions, and randomly delete a few points for variation — more source variations would improve the final look further.
+12. Bend Stiffness on the Vellum cloth object was adjusted ad hoc ("I don't know what I'm doing here but it gave the result I wanted") — treat as a trial-and-error parameter, not a prescribed value.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+**Labs Regions from Image** (auto region/name generation from a flat-color reference image) → for-each loop: Resample → Remesh → recenter Transform → **Measure** (Gaussian curvature) → **Group** (corner selection by curvature, minus bottom edge) → **Group Expand** (grow pin selection) → **Vellum Cloth** constraints + **Vellum Brush** tool (Mode/Radius/Simulation controls, Enter+G to simulate, Shift+Middle-click to pin) → Bend Stiffness (manual tuning) → copy-points-with-attribute loop for randomized multi-placement.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — assumes familiarity with Vellum cloth setup and for-each/attribute-driven loops; the Labs tool itself is simple to use but the surrounding pin/curvature workflow requires some Houdini experience.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; the **Labs Regions from Image** node is part of the Houdini Labs tools (H20.5+ availability).
 
 ### Tags
-[PENDING EXTRACTION]
+#vellum #cloth #labs-tools #procedural #texturing #image-based #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers the Labs Regions from Image tool or this image-driven piece-separation technique — cross-link with any future Vellum cloth or Labs-tools tutorials once extracted from this batch.

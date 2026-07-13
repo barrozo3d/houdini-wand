@@ -3154,9 +3154,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=qS5uDc8EePQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H20.5+ (Labs Regions from Image tool)
+- **Tags:** #vellum #cloth #labs-tools #procedural #texturing #image-based #intermediate
+- **Summary:** Uses the Labs Regions from Image tool to auto-generate separate named pieces from a flat color-coded reference image, then curvature-selects corner points per piece, pins them, and brushes them into shape with Vellum cloth simulation — a fast workflow for background props.
 - **File:** tutorials/add-details-with-regions-from-image-labs-tool.md
 
 
