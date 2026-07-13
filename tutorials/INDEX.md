@@ -1499,6 +1499,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/orient-uvs-like-a-pro-in-houdini-21.md
 
+
+### Basic Procedural Texturing with Cops in Houdini 21
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=AB9rwjcX0Xg
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/basic-procedural-texturing-with-cops-in-houdini-21.md
+
 ---
 
 ## Tag Reference
