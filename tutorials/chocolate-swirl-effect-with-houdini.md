@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=4PjTMogFWqQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H19+, uses MaterialX/Karma)"
+tags: [vdb, procedural, materials, karma, mardini, uv, displacement, intermediate, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/chocolate-swirl-effect-with-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Chocolate Swirl Effect with Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py chocolate-swirl-effect-with-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -108,30 +104,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:16] tutorials/frames/chocolate-swirl-effect-with-houdini/frame_000.jpg
+- [1:24] tutorials/frames/chocolate-swirl-effect-with-houdini/frame_001.jpg
+- [2:36] tutorials/frames/chocolate-swirl-effect-with-houdini/frame_002.jpg
+- [3:11] tutorials/frames/chocolate-swirl-effect-with-houdini/frame_003.jpg
+- [4:22] tutorials/frames/chocolate-swirl-effect-with-houdini/frame_004.jpg
+- [5:57] tutorials/frames/chocolate-swirl-effect-with-houdini/frame_005.jpg
+- [6:42] tutorials/frames/chocolate-swirl-effect-with-houdini/frame_006.jpg
+- [9:46] tutorials/frames/chocolate-swirl-effect-with-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Builds a chocolate-swirl candy shape via mask-blended Mountain noise + Volume Deform/Lattice-from-Volume soft-transform twisting of the topmost point, adds a hand-guided curl "tip" swept and VDB-combined back into the main shape, and finishes with a MaterialX/Karma shader using a polar UV projection to create an intentional radial-stretch chocolate-swirl look.
 
 ### Summary
-[PENDING EXTRACTION]
+A compact, from-a-sphere procedural food-modeling breakdown. Geometry starts from a Labs Sphere Generator, clipped and filled, with two blurred masks built from a group-expand base: one blends a Mountain-node bump layer onto the sphere, the other drives a point-normal displacement. The signature swirl comes from converting the mesh to a VDB-backed **Volume Deform** (which auto-generates a **Lattice from Volume**), isolating the topmost lattice point via a wrangle, then applying two **Soft Transform** rotations pivoting around that point's group center (different soft radius/rotation values per pass) to twist the volume into a spiral — a slow-cooking but visually convincing swirl. A separate hand-authored curl "tip" is built from a line traced through the saved top point, resampled, and shaped with two chained **Rig Wrangle** bends (chosen over the native Bend SOP because stacking multiple Bends produced bad interpolation artifacts) — swept into a small tube, manually color-tagged, and merged back into the main VDB via **VDB Combine** + a mask-driven **VDB Smooth** to blend the transition seam (imperfect, but "will do"). The combined VDB is converted back to a quad mesh, re-projected onto the pre-VDB detail to recover surface fidelity, lightly blurred/normal-softened, and paired with a separate outer shell shape (with a saved displacement mask for later shading use). The material's key trick is a **polar UV projection** on the shell, feeding a MaterialX/Karma image texture (a Megascans displacement/detail texture) whose UV-repeat count controls how tightly the texture streaks radially around the swirl — remapped and masked-blended with the chocolate base color/subsurface material for the final "melted chocolate" look.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base shape**: Labs Sphere Generator → Clip → Fill (Poly Fill) for a rounded base blob.
+2. **Two blurred masks from a group-expand base**: Mask 1 blends a **Mountain** noise displacement onto the sphere (bump-style surface detail); Mask 2 drives a **Point VOP** displacement along the normal — both masks are blurred before use to soften their edges.
+3. **Volume Deform setup**: **VDB from Polygons**, then a **Volume Deform** node (which automatically creates a **Lattice from Volume** to drive it), followed by a wrangle isolating just the topmost point of the generated lattice (used as the pivot for the swirl).
+4. **The swirl**: two chained **Soft Transform** nodes, each rotating around the topmost point's group center with independently tuned Soft Radius and rotation values — the first pass establishes the base spiral, the second (higher intensity, different radius/rotation-axis) deepens it into the final candy-swirl look. Note: this volume-based deform is slow to cook (several seconds per change), so iterate patiently.
+5. **Hand-built curl "tip"**: draw a Line through the saved topmost point, Resample for more subdivisions, then apply two chained **Rig Wrangle** bends to curl it into a spiral tip shape — chosen specifically over the native **Bend** SOP because stacking multiple Bend nodes produced bad interpolation when combined.
+6. Delete unneeded attributes, **Sweep** the curled line into a small tube (some fine surface detail is lost in this step, but it's acceptable), **Fill** the ends, and manually position/orient the tip against the main swirl shape (some manual placement work, tagged with a red color for visual reference during setup).
+7. **Merge tip and body via VDB**: transfer a mask from the tip onto the main geometry, build **VDB from Polygons** for both the main shape and the tip (tip resampled to a *higher* resolution to match), **VDB Combine** them — the raw combine seam looks rough — then run a **VDB Smooth** using the transferred mask to blend just the seam region (imperfect but sufficient result).
+8. **Back to mesh**: **Convert VDB** to a quad mesh (optionally a higher-quality quad conversion), Subdivide, then **Ray**-project back onto the pre-VDB detailed geometry to recover fine surface detail lost during the volume round-trip — cleans up the initially jagged/uncontrolled edges into a smooth surface. Finish with a slight position Blur and softened normals before sending to render.
+9. **Outer shell**: a simpler secondary shape (no major new technique), carrying a saved displacement mask for later use in shading, with a **UV Project set to Polar** — deliberately chosen (rather than a standard/planar projection) specifically to produce a radial "stretched" texture look around the candy.
+10. **Shading — the polar-stretch trick**: in the MaterialX/Karma network, use an image texture node in **UV mode (not triplanar)**, feeding the texture-coordinate UVs with a controllable repeat count. Because the UVs were generated via polar projection, changing the UV-repeat value (e.g. 1×1 → 6×6) visibly stretches the texture into the candy's characteristic circular/radial streaking pattern rather than tiling normally.
+11. Mix the stretched texture (a Megascans displacement/detail image, Remapped for contrast) with the earlier-saved mask to control where the effect shows, then blend into the final chocolate material (subsurface scattering + a chocolate base color) — no further complexity beyond that for the final look.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Labs Sphere Generator → Clip → Poly Fill → group-expand masks (blurred) → **Mountain** (blended by Mask 1) + **Point VOP** (normal displacement via Mask 2) → **VDB from Polygons** → **Volume Deform** + auto-generated **Lattice from Volume** → topmost-point wrangle → 2× **Soft Transform** (group-center pivot, tuned Soft Radius/rotation) for the swirl · Line (through top point) → Resample → 2× **Rig Wrangle** (chained bends, avoids Bend-SOP interpolation issues) → Attribute Delete → Sweep → Fill (curl tip) → mask transfer → **VDB from Polygons** (both pieces) → **VDB Combine** → mask-driven **VDB Smooth** → Convert VDB (quad mesh) → Subdivide → **Ray** (reproject detail) → Blur (position) + soften normals · outer shell shape + saved displacement mask + **UV Project (Polar)** → MaterialX/Karma image texture (UV mode, tunable repeat count) → Remap → mask blend → chocolate material (subsurface scattering + base color).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines volume-based (VDB) deformation, lattice/soft-transform swirl construction, custom wrangle-based curve bending, and a deliberate polar-UV shading trick; not a beginner geometry workflow despite the compact node count.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; uses MaterialX/Karma shading (image texture, UV mode) consistent with any modern Houdini H19+.
 
 ### Tags
-[PENDING EXTRACTION]
+#vdb #procedural #materials #karma #mardini #uv #displacement #intermediate #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers VDB-based swirl/lattice deformation or polar-UV shading tricks — cross-link with any future VDB or MaterialX/Karma shading tutorials once extracted from this batch.

@@ -2384,9 +2384,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=4PjTMogFWqQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H19+, uses MaterialX/Karma)
+- **Tags:** #vdb #procedural #materials #karma #mardini #uv #displacement #intermediate #advanced
+- **Summary:** Chocolate-swirl candy built from a sphere: mask-blended Mountain noise, then a Volume Deform/Lattice-from-Volume with two Soft Transforms pivoting on the topmost point to create the spiral. A hand-curled tip (Rig Wrangle bends, chosen over Bend SOP to avoid interpolation issues) is swept and blended back in via VDB Combine + mask-driven VDB Smooth. Shading uses a deliberate polar UV projection so a MaterialX/Karma texture stretches radially around the swirl.
 - **File:** tutorials/chocolate-swirl-effect-with-houdini.md
 
 
