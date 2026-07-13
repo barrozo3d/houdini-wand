@@ -1669,6 +1669,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/bring-your-3d-renders-to-life-with-houdini---patreon-october-25-trailer.md
 
+
+### Handy Houdini Tips | Vellum, UVS, Modeling and More
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=h6wt3KJy2W4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/handy-houdini-tips-vellum-uvs-modeling-and-more.md
+
 ---
 
 ## Tag Reference

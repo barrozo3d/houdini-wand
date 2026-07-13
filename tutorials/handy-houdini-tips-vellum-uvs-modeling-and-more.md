@@ -1,0 +1,218 @@
+---
+title: Handy Houdini Tips | Vellum, UVS, Modeling and More
+source: YouTube
+url: https://www.youtube.com/watch?v=h6wt3KJy2W4
+author: cgside
+ingested: 2026-07-13
+houdini_version: "[PENDING]"
+tags: []
+extraction_status: pending
+frames_dir: tutorials/frames/handy-houdini-tips-vellum-uvs-modeling-and-more/
+frame_count: 0
+frame_status: pending-selection
+---
+
+# Handy Houdini Tips | Vellum, UVS, Modeling and More
+
+**Source:** [YouTube](https://www.youtube.com/watch?v=h6wt3KJy2W4)
+**Author:** cgside
+**Duration:** 12m37s | 1 section(s)
+
+---
+
+## Raw Data (for Claude Code extraction)
+
+Frames are not captured yet. Read the timestamped transcript below, pick moments
+that actually show a technique/result worth a still (not blind percentages —
+even within a named chapter, verify the real moment against its timestamps), then run:
+  python select_frames.py handy-houdini-tips-vellum-uvs-modeling-and-more <ts1> <ts2> ...
+(seconds or mm:ss). This appends a "Captured Frames" section and updates the
+frontmatter before you write the Structured Notes below.
+
+
+### Full Content [0:00]
+**Transcript (timestamped):**
+[0:00] Hello everyone and welcome back.
+[0:02] Though in today's video I'm going to share a few different tips from modeling to UVs
+[0:06] to VACs.
+[0:07] There will be something for everyone, hopefully.
+[0:10] So I wanted to start with this example, which is using the Slurp function in VACs.
+[0:15] So basically I start with a PAC object that just has a color applied to the front face
+[0:23] as you can see that I apply in here.
+[0:25] And then I'm packing, you end with a single point, single print, PAC primitives, then
+[0:30] I'm transforming to a position, so in this case this position, and then transforming
+[0:35] it to a target position.
+[0:37] And then I want to blend between those two positions and do some rotations in between.
+[0:43] So how can we achieve this?
+[0:46] So let me press E and let's have a look at the code.
+[0:50] So first of all I'm getting the...
+[0:53] I'm creating a time variable where I will do the animation, which is just a feat of time
+[0:57] between 0 and 1 seconds and then from 0 to 1, just the blend amount.
+[1:05] Then I'm getting the PAC transform, both from the first input and the second inputs,
+[1:09] and then doing a Slurp, which is like a Lurp, but for matrices.
+[1:14] So I'm slurping between the first position and the second position and as a blend amount
+[1:19] I'm using the animation as you can see from 0 to 1.
+[1:22] But in between I want to add some rotation, so for that I'm creating in your rotation
+[1:26] angle that I'm going to create as a spare parameter and I'm doing by times tool, which
+[1:34] is a full rotation as you can see.
+[1:38] And then I am multiplying that by the animation, so it blends along the way, so it transforms
+[1:46] from one angle to another.
+[1:49] Then using that angle in a Quaternion along the Y axis and converting that rotation
+[1:55] Quaternion to a matrix, matrix, and finally just multiplying the rotation matrix by that
+[2:02] matrix that we have created with a Slurp, then just using a setback transform, we can set
+[2:08] the final matrix and we get this interpolation and we can come in here and set this by times
+[2:14] 4 and it will do more rotations or only 5 and it will rotate only once as you can see,
+[2:22] only 180 and that's the effect is to do the 360.
+[2:27] So yeah, that was the first tip.
+[2:30] So in this one I wanted to share how you can create UVs from pipe geometry, let's say
+[2:35] this kind of rounded geometry that you end up with these kind of UVs.
+[2:40] So as you can see I haven't modeled these, I have modeled these not using the sweep,
+[2:46] so I started with the tube, oops, let me select these, then the polyfill, started the
+[2:52] primities by Y, did the polywinge, polyinge, then extruded another one and then in
+[2:57] here I selected the endgones and blessed them away.
+[3:03] So as you can see I haven't modeled these with a sweep and in order to do the UVs I wanted
+[3:07] to find an automatic way, automatic but requires some work of course.
+[3:13] Of course you can just use a UV flatten and select one seam but let's say you want to
+[3:17] do these in an HDA and you want to do it automatically.
+[3:21] So you start with the geometry, then we select the Unchared but create a boundary group
+[3:27] so it creates a group for each boundary, then we select one of the boundaries and in a
+[3:33] group expand we expand the whole contain geometry and create a step attribute and what
+[3:38] this will do is create these attributes along the mesh as you can see.
+[3:42] So like an ID is an integer, so let me actually get rid of that visualization, then we select
+[3:48] a start point.
+[3:50] So basically in a detail wrangle we expand the point group of these Unchared points in
+[3:56] here and we select the last one, in this case this point three 97.
+[4:01] So we select the last one in here and we set that point group called start, then we
+[4:07] extend the loop with the group point path, we extend this loop and we get the loop in
+[4:18] the starting from that point, we get this loop inside and of course we also get these
+[4:24] on the Unchared points but that doesn't matter because they are unchared and what be part
+[4:28] of the UVs.
+[4:30] So we convert that to edges and we just UV flat and as you can see and we do the same
+[4:37] and we do rectify and we get something like this.
+[4:41] Of course if you get the UVs upside down you we can easily orient them the way you want
+[4:48] just by unwrapping in place the UVs and using that geo as to get the bounding box center
+[4:55] of the UV shell, move it to the center, transform the UVs in this case I'm inverting.
+[5:00] So just flipping them around and then making them placing them at the center again as
+[5:06] you can see so it stays in the same place and we don't need to UV layout.
+[5:10] So again pretty useful in case you are doing this type of geometry but also useful if you
+[5:15] want to get some overview on how you can play with selections and procedural selections
+[5:22] and procedural UVs.
+[5:25] So I did this volume simulation that you can see like wrapping a candy and I wanted to
+[5:33] show you how you can take masks from the geometry input where I have for example in here this
+[5:42] zip mask that it's around where it's smaller and I also have a mask in here for the top
+[5:48] part that I'm procedurally you can look at the piles on Patreon or no I did this
+[5:53] setup but today I wanted to share how you can take that mask in geometry and move it into
+[5:58] constraints.
+[5:59] So as you can see it will be pretty simple just a simple wrangle and in here I'm just using
+[6:04] the UV sample to sample that attribute using the position as a sample value and you can
+[6:12] take that mask that now lives on constraints and inside the solver you can take that and
+[6:19] let me see where did I read that in this case I'm using it I'm reading it's in the
+[6:23] point so I'm reading that using just ptnm in a point expression in a point function and
+[6:28] then lurping between a rest scale of one and reducing it a bit on that mask and other
+[6:35] values I'm using the mask of course.
+[6:38] So that's how I what I wanted to share in this tip just using UV sample is the easiest
+[6:43] way to sample attributes from geometry to constraints and at the end we get this result
+[6:50] you can have a look at the file on Patreon I'm gonna share all the scenes that I've demoed
+[6:53] in this video so yeah.
+[6:58] So this one I wanted to show you how you can easily model mockups to sell online or something
+[7:04] like that.
+[7:05] So in this case the way I'm modeling this is by creating first a circle then clipping
+[7:12] it in half let me run through the notes.
+[7:15] Re-sample it, symmetrize and fuse and polypating to have a unite curve and make sure the
+[7:22] points are are mirrored so I always have a point at the center.
+[7:29] So this is one part then in the other I'm just using a simple shapes rounded rectangle
+[7:34] transforming it around clipping and doing the same things symmetrize fuse and polypate
+[7:38] and making sure I reverse.
+[7:41] Then I'm creating two points from that geometry using the numbers by reading the position
+[7:48] of the points and adding two points that I can later add and re-sample and finally do
+[7:53] a skin and if we look at the result we can get this re-sample and define the amount of
+[8:00] divisions we want and the same in here we can define the amount of divisions we have.
+[8:05] Just make sure you have the same amount of points on the two shapes that you are using
+[8:08] to skin with.
+[8:10] So in this case I'm skinning this line that I created and then using those two shapes
+[8:16] as a second input as cross sections.
+[8:20] So this is you and re-cross sections.
+[8:23] So that's how I'm doing the modeling of the tube and it doesn't get cleaner than this.
+[8:29] Using a UV flatten just to create the UVs, fusing normal blurring it a bit and then
+[8:35] playing around with the wrinkle deformer.
+[8:38] So let me get back to this.
+[8:41] I bet as you can see this doesn't look like grumblet so what I'm doing is measuring the
+[8:47] thickness so I can get this mask as you can see and then I'm also creating another mask
+[8:56] along the z.
+[8:58] I can blend it and do a pick so I don't want to pick on the areas and need around the
+[9:03] small areas otherwise I will get clipping.
+[9:06] So and then I'm subdividing so this peak in here similar to what we have done in the
+[9:11] Chocolate Break project is just creating that grumblet look as you can see.
+[9:16] Then I'm modeling this part which is just a bunch of extrogements.
+[9:20] So yeah that's how I'm doing this quick mockup.
+[9:26] So I was trying to model a guitar case with a specific design that had this indentation
+[9:32] in your like a V shape on the top and then this line extruding out and then some smoothing
+[9:39] at the end.
+[9:40] So hopefully you can see it in the recording let me do 3 point lighting and as you can
+[9:45] this is easier to show you.
+[9:49] So how did I did that part?
+[9:50] So after I can run you basically I'm using an alpha tracing triangulating blessing
+[9:58] away some creams, symmetrising remesh, what remesh extruding and you know doing the
+[10:04] basic modeling and then bubbling the corners and that's our base shape.
+[10:09] Now how do I add that indentation?
+[10:11] First of all since we're going to work deform geometry we need to have fidelity we need
+[10:16] some resolution that we can later and subdivid if we need.
+[10:20] So I'm starting by drawing two shapes that V shape at the top that I can just easily mirror.
+[10:25] So starting with the curve just model took just drawn took curves then symmetrise it,
+[10:30] fuse it polypads, re-sample fuse then selecting the primitive zero button points.
+[10:37] So just saying that premium is equal to zero in a group expression.
+[10:41] Then as you can see this lays flat on the Z axis so I'm going to do a software transform
+[10:46] and move it a bit on those points.
+[10:50] And I'm blasting the one of those creams since I just want to skin the top part and then
+[10:59] polyx rooting and polyfilling it and and placing it where it needs to be.
+[11:04] So we get this sort of placement as you can see and shape.
+[11:08] And then it's pretty simple we can just do a simple XYZDist and we get these distance
+[11:14] attributes as you can see that we can blur a bit and just move it just this place it
+[11:21] along the normal and we add the final result which is similar to this and then we can
+[11:28] un-sadivide if needed.
+[11:31] So in case you need one subdivided you don't get as much detail but it's still there as
+[11:36] you can see.
+[11:37] So yeah those were the tips I wanted to share today guys and I hope you found them useful.
+[11:43] I'm trying to do a new project on the channel the Chocolate Split but unfortunately not
+[11:47] many of you are interested in that project.
+[11:51] I will try to fit it between videos since not many people show interest in that project.
+[11:58] I think I was doing something worth it watching but unfortunately it didn't get the views
+[12:03] or the feedback so I'm going to finish that project but meanwhile I will do other videos
+[12:11] random videos like I do on the channel on different topics.
+[12:14] So yeah as always you can grab all the scene files on my Patreon alongside with exclusive
+[12:18] tutorials every month I do an exclusive tutorial that's about one hour or more sometimes
+[12:23] two hours of video going step by step on a specific project and yeah you'll free to join
+[12:30] the Patreon where you support me and you get all the perks.
+[12:34] So thank you for watching and I'll see you next time.
+
+
+
+---
+
+## Structured Notes
+
+### Core Technique
+[PENDING EXTRACTION]
+
+### Summary
+[PENDING EXTRACTION]
+
+### Key Steps
+[PENDING EXTRACTION]
+
+### Houdini Nodes / VEX / Settings
+[PENDING EXTRACTION]
+
+### Difficulty
+[PENDING EXTRACTION]
+
+### Houdini Version
+[PENDING EXTRACTION]
+
+### Tags
+[PENDING EXTRACTION]
+
+---
+
+## Related Tutorials
+[PENDING EXTRACTION]
