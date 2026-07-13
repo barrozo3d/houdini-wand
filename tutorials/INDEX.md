@@ -1509,6 +1509,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/basic-procedural-texturing-with-cops-in-houdini-21.md
 
+
+### Roasting my Houdini Setups #1
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=rvDsbo3slXc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/roasting-my-houdini-setups-1.md
+
 ---
 
 ## Tag Reference
