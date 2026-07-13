@@ -2109,6 +2109,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/tiling-patterns-with-cops-and-sops.md
 
+
+### Custom patterns with COPS |  October Patreon Exclusive
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=bM7hzXqBq0Y
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/custom-patterns-with-cops-october-patreon-exclusive.md
+
 ---
 
 ## Tag Reference
