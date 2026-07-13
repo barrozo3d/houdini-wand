@@ -2389,6 +2389,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/chocolate-swirl-effect-with-houdini.md
 
+
+### Quality of life tips in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=iQql20c4Gio
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/quality-of-life-tips-in-houdini.md
+
 ---
 
 ## Tag Reference
