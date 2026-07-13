@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=hHLH7pr_eZo
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19+"
+tags: [kinefx, procedural-modeling, rigging, capture-proximity, sweep, quadremesh, polyfill, animation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/tuna-can-procedural-modeling-and-rig-with-kinefx/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Tuna Can | procedural modeling and rig with KineFX
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py tuna-can-procedural-modeling-and-rig-with-kinefx <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -261,30 +257,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:32] tutorials/frames/tuna-can-procedural-modeling-and-rig-with-kinefx/frame_000.jpg
+- [1:11] tutorials/frames/tuna-can-procedural-modeling-and-rig-with-kinefx/frame_001.jpg
+- [2:52] tutorials/frames/tuna-can-procedural-modeling-and-rig-with-kinefx/frame_002.jpg
+- [4:23] tutorials/frames/tuna-can-procedural-modeling-and-rig-with-kinefx/frame_003.jpg
+- [5:57] tutorials/frames/tuna-can-procedural-modeling-and-rig-with-kinefx/frame_004.jpg
+- [8:13] tutorials/frames/tuna-can-procedural-modeling-and-rig-with-kinefx/frame_005.jpg
+- [12:51] tutorials/frames/tuna-can-procedural-modeling-and-rig-with-kinefx/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedurally models a tuna can (ring-pull lid with a staircase-patterned embossed top, and a mirrored square-tube can body) then rigs the lid with a KineFX capture/deform skeleton so the pull-tab lid animates open, with the metal cap following the lid's motion via a point-transform-copy trick.
 
 ### Summary
-[PENDING EXTRACTION]
+Starts from a single line swept (Ribbon + Columns, grid end caps) into the lid's cross-section profile, then builds the embossed "staircase" pattern on the lid top using paired point offsets on concentric circles (position.y and pscale grouped in twos with incrementing offsets) before skinning them into rings. The can body is built separately from a mirrored square-tube sweep driven by a `primnum`-based group expression so specific faces can be targeted for extrusion. For the rig: a simple 2-point capture line (built from the lid's bounding box) drives a proximity-captured bind deform that rotates/opens over an eased 0-1 time range, and the rigid cap is made to follow that same animated rig by copying the first point's world transform onto the cap's own point (correcting for the initial offset between the two points via a matrix-based offset calculation) before a Capture Pack/Bone Deform.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Lid cross-section:** start from a single **Line** centered on the Z axis, run a **Sweep** with cross-section set to Ribbon + Columns, end caps set to Grid, tune end-cap roundness and apply some scale to get the base lid profile shape.
+2. **Resample** lightly, **Fuse** + smooth to round the profile, then select the section to receive the embossed cap design (via a small point-index expression to iterate/select which points).
+3. **Poly Expand** to build geometry for the design (Offset Surfaces mode, Reverse enabled), then run **Houdini's native QuadRemesh** with X-axis symmetry enabled and **Edge Flow control set to Edge** (setting it to Face instead produces a broken/messy result).
+4. Smooth to equalize edges, add **thickness**, smooth again, subdivide, and soften normals to finish the embossed cap piece.
+5. **Interior/n-gon cleanup:** from the quadremesh result, group each n-gon (non-quad) edge separately (one group per n-gon, e.g. groups 1/2/3), promote each point group to an edge group, then **PolyFill** the patch and extrude/inset it; run **Circle from Edges** on the same group, extrude, blast, and PolyFill again to force clean quads. Extruding the matching edge before Match Mode avoids visible gaps between pieces that appear if you skip the extrusion.
+6. **Staircase/embossed pattern:** start from a Circle, generate 10 points for 5 levels (2 points per level). Point pairs 0-1, 2-3, 4-5... share the same `position.y` offset, incrementing by one level each pair; for `pscale`, the pattern is offset by one point (skip point 0), pairing points 1-2 and 3-4 with matching scale values. The Y offset is computed as `floor(point_number / 2) * amplitude`; copying these circles to points produces concentric rings that, once given enough resample density, **Skin** into the staircase pattern when meshed.
+7. Smooth for slope, soften normals, group the center primitives (to avoid a degenerate triangle-fan mesh at the center), save a boundary group from that selection, then **PolyFill** the center hole using a quadrilateral-grid fill via that boundary group. Bevel, subdivide, soften, and add an Image ROP to finish the can top.
+8. **Can body:** from the can top, group unshared edges, Convert to Line, and run a **Sweep** with a square-tube cross-section (not round) — the tube's Scale parameter allows independent per-axis scaling for the square profile. Output a `primnum`-derived attribute (a "prim call" ID) so a **Group Expression** can target specific primitives for extrusion by index instead of manual selection.
+9. Extrude, **Mirror**, PolyBevel, and Subdivide for the main body wall. For the bottom, take the Poly Extrude's "extrude front" seam output, convert to a line, sort the two resulting curves by proximity to a point (so the interior primitive is always index 0), blast it, PolyFill with a quad-grid, blast the remaining curve, Match Size to the can's main position, subdivide, and merge everything together.
+10. **Rig setup — lid capture:** build a 2-point line for the capture rig by manipulating the input's bounding-box min/max positions, add points and a polyline between them; resample for a better point count. Reverse the winding order if the deformation runs from the wrong end.
+11. **Rig Doctor**-initialize the transforms (produces an Image ROP too), then **Capture by Proximity** (tune Drop Off and Max Point Influence) followed by **Bone Deform** — geometry into input 1, rest skeleton into input 2, the animated/deformed rig into input 3.
+12. **Lever animation:** build a curve-parameter (`curveu`, 0-to-1 along the curve), add an Angle parameter for local-transform rotation amount, plus an offset so only the tip rotates (not the whole rig). Drive the animation by **Fit** on the time channel between two specific seconds mapped 0-1, then **Remap** the result so it isn't linear (fast start that eases into the final position). Multiply the angle by this animation value and rotate around the axis matching the rig's local transform (X in this case).
+13. A second, near-identical animated setup opens the lid itself — same structure, but animating the offset linearly with a small angle value and inverting the angle's sign for the opposite rotation direction; small offset values (e.g. 1 to -0.2) give a subtle falloff on where the bend concentrates.
+14. **Cap-follows-lid:** bring in the cap geometry, place its rig point by manipulating the bounding-box min/max (same trick as before), Rig Doctor to initialize transforms + name attribute, then **Capture Pack** (connect the point to the geometry, pack the input).
+15. In the boundary/animated Bone Deform for the cap: instead of driving its own rotation, load the **world transform (point transform)** of the first point (point 0) from the already-animated lid rig, then in a wrangle copy that transform onto the cap's own point — computing and adding an offset first, since the cap's initial point position doesn't exactly coincide with the lid rig's point (directly assigning the transform without this offset correction introduces a visible positional jump).
+16. Merge the cap and lid/body geometry together; the cap now follows the lid's opening animation correctly, completing the rig.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Line → Sweep (Ribbon+Columns, Grid end caps) → Resample/Fuse/smooth → point-index expression (section select) → Poly Expand (Offset Surfaces, Reverse) → native **QuadRemesh** (X symmetry, Edge Flow = Edge) → per-n-gon Group + PolyFill + Circle from Edges + extrude/blast/PolyFill cleanup → staircase pattern (`floor(pointnum/2)` Y-offset + paired-offset pscale on 10-point circle, Copy to Points, Skin) → boundary-group PolyFill (quad grid) → Sweep (square tube cross-section) + `primnum`-driven Group Expression for targeted extrusion → Mirror/PolyBevel/Subdivide → sort-by-proximity-to-point for bottom cap seam → **Rig Doctor** (init transforms) → **Capture by Proximity** (Drop Off, Max Point Influence) → **Bone Deform** (3-input: geo / rest rig / animated rig) → curveu attribute + Angle parameter + offset wrangle → Fit (time→0-1) + Remap (ease) for animation driving → **Capture Pack** + world-point-transform copy wrangle (with computed offset) for the cap-follows-lid trick.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — the modeling side (sweep, quadremesh, n-gon cleanup, staircase pattern) is approachable; the KineFX rigging side (capture/bone-deform chain, curve-parameter-driven animation, and especially the point-transform-copy-with-offset trick for making the cap follow the lid) assumes prior KineFX rigging familiarity.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; uses native QuadRemesh and standard KineFX rigging nodes (Rig Doctor, Capture by Proximity, Bone Deform, Capture Pack) available in Houdini 19+.
 
 ### Tags
-[PENDING EXTRACTION]
+#kinefx #procedural-modeling #rigging #capture-proximity #sweep #quadremesh #polyfill #animation #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [Mechanical rigging in Houdini - Attaching custom controls](mechanical-rigging-in-houdini---attaching-custom-controls.md) — shares #rigging #kinefx; that tutorial covers a complementary custom-control attachment technique for KineFX rigs.

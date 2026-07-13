@@ -447,9 +447,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=hHLH7pr_eZo
 - **Author:** cgside
-- **Houdini Version:** unspecified
-- **Tags:** "kinefx", "procedural-modeling", "rigging", "sop", "sweep", "quadremesh", "animation", "modeling"
-- **Summary:** cgside presents a 13-minute practical tutorial on procedurally modeling a tuna can and rigging it with KineFX in Houdini. The modeling starts from a single line placed at the Z axis center, swept into the cap shape with ribbon mode, then resampled, fused, and smoothed. Point selection expressions iterate over points to create the cap design geometry via PolyExpand, followed by QuadRemesh for...
+- **Houdini Version:** H19+
+- **Tags:** #kinefx #procedural-modeling #rigging #capture-proximity #sweep #quadremesh #polyfill #animation #intermediate
+- **Summary:** Procedurally models a tuna can (staircase-embossed pull-tab lid + mirrored square-tube body via Sweep/QuadRemesh/PolyFill) then rigs the lid with a KineFX capture/proximity + Bone Deform chain driven by an eased curve-parameter animation. The rigid cap is made to follow the lid's motion by copying the animated rig's first-point world transform onto the cap, correcting for the initial point offset via a wrangle.
 - **File:** tutorials/tuna-can-procedural-modeling-and-rig-with-kinefx.md
 
 
