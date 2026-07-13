@@ -2789,6 +2789,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/rbd-rock-surfaces-with-houdini.md
 
+
+### Cliff texturing with karma and material X
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=WAyk2xCn5rs
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/cliff-texturing-with-karma-and-material-x.md
+
 ---
 
 ## Tag Reference
