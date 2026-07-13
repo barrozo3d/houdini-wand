@@ -2229,6 +2229,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-helical-column-in-houdini.md
 
+
+### Procedural Modeling with Houdini 20.5 Tools
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=k7-5PaOccYc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-modeling-with-houdini-205-tools.md
+
 ---
 
 ## Tag Reference
