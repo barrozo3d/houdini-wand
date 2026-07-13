@@ -1749,6 +1749,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/making-trash-in-houdini.md
 
+
+### Houdini tips to save the day
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=lT0b8D6LmtM
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-tips-to-save-the-day.md
+
 ---
 
 ## Tag Reference
