@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Ba3Py4lodL8
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H19+, uses Exoside QuadRemesher)"
+tags: [modelling, procedural, vex, uv, vellum, quadremesh, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/all-the-procedural-modeling-tricks-in-one-video/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # All* the Procedural Modeling tricks in one video
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py all-the-procedural-modeling-tricks-in-one-video <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -346,30 +342,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:11] tutorials/frames/all-the-procedural-modeling-tricks-in-one-video/frame_000.jpg
+- [4:00] tutorials/frames/all-the-procedural-modeling-tricks-in-one-video/frame_001.jpg
+- [7:06] tutorials/frames/all-the-procedural-modeling-tricks-in-one-video/frame_002.jpg
+- [10:49] tutorials/frames/all-the-procedural-modeling-tricks-in-one-video/frame_003.jpg
+- [16:41] tutorials/frames/all-the-procedural-modeling-tricks-in-one-video/frame_004.jpg
+- [21:59] tutorials/frames/all-the-procedural-modeling-tricks-in-one-video/frame_005.jpg
+- [26:16] tutorials/frames/all-the-procedural-modeling-tricks-in-one-video/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+End-to-end procedural build of an architectural cushioned-panel element: VEX-driven circle subdivision → manual quad skinning → Vellum-simulated wrinkle detail (using the `pressure_scale`/`rest_scale` attribute trick) → Exoside QuadRemesher retopology with vertex-color density control → procedural "piping" trim detail.
 
 ### Summary
-[PENDING EXTRACTION]
+A dense, single-take breakdown of building a stylized architectural/upholstery-like panel shape entirely proce41rally. Starts from a circle divided into quadrants via Voronoi Fracture (points placed with a short VEX snippet using bounding-box min/max/center), builds a rotated, scale-compensated base profile, manually meshes the resulting curves by splitting/skinning them in controlled column groups (because a naive PolyFill fails on the mixed round/straight geometry), lays out and orients UVs (including a matrix-based neighbor-orientation trick requiring a quad mesh), simulates cloth-like wrinkles with Vellum using an attribute called `pressure_scale` (credited to a friend, Philipp Weasling) to locally control inflation instead of a uniform pressure value, retopologizes the wrinkled high-poly result with Exoside QuadRemesher using vertex-color-encoded density targets, and finally adds a procedural "piping" trim by detecting straight vs. curved mesh boundaries via tangent dot-products in a wrangle.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base pattern:** start from a circle; use a **VEX wrangle** to place 4 points at the circle's bounding-box min/max/center (X and Z) as Voronoi Fracture seeds, giving control over how far each point sits from the edge; run **Voronoi Fracture** to divide the circle into the quadrant pattern.
+2. Group/fuse the resulting center points by bounding box, **Convert to Line**, sort primitives so the center primitive is index 0 (helps keep everything modeled at the origin).
+3. **Transform** with a 30° X rotation to initialize the shape, then apply an **exclusion** — compensate the resulting oval distortion by scaling by `1 / cos(rotation)` (the presenter notes getting this specific math trick from an AI assistant).
+4. **Resample** each curve (10 segments), then because a straight-edge + rounded-edge mix breaks naive **PolyFill**, mesh manually: duplicate the primitive, separate "side" vs "middle" curves using `abs(position.x) > threshold` primitive selection, split/invert, sort, and **Skin** in column pairs (not straight across) to control polygon density — denser in the middle.
+5. Reverse normals as needed after Skin (a recurring quirk with the Skin node per the presenter), repeat the split/resample/skin process for the other side, then **resample to match point counts** between pieces before final skinning so both sides merge without seams.
+6. Basic **UV Flatten**, fuse unshared points/edges, group the mesh as "top", and use **Orient UVs** to fix island rotation — this node relies on matrix orientation from a neighboring quad, so on a triangulated mesh you must first weld/cut a seam (e.g. down the middle) to expose a valid neighbor; also tune the **island tolerance** parameter for correct quad-island detection.
+7. Use **UV Transfer** to move the corrected orientation back onto the original (uncut) mesh, then a final **UV Flatten** (no rotation, island padding) to clean up remaining distortion.
+8. **Subdivide** for extra geometry, then set up **Vellum**: build a `pressure_mask` (from the earlier "top" primitive group) and a custom attribute named **exactly** `pressure_scale`, blending between a negative value (sides/bottom, "negative inflation" — needed even though it seems counterintuitive) and a small positive value (~0.15) on the top/cushion faces via the mask.
+9. Build a second mask on unshared/weld points, boost it with **Attribute Adjust Float × Attribute Blur**, clamp 0-1, then run **Attribute Noise** over it to break up uniformity — a purely uniform mask produces unrealistically even wrinkles.
+10. **Vellum Cloth**: set Stretch Constraint stiffness very high (~10,000) and Bend stiffness very low to encourage wrinkling; save the cloth's rest-scale-manipulation channel as default so it can be driven per-point inside the solver; rename the Vellum Pressure exponent parameter to `pressure` for reference inside the solver.
+11. Inside the **Vellum Solver**: on the cloth stretch constraints, lerp `rest_scale` between a small and large value using the noisy mask — pushing edges IN (rest scale < 1, the default with no extra fabric) creates room for wrinkles to form (the presenter notes their first instinct — increasing rest scale — gave the opposite, wrong result). On the pressure constraints, similarly lerp/update `rest_length` using the `pressure_mask` to control local fabric slack tied to the pressure attribute.
+12. **Cache the sim** (frame 24 used as the final still), fuse points, apply **VDB-based smoothing** ("Valentose process" — subdivision + spatial blur) to clean up the high-poly mesh, accepting some remaining shading artifacts at this stage since it isn't final geometry yet.
+13. **Retopology:** split UV seams, promote to point attribute, build connectivity, measure per-shell area (a "class" attribute), normalize area into an "area target" value, and **bake that as vertex color** — feed the UV-space mesh (not the 3D mesh, which the presenter tried and found produces a complete mess) into **Exoside QuadRemesher**, using the vertex colors to drive local polygon density/count.
+14. **Deform back:** use a Point Deform-style setup with the same point count between the flat UV-quadremeshed mesh and the original 3D+UV mesh, subdividing further afterward to recover detail from the original triangle/eyeball-dense mesh.
+15. **Piping/trim detail:** grab the mesh boundary attribute from UVs, convert to line, save a rest position, then in a **wrangle** compute per-primitive tangents via **Orient Along Curve**, take a reference tangent from each primitive's first point, and dot-product every other point's tangent against it to classify the curve as "straight" vs "not straight" (curved) — this mask is used to fuse/PolyPatch only the genuinely circular sections (so they weld into one primitive) while leaving straight runs isolated, letting a subsequent **Sweep** close the circular sections properly without merging incompatible straight segments.
+16. Final UV pass on the piping geometry (flatten, preserve seams + island boundaries), merge with the main "Piping" attribute, then do a final cleanup UV layout, delete unnecessary groups/attributes, and **Match Size** to normalize scale before export.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+VEX wrangle (bounding-box min/max/center point placement) → **Voronoi Fracture** → Transform (rotation + `1/cos(angle)` scale compensation) → manual curve split/Skin-by-column (density control) → **Orient UVs** (matrix/neighbor-based, requires quad topology + seam cut) + UV Transfer + UV Flatten → **Vellum Cloth** (`pressure_scale` custom attribute, high Stretch stiffness/low Bend stiffness) → Vellum Solver internals (`rest_scale` lerp on stretch constraints, `rest_length` lerp on pressure constraints, driven by noisy masks via Attribute Adjust Float / Attribute Blur / Attribute Noise / Clamp) → VDB smoothing ("Valentose" subdivision+blur) → connectivity + area measurement → vertex-color area target → **Exoside QuadRemesher** (on flattened UV mesh) → point-deform back to 3D → tangent dot-product wrangle for straight/curved classification → Fuse/PolyPatch/Sweep for piping trim.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines VEX scripting, manual curve-to-mesh construction, non-trivial UV orientation math, custom Vellum attribute-driven wrinkling, and a third-party quadremesh plugin; not a beginner workflow despite individual steps being explained clearly.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; requires the third-party **Exoside QuadRemesher** plugin (any modern Houdini H19+ compatible with it).
 
 ### Tags
-[PENDING EXTRACTION]
+#modelling #procedural #vex #uv #vellum #quadremesh #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [5 Tips and Tricks for Modeling in Houdini](5-tips-and-tricks-for-modeling-in-houdini.md) — shares #modelling #procedural #vex; that tutorial's off-center-mirror and attribute-driven bevel tricks complement this one's VEX-driven point placement and area-based UV/quadremesh workflow.

@@ -2994,9 +2994,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Ba3Py4lodL8
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H19+, uses Exoside QuadRemesher)
+- **Tags:** #modelling #procedural #vex #uv #vellum #quadremesh #advanced
+- **Summary:** Dense end-to-end build of an architectural cushioned panel: VEX-driven circle subdivision, manual quad skinning to work around PolyFill limitations, matrix-based UV orientation, Vellum wrinkle simulation via a custom `pressure_scale` attribute, Exoside QuadRemesher retopology driven by vertex-color density targets, and a tangent-dot-product wrangle for procedural piping trim.
 - **File:** tutorials/all-the-procedural-modeling-tricks-in-one-video.md
 
 
