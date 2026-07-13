@@ -2559,6 +2559,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/bake-room-maps-in-karma-from-hdri-interiors-h20.md
 
+
+### Custom Procedural Materials with Houdini and Karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=M6W_EP48BaI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/custom-procedural-materials-with-houdini-and-karma.md
+
 ---
 
 ## Tag Reference
