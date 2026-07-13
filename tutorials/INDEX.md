@@ -2659,6 +2659,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-procedural-tips-variants-concentric-shapes-and-step-orient.md
 
+
+### Procedural Shading Tips #2 in Houdini 20
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=r2SSCwpgnVQ
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-shading-tips-2-in-houdini-20.md
+
 ---
 
 ## Tag Reference
