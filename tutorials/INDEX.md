@@ -1489,6 +1489,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/creating-assets-from-default-geometry-in-houdini-21.md
 
+
+### Orient UVS like a PRO in Houdini 21
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=eqXFo0pxdXc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/orient-uvs-like-a-pro-in-houdini-21.md
+
 ---
 
 ## Tag Reference
