@@ -2199,6 +2199,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-shading-with-cops-and-karma---preview.md
 
+
+### UVW randomizer in karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=1SXCz_Ta4Lc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/uvw-randomizer-in-karma.md
+
 ---
 
 ## Tag Reference
