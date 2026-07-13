@@ -1859,6 +1859,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-buildings-in-houdini-tips-and-tricks.md
 
+
+### Advanced Waterdrops Setup in Houdini | Patreon April Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=2HYYRRW7tws
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/advanced-waterdrops-setup-in-houdini-patreon-april-trailer.md
+
 ---
 
 ## Tag Reference
