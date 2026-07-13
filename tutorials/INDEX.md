@@ -2099,6 +2099,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/spiral-splash-tutorial-in-houdini.md
 
+
+### Tiling Patterns with COPS and SOPS
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=05uuRimyHfY
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/tiling-patterns-with-cops-and-sops.md
+
 ---
 
 ## Tag Reference
