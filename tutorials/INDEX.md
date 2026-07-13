@@ -1849,6 +1849,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/quick-cg-integration-with-houdini-and-karma.md
 
+
+### Procedural Buildings in Houdini | Tips and Tricks
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=JCdVrNwiMGk
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-buildings-in-houdini-tips-and-tricks.md
+
 ---
 
 ## Tag Reference
