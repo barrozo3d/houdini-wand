@@ -1449,6 +1449,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/rbd-procedural-animations-in-houdini-mardini-2026.md
 
+
+### Procedural Food in Houdini | Mardini 2026
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=VjX9v92PJNU
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-food-in-houdini-mardini-2026.md
+
 ---
 
 ## Tag Reference
