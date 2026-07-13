@@ -2084,9 +2084,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=-1kxDkdmcV4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H18+)
+- **Tags:** #modelling #procedural #vex #uv #beginner
+- **Summary:** Beginner procedural wine barrel: a tube bulged via a relative-bounding-box VEX wrangle feeding a Ramp, split into planks with a `primnum % columns` attribute + Vertex Split, capped with pushed-apart reversed-normal discs, wrapped with swept hoops (ray-projected onto a Convex Hull proxy since direct raying onto the open barrel geometry fails), and finished with a full manual UV workflow including Group Find Path to fix groups broken by extrusion.
 - **File:** tutorials/beginner-procedural-modelinguvs-tutorial-in-houdini.md
 
 

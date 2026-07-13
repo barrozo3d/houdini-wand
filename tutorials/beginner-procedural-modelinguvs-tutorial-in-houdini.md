@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=-1kxDkdmcV4
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+)"
+tags: [modelling, procedural, vex, uv, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/beginner-procedural-modelinguvs-tutorial-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Beginner Procedural Modeling/UVS Tutorial in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py beginner-procedural-modelinguvs-tutorial-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -308,30 +304,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:50] tutorials/frames/beginner-procedural-modelinguvs-tutorial-in-houdini/frame_000.jpg
+- [4:29] tutorials/frames/beginner-procedural-modelinguvs-tutorial-in-houdini/frame_001.jpg
+- [5:10] tutorials/frames/beginner-procedural-modelinguvs-tutorial-in-houdini/frame_002.jpg
+- [6:19] tutorials/frames/beginner-procedural-modelinguvs-tutorial-in-houdini/frame_003.jpg
+- [8:49] tutorials/frames/beginner-procedural-modelinguvs-tutorial-in-houdini/frame_004.jpg
+- [11:19] tutorials/frames/beginner-procedural-modelinguvs-tutorial-in-houdini/frame_005.jpg
+- [16:21] tutorials/frames/beginner-procedural-modelinguvs-tutorial-in-houdini/frame_006.jpg
+- [18:03] tutorials/frames/beginner-procedural-modelinguvs-tutorial-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Beginner-friendly procedural wine barrel: a tube deformed into a barrel bulge via a ramp-driven VEX wrangle, split into individual wood planks using a `primnum % columns` attribute and Vertex Split, capped with pushed-apart reversed-normal discs, wrapped with swept metal hoops, and finished with a full manual UV workflow (seam groups, Group Find Path for extending cuts through extrusions, UV Flatten, UV Layout).
 
 ### Summary
-[PENDING EXTRACTION]
+An explicitly beginner-oriented tutorial pairing a simple procedural-modeling exercise with a full, correct UV workflow for procedural assets. The barrel body starts as a Tube, bulged into shape with a **relative bounding-box** VEX wrangle feeding a **Ramp** (a hallmark simple-VEX pattern: `relbbox(0,@P)` gives 0-1 values regardless of scene position, unlike `@P` itself). Planks are separated using a primitive-modulo attribute (`@primnum % cols`) instead of manual selection, split apart with **Vertex Split**, gapped and rejoined with PolyFill. UVs are built properly from the start: seam edges by angle, UV Flatten, then a corner Bevel that the UVs correctly follow. Barrel ends are two reversed-normal, VEX-pushed-apart discs; metal hoops are built from an open-arc Circle swept as a Ribbon, using a **normalized-position "aperture vector"** so the sweep orientation aligns correctly along the barrel curve, then merged and ray-projected onto a Convex-Hulled version of the barrel (needed because raying onto the actual open/non-manifold barrel geometry silently fails). The trickiest UV step is extruding the plank backs while preserving a pre-extrusion group selection for the flatten — solved with **Group Find Path** (promoted to edges, "Loops or Rings, Extend to Edge") rather than trying to re-select after the topology changes.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base shape:** Tube (Height 1.1, 12 Rows, 32 Columns — density chosen to read as wood planks).
+2. **Barrel bulge (VEX):** in a wrangle, compute `v@rel_bbox = relbbox(0, @P)` (0 = "use the incoming geometry," relative bbox goes 0→1 regardless of scene position — using `@P` directly instead would run -0.5→0.5 and depend on the object's world position). Feed the Y component into a **Ramp** ("ramp_deform", curved to a barrel/hourglass-ish shape, B-Spline interpolation), then multiply `@P.x` and `@P.z` by the ramp's output — set the ramp's middle handles to mirror each other (~0.725) so adjusting one updates both.
+3. **Column/plank attribute:** a second wrangle references a `cols` integer channel parameter (copy-pasted from the Tube's Columns value to stay procedural) and computes `i@id = @primnum % cols` — using modulo rather than plain division-and-floor is what actually separates primitives into repeating column groups instead of just rows.
+4. **Split into planks:** **Poly Extrude** (~0.12, output back), then **Vertex Split** using the `id` attribute (instead of the default Name attribute) to separate each column into its own piece; **Uniform Scale** slightly (~0.1) in Exploded View to create gaps, then **PolyFill** (Weighted Rolls) to cap them cleanly.
+5. **UVs, first pass:** group seam edges via **Mean Edge Angle**, then **UV Flatten** on that group with Rectify enabled and Manual Layout disabled — clean UVs at this stage, before any beveling.
+6. **Bevel (UV-aware):** PolyBevel excluding flat edges (~0.2 Round, 3 Divisions) — the earlier clean UVs adapt correctly through the bevel. Subdivide + soften normals for preview quality, then tag the whole piece with a custom float attribute (e.g. `barrel = 1`) for later use as a texturing mask target.
+7. **Barrel end caps:** a Circle on the ZX plane (32 divisions, small radius) with UVs derived from its own texture coordinate on Y (reversed via negative scale + offset to orient correctly); **Copy and Transform** to duplicate, **Reverse** normals on one copy, then a VEX wrangle pushes both apart along their own normals (`@P += @N * amount`, ~0.53) while tagging a root/origin point attribute for alignment reference before merging.
+8. **Barrel hoops:** an **open-arc Circle** (32 divisions) with a range/division attribute (divisions ÷ 4, avoiding awkward UV islands later) for grouping; build an **aperture vector** via `v@up = normalize(v@P)` so the vector points radially outward — required for the later Sweep to orient correctly along the barrel curve. **Match Size** to align the circle to the barrel, offset (~±0.03) to place the first hoop, then **Copy and Transform** (3 copies, small offset) plus **Mirror** (direction Y) to place matching hoops symmetrically top/bottom, and a middle hoop set (centered, offset ~0.15) — merge all hoop copies together.
+9. **Fuse** all hoop points (open-arc circles leave an unfused seam point by default — always fuse before sweeping), then **Sweep** (Ribbon mode, 2 columns, Size 0.05) using the earlier aperture vector to keep the ribbon correctly oriented; without that vector the sweep doesn't align to the barrel curvature.
+10. **Attach hoops to barrel via ray projection:** merge barrel + hoops, then **Ray** the hoops onto the barrel — a direct Ray (even with Reverse Rays checked) silently fails here, likely due to open/non-manifold barrel geometry; the fix is to first generate a **Convex Hull** proxy from the barrel and ray onto that instead, which works reliably.
+11. Add a masking wrangle (`f@ao_type = 1` or similar) purely as a placeholder attribute for later COPS texturing use, and **Peak** the hoops slightly (small distance, ~0.05) off the barrel surface to avoid Z-fighting/clipping.
+12. **UV finishing — the extrusion/group problem:** group the unshared edges before extruding the plank backs (~0.03, output back) — a range/division group created earlier ("UV the mesh") only exists on the original front faces and does **not** propagate through the extrusion automatically. Fix with **Group Promote** (points→edges) followed by **Group Find Path** (base group = "range", boundary-only elements, "Loops or Rings, Extend to Edge") — this regenerates the correct edge cuts needed for the UV Flatten across the now-extruded geometry.
+13. Final **UV Flatten** using the seam, range, and unshared-edge groups (Rectify on, Manual Layout off) gives clean UVs on the extruded planks; PolyBevel the corners lightly again (small Round value, 3 Divisions, exclude flat edges), subdivide, soften normals, and merge everything (barrel + caps + hoops) together.
+14. **UV Layout:** since all pieces' UVs currently overlap, run **UV Layout** with "Scale Islands to Match Surface Area" enabled, increase iterations for better distribution, and add island/boundary padding — final coverage in this example landed around 72%.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Tube → Attribute Wrangle (`relbbox(0,@P)`) → **Ramp** (B-Spline, mirrored handles) driving `@P.x`/`@P.z` scale → Attribute Wrangle (`@primnum % cols` via a `cols` channel reference) → Poly Extrude (output back) → **Vertex Split** (by custom `id` attribute, not Name) → Uniform Scale (Exploded View) → PolyFill (Weighted Rolls) → UV seam Group (Mean Edge Angle) → UV Flatten (Rectify, no Manual Layout) → PolyBevel (exclude flat edges) → Subdivide + soften normals → custom float attribute tag · Circle (ZX plane, reversed/offset texture UVs) → Copy and Transform + Reverse (normals) → VEX push-apart wrangle (`@P += @N*scale`) for end caps · open-arc Circle + range/division group + `v@up = normalize(@P)` aperture vector → Match Size + offset → Copy and Transform + Mirror (hoop placement) → Fuse → **Sweep** (Ribbon, aperture-vector-aligned) for hoops · **Convex Hull** (proxy) + **Ray** (reverse rays) to attach hoops to barrel → Peak (small offset) · unshared-edges Group → Poly Extrude → **Group Promote** (point→edge) → **Group Find Path** (Loops or Rings, Extend to Edge) → final UV Flatten → PolyBevel → Subdivide → **UV Layout** (Scale Islands to Match Surface Area, padding).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — explicitly pitched as an introductory exercise; the VEX used is minimal (bounding-box remap, modulo attribute, normal-based push-apart) and every UV step is explained from first principles, though the Group Find Path fix for extrusion-broken groups is a genuinely useful intermediate-level trick.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; uses only long-standing native SOP nodes (Tube, Ramp, Vertex Split, Sweep, Ray, Convex Hull, UV Flatten, UV Layout, Group Find Path) available in any modern Houdini (H18+).
 
 ### Tags
-[PENDING EXTRACTION]
+#modelling #procedural #vex #uv #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [5 Tips and Tricks for Modeling in Houdini](5-tips-and-tricks-for-modeling-in-houdini.md) — shares #modelling #procedural #vex; both use simple attribute-driven VEX tricks (bounding-box remaps, per-piece attributes) to control procedural geometry without complex node graphs.
