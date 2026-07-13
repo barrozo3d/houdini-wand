@@ -1439,6 +1439,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/layered-textures-in-karma.md
 
+
+### RBD Procedural Animations in Houdini | Mardini 2026
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ITq2EBJ5nIw
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/rbd-procedural-animations-in-houdini-mardini-2026.md
+
 ---
 
 ## Tag Reference
