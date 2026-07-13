@@ -1519,6 +1519,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/roasting-my-houdini-setups-1.md
 
+
+### Scatter shapes in cops randomly without overlap
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=bTA8XwTEcRg
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/scatter-shapes-in-cops-randomly-without-overlap.md
+
 ---
 
 ## Tag Reference
