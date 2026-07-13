@@ -2189,6 +2189,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/resample-color-ramps-in-houdini.md
 
+
+### Procedural Shading with COPS and Karma - Preview
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=3bP9uKsn-9U
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-shading-with-cops-and-karma---preview.md
+
 ---
 
 ## Tag Reference
