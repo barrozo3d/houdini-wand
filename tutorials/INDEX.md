@@ -2849,6 +2849,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/custom-triplanar-for-karma-patreon.md
 
+
+### Procedural shading with karma  | Patreon exclusive
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=CzgcCkVy50o
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-shading-with-karma-patreon-exclusive.md
+
 ---
 
 ## Tag Reference
