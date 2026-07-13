@@ -2499,6 +2499,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-tips-expressions-vex-recursive-cuts-and-more.md
 
+
+### Houdini Tips - Procedural UV's, Channel Packing and more
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=m00nko87HeI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-tips---procedural-uvs-channel-packing-and-more.md
+
 ---
 
 ## Tag Reference
