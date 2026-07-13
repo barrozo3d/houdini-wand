@@ -1539,6 +1539,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-environments-in-houdini-patreon-february-26-free-lesson.md
 
+
+### Direct vs Procedural in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Quj03TwHAN4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/direct-vs-procedural-in-houdini.md
+
 ---
 
 ## Tag Reference
