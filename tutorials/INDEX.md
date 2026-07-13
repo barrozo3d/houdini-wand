@@ -1709,6 +1709,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-21-opacity-vs-stencil-vs-geometry.md
 
+
+### Daily dose of Houdini Tips | Sweep secrets, opencl textures and more
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=1QTfNMlvF1E
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more.md
+
 ---
 
 ## Tag Reference
