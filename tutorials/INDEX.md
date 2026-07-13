@@ -2999,6 +2999,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/all-the-procedural-modeling-tricks-in-one-video.md
 
+
+### Procedural Pineapple | Patreon June - Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=JO0V0xTDh9w
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-pineapple-patreon-june---trailer.md
+
 ---
 
 ## Tag Reference
