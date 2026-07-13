@@ -2939,6 +2939,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/creating-3d-environments-with-houdini-and-arnold---trailer.md
 
+
+### Environment creation with Solaris in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=2f_40GhnBXI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/environment-creation-with-solaris-in-houdini.md
+
 ---
 
 ## Tag Reference
