@@ -2539,6 +2539,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-heightfields-and-cliffs.md
 
+
+### Houdini tips : Solaris, VDB's , COPS and More
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=WwwTwtlKm0A
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-tips-solaris-vdbs-cops-and-more.md
+
 ---
 
 ## Tag Reference
