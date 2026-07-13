@@ -3279,6 +3279,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vdb-procedural-cliffs.md
 
+
+### Procedural Modeling tips for beginners
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=rhRaQa-a8q4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-modeling-tips-for-beginners.md
+
 ---
 
 ## Tag Reference
