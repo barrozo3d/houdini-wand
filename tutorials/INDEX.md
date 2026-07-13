@@ -2059,6 +2059,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vex-problem-solving-in-houdini.md
 
+
+### Product Shot in Houdini Part 1 | Patreon November
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Joe8Cu40_as
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/product-shot-in-houdini-part-1-patreon-november.md
+
 ---
 
 ## Tag Reference
