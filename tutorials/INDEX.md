@@ -1869,6 +1869,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/advanced-waterdrops-setup-in-houdini-patreon-april-trailer.md
 
+
+### Texture Projection Tool for Houdini 20.5
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=t9ldXkD7oqA
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/texture-projection-tool-for-houdini-205.md
+
 ---
 
 ## Tag Reference
