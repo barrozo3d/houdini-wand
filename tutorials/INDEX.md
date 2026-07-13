@@ -2249,6 +2249,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-leaking-texture-in-houdini-205.md
 
+
+### Procedural tips and tricks in Houdini 20.5
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=wgStaCuEglI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-tips-and-tricks-in-houdini-205.md
+
 ---
 
 ## Tag Reference
