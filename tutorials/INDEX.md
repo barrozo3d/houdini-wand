@@ -2309,6 +2309,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/useful-vex-snippets-houdini-tips-and-tricks.md
 
+
+### Procedural workflow | Vex, Kinefx, UV's and more
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=T7CoIJg8Dx4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-workflow-vex-kinefx-uvs-and-more.md
+
 ---
 
 ## Tag Reference
