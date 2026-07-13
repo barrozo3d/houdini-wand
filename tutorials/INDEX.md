@@ -1759,6 +1759,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-tips-to-save-the-day.md
 
+
+### No VEX challenge #1   Procedural Water Tower
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=NxWpxFDaSJE
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/no-vex-challenge-1-procedural-water-tower.md
+
 ---
 
 ## Tag Reference
