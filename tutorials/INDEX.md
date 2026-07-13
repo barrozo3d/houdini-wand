@@ -1629,6 +1629,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/cgi-integration-the-indie-way-with-houdiniusd-and-nuke.md
 
+
+### New Houdini Course  - Procedural Product Shots | Part 1 Free
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=FxrSPbnI3tI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/new-houdini-course---procedural-product-shots-part-1-free.md
+
 ---
 
 ## Tag Reference
