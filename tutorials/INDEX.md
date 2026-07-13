@@ -1939,6 +1939,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-modeling-rigging-and-animation-with-houdini-patreon-february-trailer.md
 
+
+### Procedural Modeling with VEX, VDB and Vellum
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=8RIneeMCbAg
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-modeling-with-vex-vdb-and-vellum.md
+
 ---
 
 ## Tag Reference
