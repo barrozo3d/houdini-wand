@@ -1769,6 +1769,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/no-vex-challenge-1-procedural-water-tower.md
 
+
+### Jellyfish Procedural Animation with Houdini and Vex | Patreon July Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=udPSR7Gjp9Y
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/jellyfish-procedural-animation-with-houdini-and-vex-patreon-july-trailer.md
+
 ---
 
 ## Tag Reference
