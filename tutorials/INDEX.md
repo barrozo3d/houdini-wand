@@ -2039,6 +2039,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/how-to-not-bake-brownies-in-houdini.md
 
+
+### Houdini Mini Course  |  Cops, Vex and Karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=24vjgnyZRTw
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-mini-course-cops-vex-and-karma.md
+
 ---
 
 ## Tag Reference
