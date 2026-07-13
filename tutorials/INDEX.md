@@ -1879,6 +1879,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/texture-projection-tool-for-houdini-205.md
 
+
+### Procedural Graffiti in Houdini and COPS #mardini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=suiPD-s1I9U
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-graffiti-in-houdini-and-cops-mardini.md
+
 ---
 
 ## Tag Reference
