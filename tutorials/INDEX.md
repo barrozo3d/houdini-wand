@@ -2319,6 +2319,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-workflow-vex-kinefx-uvs-and-more.md
 
+
+### Procedural and Organic Modeling in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=8hUjc7BEI9g
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-and-organic-modeling-in-houdini.md
+
 ---
 
 ## Tag Reference
