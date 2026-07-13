@@ -2569,6 +2569,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/custom-procedural-materials-with-houdini-and-karma.md
 
+
+### Procedural Anisotropy in Karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=68WNINd8vE0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-anisotropy-in-karma.md
+
 ---
 
 ## Tag Reference
