@@ -3149,6 +3149,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-champions-league-football-in-2-minutes.md
 
+
+### Add details with regions from image labs tool
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=qS5uDc8EePQ
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/add-details-with-regions-from-image-labs-tool.md
+
 ---
 
 ## Tag Reference
