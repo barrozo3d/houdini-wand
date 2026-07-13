@@ -1419,6 +1419,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/essential-procedural-techniques-in-houdini.md
 
+
+### Camera Match tool for Houdini 21
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=NkVT9NtRMk0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/camera-match-tool-for-houdini-21.md
+
 ---
 
 ## Tag Reference
