@@ -2509,6 +2509,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-tips---procedural-uvs-channel-packing-and-more.md
 
+
+### Modern Furniture Modeling in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=at27qaTVrFc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/modern-furniture-modeling-in-houdini.md
+
 ---
 
 ## Tag Reference
