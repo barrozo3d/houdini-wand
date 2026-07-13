@@ -2029,6 +2029,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/product-shot-in-houdini-and-solaris-part-2-patreon-december.md
 
+
+### How to (not) bake brownies in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=R3ClxIiqxag
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/how-to-not-bake-brownies-in-houdini.md
+
 ---
 
 ## Tag Reference
