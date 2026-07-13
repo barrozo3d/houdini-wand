@@ -1609,6 +1609,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-materials-in-houdini-21-patreon-december-25---free-lesson.md
 
+
+### Procedural environment assets in Houdini 21
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=SwtUCds8UCY
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-environment-assets-in-houdini-21.md
+
 ---
 
 ## Tag Reference
