@@ -3209,6 +3209,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-rock-wall-without-intersections.md
 
+
+### Procedural tips | Heightfields and VDB
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Ue-Wuo87YJI
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-tips-heightfields-and-vdb.md
+
 ---
 
 ## Tag Reference
