@@ -1529,6 +1529,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/scatter-shapes-in-cops-randomly-without-overlap.md
 
+
+### Procedural Environments in Houdini | Patreon February '26 Free Lesson
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=F_xggmIONZ4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-environments-in-houdini-patreon-february-26-free-lesson.md
+
 ---
 
 ## Tag Reference
