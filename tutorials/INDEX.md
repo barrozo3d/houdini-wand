@@ -1899,6 +1899,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-uvs-and-texturing-in-cops-patreon-march-trailer.md
 
+
+### Environments in Houdini | Part 5 - Solaris and rendering with Karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=h6MN80ka4Vg
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/environments-in-houdini-part-5---solaris-and-rendering-with-karma.md
+
 ---
 
 ## Tag Reference
