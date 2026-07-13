@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=u7SGkPTaJKs
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+)"
+tags: [vex, animation, instancing, lighting, beginner, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/christmas-lights-vex-animation-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Christmas lights vex animation in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py christmas-lights-vex-animation-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -83,30 +79,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:38] tutorials/frames/christmas-lights-vex-animation-in-houdini/frame_000.jpg
+- [1:22] tutorials/frames/christmas-lights-vex-animation-in-houdini/frame_001.jpg
+- [2:05] tutorials/frames/christmas-lights-vex-animation-in-houdini/frame_002.jpg
+- [2:38] tutorials/frames/christmas-lights-vex-animation-in-houdini/frame_003.jpg
+- [3:30] tutorials/frames/christmas-lights-vex-animation-in-houdini/frame_004.jpg
+- [3:44] tutorials/frames/christmas-lights-vex-animation-in-houdini/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Instances a light onto points along a line (or LED strip curve), assigns a repeating 4-color pattern via a for-loop of Group by Range + Switch nodes, then uses a single point wrangle with frame/point-number logic to animate each light's intensity through three sequential blink patterns.
 
 ### Summary
-[PENDING EXTRACTION]
+A short, beginner-friendly example of instancing actual light objects (not geometry) and driving their per-instance intensity with VEX. Since lights can't be instanced via the normal geometry-instancing path, the trick is setting the Instancer's method to **Reference** so it duplicates the light object itself onto each point, then pruning the original so it doesn't render directly. Each instance gets an `intensity` point attribute (linked to the light's actual Intensity parameter) that VEX can drive per-point. Color variety comes from a for-loop building four alternating groups via **Group by Range** (using the loop's iteration value as the range offset) and assigning a distinct color to each via a **Switch** keyed on that same iteration value. The animation itself is one point wrangle (the author's first time writing VEX, done from a preset/pattern they explain rather than derive) that reads each point's original intensity, then for three sequential frame windows (first ~36 frames, then up to frame 54, then to the end) alternates which lights are lit based on `frame % 2` and whether the point number is even or odd — different point parity/color groups take turns being lit in each phase — feeding into a **Retime** node so the whole sequence loops.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create a **Light** (set to sphere shape) and a simple **Line** with a handful of points to act as the LED positions.
+2. Add an **Instancer**, set its instancing **Method to Reference** (not the default geometry-instance path) pointing at the light — since lights aren't regular geometry, Reference mode is what allows duplicating the light object itself onto every line point.
+3. **Prune** the original light object so only the instanced copies render, not the source.
+4. Inside the instancer, add an **Attribute Create** for a float `intensity` attribute, and link the light's actual Intensity parameter to reference that attribute's value — this exposes intensity as something VEX can drive per point.
+5. **Color pattern via a for-loop**: bring in **Detail** metadata (for the loop's iteration count), then inside the loop use **Group by Range** to select every 4th point (one group per color slot), offsetting the range by the current iteration value each pass, and renaming the group using that iteration value so 4 distinct point groups exist after 4 iterations.
+6. Outside the loop, create four distinct **Colors** and assign each to its matching group using a **Switch** node keyed on the iteration value — this produces a clean repeating 4-color pattern across the instanced lights.
+7. **Animation via a single point wrangle** (inside the instancer): at the top, read each point's original intensity (from the earlier Attribute Create) into a variable. Then, using `frame`/`$F`-style checks and `point number % 2` parity tests, implement three sequential timed phases: (a) up to frame ~36 — every other frame, alternate even/odd points on/off at the original intensity, turning off intensity when a point doesn't match the current frame's pattern; (b) up to frame ~54 — every other frame, only even points among the red/yellow-colored lights turn on/off; (c) remaining frames — same logic applied to the green/blue-colored lights. Finally, write the computed value back to the intensity point attribute.
+8. Add a **Retime** node so the (finite, hand-authored) animation window loops continuously rather than playing once.
+9. For a real production version, apply the same instancer + wrangle setup to a proper LED-strip curve instead of a simple line — same technique, just driven by a more complex/curved point layout.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Light (sphere) + Line → **Instancer** (Method: Reference) + Prune (hide source light) → Attribute Create (`intensity` float, linked to Light Intensity parameter) → for-loop: Detail (metadata/iteration count) → **Group by Range** (offset by iteration value, renamed per-iteration) → Switch (color assignment keyed on iteration value) → point **Wrangle** (frame-number + point-number-parity conditional logic driving the `intensity` attribute across three sequential animation phases) → **Retime** (loop the cycle).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner / Intermediate — the instancing-a-light trick (Reference method + Prune) and the for-loop group-pattern construction are approachable beginner techniques; the animation wrangle's nested frame/parity conditionals are a bit more involved but still simple VEX (the author notes it was their first time writing VEX and that better approaches likely exist).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; uses standard Instancer/Attribute Create/Group by Range/Switch/Wrangle/Retime nodes available in any modern Houdini (H18+).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #animation #instancing #lighting #beginner #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers light instancing or intensity-driven VEX animation — cross-link with any future lighting or VEX-animation tutorials once extracted from this batch.

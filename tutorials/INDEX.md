@@ -2914,9 +2914,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=u7SGkPTaJKs
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H18+)
+- **Tags:** #vex #animation #instancing #lighting #beginner #intermediate
+- **Summary:** Instances a light onto line points via Instancer set to Reference mode (the trick for instancing actual lights, not geometry), builds a repeating 4-color pattern with a for-loop of Group by Range + Switch, then animates intensity through three sequential blink phases with one point wrangle using frame/point-parity logic, looped via Retime.
 - **File:** tutorials/christmas-lights-vex-animation-in-houdini.md
 
 
