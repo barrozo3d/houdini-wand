@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=NkVT9NtRMk0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H21"
+tags: [camera, photogrammetry, hda, plugin, image-based-modeling, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/camera-match-tool-for-houdini-21/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Camera Match tool for Houdini 21
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py camera-match-tool-for-houdini-21 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -106,30 +102,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:48] tutorials/frames/camera-match-tool-for-houdini-21/frame_000.jpg
+- [1:00] tutorials/frames/camera-match-tool-for-houdini-21/frame_001.jpg
+- [2:52] tutorials/frames/camera-match-tool-for-houdini-21/frame_002.jpg
+- [3:30] tutorials/frames/camera-match-tool-for-houdini-21/frame_003.jpg
+- [5:19] tutorials/frames/camera-match-tool-for-houdini-21/frame_004.jpg
+- [8:13] tutorials/frames/camera-match-tool-for-houdini-21/frame_005.jpg
+- [10:24] tutorials/frames/camera-match-tool-for-houdini-21/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A custom in-Houdini camera-matching HDA (an fSpy-style tool, but native and with its own solver) that derives focal length, aperture, and camera transform from a single reference photo by dragging perspective/vanishing-point lines, then outputs a ready-to-use "shot cam" for image-based modeling.
 
 ### Summary
-[PENDING EXTRACTION]
+A Patreon-shared HDA demoed across three vanishing-point scenarios: two-point perspective (most common — one axis per horizontal vanishing point, with the vertical assumed straight), one-point perspective (focal length must be eyeballed rather than solved, since one vanishing point alone under-constrains the solve), and three-point perspective (e.g. a tall building shot from below, where the third vanishing point also helps solve the **principal point** directly). Covers correct aperture calculation for cropped/non-native aspect images, the reference-measurement workflow for scaling the scene (drag a size gizmo against a known real-world dimension, e.g. ~1m or human height), and the **principal point** concept (the image plane's optical center) — normally left at the image midpoint, but must be manually offset if the source image was cropped off-center, which the video demonstrates by intentionally cropping a test image and showing the resulting misalignment until the principal point is corrected back to its true original position.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Drop a **Camera Match** node in the Object context, load the reference image into it, and enter the tool (interactive line-dragging mode). Adjust background brightness/opacity as needed while lining up reference geometry.
+2. **Choose vanishing-point mode**: 1 (default), 2, or 3, matching how many real perspective directions are visible in the photo (e.g. a portrait shot with two horizontal vanishing points and a straight vertical axis uses **2**).
+3. **Aperture correction for cropped/non-native images**: the tool's Aperture field assumes the standard horizontal film-back size; for cropped images, compute it as `(resolution_x / resolution_y) * film_back_horizontal(36mm)` — this is a general formula worth remembering, not something to just default.
+4. **Drag the vanishing-point lines**: for 2-point mode, the focal length is *solved* automatically from the dragged perspective lines (everything else can stay default); use the **period (.) key** to zoom in while placing points precisely.
+5. **Scale via reference measurement**: after placing vanishing lines, grab the origin/reference gizmo and drag it against a known real-world distance in the image (e.g. eyeballing "this looks like about 1 meter," or using average human height as a reference) — this fixes absolute scale, not just relative perspective.
+6. **Create the camera**: once the perspective lines look well-aligned against the displayed grid (verify by toggling background opacity), click **Create Camera** — this generates a fully-configured camera object (correct focal length, position, rotation) exportable/renamable (default name "shot cam") ready for image-based modeling work.
+7. **One-point perspective caveat**: with only 1 vanishing point, the tool cannot solve focal length automatically (an inherent limitation of 1-point perspective, same as other tools like fSpy) — instead, place a reference object along known image/viewport boundaries and manually adjust the focal length value by eye until the perspective lines/grid line up convincingly.
+8. **Principal Point (image plane's optical center)**: defaults to the image midpoint, but must be set to **Manual** and repositioned if the source photo was cropped off-center — demonstrated by cropping a test image via COPS (Texture Space adjustment), which visibly throws off the vanishing-point alignment until the principal point is manually restored to its original pre-crop coordinates (recording the pre-crop midpoint via a quick snippet before cropping, for reference).
+9. **Three-point perspective**: with 3 vanishing points available (e.g. a tall building shot from a low angle), the third vanishing point can be used to solve for the **principal point directly** rather than needing the crop-based manual workaround — shown to noticeably improve alignment accuracy versus treating the same image as only 2-point.
+10. **Measure axis flexibility**: the reference-measurement gizmo's axis (X/Y/Z) can be changed to match whichever real-world direction is easiest to measure in the photo (Y/vertical, e.g. a building edge, is often convenient) — not fixed to any one axis.
+11. **Undo/redo support**: dragging points and adjusting settings is fully undo/redo-able, recomputing the solve each time — useful for iterative fine-tuning without losing prior work.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Custom **Camera Match** HDA (Patreon-distributed plugin) — parameters: Background Image, Brightness/Opacity toggle, Vanishing Points (1/2/3), Aperture (manually computed via `resolution_x/resolution_y * 36`), Focal Length (auto-solved in 2/3-point modes, manual/eyeballed in 1-point mode), Principal Point (Midpoint default / Manual override), Measure Axis (X/Y/Z), reference-distance gizmo, **Create Camera** output button (produces a renamable "shot cam" camera object). Companion COPS crop test uses Texture Space parameters to demonstrate off-center principal point correction.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — no scripting required to use the tool itself, but correctly reasoning about vanishing points, aperture/film-back math, and principal-point offset for cropped images requires some photogrammetry/camera-matching background knowledge (comparable to using fSpy or similar external tools).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21 (per title); the HDA is a third-party Patreon-distributed tool, not a native Houdini feature.
 
 ### Tags
-[PENDING EXTRACTION]
+#camera #photogrammetry #hda #plugin #image-based-modeling #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers camera matching/photogrammetry — cross-link with any future image-based-modeling or camera-projection tutorials once extracted from this batch.

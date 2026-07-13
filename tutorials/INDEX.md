@@ -1424,9 +1424,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=NkVT9NtRMk0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H21
+- **Tags:** #camera #photogrammetry #hda #plugin #image-based-modeling #intermediate
+- **Summary:** Custom camera-matching HDA (fSpy-style, with its own solver) that derives focal length, aperture, and camera transform from a single reference photo via draggable vanishing-point lines. Covers 1/2/3-point perspective modes, aperture math for cropped images, reference-distance scaling, and manually correcting the principal point when the source image was cropped off-center.
 - **File:** tutorials/camera-match-tool-for-houdini-21.md
 
 
