@@ -3249,6 +3249,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/patreon-exclusive-add-side-details-to-cliffs-preview.md
 
+
+### UV Randomizer - Texturing multiple objects
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=FK6IRzxYHiY
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/uv-randomizer---texturing-multiple-objects.md
+
 ---
 
 ## Tag Reference
