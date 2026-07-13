@@ -2839,6 +2839,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-tips-and-tricks-2.md
 
+
+### Custom triplanar for karma | Patreon
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=I3mf1AQCxc0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/custom-triplanar-for-karma-patreon.md
+
 ---
 
 ## Tag Reference
