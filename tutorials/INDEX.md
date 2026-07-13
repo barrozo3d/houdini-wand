@@ -1369,6 +1369,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/why-you-need-to-learn-vex-in-houdini-1.md
 
+
+### Chocolate break rig and Liquid Stretch in Houdini Free Lesson
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=f5vt8n8CB-U
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson.md
+
 ---
 
 ## Tag Reference
