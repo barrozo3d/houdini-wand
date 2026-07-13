@@ -2889,6 +2889,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/python-in-houdini-create-a-texture-importer-for-solaris.md
 
+
+### 5 Tips and Tricks for Modeling in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=kAXUfg2FbYY
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/5-tips-and-tricks-for-modeling-in-houdini.md
+
 ---
 
 ## Tag Reference
