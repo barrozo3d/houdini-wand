@@ -3059,6 +3059,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-cliff-techniques.md
 
+
+### Procedural Cookie - Model, Simulate and Render - Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=g6HyohwVR1s
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-cookie---model-simulate-and-render---trailer.md
+
 ---
 
 ## Tag Reference
