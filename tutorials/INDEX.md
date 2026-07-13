@@ -2919,6 +2919,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/christmas-lights-vex-animation-in-houdini.md
 
+
+### Quick color jitter with karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=utIfflheFqc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/quick-color-jitter-with-karma.md
+
 ---
 
 ## Tag Reference
