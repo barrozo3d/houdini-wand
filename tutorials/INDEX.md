@@ -2699,6 +2699,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-roof-tiles-in-houdini.md
 
+
+### Compiling nested loops in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=g6PQu2FRKGo
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/compiling-nested-loops-in-houdini.md
+
 ---
 
 ## Tag Reference
