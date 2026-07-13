@@ -1399,6 +1399,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/scissor-lift-rig-in-houdini.md
 
+
+### Coin spin | Sops vs Vex vs OpenCL
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=AGTOukqBmhU
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/coin-spin-sops-vs-vex-vs-opencl.md
+
 ---
 
 ## Tag Reference
