@@ -2859,6 +2859,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-shading-with-karma-patreon-exclusive.md
 
+
+### Opacity maps vs Geo in Karma
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=9wMJWyni_Uc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/opacity-maps-vs-geo-in-karma.md
+
 ---
 
 ## Tag Reference
