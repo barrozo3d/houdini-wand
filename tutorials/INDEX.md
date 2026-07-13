@@ -2689,6 +2689,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/export-a-full-scene-from-houdini-to-unreal.md
 
+
+### Procedural Roof Tiles in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=rvmDcbSMXh8
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-roof-tiles-in-houdini.md
+
 ---
 
 ## Tag Reference
