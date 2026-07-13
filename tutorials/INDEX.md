@@ -1659,6 +1659,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/optimizing-baked-trees-with-instancing-in-houdini.md
 
+
+### Bring your 3D renders to life with Houdini - Patreon October '25 Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=M8odmzpj2dc
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/bring-your-3d-renders-to-life-with-houdini---patreon-october-25-trailer.md
+
 ---
 
 ## Tag Reference
