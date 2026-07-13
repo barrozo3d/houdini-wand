@@ -2649,6 +2649,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-ice-cream-swirl-in-houdini.md
 
+
+### Houdini Procedural Tips | Variants, Concentric Shapes and Step Orient
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ItIlLC6mlF4
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-procedural-tips-variants-concentric-shapes-and-step-orient.md
+
 ---
 
 ## Tag Reference
