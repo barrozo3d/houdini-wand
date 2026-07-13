@@ -2089,6 +2089,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/beginner-procedural-modelinguvs-tutorial-in-houdini.md
 
+
+### Spiral Splash Tutorial in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=xz1oNZGq7P0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/spiral-splash-tutorial-in-houdini.md
+
 ---
 
 ## Tag Reference
