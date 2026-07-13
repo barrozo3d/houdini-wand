@@ -2769,6 +2769,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/quick-rock-cliff-setup-in-houdini.md
 
+
+### Procedural Modeling tips in houdini #2
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Kc_6yws1AH8
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-modeling-tips-in-houdini-2.md
+
 ---
 
 ## Tag Reference
