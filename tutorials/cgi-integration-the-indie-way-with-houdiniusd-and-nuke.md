@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=RchQ9K5QXtI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H21 (Solaris/Karma XPU)"
+tags: [solaris, usd, karma, rbd, tops, camera, vfx-integration, aces, color-pipeline, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/cgi-integration-the-indie-way-with-houdiniusd-and-nuke/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # CGI Integration | The Indie Way with Houdini(USD) and Nuke
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py cgi-integration-the-indie-way-with-houdiniusd-and-nuke <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -395,30 +391,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
-## Structured Notes
+## Captured Frames
+
+- [8:15] tutorials/frames/cgi-integration-the-indie-way-with-houdiniusd-and-nuke/frame_000.jpg
+- [10:44] tutorials/frames/cgi-integration-the-indie-way-with-houdiniusd-and-nuke/frame_001.jpg
+- [14:53] tutorials/frames/cgi-integration-the-indie-way-with-houdiniusd-and-nuke/frame_002.jpg
+- [18:31] tutorials/frames/cgi-integration-the-indie-way-with-houdiniusd-and-nuke/frame_003.jpg
+- [25:52] tutorials/frames/cgi-integration-the-indie-way-with-houdiniusd-and-nuke/frame_004.jpg
+- [32:48] tutorials/frames/cgi-integration-the-indie-way-with-houdiniusd-and-nuke/frame_005.jpg
+- [45:12] tutorials/frames/cgi-integration-the-indie-way-with-houdiniusd-and-nuke/frame_006.jpg
+- [46:36] tutorials/frames/cgi-integration-the-indie-way-with-houdiniusd-and-nuke/frame_007.jpg
+
+---
 
 ### Core Technique
-[PENDING EXTRACTION]
+A complete indie VFX-integration pipeline across three applications: DaVinci Resolve (Log→ACES color prep and dual export), Nuke (camera tracking, point-cloud mesh generation, wireframe-alignment verification), and Houdini/Solaris USD (camera + tracked-mesh import via sub-layers, a TOPs-driven RBD ball simulation guided by a custom vector field, and final Karma XPU compositing with shadow-catcher + motion blur) — producing CG balls that roll down a real filmed path and interact convincingly with the footage.
 
 ### Summary
-[PENDING EXTRACTION]
+An end-to-end "poor man's VFX integration" workflow using consumer gear (phone footage shot in Log) and free/trial tools. **DaVinci Resolve** (free version): imports Log footage, uses Color Space Transform twice — once to convert Log→ACES linear (for compositing/3D work, no tone mapping) and once ACES→sRGB/Rec.709 (for a display-referred JPEG sequence used in tracking) — exporting both an EXR/ACES-linear sequence and an HD JPEG sequence. **Nuke**: loads the ACES profile, runs Camera Tracker with known focal length and film-back size fed in manually for a better solve, generates a sparse point cloud then a baked mesh via Point Cloud Generator, and — since the newer USD-based wireframe shader didn't work reliably — falls back to the legacy 3D workflow (Scanline Render + a wireframe shader) to verify the tracked camera/mesh actually aligns with the footage before exporting camera and geometry as USD/Alembic. **Houdini/Solaris**: critically, importing the tracked USD camera via **Reference** drops its frame-rate metadata and desyncs everything — the fix is loading it as a **Sub-layer** instead (with "copy layer metadata" enabled for the animated ball-cache USD later). Camera aperture/focal length are reverse-engineered from the Nuke film-back values (inches → mm) to get correct framing against the loaded background plate. The simulation itself is a deliberately simple **TOPs-based RBD** setup (not the full RBD sub-network workflow) emitting spheres periodically along a curve, nudged by a **custom-built vector field** (VDB from a ray-projected guide curve, sampled via Volume Wrangle, applied through a Pop Wind/velocity-field node) plus an age-gated turbulence/wind effect that calms down after each sphere's first second of life. Point instancing for rendering requires renaming the `id` attribute to something like `class` since Solaris/USD reserves `id` internally. Final Karma render: HDRI dome light (Poly Haven) standing in for real captured lighting, Shadow Catcher + "add all shadows to beauty," velocity-based motion blur (since points already carry a velocity attribute), and a class-attribute-driven random-color MaterialX shader.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **DaVinci Resolve — footage prep**: import Log footage, fix frame rate/timeline start; on the Color page, chain two **Color Space Transform** nodes: (a) Input Color Space = the shooting phone's Log gamut (e.g. P3-D65 input color space, RED LogC3-equivalent input camera curve) → Output = ACES AP1/linear, no tone mapping (preserves highlights for compositing); (b) a second transform from ACES linear → sRGB/Rec.709 with gamma 2.2 and tone/luminance mapping enabled, for a display-referred preview/tracking version. Export both: an EXR ACES-linear sequence (compressed, native/4K resolution) and an HD JPEG sequence (Rec.709, sufficient for tracking, no need for 4K).
+2. **Nuke — tracking**: load the ACES config, set project frame range/FPS/resolution to match, read in the JPEG sequence. Run **Camera Tracker** with "Focal Length known" (input the phone's known focal length, e.g. 23mm) and film-back size in inches (landscape, e.g. 1.3×1) for a much better solve than blind auto-tracking; solve, then orient the scene (select track points forming a ground plane) and scale it against a human-height reference geometry brought in via Geo Import.
+3. Generate geometry from the tracked points with **Point Cloud Generator** (fed camera + source), Analyze Sequence, Track Points, then select-all → Create Group → bake into an actual mesh (a slow ~1 minute operation) for a denser, delit preview of the tracked environment.
+4. **Verify alignment** (critical QA step): since the new USD-based wireframe shader wasn't working reliably, fall back to the **legacy 3D workflow** — export the mesh via GEO (write GU, since USD export directly isn't available from this node) then re-import via Geo Import → USD, build a Scene (Classic 3D) with a wireframe shader + Apply Material + Scanline Render (Classic), feed in the tracked Camera, and Merge/shuffle the wireframe render over the original footage — a properly tracked scene should show the wireframe rigidly locked to real-world edges as the camera moves. Export the finished camera separately via GEO Export as a **USD camera** (with the correct frame range).
+5. **Houdini/Solaris — camera import gotcha**: importing the tracked camera USD via a plain **Reference** silently drops frame-rate metadata and desyncs playback. Fix: use a **Sub-layer** import instead for the camera (found via community debugging, not obvious) — the static ground geometry, by contrast, is fine to bring in via Reference since it has no animation/FPS dependency.
+6. Match the Karma camera's **Focal Length** and **Aperture** to the values used in Nuke's tracker (film-back inches → mm conversion, e.g. 1.3in ≈ 33.03mm) to get correct framing against the loaded background plate image (loaded via a Camera Background/Camera Edit primitive). Enable **Sample Frame Range** so scrubbing the cached background plays back in real time instead of re-loading per frame.
+7. **Simple TOPs-based RBD simulation** (deliberately skipping the full RBD-solver sub-network workflow for speed): build a short guide curve near the top of the path, resample it to a handful of points, copy small spheres onto them with randomized 4D orientation (`Attribute Randomize`, "inside sphere" distribution mode). Inside a **DOP Network**: RBD Bullet Solver + RBD Packed Object (geometry input) + Static Object (the tracked/baked mesh as collider, using concave collision for speed despite it not being ideal) + Gravity, merged together.
+8. **Periodic emission + unique naming**: a POP Source re-emits the sphere geometry only on certain frames (`$F % 10 == 1`-style expression); since re-emitted points lack a `name` point attribute (required to avoid Solaris/USD identifier conflicts), a wrangle builds one from a prefix + point-number + current-frame string concatenation (`"ball_" + itoa(@ptnum) + "_" + itoa(@Frame)`-equivalent) so repeated emission batches never collide.
+9. **Custom vector field to guide the balls** (in place of a simple, unconvincing direct POP Source velocity bias): draw a guide curve along the desired flow direction, resample/subdivide it lightly, **Ray**-project it onto the tracked ground geometry, then use **Orient Along Curve** to get a directional attribute. Convert that to a volume: **VDB from Polygons** (tuned voxel size) → **Volume Wrangle** sampling the guide direction into a vector field → **VDB Convert** (to a vector-typed VDB, "vel"/flow type) to produce a usable velocity volume, visually verified by scattering test points and checking the field direction over the geometry (with bounds padding increased so the field extends far enough).
+10. Feed that vector-field volume into the DOP network as a third input, via a **POP Wind by Volumes**-equivalent node driving Update Velocity — this drags the balls along the intended path instead of scattering randomly.
+11. **Add controlled turbulence**: a POP Wrangle accumulates a per-particle **age** attribute (`f@age += @TimeInc`), then in the wind node, the wind Amplitude is set by a `select(age < threshold, amp_value, 0)` expression (age threshold exposed as a parameter, e.g. 1 second) — so each sphere gets a disturbance/wobble burst right after spawning that smoothly settles down once past the threshold, rather than jittering indefinitely.
+12. Tune collision Restitution/Friction-equivalent values (iteratively, e.g. raising a bounce-related parameter to ~1.5) to stop spheres from getting implausibly stuck mid-slope; accept that a full production pass would need more simulation iteration than this single-take demo.
+13. **Import into TOPs, cache, and prep for Solaris**: TOP Import the DOP-network result (balls only, not the static collider), Attribute Delete down to just Velocity/Age/Name, File Cache the animated result to disk. Since Solaris/USD reserves the `id`/name-adjacent attribute internally, **copy** the existing ID-like attribute to a new attribute (e.g. `class`) via Attribute Copy before export, for later per-instance color randomization. Export as USD with the primitive definition set to build a **Point Instancer** (packed primitives), over the correct frame range.
+14. **Final assembly in Solaris**: bring in the ground reference (Reference) and the animated balls USD (**Sub-layer**, with "copy layer metadata" enabled — same FPS gotcha as the camera) and the tracked camera; set the correct start/end frame range for rendering (e.g. 120-240, trimming dead frames from the sim). Build a MaterialX-based **random-color-by-class** material (USD Primvar Reader on the `class` attribute → a random-color node → base color, with low specular) and assign to the balls.
+15. **Lighting and render setup**: a **Dome Light** loaded with a Poly Haven HDRI stands in for the real environment lighting (no HDRI was captured on location). Add a **Shadow Catcher** on the ground primitive so cast shadows composite correctly, and remember to enable "add all shadows to beauty" (otherwise shadows render in a separate, uncombined layer). Enable camera **Motion Blur** with **Velocity Blur** (since the sim points already carry a per-point velocity attribute, no extra work is needed to drive it). Disable Depth of Field if render output unexpectedly goes blank (a real gotcha hit in the walkthrough). Enable the denoiser on both beauty and the shadow AOV. Render a quick preview via **Flipbook with new settings** to validate the final composited result before committing to a full-quality render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Solaris (LOP network) → Camera **Sub-layer** import (not Reference — avoids dropped FPS metadata) + Reference (static ground) → Karma XPU render settings (Focal Length/Aperture matched to Nuke's tracker values, Sample Frame Range) → Camera Background/Camera Edit (loaded plate) · TOPs/DOP network: RBD Bullet Solver + RBD Packed Object + Static Object (concave collision) + Gravity + Merge, POP Source (periodic emission via `$F%10` expression), point-attribute-naming wrangle (prefix+ptnum+frame string concat), Attribute Randomize (4D orient, inside-sphere) · custom vector field: guide Curve → Resample/Subdivide → Ray (project to geometry) → Orient Along Curve → VDB from Polygons → Volume Wrangle (sample direction) → VDB Convert (vector/flow type) → POP Wind-by-Volumes (Update Velocity) · POP Wrangle age accumulation (`f@age += @TimeInc`) driving a `select(age<threshold, amp, 0)` wind-amplitude expression · TOP Import → Attribute Delete → File Cache → Attribute Copy (id→class, avoiding USD's reserved id) → USD Export with **Point Instancer** primitive definition · MaterialX random-color-by-`class` shader (Primvar Reader) → Dome Light (Poly Haven HDRI) → Shadow Catcher (add shadows to beauty) → Velocity-based Motion Blur → Flipbook preview render.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — requires working knowledge of three separate applications (DaVinci Resolve color pipeline, Nuke camera tracking, Houdini/Solaris USD), ACES color management concepts, TOPs/DOPs RBD simulation, custom vector-field construction from VDBs, and USD-specific gotchas (Reference vs Sub-layer metadata handling, reserved `id` attribute). Not a beginner or even single-concept intermediate tutorial — explicitly framed by the author as a long, dense, "figure it out with me" walkthrough.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21 (Solaris/Karma XPU render engine, USD-based LOP workflow); companion tools are DaVinci Resolve (free version) and Nuke (trial used in the video).
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #usd #karma #rbd #tops #camera #vfx-integration #aces #color-pipeline #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [Camera Match tool for Houdini 21](camera-match-tool-for-houdini-21.md) — shares #camera; that tutorial's native in-Houdini camera-matching HDA is a complementary/alternative approach to this video's Nuke-based camera tracking for footage without a dedicated tracking app.

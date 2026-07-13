@@ -1624,9 +1624,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=RchQ9K5QXtI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H21 (Solaris/Karma XPU)
+- **Tags:** #solaris #usd #karma #rbd #tops #camera #vfx-integration #aces #color-pipeline #advanced
+- **Summary:** Full indie VFX-integration pipeline across DaVinci Resolve (Log→ACES color prep), Nuke (camera tracking + point-cloud mesh + legacy-wireframe alignment verification), and Houdini/Solaris (USD camera import via Sub-layer to avoid dropped FPS metadata, a TOPs-driven RBD ball sim guided by a custom VDB vector field with age-gated turbulence, and final Karma XPU render with Shadow Catcher + velocity motion blur). Covers key USD gotchas: Reference vs Sub-layer metadata handling and the reserved `id` attribute.
 - **File:** tutorials/cgi-integration-the-indie-way-with-houdiniusd-and-nuke.md
 
 
