@@ -2379,6 +2379,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/sushi-modeling-and-rendering-in-houdini.md
 
+
+### Chocolate Swirl Effect with Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=4PjTMogFWqQ
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/chocolate-swirl-effect-with-houdini.md
+
 ---
 
 ## Tag Reference
