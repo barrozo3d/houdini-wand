@@ -3,12 +3,20 @@ batch_ingest.py — Ingest a list of NEW YouTube URLs using the enhanced pipelin
 
 Add URLs to the URLS list below, then run:
   python batch_ingest.py
-  python batch_ingest.py --skip-video       # faster, no frame extraction
+  python batch_ingest.py --skip-video       # no frames at all, text-only
   python batch_ingest.py --whisper-model small
   python batch_ingest.py --dry-run          # preview which URLs are new (no ingest)
 
 Already-ingested URLs (those in tutorials/INDEX.md) are automatically skipped.
 Each tutorial is committed and pushed individually.
+
+NOTE: this only runs Step 1 (ingest.py) per URL — transcript collection, no
+video/frame download (that's deferred to Step 2, content-aware, see
+select_frames.py). After this script finishes, tell Claude Code: "extract all
+pending tutorials" — for each one, Claude reads the timestamped transcript,
+picks real technique/result moments (even inside official chapters — don't
+trust chapter_start+5s blindly), runs `select_frames.py <slug> <ts...>`, then
+writes the Structured Notes and commits.
 """
 
 import sys

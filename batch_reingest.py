@@ -1,21 +1,30 @@
 """
 batch_reingest.py — Re-collect all tutorials in INDEX.md using the new pipeline.
 
-Reads every URL from tutorials/INDEX.md, runs ingest.py (data collection only)
-for each one. No API calls. Saves Whisper transcripts + frames to disk.
+Reads every URL from tutorials/INDEX.md, runs ingest.py (Step 1, data
+collection only) for each one. No API calls. Saves Whisper transcripts (with
+per-sentence timestamps) to disk. No video is downloaded and no frames are
+extracted here anymore — that's Step 2 now (content-aware, see
+select_frames.py), since picking *which* moment is worth a still needs
+judgment this script doesn't have.
 
-After this script finishes, tell Claude Code: "extract all pending tutorials"
-and it will read each raw file + frames and do the full extraction pass.
+After this script finishes, tell Claude Code: "extract all pending tutorials" —
+for each one, Claude reads the timestamped transcript, picks real
+technique/result moments (even inside official chapters — don't trust
+chapter_start+5s blindly), runs `select_frames.py <slug> <ts...>` (this is
+where the video download + ffmpeg cost now lands, per tutorial), then writes
+the Structured Notes and commits.
 
 Usage:
-  python batch_reingest.py                       # full pipeline (with frames)
-  python batch_reingest.py --skip-video          # transcript only, faster
+  python batch_reingest.py                       # transcript collection for all
+  python batch_reingest.py --skip-video          # mark frame_status: skipped (text-only)
   python batch_reingest.py --whisper-model small # better accuracy
   python batch_reingest.py --start 10            # resume from tutorial #10
 
 Estimated time (RTX 5070, GPU Whisper, base model):
-  --skip-video:   ~4-5 minutes per tutorial  ->  ~4-5 hours for all tutorials
-  full pipeline:  ~20-25 minutes per tutorial -> ~20 hours for all tutorials
+  ~4-5 minutes per tutorial -> ~4-5 hours for all tutorials (same regardless of
+  --skip-video now, since Step 1 never downloads video either way — that flag
+  only controls whether Step 2 will later attempt frame capture at all).
 """
 
 import re
@@ -76,7 +85,7 @@ def main():
     print(f"\n{'='*60}")
     print(f"  houdini-wand -- Batch Re-collect")
     print(f"  {total} tutorials found in INDEX.md")
-    print(f"  Mode: {'--skip-video' if args.skip_video else 'full pipeline (with frames)'}")
+    print(f"  Mode: {'--skip-video (frame_status: skipped)' if args.skip_video else 'frame_status: pending-selection (Step 2 will pick frames)'}")
     print(f"  Whisper model: {args.whisper_model}")
     if args.start > 1:
         print(f"  Resuming from tutorial #{args.start}")
