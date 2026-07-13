@@ -2209,6 +2209,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/uvw-randomizer-in-karma.md
 
+
+### VDB Procedural Modeling in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ag7I-FK4TF0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vdb-procedural-modeling-in-houdini.md
+
 ---
 
 ## Tag Reference
