@@ -2749,6 +2749,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/cleaning-fractured-geometry-in-houdini.md
 
+
+### Church Ruins - Houdini Procedural Modeling Course | Trailer
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=LwbK0Z_y77Y
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/church-ruins---houdini-procedural-modeling-course-trailer.md
+
 ---
 
 ## Tag Reference
