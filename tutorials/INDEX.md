@@ -3199,6 +3199,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/ruins-randomized-brick-wall.md
 
+
+### Procedural Rock Wall without intersections
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=q-9cVBVMv2E
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-rock-wall-without-intersections.md
+
 ---
 
 ## Tag Reference
