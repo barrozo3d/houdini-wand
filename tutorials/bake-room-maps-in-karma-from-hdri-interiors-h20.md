@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=6hbyMIxU1oI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20 (Karma XPU)"
+tags: [karma, lighting, hdri, materials, solaris, product-viz, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/bake-room-maps-in-karma-from-hdri-interiors-h20/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Bake room maps in karma from HDRI interiors H20
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py bake-room-maps-in-karma-from-hdri-interiors-h20 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -77,30 +73,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:11] tutorials/frames/bake-room-maps-in-karma-from-hdri-interiors-h20/frame_000.jpg
+- [2:22] tutorials/frames/bake-room-maps-in-karma-from-hdri-interiors-h20/frame_001.jpg
+- [2:50] tutorials/frames/bake-room-maps-in-karma-from-hdri-interiors-h20/frame_002.jpg
+- [3:52] tutorials/frames/bake-room-maps-in-karma-from-hdri-interiors-h20/frame_003.jpg
+- [4:32] tutorials/frames/bake-room-maps-in-karma-from-hdri-interiors-h20/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Projects an HDRI interior panorama onto simple room-shaped geometry, then bakes that projection into a flat "room map" texture using a custom Karma lens shader — producing a cheap, parallax-correct fake-interior texture that can be applied to any flat plane (a classic fake-interior/room-cube-map technique).
 
 ### Summary
-[PENDING EXTRACTION]
+Starts from a subdivided box standing in for a room, projects an HDRI panorama onto its interior faces (viewing it via UV Project + Quick Shade to preview and adjust rotation/box scale interactively), then renders that projected interior through a custom Karma lens shader HDA to bake it into a square texture — a "room map." Applying the resulting room map texture to a flat plane (with the correct camera-relative UV attributes) reproduces a convincing parallax fake-interior effect from a distance, at a fraction of real interior geometry's cost.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create a **Box**, then **Subdivide** it (Linear/uniform mode) — subdividing is required or the HDRI projection will be visibly distorted.
+2. **Reverse Normals** (or use Remove Backfaces) so the interior faces are visible from inside the box.
+3. **UV Project** the box (e.g. camera/perspective-style projection) and preview it live with **Quick Shade** using the target HDRI — interactively adjust the projection's rotation and the box's overall scale until the interior "reads" correctly from the intended viewing angle.
+4. Build a **Material Library** with an **Unlit Surface**/Unlit Image shader loading the HDRI texture directly — using an *unlit* shader here is called out as important, otherwise the final baked render picks up extra noise/grain from lighting response.
+5. Create a **Camera** at the origin (default 0,0,0), set its **aspect ratio to 1:1** (since the output is a square texture map).
+6. In the camera's Karma tab, assign a **Lens Shader** — this must be authored as its own small node network inside a **Material Network** (a Lens Shader HDA/VOP subnet), not a normal surface shader.
+7. Inside that lens shader network, wire in the box's **bounding box min/max (X/Y/Z)** as parameters, plus a small **offset** value — tune the offset empirically since incorrect values introduce visible noise/artifacts in the bake.
+8. Increase **render samples** as needed to clean up remaining noise in the baked result, then render — this produces the near-final "room map" image.
+9. To use the result: create a **Grid/Plane**, build a material assigning the baked room-map texture, and wire in the matching **room-map camera/view attributes** (so the shader knows the original camera-relative projection) — this reproduces the ceiling/wall/floor parallax illusion on a flat surface.
+10. To avoid stretching on the destination geometry: instead of using a plain square grid, load the *original* projected geometry as a spare input on the destination grid and derive its X/Z or X/Y bounding-box ratio to set the grid's aspect — a perfectly square grid caused visible stretching in some areas for the presenter, so matching the source geometry's proportions gave a cleaner result (though a square grid still "mostly" works from a distance).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Box → Subdivide (Linear) → Reverse Normals/Remove Backfaces → UV Project + Quick Shade (HDRI preview) → Material Library (Unlit Surface/Unlit Image, HDRI texture) → Camera (aspect ratio 1:1) → custom **Lens Shader** built inside a Material Network / VOP subnet (bounding-box min/max X/Y/Z inputs + offset parameter) → Karma render settings (increased samples to reduce noise) → destination Grid/Plane with room-map material + matching room-map/camera-view attributes; optional bounding-box-ratio-matched grid to avoid stretching.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — the room-shape/HDRI-projection part is simple, but building and correctly wiring a custom Karma lens shader HDA with bounding-box-driven parameters requires some Solaris/Karma material-network familiarity.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 20 (Karma XPU render engine, Solaris/USD-based material network for the custom lens shader).
 
 ### Tags
-[PENDING EXTRACTION]
+#karma #lighting #hdri #materials #solaris #product-viz #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers custom Karma lens shaders or room-map/fake-interior baking — cross-link with any future Karma material or HDRI-lighting tutorials once extracted from this batch.

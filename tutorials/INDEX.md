@@ -2554,9 +2554,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=6hbyMIxU1oI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H20 (Karma XPU)
+- **Tags:** #karma #lighting #hdri #materials #solaris #product-viz #intermediate
+- **Summary:** Projects an HDRI interior onto a subdivided box, then bakes the projection into a flat "room map" texture via a custom Karma lens shader HDA (driven by the box's bounding box + an offset parameter). Applying the baked texture to a flat plane with matching camera-view attributes reproduces a convincing parallax fake-interior effect at a fraction of real geometry's cost.
 - **File:** tutorials/bake-room-maps-in-karma-from-hdri-interiors-h20.md
 
 
