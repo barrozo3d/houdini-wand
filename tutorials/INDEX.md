@@ -2759,6 +2759,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/church-ruins---houdini-procedural-modeling-course-trailer.md
 
+
+### Quick Rock Cliff Setup in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=iSIXaa3rknU
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/quick-rock-cliff-setup-in-houdini.md
+
 ---
 
 ## Tag Reference
