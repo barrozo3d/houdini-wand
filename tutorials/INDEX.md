@@ -2019,6 +2019,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/environments-in-houdini-part-1---heightfields.md
 
+
+### Product Shot in Houdini and Solaris | Part 2 | Patreon December
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=aaNiFlx6Vi0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/product-shot-in-houdini-and-solaris-part-2-patreon-december.md
+
 ---
 
 ## Tag Reference
