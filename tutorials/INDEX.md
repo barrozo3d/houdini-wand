@@ -2009,6 +2009,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/environments-in-houdini-part-2---stone-bridge.md
 
+
+### Environments in Houdini | Part 1 -  Heightfields
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ER_W3w3SkGk
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/environments-in-houdini-part-1---heightfields.md
+
 ---
 
 ## Tag Reference
