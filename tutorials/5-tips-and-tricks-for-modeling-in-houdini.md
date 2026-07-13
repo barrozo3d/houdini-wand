@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=kAXUfg2FbYY
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any (H18+, workflow is version-agnostic)"
+tags: [modelling, procedural, vex, attributes, curves, beginner, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/5-tips-and-tricks-for-modeling-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # 5 Tips and Tricks for Modeling in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py 5-tips-and-tricks-for-modeling-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Beveling by attribute [0:00]
@@ -109,30 +105,48 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:31] tutorials/frames/5-tips-and-tricks-for-modeling-in-houdini/frame_000.jpg
+- [1:34] tutorials/frames/5-tips-and-tricks-for-modeling-in-houdini/frame_001.jpg
+- [2:38] tutorials/frames/5-tips-and-tricks-for-modeling-in-houdini/frame_002.jpg
+- [3:22] tutorials/frames/5-tips-and-tricks-for-modeling-in-houdini/frame_003.jpg
+- [4:23] tutorials/frames/5-tips-and-tricks-for-modeling-in-houdini/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five independent modelling grab-bag tricks: attribute-driven bevel falloff, normal-transfer-driven beam placement, axis-constrained point snapping, wrangle-based random transforms, and off-center mirroring via a centroid pivot.
 
 ### Summary
-[PENDING EXTRACTION]
+A quick five-tip video with no single throughline — each tip is a standalone, reusable technique: (1) masking a bevel's distance by a target-driven attribute so the bevel width varies smoothly along an edge; (2) copying normals from a driving curve onto a duplicate so a beam can be moved/oriented along that curve's tangent frame; (3) constraining the viewport point-snapping gizmo to a single axis when cleaning up curve points; (4) using a wrangle (instead of Attribute Randomize, which requires quaternion math for orientation) to randomize both orient and position per point; (5) mirroring an object that isn't centered at the origin by extracting its centroid and feeding it into the Mirror node's Origin parameter via a point expression.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Attribute-driven bevel:** Use **Mask from Target** (or similar) with a Plane as the target, Direction set appropriately, and Radius reduced to 0 to produce a smooth gradient mask attribute across the shape.
+2. Add a **Bevel** node, select the target edges, give it a base Distance, then under the Distance parameter choose **Scale by Attribute** and reference the mask attribute — this makes bevel width vary along the edge instead of being uniform.
+3. Use a **Ramp** to control the falloff/remap of the mask value feeding the bevel scale, so (for example) the bevel never fully collapses to 0 at one end.
+4. **Normal-driven beam placement:** extract a driving curve from the reference shape, generate normals along it (Orient Along Curve gives tangent-aligned normals by default), then use **Attribute Copy** to transfer those normals onto a second curve/beam.
+5. Move the beam along its own normals with a **Pick** node (or equivalent transform-along-normal setup) to get correct orientation relative to the original angled shape (e.g. a roof beam).
+6. **Constrained point snapping:** with a Curve node's points misaligned, enter point Edit mode (**F**), invoke the snapping gizmo (**K**), then select just the axis handle you want and drag onto the target point — this snaps only along that one axis instead of full 3D snapping.
+7. **Wrangle-based random transform:** rather than fighting quaternion math in Attribute Randomize's `orient` attribute, write a VEX wrangle that directly randomizes both the `orient` attribute (reusing an established random-rotation VEX snippet) and `P` (position), translating each point randomly between a min/max range along one or more chosen axes.
+8. **Off-center mirroring:** the Mirror SOP always mirrors around world origin (0,0,0). To mirror around an object's own center: extract the shape's centroid and promote it to detail level, wire that node as a spare input into the Mirror node, then in the Mirror's Origin X (or Y/Z) field write a point expression referencing the centroid detail attribute — e.g. referencing the centroid node at index -1, selecting position channel 0 for X, 1 for Y, or 2 for Z.
+9. General best practice noted: model objects centered at the world origin first, then transform them into their final scene position afterward — this avoids needing the centroid workaround in the first place.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Mask from Target (Plane target, Direction, Radius=0) → Bevel (Distance: Scale by Attribute) → Ramp (falloff remap) · Orient Along Curve (tangent-based normals) → Attribute Copy (normal transfer) → Pick (move-along-normal) · Curve node point Edit mode (F) + snapping gizmo (K, single-axis drag) · VEX wrangle for combined `orient` (quaternion) + `P` randomization (replaces Attribute Randomize) · centroid extraction → promote to detail → Mirror SOP Origin X/Y/Z point-expression reference (index -1, channel 0/1/2).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner / Intermediate — each trick is a short, self-contained node setup; the wrangle-based randomization and point-expression mirror trick assume basic VEX/expression comfort.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified, but the workflow (Mask from Target, Bevel scale-by-attribute, Attribute Copy, VEX wrangles, Mirror point expressions) is version-agnostic and works on any modern Houdini (H18+).
 
 ### Tags
-[PENDING EXTRACTION]
+#modelling #procedural #vex #attributes #curves #beginner #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers attribute-driven bevel masking or the off-center-mirror-via-centroid trick specifically — cross-link once a dedicated bevel/mirror or VEX-randomization tutorial is extracted from this same batch.

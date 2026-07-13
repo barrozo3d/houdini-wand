@@ -2894,9 +2894,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=kAXUfg2FbYY
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any (H18+, workflow is version-agnostic)
+- **Tags:** #modelling #procedural #vex #attributes #curves #beginner #intermediate
+- **Summary:** Five standalone modelling tricks: attribute-driven bevel falloff (Mask from Target + Bevel scale-by-attribute + Ramp), normal-transfer beam placement along a curve (Orient Along Curve + Attribute Copy + Pick), single-axis-constrained point snapping (F + K + axis drag), wrangle-based random orient/position (avoids Attribute Randomize's quaternion math), and off-center mirroring via a centroid-driven point expression on the Mirror node's Origin parameter.
 - **File:** tutorials/5-tips-and-tricks-for-modeling-in-houdini.md
 
 
