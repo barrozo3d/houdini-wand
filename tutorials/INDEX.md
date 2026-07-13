@@ -1409,6 +1409,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/coin-spin-sops-vs-vex-vs-opencl.md
 
+
+### Essential Procedural Techniques in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=JMfMxHi48Zs
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/essential-procedural-techniques-in-houdini.md
+
 ---
 
 ## Tag Reference
