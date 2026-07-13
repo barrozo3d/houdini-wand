@@ -2219,6 +2219,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vdb-procedural-modeling-in-houdini.md
 
+
+### Procedural Helical Column in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=HDIIwy11otU
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-helical-column-in-houdini.md
+
 ---
 
 ## Tag Reference
