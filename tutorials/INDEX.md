@@ -2949,6 +2949,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/environment-creation-with-solaris-in-houdini.md
 
+
+### Environment Creation with Houdini - Part 1
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=nGKGXKw4_Zw
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/environment-creation-with-houdini---part-1.md
+
 ---
 
 ## Tag Reference
