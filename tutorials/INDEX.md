@@ -3169,6 +3169,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/roman-bridge---procedural-asset-creation---trailer.md
 
+
+### Rock formations with heightfields
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=rEn0ochILjU
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/rock-formations-with-heightfields.md
+
 ---
 
 ## Tag Reference
