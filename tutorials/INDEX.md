@@ -2599,6 +2599,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vellum-balloon-text-in-houdini.md
 
+
+### Procedural Fries with Mtlx and Karma XPU
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=lcgNaIicsZU
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-fries-with-mtlx-and-karma-xpu.md
+
 ---
 
 ## Tag Reference
