@@ -2409,6 +2409,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/kinefx-and-vellum-fluid-in-houdini.md
 
+
+### Houdini and Karma tips and tricks
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=cRr4R54DRKw
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-and-karma-tips-and-tricks.md
+
 ---
 
 ## Tag Reference
