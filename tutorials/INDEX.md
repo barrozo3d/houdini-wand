@@ -2359,6 +2359,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/using-substance-designer-nodes-for-houdini.md
 
+
+### Vellum Typography in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Sr7iwTjwo2E
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vellum-typography-in-houdini.md
+
 ---
 
 ## Tag Reference
