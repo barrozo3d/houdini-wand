@@ -2819,6 +2819,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/python-in-houdini-absolute-to-relative-paths.md
 
+
+### Procedural Modeling of a Stadium in Houdini - Part 1
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=0-oFYKvYucA
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-modeling-of-a-stadium-in-houdini---part-1.md
+
 ---
 
 ## Tag Reference
