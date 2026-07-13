@@ -2419,6 +2419,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-and-karma-tips-and-tricks.md
 
+
+### MaterialX and Karma | procedural networks
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=kdpeMWXIGrY
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/materialx-and-karma-procedural-networks.md
+
 ---
 
 ## Tag Reference
