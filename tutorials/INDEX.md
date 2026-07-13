@@ -2639,6 +2639,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-problem-solving-in-houdini.md
 
+
+### Procedural Ice cream Swirl in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=cvTnsmUNw3w
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-ice-cream-swirl-in-houdini.md
+
 ---
 
 ## Tag Reference
