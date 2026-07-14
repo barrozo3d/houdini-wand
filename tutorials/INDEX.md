@@ -1384,9 +1384,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=zWlJ8QLkFH4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #flip #simulation #uv #python #procedural #tips #advanced
+- **Summary:** Three deep-dives: a FLIP bottle-drip sim with VEX-driven per-drip gravity/masking and SDF-gradient surface snapping (no collider object), a UV-rectify fix via Align Vertices in U/V, and a Python texture-projection speedup by reusing the intersector's own normal sample.
 - **File:** tutorials/houdini-techniques-to-improve-your-level.md
 
 
