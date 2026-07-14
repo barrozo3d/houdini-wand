@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=O_oxVn-YVB0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [solaris, lops, karma, vdb, cops, compositing, lighting, cgi-integration, procedural, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/from-sops-to-final-render-with-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # From sops to final render with Karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py from-sops-to-final-render-with-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -344,30 +340,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:25] tutorials/frames/from-sops-to-final-render-with-karma/frame_000.jpg
+- [3:20] tutorials/frames/from-sops-to-final-render-with-karma/frame_001.jpg
+- [7:10] tutorials/frames/from-sops-to-final-render-with-karma/frame_002.jpg
+- [9:10] tutorials/frames/from-sops-to-final-render-with-karma/frame_003.jpg
+- [12:30] tutorials/frames/from-sops-to-final-render-with-karma/frame_004.jpg
+- [16:10] tutorials/frames/from-sops-to-final-render-with-karma/frame_005.jpg
+- [20:30] tutorials/frames/from-sops-to-final-render-with-karma/frame_006.jpg
+- [26:00] tutorials/frames/from-sops-to-final-render-with-karma/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full CGI-integration pipeline for compositing a modeled truck into a real night-time background plate: building a **localized VDB fog volume** in SOPs around the headlights (since Karma's default fog box can't create light-shaft falloff on its own), bringing everything into **Solaris** with instanced spotlights matched to headlight geometry, then finishing in **COPs** with a multi-pass (shadow/reflection/AO/depth) compositing setup over the real background plate, plus a fake depth-of-field built from a custom depth pass wipe rather than Karma's native DOF.
 
 ### Summary
-[PENDING EXTRACTION]
+Starts from a pre-built scene (camera oriented to real-world EXIF data and a background plate, covered in earlier videos) with the modeled truck placed via a saved `rest` attribute + Transform. To fake a localized volumetric light-shaft in front of the headlights, the front-metal/headlight geometry is Blasted out, moved back to its pre-transform rest position (via a second `rest` extraction), given a `name`/Connectivity attribute, packed, and reduced to points via Add (keep points). A **Line + Copy to Points + Sweep** (falloff-scaled cross-section, ~8 points) builds a cone-like light-shaft proxy shape, converted via **VDB From Polygons → Fog VDB → Volume VOP**: density is masked using **Relative Point Bounding Mode** (only possible because of the earlier rest-position extraction) on the Z axis, complemented/Fit-Ranged for a forward falloff, and layered with position-driven Turbulent Noise (frequency ~2, tuned offset/reference) for a more organic light-shaft look — finally transformed back to its original placement via **Attribute Copy of the saved xform attribute + Transform by Attribute**. In Solaris, the truck, fog VDB (assigned a **Karma Cloud material**, intensity ~3), ground grid, camera (background image removed per an earlier video's technique), truck materials, and a Dome Light (HDRI) are assembled; the actual background plate image is loaded via a **Background Plate** node with Karma's render-settings **"Use Background" toggled off** so the render captures pure shadow/reflection/AO/depth passes for later compositing rather than a baked-in plate. Headlight spotlights are built the same way as the fog shape (Object Merge truck → Blast headlight geometry → rest/Connectivity/pack/Add-keep-points → orient normals to Z, aperture group set to Y → Attribute Copy the xform → Transform by Attribute) feeding a Point **Instancer** of a Rectangle light (exposure ~7, small width/height ~0.15) converted to a cone/spot shape (rotated 180° once the orientation issue was found) so headlights actually cast forward. Compositing happens in a **CopNet**: a Slap Comp block imports the (alpha-carrying) Karma render, combined **Over** a resized background-plate File node (matched resolution via a Size/Graph node) for the base composite; then separate render passes are layered in — a denoised shadow pass (RGB to Mono, used as a darkening mask via a decreased-value blend), a denoised reflection pass (added on top, order determined empirically), a **Karma Box** volume (added specifically to help the fog integrate into camera space, scaled/positioned per-camera), a denoised **AO pass** (Remap-tuned range, multiplied over the background, wiped in at a controllable angle/offset via a Wipe node driven by a Constant so AO only affects part of frame), and finally a custom **depth-of-field** built by hand: the default Depth AOV misbehaves with the fog (renamed to a second "Depth2" AOV to work around it), fed through a Wipe (angle -90°, offset-tuned) combined with the background's own depth-based blurred layer, RGB-to-Mono converted, Blurred (~0.01) to match a desired DOF falloff, and Wiped back against the sharp foreground at a tuned blend point. The shot finishes with a **Glow** pass on the car, then simple Contrast/Brightness color-correction to match the author's original reference render, and a final Karma Max View slap-comp preview combining reflections, shadows, AO, DOF blur, and light passes together (noting a known performance issue where enabling slap comp + background plate together in this Houdini version becomes very slow).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Localized fog shape (SOPs):** Blast the headlight/front-metal geometry from the placed truck; use a saved pre-transform `rest` attribute to move it back to its original (untransformed) position; add `name`/Connectivity, pack, and Add (keep points) to reduce to representative points.
+2. **Cone/shaft proxy geometry:** build a **Line** along the light axis, **Copy to Points**, then **Sweep** (length ~2.1, 8 points, cross-section scaled down toward the tip via the falloff ramp, ~0.5 falloff value) to create a light-shaft cone shape per headlight; also build a subdivided **Grid** for later use.
+3. **VDB fog conversion:** **VDB From Polygons** (small voxel size ~0.01, subdivide enabled for a cleaner result) → **Fog VDB** → **Volume VOP**.
+4. **Density shaping (Volume VOP):** use **Relative Point Bounding Mode** on the Z axis (enabled specifically by the earlier rest-position extraction) via Vector to Float, multiply into density, **Complement** to flip the falloff direction (fading toward the front), and **Fit Range** to tune the falloff shape (~0.5).
+5. **Organic noise detail:** feed position into a **Turbulent Noise**, Fit-Range the result (raising the low output value to control minimum density), tune frequency (~2) and offset/reference for a less uniform, more natural-looking light shaft.
+6. **Transform back to placement:** **Attribute Copy** the originally-saved transform (`xform`) attribute onto the fog geometry, then **Transform by Attribute** to move the localized fog shape back into its correct final position in the scene; output via a named Null (`out_light`).
+7. **Solaris scene assembly:** Sop Import the truck, a ground-plane Grid, Scene Import Camera (background image removed, per an earlier referenced video), truck materials, and a Dome Light (HDRI); Sop Import the fog VDB (`out_light`), assign a **Karma Cloud material** (intensity ~3, defaults otherwise) to the whole fog volume.
+8. **Background plate + AOVs:** load the real background plate via a **Background Plate** node (Import Render Vars + Import Render Products enabled); disable Karma's **"Use Background"** render setting so the render output isolates reflections/shadows/AO rather than baking the plate directly into the beauty pass; add an **Ambient Occlusion** render var and a renamed **Depth** AOV (default depth gave a "strange result," so a second depth pass named "Depth2" is used instead as a workaround).
+9. **Headlight spotlights:** build point positions the same way as the fog shape (Object Merge truck → Blast headlight geo → rest → Connectivity → pack → Add keep-points), orient normals along Z (`{0,0,1}`), set the aperture/up group to Y, Attribute-Copy the xform, and Transform by Attribute to place points at the correct final headlight locations; feed into a Solaris **Point Instancer** referencing a **Rectangle Light** (exposure ~7, width/height ~0.15) converted to a **spotlight/cone shape**, rotated 180° to fix an initial backward-facing orientation bug, so the lights actually illuminate forward from the headlights.
+10. **Base composite (COPs):** Slap Comp block imports the Karma render (with alpha); load the real background plate via a **File** node, match resolution with a **Size/Graph** node (loaded as RGB since the plate has no alpha); **Over**-composite the render onto the plate for the base integrated shot.
+11. **Shadow/reflection passes:** extract the render's shadow AOV, **Denoise**, convert **RGB to Mono**, use as a darkening mask (value decreased, tunable "shadow density") multiplied/blended over the composite; separately extract and denoise the **reflection** pass and **Add** it on top (order determined by visual testing, not a strict rule).
+12. **Karma Box for fog integration:** add a **Karma Box** volume specifically to help the localized fog visually integrate into camera space, scaled/positioned to fit the camera frustum, with reduced density (~0.1x) for subtlety.
+13. **Ambient occlusion integration:** denoise the AO pass, **Remap** to control its range/strength, **Multiply** over the composite (careful — naive multiply also darkens/removes background, so a **Wipe** node driven by a **Constant** (angle ~90°, tunable offset) restricts the AO's influence to only the intended region of frame.
+14. **Depth of field (manual, not Karma-native):** since the default Depth AOV misbehaves once fog is introduced, use the renamed second depth pass; **Wipe** (angle -90°, offset-tuned) blends it with the background plate's own depth-based blur layer; convert to **Mono**, **Blur** (~0.01) to set the desired defocus falloff amount, then Wipe back against the sharp foreground with a tuned blend threshold so foreground (truck) stays sharp while background falls off believably.
+15. **Finishing:** add a **Glow** pass specifically on the car for a bit of bloom appeal; apply simple **Contrast**/brightness color-correction (no extensive color-grading network) to match a previously-created reference render; final preview via **Karma Max View** with the full Slap Comp enabled (reflections, shadows, AO, DOF blur, lights) — noting this combination is currently slow/laggy in this Houdini build when slap comp + background plate are both active simultaneously.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Blast, rest attribute extraction (x2 — original + re-extracted for the fog shape), Connectivity, Name, Pack, Add (keep points), Line, Copy to Points, Sweep (falloff ramp/cross-section scale), VDB From Polygons, Fog VDB, Volume VOP (Relative Point Bounding Mode, Vector to Float, Complement, Fit Range, Turbulent Noise), Attribute Copy (xform attribute), Transform by Attribute, Null (named output). LOPs/Solaris: Sop Import, Scene Import Camera, Background Plate (Import Render Vars/Products), Karma Render Settings (Use Background toggle, Ambient Occlusion render var, custom-named Depth AOV), Dome Light, Material Library, Karma Cloud material, Light (Rectangle → spotlight/cone conversion), Point Instancer, Karma Box (camera-space fog integration volume). COPs: Slap Comp, File, Size/Graph (resolution matching), Over, RGB to Mono, Denoise, Blend/Multiply, Remap, Wipe (Constant-driven angle/offset masking), Blur, Glow, Contrast/color-correct.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — combines rest-attribute-driven VDB fog authoring, Solaris light-instancing, and a substantial manual multi-pass COPs compositing pipeline (custom depth-of-field, wipe-masked AO, shadow/reflection layering) rather than relying on Karma's native DOF or fog box.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (Solaris/Karma/Copernicus workflow consistent with Houdini 20.5; references a "very recent" prior CGI-integration video from the same author).
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #lops #karma #vdb #cops #compositing #lighting #cgi-integration #procedural #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Author references two prior CGI-integration videos (camera orientation from EXIF data, background-image removal from Scene Import Camera) as prerequisites — cross-link once those are ingested from this batch. Also shares the Karma Cloud/VDB fog vocabulary with the environments-in-houdini-part-4/5 tutorials.

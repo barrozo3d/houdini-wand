@@ -1834,9 +1834,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=O_oxVn-YVB0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #solaris #lops #karma #vdb #cops #compositing #lighting #cgi-integration #procedural #advanced
+- **Summary:** Full CGI-integration pipeline for a truck-into-plate shot: rest-attribute-driven localized VDB fog around the headlights, Solaris spotlight instancing matched to headlight geometry, and a manual multi-pass COPs composite (shadow/reflection/AO/custom depth-of-field) over the real background plate.
 - **File:** tutorials/from-sops-to-final-render-with-karma.md
 
 
