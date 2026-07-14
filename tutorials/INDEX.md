@@ -2744,9 +2744,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=n-UAPewvMgQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H18+)
+- **Tags:** #rbd #procedural #vex #cleanup #modelling #intermediate
+- **Summary:** Removes hidden interior faces left over from a bounding-box fracture cut using a two-input VEX wrangle: for every point on the kept geometry, search for a nearby point on the removed geometry within a tiny radius, and delete any point with no match. Cleans up the resulting jagged boundary with a default Clean node before merging back.
 - **File:** tutorials/cleaning-fractured-geometry-in-houdini.md
 
 

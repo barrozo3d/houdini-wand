@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=n-UAPewvMgQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+)"
+tags: [rbd, procedural, vex, cleanup, modelling, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/cleaning-fractured-geometry-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Cleaning fractured geometry in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py cleaning-fractured-geometry-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -68,30 +64,46 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:04] tutorials/frames/cleaning-fractured-geometry-in-houdini/frame_000.jpg
+- [0:45] tutorials/frames/cleaning-fractured-geometry-in-houdini/frame_001.jpg
+- [1:22] tutorials/frames/cleaning-fractured-geometry-in-houdini/frame_002.jpg
+- [2:55] tutorials/frames/cleaning-fractured-geometry-in-houdini/frame_003.jpg
+- [3:13] tutorials/frames/cleaning-fractured-geometry-in-houdini/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Removes the hidden/interior faces left over from a boolean-style bounding-box fracture cut, using a two-geometry nearpoint VEX wrangle to detect which points on the "kept" piece don't actually border the "removed" piece, then cleans up the resulting jagged mesh.
 
 ### Summary
-[PENDING EXTRACTION]
+When cutting a shape (e.g. a wood plank) with a bounding-box-driven fracture and discarding a chunk via Blast, the kept piece is left full of messy interior geometry that was only ever meant to face the removed chunk. The fix: unpack the fracture result, isolate the "keep" branch (dissolving flat edges to clean obvious wall-facing faces) and separately isolate the "remove" branch/end-pieces from the fracture's own groups, then run both geometries through a wrangle that checks — for every point on the keep geometry — whether a matching point exists nearby on the remove geometry within a tiny radius; if no match is found, that point (and its geometry) is deleted. This leaves only the true boundary geometry, which is then cleaned of degenerate/floating edges and merged with the rest of the piece.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start with the source shape (wood planks in the demo), run it through an iterating **Fracture** (bounding-box driven, not a full RBD/Voronoi fracture) and use **Blast** to remove the middle chunk — this leaves the kept plank full of internal, only-partially-relevant geometry from the cut.
+2. **Unpack** the fracture result to work with the individual pieces directly.
+3. On the piece you want to **keep**: Blast away the outer wood-grain shell (or keep it as the visible base, depending on direction), **Fuse** points, and **Dissolve flat edges** — this removes most of the obviously-unwanted interior faces, leaving a clean outside with (ideally) no leftover geometry inside.
+4. Separately, isolate the **removed/end-piece geometry** using the fracture node's own pre-existing groups (both the "kept" and "removed" halves come from the same fracture, so their groups are already available to select from) — you need both geometries side by side for the next step.
+5. **The core VEX trick**: in a wrangle with two inputs (input 0 = the main "keep" geometry to clean, input 1 = the "remove" reference geometry), for every point search for a nearby point on the second input within a very small radius (`nearpoint()`-style search); if no matching nearby point is found, **remove that point** from input 0. This isolates exactly the boundary geometry that used to face the removed chunk — a simple two-line VEX approach.
+6. The result usually has some **floating/degenerate edges** left over — clean these with a **Clean** node using default settings.
+7. **Merge** the cleaned boundary piece back with the rest of the kept geometry, **Fuse** points again, and **soften normals** for a proper final shading result.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Fracture (bounding-box driven) → Blast (remove middle chunk) → Unpack → [keep branch: Blast (outer shell) → Fuse → Dissolve Flat Edges] + [remove branch: isolated via fracture's own groups] → **Attribute Wrangle** (2 inputs; `nearpoint()`-based proximity test between input 0 and input 1, `removepoint()` on no-match) → **Clean** (default settings, removes floating/degenerate edges) → Merge → Fuse → soften normals.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — the concept is simple once explained, but requires understanding how to reference two separate geometry streams in one wrangle (`nearpoint` across inputs) and how fracture groups can be reused to isolate complementary pieces.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; uses long-standing native nodes (Fracture, Blast, Wrangle, Clean) available in any modern Houdini (H18+).
 
 ### Tags
-[PENDING EXTRACTION]
+#rbd #procedural #vex #cleanup #modelling #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers this specific fractured-geometry cleanup trick — cross-link with any future RBD/fracture or VEX-cleanup tutorials once extracted from this batch.
