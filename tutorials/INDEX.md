@@ -1674,9 +1674,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=h6wt3KJy2W4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #uv #vellum #modeling #procedural #animation #tips #intermediate
+- **Summary:** Five tips: slerp-based packed-object transform animation with layered rotation, automatic boundary-path UV unwrapping for non-swept pipe geometry, transferring a geometry mask into Vellum constraints via UV Sample, Skin-based mockup modeling from two profile curves, and a distance-field V-indentation deformer.
 - **File:** tutorials/handy-houdini-tips-vellum-uvs-modeling-and-more.md
 
 

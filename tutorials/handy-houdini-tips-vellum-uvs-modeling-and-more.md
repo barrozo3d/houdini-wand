@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=h6wt3KJy2W4
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, uv, vellum, modeling, procedural, animation, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/handy-houdini-tips-vellum-uvs-modeling-and-more/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Handy Houdini Tips | Vellum, UVS, Modeling and More
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py handy-houdini-tips-vellum-uvs-modeling-and-more <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -189,30 +185,64 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/handy-houdini-tips-vellum-uvs-modeling-and-more/frame_000.jpg
+- [2:35] tutorials/frames/handy-houdini-tips-vellum-uvs-modeling-and-more/frame_001.jpg
+- [4:20] tutorials/frames/handy-houdini-tips-vellum-uvs-modeling-and-more/frame_002.jpg
+- [6:00] tutorials/frames/handy-houdini-tips-vellum-uvs-modeling-and-more/frame_003.jpg
+- [7:10] tutorials/frames/handy-houdini-tips-vellum-uvs-modeling-and-more/frame_004.jpg
+- [9:10] tutorials/frames/handy-houdini-tips-vellum-uvs-modeling-and-more/frame_005.jpg
+- [11:10] tutorials/frames/handy-houdini-tips-vellum-uvs-modeling-and-more/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five unrelated but reusable tips: animating a packed object between two positions with combined **slerp**-based translation and rotation in VEX, procedurally UV-unwrapping non-swept "pipe" geometry via boundary-loop path selection, sampling a geometry mask into Vellum constraints via **UV Sample**, a Skin-based approach to modeling smooth mockup shapes from two cross-section curves, and a distance-field-driven V-shaped indentation deformer for hard-surface props.
 
 ### Summary
-[PENDING EXTRACTION]
+**Slerp animation:** a packed object carrying two transforms (current position + target position, both extractable as matrices from input 1 and input 2) is animated by computing a 0-1 blend value from `fit(time, 0, 1, 0, 1)`, then using **`slerp()`** (Lerp for matrices) to interpolate between the two position matrices using that blend factor. A separate rotation-only angle (a spare parameter, multiplied by `2*PI` for one full turn, itself scaled by the same blend factor) is converted to a Y-axis quaternion, turned into a rotation matrix, and multiplied into the slerped position matrix before being applied via **`setpackedtransform()`** — letting the object simultaneously translate and spin any number of times (tunable via the multiplier) during the transition.
+
+**Procedural pipe UVs:** for hand-modeled "pipe" geometry (built without Sweep — starting from a tube, polyfilling, splitting by primitive-Y, wedging/extruding, then blasting away n-gon caps), a fully automatic UV-unwrap suitable for HDA use is built by: grouping the unshared boundary edges (with "create boundary groups" so each boundary gets its own sub-group), Group Expand-ing one boundary across the whole connected mesh to stamp a sequential integer **step attribute** as a path-distance ID, then a detail wrangle expands that same unshared point group and picks the last point in it as a loop **start point**; **Group Find Path** extends a seam loop starting from that point, which is converted to edges and fed to **UV Flatten + Rectify** — producing a clean, single-seam UV layout without ever manually picking a seam. If the resulting UVs come out flipped/upside-down, they're corrected by Unwrapping in Place, computing the UV-shell's bounding-box center, moving it to origin, flipping (Transform), then moving back — avoiding a full UV Layout pass.
+
+**Vellum mask via UV Sample:** a previously-built procedural mask (e.g. a "zip" tightening mask and a separate top-region mask on candy-wrapper geometry) is transferred from geometry into Vellum constraints with a single wrangle using **UV Sample** — sampling the mask attribute at each constraint's position — so the mask now "lives" on the constraints. Inside the Vellum solver, that constraint-space mask is read per-point via a Point Expression (`point(0, "mask", @ptnum, 0)`-style) and used to **lerp** the rest scale between 1 and a reduced value (and similarly to drive other constraint parameters), letting a purely geometric mask directly control simulation behavior without rebuilding it as a native constraint attribute.
+
+**Mockup modeling via Skin:** to quickly model smooth product-mockup shapes (e.g. an hourglass-like bottle) without Sweep, two profile curves are built independently — one from a Circle (Clip in half, Resample, Symmetrize, Fuse, Polypatch to guarantee a mirrored center point) and one from a rounded-rectangle primitive (transformed, Clip, Symmetrize, Fuse, Polypatch, reversed for correct normal direction) — both resampled to have matching point counts. Two additional points are generated procedurally (via a Numbers-wrangle-style approach reading existing point positions, adding new points, then resampling) to define the tube's spine/rail, and finally a **Skin** node lofts a surface from that rail using the two profile curves as its two cross-sections — producing clean topology "cleaner than" alternative approaches. UVs come from a simple UV Flatten, then Fuse-normal + Blur + a **Wrinkle deformer** peaked with a mask (built from Measure Thickness combined with a Z-axis mask, blended and restricted away from thin/small areas to avoid clipping) creates a believable crumpled "candy wrapper" surface look — the same peaking technique previously used on the author's Chocolate Break project.
+
+**Guitar-case V-indentation:** starting from an alpha-traced, triangulated, symmetrized, remeshed, extruded, and corner-beveled base shape, a specific V-shaped top indentation is added procedurally: two curves (a top V-shape, hand-drawn and mirrored via symmetrize/fuse/polypatch/resample/fuse) define the indent's footprint; primitive-0 boundary points are grouped (`@primnum == 0` in a Group Expression) and Softimage-Transform-moved to displace them off the flat Z-plane where they initially lie; one crease is Blasted away since only the top part needs skinning, then Poly Extrude + Poly Fill positions the shape correctly. A simple **XYZ Distance** (distance-field) attribute from that shape onto the base geometry is Blurred and used to displace points along their normal, producing the indentation; the mesh can optionally be un-subdivided afterward for a lower-poly version that still preserves the detail.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Slerp animation setup:** extract packed transforms from input 1 (current) and input 2 (target) as matrices; compute an animation blend factor via `fit(time, 0, 1, 0, 1)` (0-1 over the first second); interpolate the two position matrices with **`slerp()`**.
+2. **Layer in rotation:** expose a spare "rotation angle" parameter, multiply by `2π` times a user-controlled turn-count and by the same 0-1 blend factor; build a **quaternion** around the Y axis from that angle, convert to a rotation matrix, and multiply it into the slerped position matrix before applying via `setpackedtransform()` — tuning the turn-count multiplier controls how many full/partial rotations occur during the transition (e.g. x4 = multiple spins, x0.5 = a half turn).
+3. **Model pipe geometry without Sweep:** Tube → Polyfill → split primitives by Y → Poly Wedge/Extrude → Blast n-gon end caps — an alternative modeling path to Sweep that leaves awkward default UVs needing a custom solution.
+4. **Boundary path/step attribute:** Group the unshared edges with "create boundary groups" enabled (one sub-group per boundary loop); Group Expand one boundary across the whole mesh while writing an incrementing integer **step** attribute, effectively giving every point a path-distance ID from that boundary.
+5. **Pick a start point + extend the seam:** in a detail wrangle, expand the unshared point group and select its last point as the loop start; feed that into **Group Find Path** to extend a full seam loop starting there.
+6. **Flatten UVs:** convert the found path to an edge group, run **UV Flatten** + **Rectify** on it — producing clean UVs from a single automatically-chosen seam, suitable for use inside an HDA without manual seam-picking.
+7. **Fix flipped UVs without UV Layout:** Unwrap in Place, compute the UV shell's bounding-box center, move the shell to the origin, apply a Transform (flip/invert), then move it back to its original position — corrects orientation while preserving placement.
+8. **Vellum mask transfer via UV Sample:** in a simple wrangle, use **UV Sample** to read a pre-built geometric mask attribute (e.g. a "zip"/tightening mask, or a separate top-region mask) at each Vellum constraint's position, effectively moving the mask from geometry space into constraint space.
+9. **Use the mask inside the solver:** inside the Vellum Solver, read the transferred mask per-point via a **Point Expression** (`point(0, "mask", ptnum, 0)`-style, referencing `@ptnum`), then **lerp** the rest-scale constraint parameter between 1 and a reduced target value using that mask (and similarly drive other constraint values), directly linking a geometric mask to simulation behavior.
+10. **Mockup profile curves:** build one profile from a **Circle** (Clip in half, Resample, Symmetrize, Fuse, Polypatch to guarantee a mirrored center point) and a second from a rounded-rectangle shape (Transform, Clip, Symmetrize, Fuse, Polypatch, Reverse for correct normal direction); resample both to have matching point counts (required for Skin to work correctly).
+11. **Build the spine + Skin:** generate two new points along the rail (reading existing point positions, adding points, then Resampling) to define the loft path; feed that rail plus the two matching-point-count profile curves into **Skin** (second input providing the two cross-sections) to loft the final tube/bottle shape.
+12. **Finish the mockup surface:** simple **UV Flatten** for UVs, Fuse normals, Blur, then a **Wrinkle deformer** with Peak — masked by a blend of a **Measure (Thickness)** attribute and a separate Z-axis mask (restricted away from thin/small regions to avoid clipping artifacts) — to create a crumpled candy-wrapper "grumblet" surface look, the same peaking technique from the author's Chocolate Break project.
+13. **Guitar-case base + V-curve setup:** base shape from alpha-tracing → triangulate → Blast unwanted creases → Symmetrize → Remesh → Extrude → Bevel corners; separately draw a top V-shaped curve, Symmetrize/Fuse/Polypatch/Resample/Fuse it into a clean mirrored curve.
+14. **Reposition + skin the V-shape:** group primitive-0 boundary points (`@primnum == 0` Group Expression, since the curve initially lies flat on the Z plane), **Softimage Transform** to displace them off-plane into position; Blast one now-unneeded crease (only the top needs skinning), Poly Extrude + Poly Fill to close/position the shape correctly.
+15. **Distance-field indentation:** compute an **XYZ Distance** attribute from the positioned V-shape onto the base guitar-case geometry, Blur it slightly, then displace base-mesh points along their normal by that (blurred) distance value — producing the believable V-shaped top indentation; optionally un-subdivide afterward for a lower-poly version that still retains the detail.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes/VEX: Attribute Wrangle (VEX: `fit()` time-to-blend, `slerp()` matrix interpolation, spare rotation-angle parameter, quaternion construction + matrix conversion, `setpackedtransform()`), Pack, Tube, Polyfill, Group (primitive-by-Y split), Poly Wedge/Extrude, Blast, Group (unshared edges, "create boundary groups"), Group Expand (step-attribute path distance), Attribute Wrangle (detail-scope: point-group expand + last-point selection for loop start), Group Find Path, Convert Line, UV Flatten, Rectify, Unwrap in Place, Bounding Box center computation, Transform (UV-shell flip), Attribute Wrangle (UV Sample for mask transfer to constraints), Point Expression (`point()` function reading constraint-space mask inside Vellum Solver), Lerp (rest-scale constraint blending), Circle, Clip, Resample, Symmetrize, Fuse, Polypatch, Reverse, Numbers Wrangle (spine-point generation), Skin (two-cross-section lofting), UV Flatten, Blur, Measure (Thickness), Wrinkle deformer + Peak (masked), Group Expression (`@primnum==0`), Softimage Transform, Poly Extrude, Poly Fill, XYZ Distance (Measure), Subdivide/Unsubdivide.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced — the slerp animation and Vellum UV-Sample mask trick are approachable; the automated pipe-UV boundary-path workflow and guitar-case distance-field indentation require solid procedural-modeling and VEX fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era toolset; references the author's ongoing "Chocolate Break"/candy-wrap Patreon project).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #uv #vellum #modeling #procedural #animation #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson.md and cookies-and-chocolate-modeling-shading-and-sim.md (same author, same "peak/wrinkle for crumpled-wrapper look" technique referenced explicitly here) once both are indexed together.
