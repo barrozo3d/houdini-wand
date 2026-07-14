@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=9wMJWyni_Uc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.534"
+tags: [karma, rendering, optimization, opacity-maps, megascans, foliage, python, vegetation, materials]
+extraction_status: complete
 frames_dir: tutorials/frames/opacity-maps-vs-geo-in-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 3
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Opacity maps vs Geo in Karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py opacity-maps-vs-geo-in-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -86,30 +82,44 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/opacity-maps-vs-geo-in-karma/frame_000.jpg
+- [1:30] tutorials/frames/opacity-maps-vs-geo-in-karma/frame_001.jpg
+- [2:10] tutorials/frames/opacity-maps-vs-geo-in-karma/frame_002.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Replace Megascans-style opacity-mapped grass/foliage cards with real cut geometry to drastically cut Karma render times, since Karma (unlike Redshift) has no optimized opacity-map rendering path.
 
 ### Summary
-[PENDING EXTRACTION]
+A quick benchmark shows opacity-mapped grass rendering ~16x slower than the same shot without opacity maps in Karma CPU. Since removing opacity entirely loses the fine blade/leaf silhouette detail from Megascans atlases, the workaround is to trace the opacity map's silhouette into real cut polygon geometry per plate, fix normals/UVs, and reassemble the plates into full grass/plant assets (e.g. in SpeedTree) — trading modeling effort for a large, predictable render-time win.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Benchmark: render the same grass shot with and without the opacity-mapped shader connected — without opacity maps, 6.5% completed in a fixed time window; with opacity maps, only 1% completed in the same window (~16x slower).
+2. Identify the problem: Karma has no fast/optimized opacity-map rendering path (unlike some other render engines, e.g. Redshift); removing opacity maps entirely gives blocky, non-detailed geo cards.
+3. Workaround — convert Megascans atlas plates into real geometry in Houdini: trace each opacity map's silhouette into a polygon outline, reverse normals where needed, remesh, split into small individual leaf/blade pieces, generate UVs, add normals, and load the albedo map to verify alignment.
+4. Assemble the cut plates into full grass/plant assets: use a for-each loop to export each individual grass plate to its own file with correct transform/location, driving the FBX/geo ROP output button press via a small Python script inside the loop (simulating a button click per iteration since ROP output doesn't natively loop-export per-piece cleanly).
+5. Bring the exported plate files into an asset-assembly tool (the video uses SpeedTree) — create a material, import the individual mesh files into the material's mesh slots, and attach the meshes to the material to build the final grass asset.
+6. Result: a full-HD shot rendered in ~1 hour on Karma CPU using real geometry, versus an estimated ~16x longer with opacity maps.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Quick Shade / material network with opacity-mapped texture, Normal (reverse), Remesh, UV unwrap, For-Each loop (per-plate export), Python script node calling `hou.parm(...).pressButton()` inside the loop to force sequential ROP output exports, FBX/geo ROP output. Assembly step performed outside Houdini in SpeedTree (mesh-to-material assignment).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the render-time diagnosis is simple; the geometry-cutting + scripted batch-export + external asset assembly pipeline requires broader tool familiarity).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.534 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+karma, rendering, optimization, opacity-maps, megascans, foliage, python, vegetation, materials
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini 21 - Opacity vs Stencil vs Geometry](houdini-21-opacity-vs-stencil-vs-geometry.md) — a follow-up benchmark comparing flat opacity cards, Stencil Map, and real geometry render times directly, confirming the same real-geometry-is-faster conclusion reached here.
+- [Optimizing Baked Trees with Instancing in Houdini](optimizing-baked-trees-with-instancing-in-houdini.md) — related vegetation-optimization workflow for render performance.

@@ -234,4 +234,5 @@ Intermediate — primarily a render-settings/benchmark comparison; the productio
 ---
 
 ## Related Tutorials
-Cross-link with environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md (same author, same Simple Tree Tools + Atlas Processor + Opacity-to-Mesh vocabulary) once indexed together.
+- [Opacity Maps vs Geo in Karma](opacity-maps-vs-geo-in-karma.md) — earlier benchmark reaching the same conclusion (real geometry beats opacity maps for Karma render times) with a Megascans-grass-to-cut-geometry pipeline.
+- Cross-link with environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md (same author, same Simple Tree Tools + Atlas Processor + Opacity-to-Mesh vocabulary) once indexed together.

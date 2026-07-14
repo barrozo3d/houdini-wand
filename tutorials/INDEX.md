@@ -2864,9 +2864,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=9wMJWyni_Uc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.534
+- **Tags:** karma, rendering, optimization, opacity-maps, megascans, foliage, python, vegetation, materials
+- **Summary:** Benchmarks Karma render times with vs without opacity-mapped Megascans grass (~16x slower with opacity), then shows a workaround of tracing opacity-map silhouettes into real cut geometry, fixing normals/UVs, and reassembling into full grass assets via a Python-scripted per-plate export loop.
 - **File:** tutorials/opacity-maps-vs-geo-in-karma.md
 
 
