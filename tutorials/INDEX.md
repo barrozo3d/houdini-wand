@@ -1404,9 +1404,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=AGTOukqBmhU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H18+)
+- **Tags:** #vex #opencl #matrix #uv #animation #packed-primitives #expert #advanced
+- **Summary:** Three-tier learning exercise implementing the same coin reset-transform and circular-flip animation in SOPs, VEX, and OpenCL. Covers quaternion-based rotation (remembering to also rotate normals in VEX), reading Houdini's `bounds` intrinsic into a real attribute since OpenCL can't read intrinsics directly, `samplecircleedgeuniform()` vs. hand-written cos/sin circle sampling, and manually computing pivot-rotation offsets in OpenCL since it lacks a "rotate around a point" helper.
 - **File:** tutorials/coin-spin-sops-vs-vex-vs-opencl.md
 
 

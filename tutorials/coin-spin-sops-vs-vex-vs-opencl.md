@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=AGTOukqBmhU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+)"
+tags: [vex, opencl, matrix, uv, animation, packed-primitives, expert, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/coin-spin-sops-vs-vex-vs-opencl/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Coin spin | Sops vs Vex vs OpenCL
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py coin-spin-sops-vs-vex-vs-opencl <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -409,30 +405,51 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:58] tutorials/frames/coin-spin-sops-vs-vex-vs-opencl/frame_000.jpg
+- [2:32] tutorials/frames/coin-spin-sops-vs-vex-vs-opencl/frame_001.jpg
+- [8:11] tutorials/frames/coin-spin-sops-vs-vex-vs-opencl/frame_002.jpg
+- [12:58] tutorials/frames/coin-spin-sops-vs-vex-vs-opencl/frame_003.jpg
+- [15:34] tutorials/frames/coin-spin-sops-vs-vex-vs-opencl/frame_004.jpg
+- [17:51] tutorials/frames/coin-spin-sops-vs-vex-vs-opencl/frame_005.jpg
+- [25:16] tutorials/frames/coin-spin-sops-vs-vex-vs-opencl/frame_006.jpg
+- [35:55] tutorials/frames/coin-spin-sops-vs-vex-vs-opencl/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A three-tier learning exercise (SOPs → VEX → OpenCL) implementing the identical result twice over: first resetting a scanned coin's transform to the origin with correct orientation, then animating it "flipping" end-over-end around a circular path — each tier reimplementing the same math with progressively lower-level tools, ending with matrix/quaternion math written by hand in OpenCL C.
 
 ### Summary
-[PENDING EXTRACTION]
+An explicitly educational, three-difficulty-level comparison video. **Part 1 — reset transforms**: fixes a Sketchfab-scanned coin's inverted/offset USD "ST" UVs (renamed to `uv`, Y-flipped and offset via a wrangle), then centers and orients the coin three different ways: (easy) native Transform + Match Size nodes; (medium) a single VEX wrangle using bounding-box center subtraction and a **quaternion** (`quaternion()`, `qrotate()`) to rotate both `P` and `N` 90°, then offsetting by half the bounding-box depth; (hard) the same math in **OpenCL**, which lacks native bounding-box functions — solved by reading Houdini's built-in `bounds` **intrinsic detail attribute** into a plain detail attribute first (since OpenCL can't read intrinsics directly), then hand-writing the quaternion math using SideFX's provided `quaternion.h` OpenCL include, with explicit `float3`/`float4` types replacing VEX's implicit vector types and no `set()` convenience functions. **Part 2 — coin spin animation**: builds a circular path (SOPs: a fused open-arc Circle + Orient Along Curve + Extract Point, driven by a repeating 0-1 time value via a Turn/frequency expression, feeding a **Transform Axis** node that rotates the coin around a moving pivot/tangent with a decaying rotation angle) then reimplements the exact same effect in VEX (a point wrangle using `samplecircleedgeuniform()` to generate the moving point directly from a UV parameter derived from time × cycles, building the tangent manually, and composing the rotation via translate-to-origin → rotate-around-tangent → translate-back matrix operations) and finally in OpenCL again (same math, but manually implementing the circle-sampling formula with `cos()`/`sin()` since `samplecircleedgeuniform` doesn't exist in OpenCL, building a quaternion from `quaternionFromAxisAngle()`-equivalent function, converting it to a 4×4 matrix, and manually computing the pivot-translation offset since OpenCL has no built-in "rotate around an arbitrary point" helper).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Fix broken import UVs**: a USD-imported scan stores UVs as `ST` (Attribute Delete down to Normal/Position/ST, then Attribute Swap `ST` position 0 → `uv`); if the result renders wrong via UV Quick Shade, check for Y-inversion — fix with a small wrangle (`@uv.y *= -1; @uv.y += 1;`, since the offset from just flipping needs re-centering).
+2. **Easy reset (SOPs)**: rotate 90° around Z with a Transform node, then Match Size to move it to the grid center.
+3. **Medium reset (VEX)**: `v@P -= getbbox_center(0)` to center; build a quaternion (`quaternion(PI/2, {0,0,1})`) and `v@P = qrotate(q, v@P)`; **critically**, also rotate the normal attribute the same way (`v@N = qrotate(q, v@N)`) since a plain Transform node updates all attributes automatically but a wrangle only touches what you explicitly write to — an easy-to-miss shading bug. Offset up by half the bounding-box depth (`getbbox_size(0).x * 0.5`, noting the "depth" axis may not be the one you'd expect).
+4. **Hard reset (OpenCL)**: OpenCL has no bounding-box functions and can't read Houdini's `bounds` intrinsic attribute directly — first capture it into a plain detail attribute via a separate detail wrangle (`detail("op:...", "bounds", ...)` written out as a real attribute named `bounds`, a float array), then bind that array in the OpenCL node (`Bind Detail`) alongside a position/normal point binding. Write the same center/rotate/offset math in explicit OpenCL C (`float3`, `float4`, no `set()`), including SideFX's `quaternion.h` include for `quaternionFromAxisAngle()`/`qRotate()`-equivalent functions.
+5. **SOPs coin-spin rig**: an open-arc Circle (32 divisions, fused to compute tangents correctly) sized to the coin via Match Size; the coin itself packed (Pack node) for cheap per-instance transforms. **Orient Along Curve** computes a tangent attribute on the circle; **Extract Point** pulls a single traveling point off the curve, driven by a repeating `time * frequency` value wrapped via a Turn/fit-to-0-1 expression so the point cycles around continuously.
+6. Feed that moving point + its tangent into a **Transform Axis** node (origin = the point's position via a point expression, direction = the tangent, angle = a fixed rotation amount × a decaying `1 - clamp(time/duration, 0, 1)` factor so the flip animates from full rotation down to zero) — object-merge the packed coin, **Attribute Copy** its `xform` matrix from the transform-axis result, then **Transform by Attribute** to apply it.
+7. **VEX coin-spin (backs/wrangle version)**: read the coin's initial packed transform via `primintrinsic(0, "packedfulltransform", 0)`; expose Time/Cycles/Duration/Size as channel-referenced parameters. Generate the moving point directly with **`samplecircleedgeuniform()`**, fed a UV value of `frac(time * cycles)` (via `fit01`/modulo) instead of relying on a separate Circle SOP; swizzle the resulting XY-plane point into the XZ/coin plane and scale by the coin's radius. Compute the tangent manually (`normalize({-P.z, 0, P.x})` — matches the same tangent math the Orient Along Curve node produces). Build the rotation as: translate-to-origin (`matrix identity → translate(-P) → transform *= `), rotate around the tangent by the same decaying angle, then translate back (`+= P`) — an explicit from-scratch reimplementation of what Transform Axis does internally.
+8. **OpenCL coin-spin**: same structure, but every helper needs manual reimplementation — re-derive the coin's `xform` via a detail wrangle first (packed primitives lose the convenient intrinsic access OpenCL needs), include `time` via the node's Options, and reconstruct the circle-sampling formula by hand: `float3 pos = {radius*cos(turn), 0, radius*sin(turn)}` (since `samplecircleedgeuniform` has no OpenCL equivalent), tangent via the same cross-style formula as the VEX version. Build the decay-scaled quaternion (`quaternionFromAxisAngle` from `quaternion.h`, angle × decay, axis = tangent), convert it to a matrix (`float4 quaternionToMatrix`-equivalent, here a `mat4` type), then — since OpenCL has no "rotate around a point" convenience — manually compute where the origin lands after a pure origin-rotation and use that as a translation offset added into the matrix's translation columns (`rot.sc = ...`) to reproduce rotating around the moving pivot point correctly.
+9. Wire all three variants (SOPs/VEX/OpenCL) into a **Switch** node for direct side-by-side comparison — the author notes all three run with roughly comparable performance in this simple case (OpenCL's GPU advantage isn't decisive here; VEX's compiled SOPs are already fast).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Attribute Delete + Attribute Swap (`ST`→`uv`) + fix-UV wrangle → Transform + Match Size (easy reset) vs. Attribute Wrangle (`getbbox_center`, `quaternion()`, `qrotate()` on both `P` and `N`, `getbbox_size`) (medium reset) vs. detail wrangle (`bounds` intrinsic → plain attribute) + **OpenCL node** (`quaternion.h` include, `float3`/`float4`, Bind Detail for the bounds array) (hard reset) · Circle (fused, 32 div) + Match Size + Pack + **Orient Along Curve** + **Extract Point** + **Transform Axis** + Attribute Copy (`xform`) + Transform by Attribute (SOPs spin) vs. point Wrangle (`primintrinsic("packedfulltransform")`, **`samplecircleedgeuniform()`**, manual tangent, matrix identity/translate/rotate/translate-back) (VEX spin) vs. OpenCL node (manual `cos`/`sin` circle sampling, `quaternionFromAxisAngle`, quaternion-to-matrix, manual pivot-offset translation) (OpenCL spin) → Switch (variant comparison).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Expert / Advanced — this is explicitly a from-scratch, low-level reimplementation exercise spanning three paradigms; the OpenCL sections in particular require comfort with matrix/quaternion math, manual type declarations, and working without the convenience functions VEX/SOPs provide. Not for beginners even though the individual pieces are explained step by step.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; uses long-standing OpenCL node support and the `quaternion.h` OpenCL include shipped with Houdini, available in any modern Houdini (H18+).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #opencl #matrix #uv #animation #packed-primitives #expert #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [Mechanical rigging in Houdini - Attaching custom controls](mechanical-rigging-in-houdini---attaching-custom-controls.md) — shares #matrix #wrangle; both use matrix/quaternion-based rotation-around-a-pivot math implemented directly in VEX rather than relying on native transform nodes.
