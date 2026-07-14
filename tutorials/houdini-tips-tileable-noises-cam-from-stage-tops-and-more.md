@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=zItss8TuZMo
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [solaris, lops, tops, vex, vellum, procedural, fracture, environment, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tips-tileable-noises-cam-from-stage-tops-and-more/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini Tips | Tileable Noises, Cam from Stage, TOPS and more
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-tips-tileable-noises-cam-from-stage-tops-and-more <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -180,30 +176,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/houdini-tips-tileable-noises-cam-from-stage-tops-and-more/frame_000.jpg
+- [2:15] tutorials/frames/houdini-tips-tileable-noises-cam-from-stage-tops-and-more/frame_001.jpg
+- [4:00] tutorials/frames/houdini-tips-tileable-noises-cam-from-stage-tops-and-more/frame_002.jpg
+- [8:20] tutorials/frames/houdini-tips-tileable-noises-cam-from-stage-tops-and-more/frame_003.jpg
+- [10:40] tutorials/frames/houdini-tips-tileable-noises-cam-from-stage-tops-and-more/frame_004.jpg
+- [13:30] tutorials/frames/houdini-tips-tileable-noises-cam-from-stage-tops-and-more/frame_005.jpg
+- [15:50] tutorials/frames/houdini-tips-tileable-noises-cam-from-stage-tops-and-more/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five varied tips: importing an animated Solaris/Stage camera back into the SOP/object level, faking a stretched-rock-wall look by transforming a box before RBD fracturing then restoring the original scale via a saved transform attribute, batch-converting/resizing large HDRIs with a **TOPs** wedge-free feedback loop, the specific rules for building genuinely **tileable procedural noises** (and tileable distortion on top of them), and a **Vellum**-based system for randomly emitting debris/leaf objects onto a surface over time.
 
 ### Summary
-[PENDING EXTRACTION]
+**Camera from Stage:** an animated camera authored in Solaris/LOPs can be pulled back to the SOP/object level via **Object → Import Camera** (selecting the target camera prim, e.g. `camera2`), producing a native object-level camera with the same animation intact — described as the only way to get a Stage camera back to objects short of a full USD round-trip. **Stretched rock wall via RBD Fracture:** starting from a remeshed Box, a **Transform** scales it along Z and adds **shear** for a skewed look — critically, this Transform's resulting matrix is saved as an output **xform attribute** *before* fracturing; after running a normal **RBD Material Fracture** on the distorted box, a **Match Size** restores the original (undistorted) shape using that saved xform attribute, meaning the fracture pattern itself inherits the stretch/skew "for free" without the final pieces looking uniformly skewed. From there, pieces are Assembled, front-facing ones grouped (via a Z-axis bounding-box check) and Blasted away, and remaining pieces reshaped individually for an interesting broken-wall composition. **Batch HDRI conversion via TOPs:** a **TOPnet**'s **File Pattern** node (wildcard pattern, e.g. `*` in a texture folder) generates work items per found file, exposing directory/extension/filename components usable in downstream output paths; an **ImageMagick** TOP node builds output paths from those components plus a custom "converted" subfolder; a **For-Each loop with Feedback explicitly disabled** (just 2 iterations) uses the loop's iteration variable to compute output width as `2048 * (iteration + 1)` (avoiding a zero-multiply on the first pass), producing both a 2K and a 4K version per source file in one cook, with aspect ratio preserved automatically (height doesn't need explicit calculation) and each output file named using the iteration ID. **Tileable noise rules:** using **Unified Noise (Static)** with position fed in and output to CD, the default behavior doesn't tile — setting **Type to Periodic** and copying the Frequency value into the Periodic field is required, but even then **Simplex** noise doesn't actually tile despite exposing a Periodic option; **Perlin** does tile correctly under this setup. Tiling breaks the moment the **frequency is a non-integer** (must stay whole numbers) — increasing frequency smoothly works only at integer values, non-integer intermediate values visibly break the tile seam. Adding **Fractal** detail also breaks tiling unless the fractal's **lacunarity** is likewise forced to an integer value. To add organic distortion on top without breaking tiling: a second Unified Noise (3D type, for distortion) added into position must **not** use Sparse Convolution (not tileable) or Simplex (also not tileable) — **Perlin** (best) or Worley work as tileable distortion sources; distortion amplitude/frequency need to be dialed down if it's too aggressive, but the underlying rule stays the same throughout: every noise parameter that could introduce a non-integer cycle (frequency, lacunarity) must be kept as whole numbers for the tile seams to stay invisible. **Vellum random debris emission:** starting from an Alembic-cached set of dead leaves (unpacked, converted to polygons, UVs via a UV Quick Shade for visualization), unneeded small leaves are deleted while preserving normals/UVs/materials; **Name** + **Connectivity** (set to `class`) tags each leaf with a unique ID so **Attribute from Pieces** (set to Random) can later pick a random leaf per point when Copy-to-Points'd (using the "piece" attribute, same pattern as prior tutorials) onto animated/randomized guide lines (Point Jitter driven by `$F * random` for up/down motion, a Transform to raise them, `pscale` and randomized normals via a `$F`-seeded global seed for varied orientation). The resulting animated leaf/twig geometry is fed through **Vellum Glue** (default settings, outputting both geo and constraints) which becomes the source for a **Vellum Solver**'s **Vellum Source**: rather than wiring Vellum geometry/constraints directly into the solver's dedicated inputs, the glued geo+constraints are loaded via Vellum Source configured to **emit only every 10 frames** (not continuously) — collisions are set against the actual tile/environment geometry — producing a naturally staggered, randomized scattering of debris/leaves accumulating over time on the surface instead of one continuous emission.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Import a Stage camera to objects:** at the object level, use **Import Camera**, pick the target camera prim from the Stage/LOP network (e.g. `camera2`) — the resulting object-level camera keeps its full animation, and this is described as the only non-USD way to bring a Solaris camera back to SOPs/objects.
+2. **Pre-fracture distortion setup:** Remesh a Box, then **Transform** it with Z-axis scale and shear for a skewed look; output the Transform's resulting matrix as an **xform attribute** before proceeding.
+3. **Fracture on the distorted shape:** run a standard **RBD Material Fracture** on the now-skewed box — the fracture pattern itself is naturally distorted/stretched along with the shape.
+4. **Restore original scale via saved transform:** use **Match Size**, restoring the original undistorted shape's transform using the previously-saved xform attribute — the fractured pieces keep their stretched pattern "for free" without the whole object looking uniformly skewed afterward.
+5. **Isolate and reshape front pieces:** **Assemble** the fractured pieces, group front-facing ones via a simple Z-axis bounding-box check, **Blast** them away, then individually reshape remaining pieces for the final broken-wall composition.
+6. **TOPs batch file discovery:** a **File Pattern** TOP node with a wildcard (e.g. `*`) scans a texture folder, generating one work item per file and exposing directory/extension/filename components for use in later output-path expressions.
+7. **Build converted output paths:** an **ImageMagick** TOP constructs each output path from the exposed directory/filename/extension components plus a custom "converted" subfolder.
+8. **Multi-resolution export via non-feedback loop:** a **For-Each loop with Feedback disabled**, run for 2 iterations, uses the loop's iteration variable to compute output width as `2048 * (iteration + 1)` (avoids multiplying by zero on the first pass) — producing a 2K version on iteration 0 and 4K on iteration 1, aspect ratio auto-preserved, each file named with the iteration ID appended.
+9. **Base tileable noise setup:** **Unified Noise (Static)**, position fed to Position input, output to CD; set **Type to Periodic** and copy the Frequency value into the Periodic parameter field — required for any tiling to occur at all.
+10. **Noise-type tiling caveat:** despite exposing a Periodic option, **Simplex** does not actually tile correctly; **Perlin** does tile correctly under the same Periodic setup.
+11. **Integer-only frequency rule:** tiling breaks the instant frequency becomes a non-integer value — keep frequency (and any related periodic parameter) as whole numbers throughout adjustment.
+12. **Fractal detail requires integer lacunarity:** adding Fractal detail on top of a tileable base noise breaks tiling unless **lacunarity** is also forced to an integer value.
+13. **Tileable distortion setup:** add a second **Unified Noise** (3D type) into the position input for distortion — avoid **Sparse Convolution** and **Simplex** (neither tiles); use **Perlin** (best option) or Worley instead, tuning amplitude/frequency down if the distortion is too strong, while still respecting the integer-frequency/lacunarity rule throughout.
+14. **Leaf debris prep:** load an Alembic cache of dead leaves, Unpack, Convert to Polygons, add a UV Quick Shade for visualization, delete unneeded small leaves (preserving normals/UVs/materials), tag each leaf with **Name** + **Connectivity** (set to `class`) for a unique per-leaf ID.
+15. **Randomized guide-line placement:** build animated/randomized guide lines (Point Jitter driven by `$F * random()` for vertical motion, Transform to raise them, `pscale` set, normals randomized via an `$F`-seeded global seed for varied final orientation).
+16. **Random-piece copy:** **Attribute from Pieces** (set to Random) picks a random leaf class per guide point; **Copy to Points** with the "piece" attribute enabled distributes a different random leaf per point.
+17. **Vellum Glue + Source setup:** feed the resulting animated leaf/twig geometry through **Vellum Glue** (default settings, outputting geo + constraints); rather than wiring these directly into the Vellum Solver's dedicated geometry/constraint inputs, load them through a **Vellum Source** node inside the solver.
+18. **Staggered emission timing:** configure the Vellum Source to **emit only every 10 frames** (not continuously) — with collisions set against the actual environment/tile geometry, this produces a naturally staggered, accumulating scatter of debris over the simulation instead of one continuous dump.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+LOPs: Import Camera (Stage prim selection). SOPs: Remesh, Transform (xform attribute output, scale + shear), RBD Material Fracture, Match Size (restore-transform-by-attribute), Assemble, Group (bounding-box Z check), Blast. TOPs: File Pattern (wildcard scanning, exposed directory/extension/filename components), ImageMagick TOP (path construction), For-Each loop (Feedback explicitly disabled, iteration-variable-driven width expression `2048*(iteration+1)`). COPs/VEX noise: Unified Noise Static (Periodic type + Frequency-to-Periodic copy, Perlin vs. Simplex tiling behavior, integer-only frequency/lacunarity rule, Fractal detail), second Unified Noise (3D, Sparse Convolution/Simplex non-tileable vs. Perlin/Worley tileable distortion sources), Add (position distortion). Simulation: Alembic (dead-leaf cache), Unpack, Convert, UV Quick Shade, Name, Connectivity (`class`), Point Jitter (`$F`-driven), Transform, Attribute from Pieces (Random), Copy to Points (piece attribute), Vellum Glue (geo + constraints output), Vellum Solver, Vellum Source (staggered every-10-frame emission, collision geometry).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — spans LOPs/SOPs camera interop, a non-obvious transform-then-restore fracture trick, TOPs batch automation, precise tileable-noise integer rules, and a Vellum Source-based staggered-emission simulation pattern.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era Solaris/TOPs/Vellum toolset).
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #lops #tops #vex #vellum #procedural #fracture #environment #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with houdini-tips-and-tricks-2.md and houdini-tips-solaris-vdbs-cops-and-more.md (same author, same "grab-bag of 5 tips" format) once indexed together — shares the Attribute-from-Pieces random-copy pattern with environments-in-houdini-part-3 and houdini-procedural-tips-variants-concentric-shapes-and-step-orient.md.

@@ -2464,9 +2464,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=zItss8TuZMo
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #solaris #lops #tops #vex #vellum #procedural #fracture #environment #tips #intermediate
+- **Summary:** Five tips: importing an animated Stage camera to objects, a transform-then-restore RBD Fracture trick for stretched rock walls, TOPs batch HDRI resizing via a non-feedback loop, integer-only tileable-noise rules (Perlin vs. non-tileable Simplex/Sparse Convolution), and a Vellum Source staggered-emission system for random debris.
 - **File:** tutorials/houdini-tips-tileable-noises-cam-from-stage-tops-and-more.md
 
 
