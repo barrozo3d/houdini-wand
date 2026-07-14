@@ -2294,9 +2294,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=xOeZncLWztc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #cops #procedural #texturing #displacement #uv #tips #intermediate
+- **Summary:** Ten quick COPs tips for a cut-glass displacement map: Feather-based chamfering, Tile Pattern row/column pruning, Segment by Connectivity + Statistics by ID + Compare region masking, custom Pop Import/Stamp Points star patterns, and RestoreUV-based pattern alignment.
 - **File:** tutorials/displacement-maps-in-cops-houdini-205.md
 
 
