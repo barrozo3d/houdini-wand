@@ -2144,9 +2144,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=conZuTxHnoc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #vdb #vex #procedural #fracture #texturing #beginner #product-viz
+- **Summary:** Beginner-friendly broken perfume-bottle build: RBD Material Fracture with manually-placed seed points, an area-based fit() remesh-sizing pattern for uneven fragments, a Compile-Block per-piece Volume VOP noise pass for interior damage, and an experimental Triplanar-baked-to-VDB displacement workflow for a rock-textured base.
 - **File:** tutorials/houdini-beginner-tutorial-creating-a-perfume-bottle.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=conZuTxHnoc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, vdb, vex, procedural, fracture, texturing, beginner, product-viz]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-beginner-tutorial-creating-a-perfume-bottle/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini Beginner Tutorial | Creating a perfume bottle
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-beginner-tutorial-creating-a-perfume-bottle <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -771,30 +767,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:30] tutorials/frames/houdini-beginner-tutorial-creating-a-perfume-bottle/frame_000.jpg
+- [6:15] tutorials/frames/houdini-beginner-tutorial-creating-a-perfume-bottle/frame_001.jpg
+- [11:50] tutorials/frames/houdini-beginner-tutorial-creating-a-perfume-bottle/frame_002.jpg
+- [17:00] tutorials/frames/houdini-beginner-tutorial-creating-a-perfume-bottle/frame_003.jpg
+- [24:00] tutorials/frames/houdini-beginner-tutorial-creating-a-perfume-bottle/frame_004.jpg
+- [35:00] tutorials/frames/houdini-beginner-tutorial-creating-a-perfume-bottle/frame_005.jpg
+- [44:00] tutorials/frames/houdini-beginner-tutorial-creating-a-perfume-bottle/frame_006.jpg
+- [51:40] tutorials/frames/houdini-beginner-tutorial-creating-a-perfume-bottle/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full beginner-friendly, largely non-VEX build of a broken/cracked perfume-bottle asset: basic Bevel-based hard-surface modeling for the cap/base/screws, **RBD Material Fracture** with manually-placed custom seed points for controlled breakage, an area-based **remesh-density expression** (via `fit()`) so differently-sized fractured pieces all get appropriately scaled detail, a per-piece **For Each + Volume VOP** noise pass to add organic damage/erosion to the interior of broken chunks, and an experimental **Triplanar-to-volume-displacement** workflow (baking Triplanar color output into a VDB and using it to displace/carve the surface) for rock-like surface detail on the base "stone" shape.
 
 ### Summary
-[PENDING EXTRACTION]
+The bottle body starts as a simple Box with two Poly Bevels (first a modest bevel, then a larger heavily-subdivided one) for a rounded hard-surface look; a front screw/cap detail box gets its own edge-group-based Bevel (angle-thresholded to avoid rounding flat faces) and is Match-Sized into place. Small screw details are built from a WAP-sphere generator, clipped/scaled, Polyfilled (required for later VDB work), Copy-to-Points'd onto 4 target points with a small `pscale`, then individually scaled inward slightly via Primitive Properties transforms. The whole assembly is fractured with **RBD Material Fracture**, but rather than accepting its default Scatter-seeded break pattern, the author swaps in a **custom point-placement HDA** ("Place Points on Geo," to be shared separately) that lets crack-origin points be manually dragged/placed/deleted directly on the surface for full artistic control over where the object breaks (explicitly noting a plain Scatter + Input Points connection works too, just with less control) — pieces are then selectively Blasted away (via `name`-based Group selection) to leave only the desired broken fragments, and an Exploded View spaces them apart. Since looping per-fragment geometry work is more efficient than operating on the whole fractured mesh at once, a **For Each (name/primitive)** loop processes each piece: first a naive uniform-size Remesh causes small fragments to lose detail/disappear, so instead the actual mesh **area** of each piece is Measured, promoted point→detail to get scene-wide min/max area values, and a **`fit()`** expression maps each piece's own area into a small target-size range (e.g. 0.1–0.1-ish, tunable) — feeding that per-piece `target_size` attribute into the Remesh node's Edge Length parameter so small and large fragments both get appropriately fine, consistent detail. The same area-based target-size attribute also drives a **VDB size** wrangle for later volume conversion. A secondary, coarser Remesh + Mountain (picked along normals) pass adds cheap edge-breakup/chipping directly on the mesh. An `inside` mask attribute (from RBD Fracture's built-in "inside" group) flags interior/broken faces so later effects only affect the newly-exposed crack surfaces, not the original exterior. Each piece is converted to a **VDB From Polygons** (sized via the per-piece VDB-size attribute, using World Scale + Fill Interior, carrying the `inside` mask attribute along), then run through a **Volume VOP** that samples a Unified Noise (Bricconi/Worley type, tuned frequency/repetition, plus a secondary Worley F2-F1 low-frequency noise and a Sparse-Convolution position-distortion noise layered in via a Switch for A/B comparison) added into the volume's density — multiplied by the bound-in `inside` attribute so the noise-driven erosion/damage only appears on interior break-surfaces, converted back to polygons for a convincing "shattered ceramic/ceramic-like crumbling" interior look. The whole per-piece loop is wrapped in a **Compile Block** (multi-threaded) for practical iteration speed, requiring the Remesh/VDB nodes' direct geometry references to be converted to **spare-input references** first (a technique covered in a separate "compile loops" video) since Compile Blocks can't handle direct cross-node references. The bottle's cap/top is built separately from a beveled Box, a capped Tube, and a Torus, merged and VDB'd together (small VDB voxel size for detail, light VDB Smooth) for a unified rounded metal-cap look, then Match-Sized onto the fractured base. Finally, a rugged "stone" base plinth is built from a Box run through an isolated (non-looped) **Mountain** node (acceptable for a single simple object, but explicitly called out as too slow to use inside a per-piece loop), remeshed evenly, then given rock-like surface detail via an experimental workflow: front/back faces are grouped by normal threshold (`abs(N.x) > 0.95`-style Group Expression) and Attribute-Blurred for a smooth mask transition, two Megascans rock textures are projected via **Triplanar** (found visually messy directly as color, so instead baked through a Composite node blending both textures' CD/color-diffuse channels) into a mask attribute, which is then baked into a **VDB From Polygons** (carrying `density`, the mask, and the side-group attribute as separate volumes) and read back in a second Volume VOP that inverts/complements the mask (VDB convention: positive = inside), Fit-Ranges and scales it down, multiplies by the side-group mask (so displacement/cracking is restricted to the side faces, not the flat top), and adds it into density for a carved rock-crack look — plus a second near-identical noise layer for additional crack variation — before converting back to polygons at a fine VDB resolution for the final detailed stone shape.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Bottle body:** Box (2x3, subdivided) → Poly Bevel (small, few divisions) → Poly Bevel (larger, more subdivisions) for the rounded main body shape.
+2. **Front detail box:** second Box, Group an edge ring, Bevel it (angle-thresholded via "ignore flat edges" style angle parameter to avoid rounding flat faces), Match Size (min-to-max alignment) onto the body with a small offset.
+3. **Screw details:** WAP-sphere generator (UVs not needed) → Clip in half → Scale on Z → Polyfill (needed for later VDB work) → Copy to Points onto 4 target points with a small `pscale` (~0.04) → per-instance inward scale via Primitive Properties transform (~0.9) → Merge everything into the base shape.
+4. **Fracture with controlled seed points:** **RBD Material Fracture** on the merged base; instead of its default internal Scatter, feed in custom crack-origin points via a **custom "Place Points on Geo" HDA** (manual drag/place/delete control over break locations) — or, as a simpler built-in alternative, a plain Scatter node wired into the fracture's Input Points connection.
+5. **Select desired fragments:** use Group (by `name` attribute) to Blast away unwanted fracture pieces, keeping only the fragments that form the intended "broken bottle" look; use Exploded View to preview spacing.
+6. **Per-piece area-based remesh sizing:** inside a **For Each (name/primitive)** loop, **Measure** (Area) per piece, promote point→detail to get scene-wide min/max area, then use **`fit(area, min_area, max_area, min_target_size, max_target_size)`** to compute a per-piece `target_size` attribute — feed this into the Remesh node's Edge Length (per-point value) so small fragments don't lose geometric detail and large fragments aren't over-tessellated.
+7. **VDB-size attribute:** duplicate the area-measurement wrangle to compute a similar per-piece `VDB size` attribute (different target range, e.g. 0.03–0.08) for use in the later VDB conversion step.
+8. **Cheap edge breakup:** a secondary coarser Remesh (roughly double size) + Attribute Blur + Mountain (picked along normals, small amplitude/element size) adds cheap chip/damage detail directly on the mesh surface.
+9. **Interior mask:** create an `inside` point/primitive attribute from RBD Fracture's built-in "inside" group, marking which faces are newly-exposed break surfaces (vs. original exterior) — used to restrict later noise/erosion effects to just the interior.
+10. **VDB + noise erosion on interior faces:** **VDB From Polygons** (sized via the per-piece VDB-size attribute, World Scale + Fill Interior, carrying the `inside` attribute) → **Volume VOP**: sample a Unified Noise (Bricconi/Worley-type, tuned frequency/repetition) plus a secondary low-frequency Worley F2-F1 noise and an optional Sparse-Convolution position-distortion layer (toggled via a Switch for comparison), Fit-Range and scale the combined noise, **multiply by the bound `inside` attribute** so it only affects interior break surfaces, add into density, then convert back to polygons.
+11. **Compile the loop:** wrap the whole per-piece chain in a **Compile Block** (multi-threaded) for practical speed across many fragments; since Compile Blocks reject direct cross-node geometry references, convert the Remesh/VDB nodes' direct references into **spare-input references** first (per the author's separate "compile loops" technique video).
+12. **Cap/top assembly:** Box (beveled, one bevel unrounded/angular, one small heavily-subdivided rounded bevel) + capped Tube (radius/height tuned, subdivided) + Torus (tuned radii, subdivided to avoid a low-poly VDB look) → select all three and drag-merge → **VDB From Polygons** (small voxel size) → light **VDB Smooth** (~2) → convert to polygons for a unified rounded metal-cap shape → Match Size onto the fractured base.
+13. **Stone base — shape + coarse detail:** Box → isolated (non-looped) **Mountain** for organic bumps (explicitly called out as too slow to run per-piece inside a loop, but fine for one simple standalone object) → Remesh evenly (~100,000 points) for good topology ahead of the Triplanar/volume-displacement step.
+14. **Stone base — side mask:** Group Expression selecting front+back faces via `abs(N.x) > 0.95`-style normal threshold, named `sides`, then Attribute Blur (~100) for a smooth mask falloff (avoiding a hard visible seam later).
+15. **Stone base — rock texture via baked Triplanar mask:** load two Megascans rock textures (cliff/mossy-rock sets) via **Triplanar**, found messy when displacing directly from color, so instead route each texture's CD/color-diffuse output through a **Composite** node (Overlay-style blend, second texture scaled down ~0.7) to combine them into a single grayscale mask attribute (bound/exported, vector-to-float'd down to a single channel).
+16. **Stone base — volume displacement from the baked mask:** **VDB From Polygons** carrying `density` + the baked mask attribute + the `sides` attribute as separate volumes → **Volume VOP**: import/bind the mask (complemented, since VDB convention treats positive values as "inside"), Fit-Range and scale down, **multiply by the bound `sides` attribute** (restricting the effect to side faces only, not the flat top), add into density; layer a second, near-identical noise pass for additional crack variation; convert back to polygons at a fine VDB resolution for the final rock-textured stone shape.
+17. **Final assembly:** Match Size the stone base and cap onto the fractured bottle body; merge everything into the completed broken perfume-bottle scene.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Box, Poly Bevel (angle-threshold "ignore flat edges" option), Group (edge ring, normal-threshold expression), Match Size (min/max/mean alignment variants), WAP Sphere Generator, Clip, Polyfill, Copy to Points (`pscale`), Primitive Properties (per-instance transform scaling), RBD Material Fracture (custom Input Points connection, built-in "inside" group), custom "Place Points on Geo" HDA (manual point placement — author's own tool, alternative: Scatter), Blast (name-based group selection), Exploded View, For Each (name/primitive, wrapped in Compile Block + multi-threading, spare-input references required for compile compatibility), Measure (Area), Attribute Promote (point↔detail for min/max), Attribute Wrangle (VEX: `fit()` for area-to-target-size mapping), Remesh (per-point Edge Length from attribute), Mountain (custom vector-along-normal displacement, coarse edge-breakup variant), Attribute Blur, VDB From Polygons (World Scale, Fill Interior, multi-attribute carry-through), Volume VOP (Unified Noise — Bricconi/Worley types, Sparse Convolution position distortion, Fit Range, Multiply Constant, bind/import attribute nodes, Switch for A/B noise comparison), Convert VDB, VDB Smooth, Compile Block (multi-threaded), Tube (capped), Torus, Composite (texture-blend for baked mask), Karma Triplanar (Megascans rock textures), Vector to Float.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — explicitly framed as beginner-friendly and VEX-light (only simple `fit()` expressions used), but the area-based remesh-sizing pattern, per-piece Compile-Block loop, and experimental Triplanar-to-volume-displacement workflow are non-trivial procedural techniques worth learning from.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era Volume VOP/Triplanar/Karma toolset).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vdb #vex #procedural #fracture #texturing #beginner #product-viz
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris.md (same author, similar product-viz bottle-modeling + VDB workflow) and hard-surface-techniques-in-houdini.md (shares the Compile-Block-with-spare-inputs pattern) once indexed together.
