@@ -1434,9 +1434,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=GQMsl6TiFXY
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21
+- **Tags:** #karma #materials #shaders #mtlx #triplanar #cops #python #uv #procedural #environment #intermediate
+- **Summary:** Introduces the author's custom LayerX native MaterialX node for stacking blend-mode/alpha texture layers in Karma, demonstrated texturing a water tower with rust, Triplanar decals, a Python-automated class-based section mask, COPs-baked AO, and a non-repeating graffiti decal.
 - **File:** tutorials/layered-textures-in-karma.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=GQMsl6TiFXY
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21"
+tags: [karma, materials, shaders, mtlx, triplanar, cops, python, uv, procedural, environment, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/layered-textures-in-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Layered Textures in Karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py layered-textures-in-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -168,30 +164,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:25] tutorials/frames/layered-textures-in-karma/frame_000.jpg
+- [1:20] tutorials/frames/layered-textures-in-karma/frame_001.jpg
+- [3:30] tutorials/frames/layered-textures-in-karma/frame_002.jpg
+- [4:40] tutorials/frames/layered-textures-in-karma/frame_003.jpg
+- [5:40] tutorials/frames/layered-textures-in-karma/frame_004.jpg
+- [6:35] tutorials/frames/layered-textures-in-karma/frame_005.jpg
+- [7:20] tutorials/frames/layered-textures-in-karma/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Introducing the author's custom **LayerX** node — a native, compiled MaterialX node for Karma that lets you stack an arbitrary number of texture layers (each with its own blend mode and alpha) directly onto base color, roughness, or displacement without building a manual Mix-node chain — demonstrated by texturing a previously-modeled water tower with rust, dirt-mask Triplanar decals, a class-based section mask, baked ambient occlusion, and a graffiti decal.
 
 ### Summary
-[PENDING EXTRACTION]
+**The LayerX node itself:** a native (not subnet-based) MaterialX node compiled specifically for Karma, exposing a stack of enable/disable layers, each with its own **blend mode** (Normal, Overlay, Multiply, etc.) and optional **alpha** input for masking — usable on base color, roughness, and even displacement inputs. **Model prep:** starting from a previously-modeled water tower, most attributes are stripped except normals and UVs; the author's own UV-orient-up HDA (built in an earlier video) plus a basic UV Layout clean up the UVs. Since the model wasn't originally saved with per-part `name` attributes (needed for shading masks), **Connectivity** produces a `class` per-piece attribute, and a custom **Python script** automates re-deriving clean shading groups: it walks backward through the network reading every upstream node's selection/visibility group parameter into an array (one array element per manually-made viewport selection, made by pressing 9/entering the geometry and selecting-by-class per section, aided by an Exploded View to separate overlapping parts), then a final wrangle checks whether the current primitive number appears in each array element and assigns a new sequential `class` value accordingly — effectively converting a series of manual viewport selections into a clean, reusable per-section class attribute without hand-authoring group expressions. **COPs pre-baking for Solaris-side shading:** since MaterialX/Karma procedural shaders in Solaris lack convenient node-based helpers like Redshift's Ambient Occlusion or Dirt nodes, a CopNet bakes attributes like **ambient occlusion** onto the model's UV space ahead of time, output via a named node so it can be referenced in Solaris shading; position and world normal don't need separate baking since those are natively available in Solaris already — the author notes this AO bake was done "quick and dirty" and isn't even very noticeable in the final result, but the workflow (bake once in COPs, reference in Solaris) generalizes to curvature, edge, and cavity maps too. **Solaris shading with LayerX:** a base color layer sets an overall tint; **Layer 1** loads a Megascans structure texture as the layer's **alpha** (with its own color picked separately, decoupled from the texture's actual RGB) for a rust/grime overlay; **Layer 2** uses a different Megascans texture as color, masked by a **Triplanar**-projected alpha (avoiding UV-seam artifacts on this particular mask); a **Grid** node (with Fractal noise added to break up its perfectly regular edges) is extracted to a single channel and multiplied against the model's `class` attribute (read, converted to float, and compared via `if (class == N)`) to build a targeted **per-section mask** — letting you isolate and texture one specific structural piece (e.g. one leg, one panel) at a time by changing which class value is compared. Further layers read back the **baked ambient occlusion** from COPs, and a final **graphite/graffiti decal layer** loads a PNG with alpha (Mono/Color4 mode), positioned/scaled via a **Place** node with **address mode set to Constant** on both U and V (so the decal doesn't tile/repeat around the model), extracts its alpha via Separate Color, feeds that as the layer's alpha (with the raw alpha multiplied down since full-strength blending was too strong), and sets the blend mode to Overlay for a subtle, non-repeating decal effect.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Understand LayerX:** a compiled, native MaterialX node (found under MaterialX → Compositing) exposing a stack of texture layers, each independently enable/disable-able with its own blend mode and alpha input, usable on color, roughness, and displacement.
+2. **Clean up model attributes:** strip most attributes from the previously-modeled geometry, keeping only normals and UVs.
+3. **Orient and layout UVs:** apply the author's own UV-orient-up HDA (from an earlier video) followed by a basic UV Layout.
+4. **Generate a per-piece class attribute:** run **Connectivity** to get an initial per-piece `class`, since the model wasn't originally saved with per-part `name` attributes needed for shading masks.
+5. **Manually select structural sections:** enter the geometry (press 9), select by class per structural section (truss, ladder, body, etc.), aided by an **Exploded View** to separate overlapping parts, repeating per section you want to isolate for shading.
+6. **Automate group-to-class conversion via Python:** run a custom Python script that walks backward through the SOP network reading every upstream node's selection/visibility group parameter into an array (one element per manual selection made in step 5), then a wrangle checks whether the current primitive number is present in each array element and assigns a clean sequential `class` value accordingly.
+7. **Finalize the mesh:** run a final cleanup pass (Attribute Delete, recompute normals), set a basic `name` attribute, and output/cache the geometry.
+8. **Bake helper maps in COPs:** build a CopNet that bakes attributes unavailable as convenient Solaris shading nodes (e.g. **ambient occlusion**, since MaterialX/Karma lacks a native Dirt/AO helper node like Redshift's) directly onto the model's UV space; output via a named node for later Solaris reference; note position and world normal don't need baking since Solaris provides them natively.
+9. **Import into Solaris:** bring in the geometry, add a Dome Light and basic render settings.
+10. **Base color layer:** set LayerX's base to a chosen color.
+11. **Alpha-masked rust layer:** enable a new layer, load a Megascans structure texture strictly as the layer's **alpha** input (color-correcting/range-tuning it), and pick the layer's actual color independently.
+12. **Triplanar-masked layer:** enable another layer using a different Megascans texture as color, with its alpha driven by a **Triplanar** projection (chosen specifically to avoid UV-seam artifacts for this mask).
+13. **Class-based section mask:** build a **Grid** node (with Fractal noise layered in to break up its regular edge pattern), extract a single channel, read the model's `class` attribute (converted to float), and compare with `if (class == N)` to output a binary white/black mask isolating one specific structural section — usable as an alpha for texturing just that section, with N swappable to target different pieces.
+14. **AO layer:** enable a layer reading the previously COPs-baked ambient occlusion map directly as its alpha/mask input.
+15. **Graffiti/graphite decal layer:** load a PNG decal with alpha (Color4/Mono mode), route through a **Place** node (offset/scale controls, **address mode U and V set to Constant** so the decal doesn't repeat/tile around the model), extract the alpha via **Separate Color**, feed it as the layer's alpha (multiplied down since full-strength blending read too strong), and set the blend mode to **Overlay** for a subtle final decal pass.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Custom node: **LayerX** (native compiled MaterialX node, multi-layer stack with per-layer enable/blend-mode/alpha, usable on color/roughness/displacement — found under MaterialX → Compositing). SOPs: Attribute Delete, custom UV-orient-up HDA, UV Layout, Connectivity (`class`), Exploded View, Python (`hou` node-graph traversal reading upstream group/visibility parameters into arrays), Attribute Wrangle (VEX: primitive-in-array membership check, sequential class reassignment), Normal, Name. COPs: ambient occlusion bake (UV-space), named output node for Solaris reference. Solaris/MaterialX: Dome Light, Karma Render Settings, MtlX Image (color/alpha inputs), Karma Triplanar, Grid (with Fractal noise), Vector to Float / channel extraction, Compare/`if` (class-value masking), Place (offset, scale, address mode: Constant U/V), Separate Color (alpha extraction), blend modes (Normal, Overlay, Multiply).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — LayerX itself is simple to use once available; the Python group-to-class automation and COPs AO-baking workaround are the more advanced supporting techniques.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21 (transcript explicitly references "this visualize node is broken in Odini 21"; LayerX described as newly released/compiled for current Karma/MaterialX).
 
 ### Tags
-[PENDING EXTRACTION]
+#karma #materials #shaders #mtlx #triplanar #cops #python #uv #procedural #environment #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with houdini-20-procedural-shading-features.md and custom-procedural-materials-with-houdini-and-karma.md (same author, overlapping Triplanar/MaterialX layered-shading vocabulary) once indexed together; the water tower model referenced here as "modeled previously" should be cross-linked once that source tutorial is found in this batch.
