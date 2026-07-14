@@ -2584,9 +2584,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=d2Qgcbzup2s
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vellum #modeling #vex #simulation #procedural #product-viz #advanced
+- **Summary:** Uses Vellum cloth/hair as a modeling tool for four assets: tangled earphone wires via Vellum Hair + POP Attract convergence, crumpled tissues via POP Attract/Force noise, a stitched tissue-box liner with POP Wind to fake gravity sag, and a candy wrapper twisted by counter-rotating tube colliders.
 - **File:** tutorials/modeling-assets-with-vellum.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=d2Qgcbzup2s
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vellum, modeling, vex, simulation, procedural, product-viz, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/modeling-assets-with-vellum/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Modeling Assets With Vellum
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py modeling-assets-with-vellum <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -243,30 +239,61 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:50] tutorials/frames/modeling-assets-with-vellum/frame_000.jpg
+- [2:20] tutorials/frames/modeling-assets-with-vellum/frame_001.jpg
+- [4:30] tutorials/frames/modeling-assets-with-vellum/frame_002.jpg
+- [6:00] tutorials/frames/modeling-assets-with-vellum/frame_003.jpg
+- [9:20] tutorials/frames/modeling-assets-with-vellum/frame_004.jpg
+- [10:45] tutorials/frames/modeling-assets-with-vellum/frame_005.jpg
+- [13:00] tutorials/frames/modeling-assets-with-vellum/frame_006.jpg
+- [15:50] tutorials/frames/modeling-assets-with-vellum/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Using Vellum's **cloth and hair solvers as modeling tools** — not just for simulation effects — to generate four hard-to-hand-model assets: tangled earphone wires (Vellum Hair + POP Attract convergence), crumpled tissue paper (Vellum Cloth + POP Attract/Force noise), a folded tissue-box liner (Vellum Cloth + stitch constraints + POP Wind to fake gravity sag), and a twisted candy wrapper (Vellum Cloth colliding against counter-rotating tubes).
 
 ### Summary
-[PENDING EXTRACTION]
+**Earphone wires:** three curves (main wire + two earpiece branches) are hand-drawn with **Draw Curve**, Resampled, and Fused with a generous snap distance so they visually join at the branch point while remaining three separate primitives (they'll separate again once simulated) — Resample again with Subdivision Curves smoothing, then group the shared connection points (curve start/end selection) for later stitching. **Vellum Hair** with an increased **edge-length scale** gives the wires enough separation for a believable swept-tube result later; the saved connection points are stitched (Vellum Constraint) so the wires don't disconnect during simulation. The actual "tangling" effect comes from a **POP Attract** with a large scale value pulling all points toward the center — Time Shift grabs a good-looking tangled frame (~200), then attributes are cleaned and **Orient Along Curve** computes tangent normals so later copied geometry (earpieces, jack) lands correctly-oriented. A **Connectivity** pass gives each curve a `class` used to separate jack-vs-earpiece placement; a **pscale** attribute makes the main wire (primitive 0) thicker (1.0) than the two earpiece wires (0.8 default) before **Sweep**. Earpieces/jack are **Copy to Points** onto the class-selected target points (critically restricting the copy to just the intended target points, or geometry copies everywhere). The earpiece shape itself is a bent Line, Swept with **Apply Scale Along Curve**, then Subdivided, Connectivity-classed by end caps, with the bottom cap Blasted and Filled (flat, not rounded); end-cap groups are extracted from the Sweep node directly, Group-Expanded for a rim detail, Beveled at the bottom, and colored per end-cap for later Solaris/Karma shading, with an Edge Fillet group saved for a rounded-edge shader effect. The connector/jack piece is a simple multi-point Line with every-other-point-in-a-range grouped, Swept (again Apply Scale Along Curve), the initial group promoted to edges, Beveled (saving an edge-fillet-polys group), then Extruded and Beveled again for connector ring details, with another edge-fillet group saved for Solaris. **Crumpled tissues (3 variants):** a subdivided Planar Patch (3x3) feeds a **Vellum Cloth** sim with reduced bend stiffness; a **POP Attract** (smaller scale, goal position offset in X/Z rather than the default center) pulls the sheet toward an off-center point as it crumples, plus a **POP Force** (amplitude ~1) layered in purely to add noise/irregularity to the crumpling — Time Shift grabs the desired frame, then Vellum Post Process adds thickness. The other two tissue variants reuse the same setup with different POP Attract goal positions and POP Force amplitudes (one with position at origin and a stronger amplitude for a more distorted look) — normals are reversed on one variant for an interesting alternate silhouette; each finished tissue is centered and Blasted/isolated individually for separate Solaris import. **Tissue-box liner:** starts from a Box, Boolean (Shatter mode) to extract just the needed opening/fold shape, with UVs computed on that shape; a **Vellum Cloth** (rest scale 1.5) with a **Vellum Constraint set to Stitch Points** joins what are otherwise separate mesh pieces so they don't fall apart, since keeping them as genuinely separate meshes was the intended design; the Vellum Solver collides against a pre-modeled interior box-liner shape plus a ground plane, solving only the first 2-3 frames (a very short sim is enough for the desired folded shape). To prevent the result from simply flopping over flat (undesired), a **POP Wind** (magnitude ~1.5 along Z) fakes just enough directional force to keep a natural sagging silhouette while resisting full collapse — frozen at frame 3 once the desired shape is reached. **Candy wrapper:** a Planar Patch is bent, with **Group Expression**-created groups marking (a) where the bent geometry's edges meet (for stitching) and (b) the regions that will visually twist at each end; three collider objects are set up — the candy shape itself (simple modeling) plus two tubes rotating in opposite directions (to physically twist the wrapper ends as they spin) — all three assigned as Vellum colliders. A near-default **Vellum Cloth** sim stitches the previously-saved meeting-edge groups, and additionally **attaches the two saved twist-region point groups to the rotating tubes** so the wrap follows and twists with tube rotation on each side; the author notes needing to tweak the **rest state** since the twist wasn't initially working correctly. The sim is left to cook, producing a twisting candy-wrap shape (author candidly notes uncertainty whether this is the "best approach" but calls the result good enough) — finished with a slight Blur, extra subdivisions, attribute cleanup, and a `name` attribute for Solaris.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Earphone wire curves:** hand-draw 3 curves (Draw Curve: main wire + 2 earpiece branches), Resample, Fuse (large snap distance to visually join branch points while keeping 3 primitives), Resample again with Subdivision Curves, group the shared connection points (curve start/end selections).
+2. **Vellum Hair setup:** increase edge-length scale for wire separation; stitch the saved connection-point groups (Vellum Constraint) so wires don't disconnect during simulation.
+3. **Tangle via POP Attract:** a large-scale **POP Attract** pulls all points toward the center over the simulation; Time Shift to a good tangled frame (~200); clean attributes; **Orient Along Curve** for correct tangent normals (needed for later copied-geometry orientation).
+4. **Classify + vary wire thickness:** **Connectivity** for a per-curve `class` (jack vs. earpiece placement); **pscale** set to 1.0 on primitive 0 (main wire) vs. 0.8 default (earpiece wires) before Sweep.
+5. **Place earpieces/jack:** **Copy to Points** onto the class-selected target points specifically (restricting target points is critical, or copies scatter everywhere).
+6. **Earpiece modeling:** bent Line → Sweep (Apply Scale Along Curve) → Subdivide → Connectivity by end caps → Blast + Fill the bottom cap flat → extract end-cap groups from Sweep, Group Expand for rim detail, Bevel bottom, color per end cap, save an Edge Fillet group for Solaris/Karma shading.
+7. **Connector/jack modeling:** multi-point Line, group every-other-point-in-a-range, Sweep (Apply Scale Along Curve), promote initial group to edges, Bevel (save edge-fillet-polys group), Extrude + Bevel again for ring details, save another edge-fillet group.
+8. **Tissue crumple base:** subdivided Planar Patch (3x3) → **Vellum Cloth** (reduced bend stiffness).
+9. **Crumple direction + noise:** **POP Attract** (smaller scale, off-center goal position in X/Z) pulls the sheet toward one side as it folds; **POP Force** (amplitude ~1) layers in noise for irregular crumpling; Time Shift to the desired frame; Vellum Post Process adds thickness.
+10. **Tissue variants:** repeat with different POP Attract goal positions and POP Force amplitudes (including a stronger, more distorted variant); reverse normals on one variant for an alternate look; center and isolate each via Blast for separate Solaris import.
+11. **Tissue-box liner base:** Box → **Boolean** (Shatter mode) to extract the needed fold/opening shape, with UVs computed on it.
+12. **Stitch separate mesh pieces:** **Vellum Cloth** (rest scale 1.5) + **Vellum Constraint set to Stitch Points** to join otherwise-separate mesh pieces so they hold together during simulation.
+13. **Solve briefly with collisions:** Vellum Solver collides against a pre-modeled interior liner shape plus a ground plane; solve only the first 2-3 frames — enough to reach the desired folded shape.
+14. **Prevent flat collapse via POP Wind:** a **POP Wind** (magnitude ~1.5, Z axis) fakes directional force to maintain a natural sag rather than the shape flopping fully flat; freeze at frame 3 once satisfied.
+15. **Candy-wrap setup:** bend a Planar Patch; use **Group Expression** to mark (a) edge-meeting points for stitching and (b) end regions that should visually twist.
+16. **Collider rig:** model the candy shape plus two tubes rotating in opposite directions; assign all three as Vellum colliders.
+17. **Stitch + attach to rotating colliders:** near-default **Vellum Cloth** stitches the meeting-edge groups; additionally attach the two twist-region point groups to their respective rotating tubes so the wrap follows and twists with tube rotation.
+18. **Fix rest-state issues:** tweak the rest state specifically to get the twist effect actually working (it initially didn't).
+19. **Finish the wrap:** let the sim cook, then apply slight Blur, extra Subdivisions, attribute cleanup, and a `name` attribute for Solaris import.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Modeling/curves: Draw Curve, Resample (point-count and Subdivision-Curves modes), Fuse (large snap distance), Group (start/end point selection), Line, Sweep (Apply Scale Along Curve), Subdivide, Connectivity (`class`, end-cap classification), Blast, Fill, Group Expand, Bevel, Extrude, Attribute Create (`pscale` per-primitive), Copy to Points (target-point restriction), Orient Along Curve (tangent normals), Boolean (Shatter mode), UV compute, Color (per-piece), Name. Vellum: Vellum Hair (edge-length scale), Vellum Cloth (bend stiffness, rest scale), Vellum Constraint (Stitch Points), Vellum Solver (collision geometry: ground plane, interior liner shape, rotating tubes as colliders), POP Attract (scale, goal position offset), POP Force (amplitude, noise), POP Wind (magnitude, axis — fake gravity-sag resistance), Vellum Post Process (thickness), Time Shift, Blur.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — using Vellum cloth/hair as a modeling tool (rather than pure simulation) requires understanding how POP forces, stitch constraints, and rest-state tuning interact to produce controllable, art-directed results rather than purely physical ones.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era Vellum toolset).
 
 ### Tags
-[PENDING EXTRACTION]
+#vellum #modeling #vex #simulation #procedural #product-viz #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with kinefx-and-vellum-fluid-in-houdini.md and chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson.md (same author, overlapping Vellum-as-modeling-tool philosophy) once indexed together. Author mentions covering the Solaris shading/lighting assembly for these assets in a future video — cross-link once found in this batch.
