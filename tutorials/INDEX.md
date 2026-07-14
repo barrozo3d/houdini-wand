@@ -2734,9 +2734,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=VJ4AnxgCvQU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H18+, uses Labs Instant Meshes)
+- **Tags:** #heightfields #triplanar #remesh #uv #substance-painter #baking #displacement #solaris #karma #advanced
+- **Summary:** Full heightfield-to-asset pipeline: mask-driven heightfield detail + slope mask, remesh/subdivide to fix triplanar-breaking stretched polygons, Triplanar Displace with Megascans textures for micro-detail (normals recomputed after, not before), island-based compiled poly-reduce + Labs Instant Meshes for low-poly, per-island UV Flatten loop, Python-batched high-poly export to Substance Painter for baking (checking raw vs. equalized bakes for gaps), and final Solaris/Karma displacement rendering.
 - **File:** tutorials/creating-procedural-environment-assets-in-houdini.md
 
 

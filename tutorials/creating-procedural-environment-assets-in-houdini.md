@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=VJ4AnxgCvQU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+, uses Labs Instant Meshes)"
+tags: [heightfields, triplanar, remesh, uv, substance-painter, baking, displacement, solaris, karma, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/creating-procedural-environment-assets-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Creating Procedural Environment Assets in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py creating-procedural-environment-assets-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -212,30 +208,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:45] tutorials/frames/creating-procedural-environment-assets-in-houdini/frame_000.jpg
+- [3:15] tutorials/frames/creating-procedural-environment-assets-in-houdini/frame_001.jpg
+- [6:02] tutorials/frames/creating-procedural-environment-assets-in-houdini/frame_002.jpg
+- [7:43] tutorials/frames/creating-procedural-environment-assets-in-houdini/frame_003.jpg
+- [9:57] tutorials/frames/creating-procedural-environment-assets-in-houdini/frame_004.jpg
+- [11:13] tutorials/frames/creating-procedural-environment-assets-in-houdini/frame_005.jpg
+- [15:26] tutorials/frames/creating-procedural-environment-assets-in-houdini/frame_006.jpg
+- [20:33] tutorials/frames/creating-procedural-environment-assets-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A condensed breakdown of a full heightfield-to-game/render-ready-asset pipeline: mask-driven heightfield detailing, Triplanar Displace for micro-detail on a remeshed/subdivided high-poly, an island-based iterative poly-reduce → Instant Meshes low-poly workflow, procedural per-island UVs, Substance Painter baking (high-to-low), and final Solaris/Karma displacement rendering.
 
 ### Summary
-[PENDING EXTRACTION]
+A dense recap of a technique the author covers in full (~1 hour) elsewhere on Patreon, compressed into ~20 minutes here. Starts from a heightfield with hand-iterated masks (blended/blurred/remapped/noised) plus a **slope mask** (via Calculate Slope) for side-detail placement. Since raw heightfield geometry has stretched polygons that break triplanar projection, the mesh is **remeshed after clipping**, then **subdivided** (author settles on 3 iterations as a fidelity/speed tradeoff) before feeding into **Triplanar Displace** using Megascans rock textures on the *color* inputs (not displacement directly) — normals must be recomputed/blurred *after* the triplanar displace or they won't update correctly. Multiple triplanar texture layers are composited together (Import Point Attributes pulling CD from each layer, blended with Overlay mode and tuned alpha), converted from color to a float and remapped (accounting for Megascans' 0.5 mid-gray convention) to drive the actual displacement, scaled up substantially since the model is large-scale. For **low-poly + UVs**: rather than remeshing the dense high-poly directly (too slow), the mesh is divided into islands (Scatter + a Voronoi-style split via a natural/normal-based grouping), **poly-reduced iteratively per-island inside a compiled loop**, remeshed again (Instant Meshes is described as "picky" and needs a clean/simple input to cooperate), then run through **Labs Instant Meshes** (~40k target polys) and smoothed. The same per-island-division trick is reused to build **UVs**: divide into islands, promote to primitive, loop a UV Flatten per island, then UV Layout. For texturing, the high-poly is exported in per-island pieces (looping with Python, using a `press button` function and an iteration/detail attribute to name each export) to Substance Painter, since exporting the full dense mesh as one file would be too heavy — baked maps include Normal, Curvature, AO, Thickness, ID, Position, with **Max Frontal/Rear Distance** tuned per the model's scale (values around 2-4 for this large asset), and it's important to inspect the *raw* (non-equalized) baked map for gaps/holes that the equalized preview can hide. Rendering (Solaris/Karma) applies the baked height/displacement map: an Image node set to Float feeding a Displacement shader, connected alongside a standard surface shader — displacement strength near 1.0 gives the closest match to the high-poly reference.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Heightfield mask prep**: hand-draw/iterate a base mask (subtracting shapes as needed), blend two versions (one blurred) with a Remap for a smooth bottom transition, layer in noise and distortion, blur, then clean the mask. Separately build a **slope mask** (Calculate Slope) for side-detail placement, saved via a Copy Layer.
+2. **Prep for triplanar**: heightfield-derived geometry has stretched polygons that break triplanar projection — fix by **Remeshing after a Clip**, running a few iterations to remove stray geometry clusters, then **Subdividing** (3 iterations used here as the fidelity/speed sweet spot for this asset, tested against 1 iteration for comparison).
+3. **Triplanar Displace for detail**: feed 2-3 Megascans rock textures into **Triplanar Displace**'s *color* inputs (not the displacement input directly) to layer surface detail; recompute and blur point normals **after** the triplanar displace step specifically — doing it before means the triplanar displace won't update the normals correctly and you lose them.
+4. **Composite the triplanar layers**: Import Point Attributes to pull the CD (color) from each triplanar layer, blend with **Overlay** mode, tune each layer's alpha; convert the composited color to a float and **Fit** it into a -0.5 to 0.5 range (accounting for Megascans textures' 0.5 mid-gray zero-point convention), multiply by the slope mask, then use it to actually displace the position — scale needs to be large since this is a big-scale model. Experiment with per-texture **offsets** for varied results; the first/base texture layer acts as overall large-scale shaping, with additional higher-frequency textures (or procedural noise, which the author found gives comparably good and faster results) layered for finer detail.
+5. **Low-poly + optimization via islands**: rather than remeshing the very dense high-poly directly (too slow), **Scatter** points and build islands via a natural/normal-grouping approach, then **poly-reduce iteratively per-island inside a compiled loop** — much faster than reducing the whole mesh at once. Remesh again afterward specifically to give **Labs Instant Meshes** a cleaner, simpler input (Instant Meshes is described as finicky and unreliable on messy input).
+6. Run **Labs Instant Meshes** targeting ~40k polygons, then a **Smooth** pass for a cleaner low-poly base mesh (no UVs yet).
+7. **Procedural UVs**: reuse the same island-division trick — a "divider" primitive-group split, promote to primitive attribute, loop a **UV Flatten** per island/piece, then run **UV Layout** to pack everything — described as a fast, low-effort UV approach acceptable specifically because triplanar projection (not UV-based texturing) drives the visuals in Substance later. Soften normals afterward to avoid Substance Painter import errors; also bake a separate low-poly scatter/point-cloud output for later grass scattering.
+8. **Height/displacement map baking (in Houdini)**: use the Maps Baker with EXR output, correct resolution, and critically the correct **Max Frontal/Rear Distance** (author used ~4 for this large mesh) — too small a distance (e.g. 2) produces visible holes/gaps in the raw bake that an "equalized" preview can mask; always check the **non-equalized raw output** to catch these errors, not just the equalized preview.
+9. **Displacement setup for render** (Solaris/Karma): create an Image material node set to **Float**, wire it into a **Displacement** shader node, connect a Standard Surface shader for the base material, and wire both the surface and displacement shaders into the final material output — a displacement strength near 1.0 best matches the original high-poly reference, though it can be reduced for stylization/practicality.
+10. **Batch-exporting high-poly pieces for Substance Painter**: since the dense high-poly is too heavy to export/import as one file, loop through each island piece with a small **Python** script using a `pressbutton()`-style function on the ROP/export node combined with an iteration/detail attribute to rename each output piece per loop iteration — the script handles execution and per-piece naming automatically once set up.
+11. **Substance Painter texturing/baking**: basic texturing with a few base textures, Smart Masks/Mask Editor for blending, adding grass in occluded areas, using World Space Normal for some effects. The key process to note: select which maps to bake (Normal, Curvature, AO, Thickness, ID, Position, etc. — "Mesh Maps"), import all the exported high-poly pieces (32 in this example), set resolution, verify the bake **bounds** look correct, then Bake — producing a full mesh-map set ready for texturing/shading downstream.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Heightfield mask chain (draw/subtract → blend/blur/Remap → noise/distortion → clean) + **Calculate Slope** (side-detail mask, Copy Layer) → Clip → Remesh (iterated) → Subdivide (3×) → **Triplanar Displace** (color inputs, Megascans textures) → point-normal recompute + blur (post-triplanar) → Import Point Attributes (CD per layer) → Overlay blend + alpha tuning → color-to-float + Fit (-0.5..0.5) + slope-mask multiply → position displace → island Scatter/grouping → compiled per-island poly-reduce loop → Remesh (clean input for Instant Meshes) → **Labs Instant Meshes** (~40k target) → Smooth → island-based UV Flatten loop → UV Layout → soften normals → Maps Baker (EXR, Max Frontal/Rear Distance tuned to scale) → Solaris/Karma: Image (Float) → Displacement shader + Standard Surface → material output → Python `pressbutton()`-driven per-island batch export loop (iteration/detail-attribute naming) for Substance Painter ingestion.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines heightfield detailing, triplanar projection math/gotchas, compiled per-island poly-reduction, third-party remesh tools (Labs Instant Meshes), Python-driven batch export, and cross-application (Substance Painter) baking; a compressed recap of a much longer full walkthrough elsewhere.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; uses Labs Instant Meshes and Solaris/Karma for final render, consistent with any modern Houdini (H18+).
 
 ### Tags
-[PENDING EXTRACTION]
+#heightfields #triplanar #remesh #uv #substance-painter #baking #displacement #solaris #karma #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [Cliff Face in Houdini](cliff-face-in-houdini.md) — shares #procedural #vdb-adjacent rock/environment asset techniques (that tutorial uses VDB/Boolean cycling instead of heightfield+triplanar-displace for detail, a complementary alternative approach) and with [Cliff texturing with karma and material X](cliff-texturing-with-karma-and-material-x.md) — shares #triplanar, using an in-Houdini MaterialX triplanar shader as an alternative to this video's Substance Painter baking pipeline.
