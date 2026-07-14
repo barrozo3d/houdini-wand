@@ -2434,9 +2434,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Y-CjDhFmclQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20
+- **Tags:** #modeling #vdb #vex #expressions #materials #shaders #karma #solaris #lighting #product-viz #beginner
+- **Summary:** Full soap-bar build: a logo Boolean-stamped via a bbox-pivot mirror, a from-scratch VDB foam pipeline (Reshape/Combine-subtract), a hand-derived equidistant-scaling expression for the plate, and Karma XPU shading (SSS soap, thin-film bubbles, Triplanar-roughness plate) with dual rectangle-light setup.
 - **File:** tutorials/lets-make-soap-houdini-and-karma-beginner-course.md
 
 

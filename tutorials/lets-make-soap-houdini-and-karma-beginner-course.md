@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Y-CjDhFmclQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20"
+tags: [modeling, vdb, vex, expressions, materials, shaders, karma, solaris, lighting, product-viz, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/lets-make-soap-houdini-and-karma-beginner-course/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Let's make soap! Houdini and Karma beginner course
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py lets-make-soap-houdini-and-karma-beginner-course <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -879,30 +875,65 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:50] tutorials/frames/lets-make-soap-houdini-and-karma-beginner-course/frame_000.jpg
+- [3:30] tutorials/frames/lets-make-soap-houdini-and-karma-beginner-course/frame_001.jpg
+- [8:20] tutorials/frames/lets-make-soap-houdini-and-karma-beginner-course/frame_002.jpg
+- [14:00] tutorials/frames/lets-make-soap-houdini-and-karma-beginner-course/frame_003.jpg
+- [17:30] tutorials/frames/lets-make-soap-houdini-and-karma-beginner-course/frame_004.jpg
+- [20:30] tutorials/frames/lets-make-soap-houdini-and-karma-beginner-course/frame_005.jpg
+- [27:30] tutorials/frames/lets-make-soap-houdini-and-karma-beginner-course/frame_006.jpg
+- [45:30] tutorials/frames/lets-make-soap-houdini-and-karma-beginner-course/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A beginner-to-intermediate full-scene build (soap bar embossed with a logo, foamy bubbles via scatter+VDB, a plate scaled with a hand-written **equidistant-scaling expression**, and full Solaris/Karma XPU shading/lighting) — the standout non-obvious technique is a bounding-box-driven VEX expression that scales geometry while keeping the gap/border between opposite edges visually equal (rather than naive uniform scaling, which leaves unequal spacing on rectangular shapes), alongside a from-scratch VDB foam-building pipeline (Boolean/Reshape/Combine-subtract) and content-aware bubble scattering via noise-driven density masking.
 
 ### Summary
-[PENDING EXTRACTION]
+The soap bar starts as a beveled Box (edges excluded from bevel on flat faces via an angle threshold), with a logo imported via **Regions from Image**, cleaned, cached, and isolated by name; the logo shape is Match-Sized onto the soap's top face (mean/max alignment, scale-to-fit, then centered-scale via a **centroid-based expression** so it shrinks toward its own middle rather than a corner), Extruded slightly, and the whole thing **Mirrored** across the object's own bounding-box Y-minimum (not the world origin — critical, since mirroring from world origin would leave the two logo halves disconnected) before a **Boolean** (Shatter mode, Surface output) stamps the raised/recessed logo pattern into the soap. To get clean topology for the stamped result, the shape is Subdivided for extra resolution, grouped, Fused (small distance to avoid over-fusing close points), Triangulated, and run through the third-party **Exoside QuadRemesher** (using the connectivity/class attribute to guide polygon orientation) rather than a simple post-Boolean bevel — described as optional but preferred when available. A separate Font-based text shape is similarly Extruded, Remeshed, and **Group Transfer**'d onto the soap surface (requiring enough subdivided geometry underneath or the transfer silently fails), then Extruded and Beveled with its own edge-angle exclusion for embossed lettering. **Bubbles/foam:** an Attribute Noise (`density`, Simplex, tuned element size/offset) drives a masked **Scatter** (with a Remap/ramp pushing the noise's red/low values to concentrate bubble placement only where wanted), `pscale` randomized via a custom ramp for a mix of big and small bubbles, and Houdini 20's new **"Remesh Bubbles"** node converts the scattered points into actual bubble geometry. For the connective foam between bubbles: points above a density threshold are grouped, **Group Expanded** to grow the selection, Blasted to isolate just that region, Peaked slightly inward, converted via **VDB From Polygons → VDB Topology to SDF → Reshape (dilate)** to thicken an otherwise-open, non-closed surface into a solid volume, then Convert VDB (SDF→Fog) for a renderable density volume; a second VDB pass (density scaled up via Volume Wrangle, then **VDB Combine: Subtract** against the first) carves the fog into a more interesting non-uniform shape, finished with **Volume Noise** (zero-centered, small amplitude/element size) to fake unseen smaller bubbles within the foam's density field. **Plate/equidistant scaling:** a Box is Match-Sized to the soap (scale-to-fit, non-uniform, subdivided), centered, then — since naive uniform scaling on a non-square box leaves visibly unequal gaps between opposite edge pairs — a hand-written **expression** computes `(bbox_size_axis1 - bbox_size_axis2 * scale_x) / bbox_size_axis2` (order/parenthesization matters, and the author notes even ChatGPT didn't help much in deriving it) added to the target scale channel, keeping the border/gap equidistant on all sides regardless of the box's aspect ratio; the same expression is reused for a second, independent bottom-primitive scale-down (grouped via a normal check). The plate's edges are Beveled, then **flattened onto a plane** via an Attribute Wrangle assigning constant-axis normals (avoiding a messy default point-normal spread) so Extrude along "existing normal" produces clean straight-out geometry rather than a distorted result — followed by another Bevel, a reverse-direction Extrude fix (via Reverse + "output back"), Subdivide, and a final Smooth pass. **Shading in Solaris:** a soap material (MtlX Standard Surface) leans on full **subsurface scattering** (custom SSS color/radius, low SSS scale ~0.02, roughness ~0.37) rather than diffuse; a bubbles material uses Transmission=1 with **Thin Walls** and a **Thin Film** effect (IOR ~1.8, thickness driven by a 3D Unified Noise Fit-Ranged between 50-250 for varied iridescent color) for realistic soap-bubble coloring; a plate/dish material uses a Metal base with roughness driven by a **Karma Triplanar** texture (Separate Color extracting one channel, Mix blending between two roughness extremes). A **Karma Uniform Volume material** shades the foam fog volume — with a debugging note that a duplicate/default material elsewhere in the Material Library silently prevented proper binding until removed. Lighting uses two **Rectangle Lights** (one textured with an HDRI for a softer falloff than a hard-edged area light) plus a low-intensity Dome Light fill; **Render Geometry Settings** removes shadow contribution between the bubbles and foam objects specifically to avoid unwanted self-shadowing artifacts between the two related pieces (volumes and render regions/IPR don't interact well together, so full renders were used to judge final volume density/thickness). The foam volume required significant hands-on iteration (VDB Reshape dilate amount, bubble count/scatter seed, volume-noise element size) directly in SOPs, re-cached, and re-checked in Solaris to dial in a convincing thickness and small-scale detail.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Logo import + cleanup:** **Regions from Image** to trace the logo, tag with a custom attribute for later selection, File Cache (non-time-dependent, single frame) to stabilize, Blast/isolate the logo, delete all non-essential attributes.
+2. **Soap base:** Box (dimensions + subdivisions for even topology), Bevel excluding flat edges (angle threshold).
+3. **Place and center-scale the logo:** Match Size (mean/max alignment + scale-to-fit) onto the soap's top face; scale down using a **centroid-based expression** (not a corner-anchored scale) so it shrinks toward its own center.
+4. **Mirror from the correct pivot:** Extrude the logo slightly (no back faces), then **Mirror** using the shape's own bounding-box Y-minimum as the origin (not world 0,0) — mirroring from world origin would leave the two mirrored halves disconnected/floating.
+5. **Boolean-stamp the logo:** **Boolean** in Shatter mode with Surface output to cut the logo pattern into the soap as a stamped recess/relief.
+6. **Clean topology for the stamp:** Subdivide (extra resolution for the remesh algorithm), Group the result, Fuse (small distance to avoid over-merging), Triangulate, then run the **Exoside QuadRemesher** (using a Connectivity/class attribute to guide polygon orientation) — noted as optional; a plain Boolean union + light bevel also works fine without the plugin.
+7. **Emboss text:** Font shape, Extrude, Remesh, **Group Transfer** onto the soap surface (requires sufficiently subdivided underlying geometry via Open Subdiv Loop, or the transfer silently fails), then Extrude + Bevel (own flat-edge exclusion) for the embossed lettering look.
+8. **Bubble density mask:** **Attribute Noise** (`density`, Simplex, tuned element size/offset) to mark where bubbles should cluster, feeding a masked **Scatter** whose Remap ramp pushes low noise values to concentrate placement only in the desired areas.
+9. **Bubble sizing:** randomize `pscale` via **Attribute Randomize** driven by a custom ramp (mix of large and small bubbles), then use Houdini 20's new **Remesh Bubbles** node to convert the scattered points directly into bubble geometry.
+10. **Foam region isolation:** group points above a density threshold, **Group Expand** to grow the selected region, Blast to isolate it, Peak slightly inward (to sit just under the render surface).
+11. **VDB foam construction (non-closed surface trick):** **VDB From Polygons → VDB Topology to SDF → VDB Reshape** (dilate) to thicken an open/non-manifold surface into a solid volume shape without needing to manually close/extrude it first.
+12. **Fog conversion + carving:** **Convert VDB** (SDF→Fog); a second VDB pass with density scaled up (Volume Wrangle, `density *= 5`) combined via **VDB Combine: Subtract** against the first carves a more organic, non-uniform foam shape; **Volume Noise** (zero-centered, small amplitude/element size) adds fake small-bubble detail within the density field.
+13. **Plate base + equidistant scale fix:** Box, Match Size (scale-to-fit, non-uniform, subdivided) to the soap, centered; write an expression on the scale channel: `(bbox_size_axis1 - bbox_size_axis2 * ch("scale_x")) / bbox_size_axis2`, added to the target scale — keeps the border/gap between opposite edges visually equal regardless of the box's aspect ratio (naive uniform scale leaves unequal gaps on a non-square shape).
+14. **Reuse the expression for the base:** group bottom primitives by normal, apply a second scale-down using the same equidistant expression (pasted/adapted) for the plate's tapered base.
+15. **Plate detailing:** Bevel the base edges; **flatten normals to a constant axis** via an Attribute Wrangle (avoiding messy default normal spread) so Extrude along "existing normal" produces clean, non-distorted extruded geometry; Bevel again, fix reversed-direction extrusion via **Reverse** + output-back, Subdivide, and Smooth for the final plate shape.
+16. **Merge + cache the SOP scene:** name each part (soap, bubbles, plate), merge, delete unneeded attributes/groups (keep normal + name), File Cache the whole scene before moving to Solaris to avoid recalculation crashes/slowdowns.
+17. **Soap material:** Karma Material Builder using full **subsurface scattering** (custom SSS color copied to radius, SSS scale ~0.02, roughness ~0.37) instead of diffuse for a translucent soap look.
+18. **Bubble material:** Transmission = 1, **Thin Walls** enabled, plus a **Thin Film** effect (IOR ~1.8, thickness driven by a 3D Unified Noise Fit-Ranged between 50-250) for varied iridescent soap-bubble coloring.
+19. **Plate material:** Metal base, **Karma Triplanar** texture feeding Separate Color → Mix to vary specular roughness between two extremes (e.g. 0.4 and 0.23) with random per-instance scale/seed for texture variation.
+20. **Foam volume material + binding fix:** **Karma Uniform Volume material** assigned to the fog volume; if binding silently fails, check for a stray duplicate/default material elsewhere in the Material Library overriding the assignment.
+21. **Lighting:** two Rectangle Lights (one fed an HDRI texture for a softer falloff vs. a hard-edged default area light), plus a low-intensity (~0.3) Dome Light for fill.
+22. **Shadow-contribution fix:** in **Render Geometry Settings**, remove shadow contribution specifically between the bubbles and foam objects to eliminate unwanted self-shadowing between the two closely-related pieces (render regions/IPR don't preview volumes well, so judge final density/thickness via full renders instead).
+23. **Iterative foam tuning:** adjust VDB Reshape's group-expand/dilate amounts, bubble count and scatter seed, and volume-noise element size directly in SOPs, re-cache, and re-render in Solaris until the foam thickness and small-bubble detail read convincingly.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Regions from Image, File Cache, Blast, Attribute Delete, Box, Poly Bevel (flat-edge angle exclusion), Match Size (mean/max, scale-to-fit), Transform (centroid-based scale expression), Extrude, Mirror (bbox-Y-min origin), Boolean (Shatter mode, Surface output), Subdivide, Group, Fuse, Triangulate, Exoside QuadRemesher (class-attribute-guided), Font, Group Transfer, Attribute Noise (`density`), Scatter (Remap ramp), Attribute Randomize (`pscale`, custom ramp), Remesh Bubbles (Houdini 20 new node), Group Expand, Peak, VDB From Polygons, VDB Topology to SDF, VDB Reshape (dilate), Convert VDB (SDF↔Fog), Volume Wrangle (`density *= constant`), VDB Combine (Subtract), Volume Noise (zero-centered), Attribute Wrangle (VEX: expression-driven equidistant scale via bounding-box size ratio; constant-axis normal flattening for clean Extrude orientation), Reverse, Smooth. Solaris/Karma: Karma Material Builder / MtlX Standard Surface (Subsurface Scattering, Transmission + Thin Walls + Thin Film with 3D Unified Noise thickness variation, Metal + Karma Triplanar roughness), Separate Color, Mix, Render Geometry Settings (shadow-contribution removal), Karma Uniform Volume material, Rectangle Light (HDRI-textured), Dome Light, Karma XPU render settings (reflection/volume/SSS limits).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — framed as a beginner course, but the equidistant-scale expression, VDB foam-construction pipeline, and Solaris volume-material debugging push it toward intermediate/advanced territory.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20 (explicitly references "the new feature... Remesh Bubbles" as new in Houdini 20; Karma XPU render engine).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vdb #vex #expressions #materials #shaders #karma #solaris #lighting #product-viz #beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with houdini-beginner-tutorial-creating-a-perfume-bottle.md (same author, same beginner-course product-viz format) and dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris.md (shares VDB/product-viz vocabulary) once indexed together.
