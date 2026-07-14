@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Lm5cG2XxRwU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [cops, procedural, texturing, materials, karma, substance-style, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/designer-like-materials-in-cops-houdini-205/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Designer like Materials in Cops | Houdini 20.5
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py designer-like-materials-in-cops-houdini-205 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -572,30 +568,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/designer-like-materials-in-cops-houdini-205/frame_000.jpg
+- [3:15] tutorials/frames/designer-like-materials-in-cops-houdini-205/frame_001.jpg
+- [12:50] tutorials/frames/designer-like-materials-in-cops-houdini-205/frame_002.jpg
+- [20:00] tutorials/frames/designer-like-materials-in-cops-houdini-205/frame_003.jpg
+- [33:20] tutorials/frames/designer-like-materials-in-cops-houdini-205/frame_004.jpg
+- [47:10] tutorials/frames/designer-like-materials-in-cops-houdini-205/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Recreating a Substance-Designer-style workflow entirely inside Houdini's **COPs (Copernicus)** network to build a full PBR material (color, height/displacement, normal, roughness, metalness) for a tufted/quilted leather-button upholstery fabric — no external texturing software involved.
 
 ### Summary
-[PENDING EXTRACTION]
+Builds a complete quilted-leather material from scratch in a CopNet: a **Tile Pattern** (7 divisions, concentric gradient ramp) forms the base diamond grid, which is inflated via layered blurs blended as a mask to create the puffed/padded look. Random per-tile rotation (via **UV Transform** driven by tile ID as seed) plus a ramp-driven radial pattern builds the "fold" creases between diamonds, refined with an **ID-to-SDF** outline mask, blurred, and blended with a fractal-noise **Distort** for organic irregularity. A second **Tile Pattern** with circles placed at corners generates the button positions/holes. Actual 3D geometry comes from a subdivided cylinder (**Sub Import**, 12x32, cylindrical UV unwrap) driven by a **Transfer** (Transform 2D) height-map displacement. Color layers stack a base leather tint (custom RGB), a **Voronoi/Whorl noise** (hexagon type) for leather-grain micro-detail via SDF thresholding, a fractal-noise dirt/grime layer, and a gold/brass button color blended in "Vivid Light"-esque mode using an equalized+dilated button mask. Fabric "damage" is added via another Tile Pattern (jittered circles) distorted with fractal noise and blended in Overlay for worn/aged leather patches. Normal maps are built by combining an Item Normal from the height map with a second Item Normal derived from fractal noise (inverted, low intensity) via Overlay blending, masked so buttons receive **no normal detail** (they stay smooth/metallic). A roughness map is built similarly from the color/detail layers, and a final pass increases canvas resolution to 4K (subdivision depth to 6) to resolve fine button/fold detail.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base diamond pattern:** Tile Pattern (7 divisions, unfilled, concentric-ramp gradient, inverted) → Premultiply → connect to preview material.
+2. **Inflated/padded look:** increase pattern resolution (200+ divisions), add two differently-strength Blurs (~0.095 and ~0.5), Blend them together (background/foreground) to fake a soft, inflated puffiness instead of a flat gradient.
+3. **Random fold creases:** use tile ID + UVs → **UV Transform** (randomized rotation up to 180°, seeded per tile) → offset by (1,1) to bias folds toward each corner → Ramp (radial) shaped to mimic hand-drawn creases; blur the result twice (~0.04 and a finer pass) and blend.
+4. **Outline mask refinement:** ID-to-SDF → SDF-to-Mono (outline type, centered) to extract a clean crease-line mask; reuse the same Transform via Ctrl+Alt+Shift-drag to create a reference copy for reuse elsewhere.
+5. **Organic distortion:** Distort node driven by a Fractal Noise (UV-based, ~0.2 amount, 0.3 size, centered at 0) to slightly warp the crease pattern; blend the distorted result over the main pattern using **Soft Light** at ~0.4 opacity.
+6. **Buttons:** second Tile Pattern (divisions matched to main grid) with Circle shape (size ~1.18, value ~0.4, Distance type, fade distance ~0.04), row-offset to sit exactly at diamond corners; Blend (Maximum) into the height map — this becomes the height/displacement map driving the geometry.
+7. **Geometry:** Sub Import (12x32 divisions, cylinder shape) → cylindrical UV unwrap → Divide/subdivide (start low ~5 for preview, raise later) → drive displacement via a **Transfer (Transform 2D)**: rotate 45°, uniform scale ~0.4 (tuned up to ~1.35 for stronger relief).
+8. **Base color:** custom red leather tint (RGB constant) with darker reds mixed in for variation/blacks.
+9. **Leather-grain detail:** Whorl/Voronoi noise (element size 0.06, hexagon cell type) → SDF-to-Mono (ISO offset 0.05, background value 1) for fine grain; duplicate the setup with a smaller element size and distort it for variation; blend (Multiply) over the base color.
+10. **Dirt/grime layer:** Fractal noise (amplitude 0.7, "bulging"-style, distance 0.35) multiplied into the color for overall aged/dirty variation.
+11. **Button colorization:** from the button tile pattern, Equalize (levels-style contrast) → Dilate (~5) → Mono-to-RGB with a goldish-yellow constant color → blend over the base color using an experimental blend mode (author notes uncertainty of the exact mode name, description matches a "Vivid Light"-style result).
+12. **Fabric damage/wear:** new Tile Pattern (3 shapes, circle radius x0.65, fused, uniform jitter, ~196 count, seed variance, uniform scale 0.55, varying scale variation 0.5) → Distort (roughness 0.9, offset 0.7, "parlay"/parallel distortion mode) → Feather (distance 0.3) → Lens/blend (Overlay) into the color for worn leather patches; separately, a small constant-color + fractal-noise (contrast 0.43, element size 0.43) multiply pass adds inner-padding shading, blended in as a mask-driven overlay.
+13. **Metalness:** simple green-channel-based mask (from button pattern) connected straight to a Metalness output so only the buttons read as metal.
+14. **Shadow/indentation shading:** Mono-to-SDF (outline type) on the crease pattern, blurred and re-emphasized, then blended (Multiply, later dialed back to a softer "Overlay"-like mode) into the color for a convincing carved/indented look around the folds.
+15. **Normal maps:** build a primary **Item Normal** from the height map (upscale ~0.5, intensity ~0.3); build a second Item Normal from a Fractal Noise detail pass (intensity ~0.1, inverted ~-0.8) for fine leather-grain relief; combine both via **Overlay** blend, masked so the buttons receive no normal detail (kept flat/smooth) — author notes this isn't necessarily the mathematically "correct" way to blend normal maps but visually works.
+16. **Roughness map:** built from RGB-to-Mono extractions of the color/detail layers, blended (Multiply) with the same geometric transform applied consistently, then Remap to the desired range; connect to the material's Roughness input.
+17. **Finishing:** raise canvas resolution to 4K and subdivision depth to 6 to resolve fine button/fold detail; verify final material render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+COPs used: Tile Pattern (rectangle/circle shapes, concentric ramp, divisions, jitter, scale variance, row offset), Premultiply, Blur (multiple, varying strength), Blend (background/foreground, modes: Soft Light, Multiply, Overlay, Maximum, plus an unidentified "vivid"-like mode), UV Transform (seeded per-tile random rotation), Ramp (radial), ID to SDF, SDF to Mono (outline/center/distance modes), Distort (Fractal Noise-driven, UV-based), Whorl/Voronoi Noise (hexagon cell type), Fractal Noise (amplitude, roughness, contrast, element size params), Equalize, Dilate, Mono to RGB, RGB to Mono, Feather, Lens, Constant (color), Remap, Item Normal (upscale, intensity params), Transform 2D (rotate, uniform scale), Sub Import (geometry container, divisions, cylinder unwrap), Subdivide/Divide. No VEX — pure node-graph COPs materials work throughout.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — very long, dense multi-layer COPs material build requiring strong familiarity with blend modes, masking chains, and iterative visual tuning; closely mirrors a Substance Designer graph structure.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (title explicitly states Houdini 20.5; Copernicus/COPs material workflow).
 
 ### Tags
-[PENDING EXTRACTION]
+#cops #procedural #texturing #materials #karma #substance-style #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with other cgside COPs-materials tutorials (custom procedural materials with Houdini and Karma, cliff shapes in COPs) once extracted from this batch — shares the tile-pattern/blend/distort COPs vocabulary.

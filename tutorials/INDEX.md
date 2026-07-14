@@ -2284,9 +2284,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Lm5cG2XxRwU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #cops #procedural #texturing #materials #karma #substance-style #intermediate
+- **Summary:** Recreates a Substance-Designer-style tufted-leather-button material entirely in COPs — tile-pattern-driven folds, button geometry via height-map displacement, layered color/grain/dirt, and masked normal/roughness maps.
 - **File:** tutorials/designer-like-materials-in-cops-houdini-205.md
 
 
