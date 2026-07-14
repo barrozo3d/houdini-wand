@@ -2494,9 +2494,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=2Vw6jvHrnBw
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #uv #vellum #cops #expressions #procedural #tips #advanced
+- **Summary:** Five gotcha-fixes: nprimsgroup() for correctly scoped Group Range divisions, a Fetch-feedback recursive Clip loop for shatter cuts, removing leftover curves via the closed primitive intrinsic, reading true image resolution only from inside a CopNet, and fixing exploding Vellum balloon sims with a shared class attribute instead of Connectivity-based piece detection.
 - **File:** tutorials/houdini-tips-expressions-vex-recursive-cuts-and-more.md
 
 
