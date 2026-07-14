@@ -216,4 +216,5 @@ Intermediate — LayerX itself is simple to use once available; the Python group
 ---
 
 ## Related Tutorials
-Cross-link with houdini-20-procedural-shading-features.md and custom-procedural-materials-with-houdini-and-karma.md (same author, overlapping Triplanar/MaterialX layered-shading vocabulary) once indexed together; the water tower model referenced here as "modeled previously" should be cross-linked once that source tutorial is found in this batch.
+- [No VEX Challenge #1 - Procedural Water Tower](no-vex-challenge-1-procedural-water-tower.md) — the source modeling video for the water tower asset textured here with LayerX, Triplanar decals, and baked AO.
+- Cross-link with houdini-20-procedural-shading-features.md and custom-procedural-materials-with-houdini-and-karma.md (same author, overlapping Triplanar/MaterialX layered-shading vocabulary).

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=NxWpxFDaSJE
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (H20-era UI)"
+tags: [procedural-modeling, no-vex, vops, sweep, groups, point-clouds, textures, cops, texture-projection, uv, hard-surface, beginner-friendly]
+extraction_status: complete
 frames_dir: tutorials/frames/no-vex-challenge-1-procedural-water-tower/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # No VEX challenge #1   Procedural Water Tower
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py no-vex-challenge-1-procedural-water-tower <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -592,30 +588,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/no-vex-challenge-1-procedural-water-tower/frame_000.jpg
+- [2:35] tutorials/frames/no-vex-challenge-1-procedural-water-tower/frame_001.jpg
+- [8:10] tutorials/frames/no-vex-challenge-1-procedural-water-tower/frame_002.jpg
+- [14:20] tutorials/frames/no-vex-challenge-1-procedural-water-tower/frame_003.jpg
+- [19:10] tutorials/frames/no-vex-challenge-1-procedural-water-tower/frame_004.jpg
+- [36:00] tutorials/frames/no-vex-challenge-1-procedural-water-tower/frame_005.jpg
+- [42:03] tutorials/frames/no-vex-challenge-1-procedural-water-tower/frame_006.jpg
+- [47:50] tutorials/frames/no-vex-challenge-1-procedural-water-tower/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Modeling a full procedural water tower (tank, platform, cross-braced legs, ladder, and a projected logo texture) using **only SOP-level nodes and VOPs — no typed VEX code** — as a "challenge" showing how far pure node-based procedural workflows can go.
 
 ### Summary
-[PENDING EXTRACTION]
+The tank body is built from a tube whose ends are split into boundary groups, then reshaped into a domed sphere-like cap and a tapered cone top via centroid-pivot Transforms and copy/scale-to-zero "cone from ID" tricks, skinned back together into one continuous shell. A circular curve (from an Object Merge of the base tube) becomes the observation platform via Transform+Extrude, with cross-bracing built from Sweep nodes using the Twist-per-edge trick. A near-point + bounding-box VEX-snippet detail lookup extracts the tank's lowest point to grow a spine curve downward, which is then decorated with a point-cloud "rivet" pattern (repeating ramp-masked bumps pushed along custom up-vector normals) and carved/resampled into the tank's neck profile. Four tapered support legs are built from grouped boundary points offset outward and downward, connected into curves via Add Primitive/Add Vertex VOPs, given a custom "up" attribute (via Normalize + Set Attribute) so Sweep orients correctly, and cross-braced with a zigzag lattice created by copying a Sweep and rotating it `360/columns` degrees with a `ptnum % 2`-driven Scale-by-Attribute alternation. A ladder is built the same curve-construction way (Clip + Point VOP offsets + ribbon Sweeps for the rails). Finally, a COPs network authors a custom text/logo shape from a Font-like Circle+Carve+Sweep-ribbon construction, rasterizes and colors it, exports it as a PNG, and a custom Patreon "Texture Projection CGS" HDA wraps that PNG onto the tank as a cylindrical-unwrap decal.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Tank base**: Tube (32 columns, radius scaled down) → Group by edges (shared boundary points) → Split into two primitives (top cap / bottom cap candidates).
+2. **Bottom dome**: PolyExtrude/PolarGrid + Surface Offset to sphere-ize the bottom cap, Blast to isolate the "patch" group, reverse normals, Subdivide.
+3. **Top cone/comb**: Transform with **centroid pivot expression** (`centroid("../node", D_X)` etc., saved as a personal recipe/preset) to scale the disc up 1.15x without drifting off-center; Enumerate (by points) to tag an `index` attribute, Copy and Transform (moved up, scaled to 0 from centroid) to build a cone, then Blast using `copynum == 0` / `copynum > 0` comparisons to isolate/remove duplicate layers before Skin.
+4. **Merge tank shell**: Merge dome + cone + cylinder wall pieces; fix normals with a soft **Normal** node where seams meet.
+5. **Platform**: Object Merge the base tube's boundary curve (always primitive 0) → Polyfill → Transform (scale 1.2, centroid pivot) → Extrude for thickness → Group By Range (every other point, "1 of 2") to pick divider positions → build vertical cross-members via Enumerate + Copy-and-Transform + Add (by attribute, `index`) + Sweep (square profile, scale 0.089) → fix un-oriented sweep geometry with a custom **N/up attribute** trick: Point VOP computing a normalized position-based vector set as `up`/`N` (custom-named, so Sweep reads it for correct orientation) instead of relying on default normals.
+6. **Platform diagonal cross-braces**: take a resampled edge, Sweep with **Partial Twist = 180** and **Scale by Attribute → per-edge**, then Roll 90°, to get an X-cross cross-brace pattern from a single Sweep.
+7. **Tank neck/spine curve**: Object Merge tank body → Detail-scope VEX-lite snippet (Bounding Box + `nearpoint()` to find the point nearest the mean/bottom of the bbox) → export as detail point attribute → Blast to isolate that one point → manually build a 2-point line below it (`position + vector*constant along -Y`) via Add Primitive (polyline) + Add Vertex VOPs (no scripted VEX, pure wired VOPs) → Subdivide the curve → Sweep (12 columns, radius 0.08).
+8. **Rivet/pattern detail on the neck**: Point VOP binding a `curveu` attribute from relative-bbox Y position, multiplied by a repeat count (60) and `%1`'d to tile, fed through a **Ramp (spline)** to mask a position offset applied along the surface normal (offset scale 0.2) — a classic "no-VEX" repeating-bump technique.
+9. **Tank cap trims**: Carve (second U, 0.15 range) + Resample (0.03) + Sweep (round, 24 columns, radius 0.14) to finish the shaped rim under the cone cap.
+10. **Legs**: Object Merge base geometry twice, Group Range (first N points, offset by half) → Group Unshared boundary points → build a 2-point vertical line per leg-attach point via Point VOP (`position + constant*(-Y)`, later negated so the UI slider stays positive) → **normalize the down-vector** before adding it back to position so the legs splay outward realistically instead of staying parallel → Add Primitive/Add Vertex to wire the curve → custom `up` vector via **Normalize(position, Z=0) → Set Attribute (point + vertex)** so Sweep orients around the tower's radial axis → Resample (10 segments) → Sweep (round, 3 columns, columns-only) with a 90° rotation fix.
+11. **Leg cross-braces (zigzag truss)**: copy the leg Sweep's column/radius settings into a second Sweep, set **Partial Twist = `360 / columns`**, and drive **Scale by Attribute** using a simple Attribute Expression `column = ptnum % 2` to alternate strut direction into a continuous zigzag lattice — described in-video as "still VEX but really simple" (the one exception to the no-VEX rule).
+12. **Ladder**: Clip a copy of a leg curve (along Y, value 0.1) → Convert to Line → Group Range (midpoint) → Point VOP offsets (position + vector along -X and down, scaled ~0.72–2.3) to build rungs and rail curve → duplicate/scale/move for the second rail → Sweep **Ribbon** mode (rows) for both rails + round Sweep for rungs → Blast first/last primitives using `@primnum == 0` and `@primnum == nprims("prev_node")-1` back-tick expressions to trim overshoot end caps.
+13. **Custom logo (COPs network)**: new COPNet named "logo" → build lettering-like shape from a Circle (64 div) + Carve (open arc) + Resample + Sweep (ribbon, `pt_col_roots` per-column attribute) → fix UV winding with a point Group (`@ptnum==0`) promoted to vertices, fed into **UV Flatten**'s group input to rectify seam alignment → **Rasterize** (Bounding-Box-to-fit position, UV output) to bake the shape into an image → duplicate/scale/UV-Sample it into a denser composed logo, tint via **Mono to RGB** (dark brown pick), pack alpha via **RGB to RGBA**, and **ROP Output** to `raster_new.png`.
+14. **Projection**: a Patreon-exclusive **"Texture Projection CGS"** HDA (built on a cylinder-unwrap helper from Side Effects Labs) projects the logo PNG onto the tank shell with position/scale controls, producing the final "Chesterfield"-branded water tower.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Tube, Group (by edges, shared/boundary), Split, PolarGrid-style Surface Offset, Blast, Reverse, Subdivide, Transform (centroid-pivot expression preset), Enumerate (points), Copy and Transform, Add (by group/attribute), Skin, Object Merge, Polyfill, Extrude, Group by Range, Sweep (round/square/ribbon profiles, Partial Twist, Scale by Attribute, custom `up`/`N` attribute orientation), Point VOP (Bind Export, Get Vector Components, Set Vector Component, Normalize, Bounding Box, Near Point, Add/Multiply Constant, Ramp/spline), Set Attribute, Bounding Box node, Near Point node, Add Primitive + Add Vertex (manual curve construction without a Line/Resample shortcut), Carve, Resample, Clip, Convert Line, Attribute Expression (`ptnum % 2` — the sole scripted-VEX exception), COPNet: Circle, Carve, Resample, Sweep (ribbon), UV Flatten, Rasterize, Mono to RGB, RGB to RGBA, ROP Output; custom third-party "Texture Projection CGS" HDA (Patreon-exclusive) for cylindrical logo projection.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced (framed as "beginner friendly" since it avoids typed VEX, but relies heavily on VOPs, groups, and multi-stage procedural chains that assume solid SOP fundamentals).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified in transcript; UI matches the H20-era layout used across this channel's other videos in the same period.
 
 ### Tags
-[PENDING EXTRACTION]
+procedural-modeling, no-vex, vops, sweep, groups, point-clouds, textures, cops, texture-projection, uv, hard-surface, beginner-friendly
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Layered Textures in Karma](layered-textures-in-karma.md) — the water tower model built here is the "modeled previously" asset re-used as the shading subject for the custom LayerX MaterialX node and COPs-baked AO pipeline.
+- [Houdini Tips - Solaris, VDBs, COPs and More](houdini-tips-solaris-vdbs-cops-and-more.md) — shares the round-trip COPs texture-baking approach (Rasterize/UV-driven image authoring) used here for the logo.
+- [Direct and Procedural Modeling in Houdini](direct-and-procedural-modeling-in-houdini.md) — related VEX-light centroid/normal peak tricks for procedural hard-surface shaping.

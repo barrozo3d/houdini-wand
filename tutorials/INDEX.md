@@ -1764,9 +1764,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=NxWpxFDaSJE
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (H20-era UI)
+- **Tags:** procedural-modeling, no-vex, vops, sweep, groups, point-clouds, textures, cops, texture-projection, uv, hard-surface, beginner-friendly
+- **Summary:** Builds a complete procedural water tower (tank shell, platform, cross-braced legs, ladder, and a projected logo texture) using almost entirely SOP nodes and VOPs instead of typed VEX, including centroid-pivot transforms, copy/scale-to-zero cone tricks, custom up-vector orientation for Sweep, a point-cloud ramp-masked rivet pattern, and a COPs-authored logo baked and projected onto the tank via a custom HDA.
 - **File:** tutorials/no-vex-challenge-1-procedural-water-tower.md
 
 
