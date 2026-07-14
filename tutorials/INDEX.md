@@ -2134,9 +2134,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=c193tsyLH-0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #vdb #cops #texturing #procedural #shaders #karma #noise #food #intermediate
+- **Summary:** Three CGI-burger finishing tricks: sine-wave curve + Lattice rest/deform capture for cheap edge detail, noise-masked normal displacement + VDB reshaping for water-drop clusters, and layered fractal-noise COPs shading driving both patty color and displacement.
 - **File:** tutorials/enhance-your-renders-in-houdini.md
 
 

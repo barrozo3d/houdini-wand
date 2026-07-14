@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=c193tsyLH-0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, vdb, cops, texturing, procedural, shaders, karma, noise, food, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/enhance-your-renders-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Enhance your renders in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py enhance-your-renders-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -126,30 +122,50 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/enhance-your-renders-in-houdini/frame_000.jpg
+- [1:50] tutorials/frames/enhance-your-renders-in-houdini/frame_001.jpg
+- [3:30] tutorials/frames/enhance-your-renders-in-houdini/frame_002.jpg
+- [5:00] tutorials/frames/enhance-your-renders-in-houdini/frame_003.jpg
+- [6:10] tutorials/frames/enhance-your-renders-in-houdini/frame_004.jpg
+- [8:20] tutorials/frames/enhance-your-renders-in-houdini/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Three finishing tricks used on a CGI burger render: adding sine-wave edge deformation + Lattice-based rest/deform capture to fake extra sculpted detail on ZBrush-imported letter geometry, generating cheap procedural water-drop/bubble clusters via noise-masked normal displacement + VDB reshaping, and layering multiple fractal noises in COPs to drive both the color/albedo and the displacement of a food (patty) shader.
 
 ### Summary
-[PENDING EXTRACTION]
+For the lettering (imported as FBX from ZBrush with a `name` attribute from the original subtitles), the goal was to add a subtle wavy/lit edge highlight cheaply instead of hand-sculpting more detail. Corner/angle edges are isolated via **Group** (min edge angle), converted to a line, isolated to a single primitive, resampled and fused into one continuous curve, then displaced using `sin()` of the curve's parametric value (curve-U, referred to loosely as "curve view") for a simple wave. That deformed curve becomes a **Lattice** deformer's target: the original geometry (converted to points) is captured with tunable radius/normalize-threshold, with the rest-state geometry on the second input and the deformed curve on the third, giving a "more lifelike" edge without manual sculpting; the whole two-node setup can optionally be compiled into a single Compile Block for performance. For water drops on the bun, geometry destined to receive drops is Remeshed to get uniform point distribution (needed for the following noise step to work reliably), Subdivided (Open Subdiv, Loop scheme since working with triangles), and passed through a branched **Attribute Noise** pass (two noise layers, a coarser one for larger islands and a finer one for smaller ones) that isolates "islands"; a wrangle displaces those island points along their normal, then everything not part of an island is blasted away, unused points are cleaned with **Add** (delete unused points), and interior "mess" geometry is removed by thresholding the distance from each point to its piece's bounding-box center. The surviving points are remeshed into a grid, converted to Tin/thin-plate single-sided shells, packed, randomly grouped/deleted to thin out overly dense clusters, then reshaped into rounder droplet forms via a **VDB From Polygons → VDB Reshape → convert back to polygons** pass. For shading the patty (and, by extension, all the other food geometries in the scene), a layered **COPs fractal-noise stack** does double duty: three chained 3D fractal noises (using **Restore Position** to feed real-world `P` into the noise so it stays consistent regardless of UV layout) each drive both a color-blend layer (masking between different browns/darker tones per noise) and a displacement contribution — a first coarse noise for overall shape displacement (kept subtle, with Remap/Multiply-constant controls used purely so displacement strength can be tuned without re-touching the Remap at render time), a second finer noise adding significant surface detail (a specific noise type the author found worked especially well), and a third even-finer noise for fine surface grain, plus a final flat gray "burnt spot" pass layered on top for yellowish char detail.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Isolate corner/wave curve:** Group SOP (edges by min edge angle) on the imported letter geometry → Convert Line → Blast down to a single primitive (index 0) → Resample → Fuse to unify into one continuous curve.
+2. **Wave deform:** displace the isolated curve using `sin()` of its parametric/curve-U value (a simplified "curve view"-style displacement) to create a gentle undulating wave along the curve.
+3. **Lattice capture for "more lifelike" edges:** save a rest-state copy of the original geometry before deforming; feed a **Lattice** SOP set to Points, with tunable Radius and Normalize Threshold — original geometry on input 1 (as points), rest geometry on input 2, and the sine-deformed curve on input 3 — to transfer the curve's displacement onto the letter's edge geometry; optionally wrap the setup in a Compile Block for performance (author left it as two separate nodes here).
+4. **Prep for water drops:** Remesh the target surface region to guarantee even point density, then Subdivide (Open Subdiv, Loop — required since the mesh is triangulated) so the following per-point noise step behaves predictably.
+5. **Island generation:** run **Attribute Noise** twice (branched) — a coarser pass for bigger drop islands, a finer pass layered in for smaller ones — to identify which points belong to a "drop"; in an Attribute Wrangle, displace those island points along their normal, then Blast away everything not part of an island.
+6. **Cleanup:** use **Add** (delete unused points) to remove now-orphaned points; remove leftover interior "mess" geometry per-piece by measuring distance from each point to its piece's bounding-box center and thresholding it away.
+7. **Droplet reconstruction:** Remesh to a Grid, convert to **Tin (thin-plate)** single-sided shells for lightweight geometry, Assemble + randomly group/delete some pieces to thin out an overly dense result, Pack, then run **VDB From Polygons → VDB Reshape → convert to Polygons** to round the shells into believable rounded water-drop/bubble forms.
+8. **Shading network (COPs):** for each food surface (patty shown as the example), use **Restore Position** to recover true 3D `P` for 3D **Fractal Noise** sampling (keeps noise consistent regardless of UV layout); layer 3 fractal noises of increasing fineness plus a final flat "burnt spot" gray layer — each noise both blends a color pair (as a mask between two browns/tones, darker for finer details) and drives a portion of the final displacement.
+9. **Displacement control:** for the coarse overall-displacement noise, add Multiply-constant and Remap nodes purely so the displacement strength can be dialed in at render time without needing to re-adjust the Remap directly; keep the overall displacement amount low relative to the color-driving noise contributions.
+10. **Repeat per asset:** apply the same layered-noise shading network to all other food geometries in the scene for visual consistency.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Group (min/max edge angle), Convert Line, Blast, Resample, Fuse, Attribute Wrangle (VEX `sin()` on curve-U for wave displacement; normal-based island displacement; bbox-center distance threshold cleanup), Lattice (Points mode, Radius, Normalize Threshold, 3-input rest/deform capture), Compile Block (optional), Remesh, Subdivide (Open Subdiv, Loop), Attribute Noise (branched, coarse + fine passes), Add (delete unused points), Assemble, Pack, Tin (thin-plate single-sided conversion), VDB From Polygons, VDB Reshape. COPs: Restore Position, Fractal Noise (3D, layered x3 at increasing fineness + a flat gray "burnt spot" layer), Blend/mask-based color mixing, Multiply (constant), Remap (render-time displacement control).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — no especially advanced VEX, but requires understanding of Lattice-based rest/deform capture and layered noise-driven COPs shading; the water-drop pipeline has several non-obvious cleanup steps.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era Copernicus/Karma workflow).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #vdb #cops #texturing #procedural #shaders #karma #noise #food #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with any other cgside COPs-materials or VDB-reshaping tutorials once extracted from this batch — shares the layered-fractal-noise-for-color-and-displacement pattern with the mattress/leather materials tutorials.
