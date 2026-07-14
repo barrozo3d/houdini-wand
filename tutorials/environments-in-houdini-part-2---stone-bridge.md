@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=kPtCgMWIBj4
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, vex, procedural, fracture, environment, hard-surface, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/environments-in-houdini-part-2---stone-bridge/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Environments in Houdini  | Part 2  - Stone Bridge
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py environments-in-houdini-part-2---stone-bridge <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -303,30 +299,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/environments-in-houdini-part-2---stone-bridge/frame_000.jpg
+- [5:20] tutorials/frames/environments-in-houdini-part-2---stone-bridge/frame_001.jpg
+- [8:00] tutorials/frames/environments-in-houdini-part-2---stone-bridge/frame_002.jpg
+- [14:00] tutorials/frames/environments-in-houdini-part-2---stone-bridge/frame_003.jpg
+- [19:30] tutorials/frames/environments-in-houdini-part-2---stone-bridge/frame_004.jpg
+- [28:30] tutorials/frames/environments-in-houdini-part-2---stone-bridge/frame_005.jpg
+- [34:00] tutorials/frames/environments-in-houdini-part-2---stone-bridge/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Part 2 of the environment series: modeling a full stone bridge from a hand-shaped arch curve, using **Voronoi Fracture with centroid-seeded emitter points** to break the wall and parapet into individually-sized brick/stone pieces, then per-piece VEX operations (cheap edge damage, random row deletion, random rotation about each piece's own bounding-box center) for a natural, weathered look, finishing with a scattered-and-remeshed cobblestone road surface.
 
 ### Summary
-[PENDING EXTRACTION]
+The bridge starts from a centered **Line** (arch profile), transformed and resampled, then deformed using its curve-U (`curveu`)-driven **Ramp** (mirrored via `abs(u*2-1)` math) to hand-sculpt an arch silhouette. That curve is swept/extruded into a **Box** cross-section and Boolean-intersected against a wider slab to carve the arch opening. To divide the resulting wall into individual bricks, a resampled line is converted to points, a VEX wrangle extracts each primitive's **UV-centroid position** (`primuv()` at u=0.5) as emitter seed points (critical: without true centroids, edge pieces would come out undersized), and a **Voronoi Fracture** using those points as emitters cuts the wall into brick-sized cells — with the fracture's `name` attribute copied to a `rows` attribute beforehand so per-row VEX operations remain possible after a second Voronoi Fracture re-clutters the names. Each brick row is processed inside a **For Each (name/primitive)** loop: a line matched to the wall size is resampled by length, Mountain-displaced along X (not normal) for irregular brick-boundary shapes, then re-fractured — with the Mountain's noise offset randomized per for-each iteration (via a Fetch/detail-attribute read of the iteration index) so each row gets visually distinct stone patterns; the whole per-row setup is wrapped in a **Compile Block** (with multi-threading enabled) for real-time speed on ~hundreds of pieces. For the rounded arch opening, a resampled curve is Swept as a ribbon, subdivided twice for roundness, and given a per-primitive ID for later offsetting; **Connectivity** (point class) plus a small per-piece scale (via an Explode-View-style spacing) creates gaps between stones, then a **Vertex Split** by that per-piece ID lets each stone be individually Inset (creating mortar-line spacing) and Extruded, matched-size and nudged back slightly for depth. Leftover interior wall geometry behind the gapped stones is removed via a Silhouette extraction + Poly Extrude + Boolean subtract, then lightly Beveled. Cheap per-piece "edge damage" runs inside a second For Each (over ~200 individually-named pieces): Remesh at a coarse resolution, Attribute Blur the position slightly, a small Mountain displacement, and a **Volume Intersect** (not zero-centered, positive offset) to carve subtle chips — wrapped again in a Compile Block for speed since these are cheap per-piece ops. The far side of the bridge is Mirrored. Using the preserved `rows` attribute, an entire top row of stones can be randomly deleted per-piece via a `random(class+seed) < threshold` VEX check for a broken/weathered parapet look, deliberately avoiding symmetry with the mirrored side since each side reads its own class/seed. A second, more advanced VEX pass randomly **rotates individual top stones** by up to ±25° around the **Y axis** using a quaternion (`quaternion(angle, {0,1,0})`) built from a per-class random angle, rotating each stone's position with `qrotate()` about its own **bounding-box center** (computed via `getbbox_center()` restricted to a per-class point group, not the whole wall) so rotation happens locally rather than around the world origin. The bridge's road/deck surface is built from a simple flat box, scattered with ~500 points, Voronoi-fractured for irregular cobblestone shapes, then **Remeshed** (value ~5, which conveniently also creates natural gaps) and **Smoothed** (value 3, boosted "Filter Quality" to avoid over-smoothing) for a rounded, worn-stone look — preferred over a manual Exploded View + Edge-blur-based approach for both speed and result quality. Everything is finally merged with the terrain from Part 1 to confirm alignment.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Arch profile curve:** center a **Line** on the X axis (size ~2.6, using a paste-relative-reference-divided-by-2-negated trick to scale from center), Transform to reposition, Resample (length ~0.1) for enough points to deform.
+2. **Hand-sculpt the arch shape:** in an Attribute Wrangle, add a **Ramp**-driven displacement to `P.y` using `curveu` (`chramp("ramp", curveu)`) multiplied by a displacement-amount parameter; mirror the ramp's effect with `abs(u*2-1)` math (multiply by 2, subtract 1, absolute, subtract from 1) so the curve is symmetric; refine the ramp's control points interactively until the arch silhouette looks right (displacement amount ~0.8).
+3. **Wall + arch carve:** build a **Box** (size ~10 x 1.1 x 0.2, offset), Poly Extrude the arch curve/ribbon in both directions (~1.8), then **Boolean Intersect** the box against the extruded arch shape to carve the opening.
+4. **Brick emitter centroids:** build a Line along the wall, resample with max-segments (~6), **Convert Line** to get primitives, then a VEX wrangle computes each primitive's center via `primuv(0, prim_number, {0.5,0.5})`, deletes the original points/primitives, and re-adds a single point at the computed center per primitive — producing true centroid emitter points (critical: naive segment endpoints would make edge bricks undersized in the fracture).
+5. **Wall fracture into bricks:** run **Voronoi Fracture** using the wall geometry as input and the centroid points as the fracture/emitter source, producing brick-sized cells; before a subsequent re-fracture (which reuses/clutters the `name` attribute), copy `name` to a preserved `rows` attribute (Attribute Copy) for later per-row operations.
+6. **Per-row brick shaping (For Each, Compile Block):** inside a **For Each (name, primitive)** loop, build a line matched-size to the current row piece, **Resample by length** (~0.3, needed for consistent sizing vs. segment-count resampling), Convert Line, extract centroid points (same trick as step 4), Mountain-displace along a custom **longer vector along X only** (not normal) with amplitude ~0.4 and element size ~1.25, then Voronoi-Fracture again to get individually-shaped stones per row; randomize the Mountain's noise offset per for-each iteration by reading the `iteration` detail attribute (via a Fetch node/spare input, `chi("../iteration")`-style detail read) so each row's stone pattern differs; wrap the whole per-row chain in a **Compile Block** with multi-threading enabled for real-time speed across many rows.
+7. **Rounded arch stones:** Object Merge the arch curve, Resample (heavily reduce point count), **Sweep** as a ribbon (1 column), tag each primitive with a unique `id` attribute (`prim_num`), **Subdivide** (x2) for roundness while preserving the `id` for later per-stone offsetting.
+8. **Stone spacing/gaps:** run **Connectivity** (point class) to identify individual stone islands, apply small per-class scaling/offset (an Explode-View-style spacing trick) so stones read as visually distinct with mortar-line gaps between them, tuning per-axis (noting Y-axis spacing needed a distinct scale value, ~1.7-ish, vs. other axes, due to uneven natural point spacing).
+9. **Individual stone insetting:** after Subdivide, **Vertex Split** by the preserved `id`/`prim_id` attribute so each stone can be worked independently; **Inset** each (removing side primitives, ~0.15 amount) to create mortar-groove spacing, **Match Size** (mean-centered, not corner-justified, offset back slightly along Z ~-0.2) then **Extrude** each stone (~5.3-ish depth) and merge.
+10. **Remove hidden interior geometry:** after gapping the stones, extract a **Silhouette** (along Z) of the vertex-split shape, Poly Extrude by the same amount plus a bit extra ("plus a normal"), **Boolean Subtract** it from the interior wall to remove now-unnecessary hidden geometry, then lightly **Bevel** (~0.5) for a softer edge.
+11. **Cheap per-piece edge damage (For Each, Compile Block):** in a second For Each over each individually-named piece (~200 total), run: **Remesh** at a coarse setting (~0.several), **Attribute Blur** on position (blur amount 1), a small **Mountain** (amplitude ~0.05, element size ~0.3, ~17 amplitude scale variant), then a **Volume Intersect** (positive/non-zero-centered offset, tuned per piece via visual inspection, e.g. ~0.5/0.5) to chip away small volumes for cheap, believable edge wear; wrap in a **Compile Block** with multi-threading for speed since operations are individually lightweight but numerous.
+12. **Mirror + random row deletion:** **Mirror** the wall to the opposite side of the bridge (distance ~3.2-3.3, along Z). Using the preserved `rows` attribute (visualized via Attribute Randomize/color-by-attribute), run **Connectivity** (on points, to get a `class` attribute), then a VEX wrangle: read a user-exposed `seed` (`chf("seed")`), compute `random(class + seed)`, and if below a chosen `threshold` (e.g. 0.36), **remove that point and its primitives** — since the check is per-class (per brick), the effect is naturally non-symmetric between the mirrored front/back sides. Author notes a noise-based removal approach might read even better than this pure random threshold.
+13. **Random top-stone rotation (advanced VEX):** restricted to the top row (`class`, threshold ~0.3), compute a random angle up to ±25° (`radians(25) * (random(class+seed)*2-1)`), build a **quaternion** rotating around the Y axis (`quaternion(angle, {0,1,0})`), then rotate each point's position with **`qrotate()`** — critically first subtracting, then re-adding, the piece's own **bounding-box center** (`getpointbbox_center()` restricted to a point group filtered to the current `class`, not the whole wall) so each stone rotates around its own pivot rather than the world/wall origin.
+14. **Base + parapet assembly:** Object Merge the Voronoi-fractured wall base, Merge with the parapet/wall geometry, Match Size + Mirror for the opposing rail, Clip along Y (keep primitives below a plane, ~1.2) then Poly Fill to cap; a Transform scaling from the geometric center (via `$CEX/$CEY/$CEZ` translate offsets) along Z (~6x) extends/duplicates the shape for a second visualization pass, merged together.
+15. **Road/deck surface:** build a **Box** (~9 x 0.15 x 1.2), Match Size (mean-to-max alignment, positioned along the top row and nudged down), **Scatter** (~500 points, relaxed via a quick Voronoi Fracture pass rather than manual point relaxation) to get varied stone sizes, then **Remesh** (value ~5 — conveniently also creates natural gaps between stones on its own, replacing the need for a separate Exploded View pass) and **Smooth** (value 3, increased Filter Quality to avoid over-rounding) for a worn cobblestone look.
+16. **Final assembly:** merge the completed bridge with the Part-1 terrain to confirm scale/alignment.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Line, Transform, Resample (point count and by-length variants), Attribute Wrangle (VEX: `chramp()`-driven curve deformation with mirrored ramp math; `primuv()`-based centroid extraction; Mountain-offset randomization per for-each iteration via detail-attribute read; cheap per-piece edge-damage math; `random(class+seed)` threshold-based point/primitive removal; quaternion-based per-piece rotation with `qrotate()` and `getpointbbox_center()` restricted by point group), Box, Poly Extrude, Boolean (Intersect/Subtract), Convert Line, Voronoi Fracture (centroid-seeded emitters; re-fracture per row), Attribute Copy (`name`→`rows` preservation), For Each (name/primitive; Compile Block wrapping with multi-threading enabled), Match Size (scale-to-fit, mean-centered variants), Mountain (custom longer-vector-along-X displacement; small chip-damage variant), Fetch/detail-attribute read (iteration index for per-row noise offset randomization), Object Merge, Sweep (ribbon, 1 column), Subdivide, Connectivity (point class), Vertex Split (by id/prim_id attribute), Inset, Extrude, Silhouette, Bevel, Remesh, Attribute Blur, Volume Intersect (offset-tuned chip damage), Mirror, Clip, Poly Fill, Transform (center-based scale via `$CEX/$CEY/$CEZ`), Scatter, Smooth (Filter Quality control).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — an hour-plus of dense VEX (quaternion rotation about arbitrary pivots, centroid extraction, per-row Compile Block randomization) combined with heavy Voronoi Fracture and Boolean modeling; assumes strong VEX and procedural-modeling fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era Voronoi Fracture/Boolean toolset; continuation of the same terrain project as Part 1).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vex #procedural #fracture #environment #hard-surface #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Direct continuation of environments-in-houdini-part-1---heightfields.md (same author, same terrain/bridge project) — cross-link explicitly. Author also announces planned Part 3/4 covering vines, trees, and rocks for this same bridge scene; cross-link once ingested.

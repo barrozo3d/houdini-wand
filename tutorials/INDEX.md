@@ -2004,9 +2004,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=kPtCgMWIBj4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #vex #procedural #fracture #environment #hard-surface #advanced
+- **Summary:** Models a full stone bridge: hand-sculpted arch curve, centroid-seeded Voronoi Fracture for brick sizing, per-piece cheap edge damage, random row deletion and quaternion-based per-piece rotation around individual bounding-box centers, plus a scattered/remeshed cobblestone road.
 - **File:** tutorials/environments-in-houdini-part-2---stone-bridge.md
 
 
