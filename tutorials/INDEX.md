@@ -2504,9 +2504,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=m00nko87HeI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #uv #modeling #texturing #unreal #zbrush #procedural #tips #intermediate
+- **Summary:** Five tips: VEX and UV-Flatten fixes for non-stretching square UVs, packing multiple masks into vertex-color channels for Unreal, a twisted-and-cut Sweep profile as a ZBrush base mesh, and a multi-stage Path Deform + normal-to-aperture-vector orientation pattern for repeated "legs" along a curve.
 - **File:** tutorials/houdini-tips---procedural-uvs-channel-packing-and-more.md
 
 

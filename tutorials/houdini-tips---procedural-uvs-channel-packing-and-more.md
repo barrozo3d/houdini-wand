@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=m00nko87HeI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, uv, modeling, texturing, unreal, zbrush, procedural, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tips---procedural-uvs-channel-packing-and-more/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini Tips - Procedural UV's, Channel Packing and more
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-tips---procedural-uvs-channel-packing-and-more <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -104,30 +100,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/houdini-tips---procedural-uvs-channel-packing-and-more/frame_000.jpg
+- [1:40] tutorials/frames/houdini-tips---procedural-uvs-channel-packing-and-more/frame_001.jpg
+- [2:30] tutorials/frames/houdini-tips---procedural-uvs-channel-packing-and-more/frame_002.jpg
+- [3:20] tutorials/frames/houdini-tips---procedural-uvs-channel-packing-and-more/frame_003.jpg
+- [4:00] tutorials/frames/houdini-tips---procedural-uvs-channel-packing-and-more/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five compact tips: two ways to force non-stretching square UVs from UV Texture's default (aspect-ratio-fit) behavior, packing multiple grayscale masks into RGB vertex-color channels for Unreal, using a twisted-and-mirrored half-swept curve profile as a ZBrush sculpting base mesh, and a **multi-stage Path Deform** + **N/Up-attribute** orientation pattern for building "legs"-style repeated geometry along a curve.
 
 ### Summary
-[PENDING EXTRACTION]
+UV Texture's default behavior stretches textures on non-square flat shapes. Two fixes: (1) a VEX approach computing the incoming shape's aspect ratio, using an if-statement to scale X or Y down to fit the 0-1 UV tile (negating Y to correct orientation and offsetting to place it correctly in the tile); (2) a simpler node-based approach using **UV Flatten** with default settings, driven by an axis-aligned vertex group (e.g. the top vertices) to orient the flattening — much less setup than the VEX version, and worth saving as a tool preset for reuse. **Channel packing:** a simple wrangle takes an existing CD (vertex color) attribute already using R/G/B for one purpose (eye color) and remaps a single value (a concavity mask) into an unused channel (green) — extendable to a third value in blue — so multiple grayscale masks travel together in one vertex-color attribute; in Unreal, the packed channels are separated and each drives a different material effect (eye tinting from one channel, extra occlusion in concave areas from another). **Houdini-to-ZBrush base mesh:** an elongated half-circle curve is twisted and transformed while Resampling and saving a `curveu`-based attribute, then a center point is added and grouped so a **Poly Cut** can split the curve into two halves; **Sweeping** the cut (rather than the uncut) curve produces a mixed mirror-and-twist "infinity sign" profile that would be much harder to hand-sculpt directly — feeding this pre-built base mesh into ZBrush gave an easier starting point than sculpting the shape from scratch. **Multiple Path Deform ("legs" along a curve):** build a repeating chain of pieces, pack them, and **Path Deform** them onto a half-circle curve; then Path Deform the *original* (un-repeated) shape a second time — order of operations matters here (starting with the Path Deform pass first, then working from there, was found to be the reliable sequence) — and getting the initial pattern's scale right requires **Measure (set to Length)** on the source geometry. To make the "legs" orient/splay outward correctly, points are taken from the initial geometry with **calculated out-normals** fed into **Orient Along Curve**; **Copy to Points** is set to preserve normals (works directly if you have real deformed-shape normals) — but for a flat line with no meaningful normal variation, the normal attribute must instead be renamed to the **aperture vector** so **Sweep** knows how to correctly orient the cross-section polygons along the curve.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Square-UV fix (VEX):** compute the flat shape's aspect ratio; if ratio > 1 in X and < 1 in Y (or vice versa), scale down the larger axis to fit the 0-1 tile, negate Y to correct flip, and offset Y to place the result in the default UV tile.
+2. **Square-UV fix (node-based, simpler):** use **UV Flatten** with default settings, driven by an axis-aligned vertex group (e.g. top vertices) as the orientation reference — much less setup than the VEX version; save as a reusable tool preset.
+3. **Channel packing (VEX):** in a wrangle, take a single value from an existing multi-purpose CD attribute and remap a separate mask (e.g. concavity) into an unused RGB channel (e.g. green — or blue for a third mask), packing multiple grayscale attributes into one vertex-color channel set for downstream use.
+4. **Unreal channel unpacking:** in Unreal materials, separate the packed vertex-color channels and drive independent effects from each (e.g. eye tint from one channel, extra ambient occlusion in concave areas from another).
+5. **ZBrush base-mesh curve setup:** take an elongated half-circle curve, twist and transform it, Resample while saving a `curveu`-based attribute; add a center point and group it.
+6. **Split and sweep for a mirrored-twist look:** **Poly Cut** the curve into two halves at the grouped center point, then **Sweep** the *cut* curve (not the whole uncut curve) — producing a mixed mirror-plus-twist "infinity sign" profile impossible to get from the uncut curve, and much easier than sculpting the shape by hand; export to ZBrush as a sculpting base mesh.
+7. **Repeating "legs" pattern setup:** build a repeating chain of pieces along a half-circle curve profile, **Pack** them, and run **Path Deform** to conform the chain to the curve.
+8. **Second Path Deform pass:** Path Deform the *original* (non-repeated) shape a second time onto the same curve — noted that this specific order (Path Deform first, then building from there) is the sequence that reliably works, based on the author's testing.
+9. **Scale calibration:** use **Measure** (set to Length) on the source geometry to determine the correct initial scale for the repeating pattern before deforming.
+10. **Orient legs outward (N/Up for Sweep):** take points from the initial geometry with calculated **out-normals**, feed them into **Orient Along Curve**; in **Copy to Points**, preserve normals — this works directly for a deformed shape with real normal variation, but for a flat line (no meaningful normal direction), the normal attribute must instead be **renamed to the aperture vector** so Sweep correctly orients each cross-section's polygons along the curve.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: UV Texture, Attribute Wrangle (VEX: aspect-ratio if-statement for square UV scaling with Y-negation and offset; channel-packing single-value remap to unused RGB channel), UV Flatten (default settings, axis-aligned vertex-group-driven orientation), Group (vertex group for UV alignment), Resample (curveu attribute save), Group (center point), Poly Cut, Sweep, Pack, Path Deform (order-dependent, applied twice — repeating chain first, then original shape), Measure (Length mode, for pattern scale calibration), Orient Along Curve (out-normal input), Copy to Points (preserve normals option), attribute rename (normal → aperture vector, for flat-line Sweep orientation).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — each tip is compact and approachable, though the multi-stage Path Deform ordering and normal-vs-aperture-vector Sweep orientation nuance require some procedural-modeling experience to apply correctly.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era modeling toolset).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #uv #modeling #texturing #unreal #zbrush #procedural #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with export-a-full-scene-from-houdini-to-unreal.md (same author, same Houdini-to-Unreal vertex-color/channel-packing production context) once indexed together.
