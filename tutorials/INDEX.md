@@ -1824,9 +1824,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Mljby-SKlUI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** not specified (trailer only)
+- **Tags:** #tops #uv #packing #cops #solaris #karma #mardini
+- **Summary:** Promotional trailer (no on-screen technique) for a full paid course covering TOPs-driven rock variation generation, low/high-poly mesh creation, procedural UVs, packed-instance low-to-high-poly swapping, COPS-based masking (incl. a moss layer), and final Solaris/Karma lighting and rendering.
 - **File:** tutorials/creating-a-procedural-rock-wall-with-houdini-patreon-may---trailer.md
 
 

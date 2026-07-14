@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Mljby-SKlUI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "not specified (trailer only)"
+tags: [tops, uv, packing, cops, solaris, karma, mardini]
+extraction_status: complete
 frames_dir: tutorials/frames/creating-a-procedural-rock-wall-with-houdini-patreon-may---trailer/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 2
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Creating a Procedural Rock Wall with Houdini | Patreon May - Trailer
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py creating-a-procedural-rock-wall-with-houdini-patreon-may---trailer <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -47,30 +43,37 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:00] tutorials/frames/creating-a-procedural-rock-wall-with-houdini-patreon-may---trailer/frame_000.jpg
+- [0:44] tutorials/frames/creating-a-procedural-rock-wall-with-houdini-patreon-may---trailer/frame_001.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+This is a **promotional trailer**, not a hands-on tutorial — it's a ~2-minute voiceover-only preview (both captured frames show the same static final-result render: a moss-covered stone wall) advertising a full ~2-hour paid Patreon course on procedural rock wall creation. No node graphs, code, or step-by-step process are actually shown in this video.
 
 ### Summary
-[PENDING EXTRACTION]
+The trailer verbally outlines what the full paid course will cover, without demonstrating any of it on-screen: generating rock variations via a **TOPs network**, building both low-poly and high-poly ("ipoly") versions, procedurally generating UVs, assembling the wall with "a few techniques," using **packed instances** to swap the low-poly stand-ins for high-poly geometry at render time, building procedural masks in **COPS** including a moss layer, and finishing with lighting/shading/rendering in **Solaris**. Since none of this is actually demonstrated in the trailer itself, there's no real technique to extract here — only a roadmap of topics for reference.
 
 ### Key Steps
-[PENDING EXTRACTION]
+Not applicable — no on-screen technique is demonstrated in this trailer. Per the voiceover, the full paid course covers (in order): TOPs-driven rock variation generation → low-poly + high-poly ("ipoly") mesh creation → procedural UVs → wall assembly → packed-instance swap from low-poly to high-poly at render time → COPS-based procedural masking (including a moss mask/layer) → final lighting, shading, and rendering in Solaris.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+None shown on-screen; per the voiceover the full course uses a **TOPs network** (rock variation generation), **packed primitives** (low/high-poly swap), **COPS** (procedural masks, moss layer), and **Solaris/Karma** (final lighting and render) — but no specific nodes are visible in this trailer.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Not applicable (promotional trailer, not instructional content).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified in this trailer.
 
 ### Tags
-[PENDING EXTRACTION]
+#tops #uv #packing #cops #solaris #karma #mardini
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers this specific rock-wall course topic — cross-link with any future TOPs-variation, packed-instance-swap, or COPS-masking tutorials once extracted from this batch.
