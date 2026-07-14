@@ -1974,9 +1974,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=cXbdFwd3u9o
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #vdb #procedural #fracture #environment #scattering #volumes #fog #third-party-plugin #advanced
+- **Summary:** Grows hanging vines from a pcopen()-based VEX arch mask, builds procedural rocks via Platonic + Voronoi Fracture with layered VDB volume-noise detail and compiled per-piece edge damage, and authors a custom hand-built fog volume instead of Karma's default fog box.
 - **File:** tutorials/environments-in-houdini-part-4---vines-rocks-and-fog.md
 
 

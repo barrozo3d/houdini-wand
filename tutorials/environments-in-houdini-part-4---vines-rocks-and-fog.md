@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=cXbdFwd3u9o
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, vdb, procedural, fracture, environment, scattering, volumes, fog, third-party-plugin, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/environments-in-houdini-part-4---vines-rocks-and-fog/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Environments in Houdini | Part 4 - Vines, Rocks and Fog
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py environments-in-houdini-part-4---vines-rocks-and-fog <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -326,30 +322,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/environments-in-houdini-part-4---vines-rocks-and-fog/frame_000.jpg
+- [4:00] tutorials/frames/environments-in-houdini-part-4---vines-rocks-and-fog/frame_001.jpg
+- [8:15] tutorials/frames/environments-in-houdini-part-4---vines-rocks-and-fog/frame_002.jpg
+- [12:30] tutorials/frames/environments-in-houdini-part-4---vines-rocks-and-fog/frame_003.jpg
+- [17:00] tutorials/frames/environments-in-houdini-part-4---vines-rocks-and-fog/frame_004.jpg
+- [20:30] tutorials/frames/environments-in-houdini-part-4---vines-rocks-and-fog/frame_005.jpg
+- [30:30] tutorials/frames/environments-in-houdini-part-4---vines-rocks-and-fog/frame_006.jpg
+- [38:30] tutorials/frames/environments-in-houdini-part-4---vines-rocks-and-fog/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Part 4 of the environment series: growing hanging vines from a VEX-driven `pcopen()`-based arch mask, building procedural rocks via Platonic + Voronoi Fracture with layered VDB volume-noise surface detail and a compiled per-piece edge-damage loop, then authoring a custom hand-built **fog volume** (VDB density + layered noise) instead of relying on Karma's built-in fog box falloff.
 
 ### Summary
-[PENDING EXTRACTION]
+Hanging vines under the bridge arch are grown from a mask built almost entirely in VEX as a learning exercise (rather than pure VOPs): the bridge's arch curve is Match-Sized and Swept into a thin ribbon purely to serve as an attribute-transfer proxy, then a wrangle uses **`pcopen()`** (point-cloud open, searching the swept ribbon's points within a radius) to build an initial proximity mask, refined with a normal·up-vector dot-product multiply (to suppress mask value on non-relevant-facing surfaces) and a **relative-bounding-box-position ramp** (VEX `chramp()` against normalized X position) to taper the mask off toward the arch's edges. Points are Scattered on that mask (~35, seeded), Peaked slightly inward (preserving existing normals) so vine roots don't visibly poke through the stone, and a wrangle flattens `N.z` to zero so vines hang relatively straight down rather than splaying in random directions. The same **Simple Tree Tools** Trunk Maker (fed the scattered points via spare input + seed-points input) grows the hanging vines with high segment count (~40) for smooth curves, small randomized length/width, layered noise, strong downward **Gravity Tropism** (~2) plus **Chaos** (~0.375) for organic droop, and a flat "heal" profile in Tree Mesher for thin vine geometry. Rocks are built from a **Platonic** (dodecahedron) noise-offset and scattered (~7 points, uniform resolution ~50) then **Voronoi Fractured** into irregular chunks; each fractured piece is packed and zeroed to the origin (`v@P = 0` on packed prims) for consistent per-piece processing, then unpacked and run through a **For Each (name/primitive)** loop doing cheap edge damage (Remesh ~0.2, Attribute Blur ~2 iterations, small Mountain with positive/non-zero-centered offset, Volume/Boolean Intersect) — the same "cheap chip damage" pattern from Part 2's bridge stones. Surface detail is added via a hand-built **VDB volume-noise VOP network**: VDB From Polygons (low initial resolution, exterior band ~1-3 voxels) converted back to polygons for preview, driven by a **Volume VOP** reading/writing `density` directly (not surface/absolute), combining multiple layered noises — a primary Worley Cellular F2-F1 noise (frequency ~3, tuned offset ~80) added to base density with fractal detail on position (source-mean ~1.1 to punch holes), a **Sparse Convolution noise** (zero-centered, -1 to 1) used to *distort the sampling position itself* before the primary noise reads it (amplitude ~0.35, tunable frequency for more/less detail), and a second duplicated noise layer (Turbulent Noise variant, unclamped range, different repetition/multiply-constant/offset values, complemented) blended in for additional "worldly"/bulging surface variation — all layered until the rock reads as naturally pitted rather than a smooth Boolean-cut shape (with the note that render-time displacement will add further detail on top). Each rock gets a `class` attribute (via Metadata/iteration read inside the fracture loop) plus both a high-poly render version and a **Poly Reduce**'d (~5%) low-poly proxy version merged together and cached to disk via a File Cache, then split apart (`class == 0` etc.) for later scattering. The final section builds a **custom fog volume** rather than trusting Karma's default fog-box falloff: a Bound around the merged scene geometry (terrain, trees, rocks, bridge) feeds a VDB From Polygons → Volume VOP where density is driven by relative-bounding-box position (Z axis) fit-ranged, complemented (less fog toward the front/camera), and offset (source-mean, low-bound value, multiply-constant for overall density), then layered with a 3D **Turbulent Noise** (Sparse Convolution, tuned frequency/offset/amplitude/roughness) added to the sampled position for organic, non-uniform fog density rather than a flat gradient. Finally, rocks are scattered onto the river/lake-edge mask from Part 1 (Scatter, Connectivity for per-piece class, Attribute from Pieces to assign `class`, a custom **ramp-driven `pscale` randomization** biased toward mostly-small with occasional large rocks via Attribute Randomize + a custom ramp, plus a Multiply-constant overall scale factor ~1.3) and merged with everything else, wrapping up with the plan to move all scattering into Solaris in the next part.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Vine-attachment mask setup:** Object Merge and further Remesh the already-remeshed bridge-arch section; separately Object Merge the arch curve, Match Size (mean/center, no X/Y scaling) to align it, Sweep as a thin ribbon (width ~0.09) purely as an attribute-transfer proxy for the mask VEX.
+2. **PC-open proximity mask (VEX):** in a wrangle, use **`pcopen()`** against the swept ribbon's point cloud (radius tuned ~0.115) to build `f@mask` from `pcnumfound()`, refined by multiplying in a `dot(N, {0,-1,0})`-style up-vector check (threshold ~0.5-0.9) to suppress mask value on incorrectly-facing surfaces.
+3. **Mask edge taper (VEX ramp):** multiply the mask by a **`chramp()`** lookup driven by the point's relative-bounding-box X position (linear/custom-shaped ramp) to taper mask value off toward the arch's left/right edges rather than a hard cutoff.
+4. **Vine seed points:** **Scatter** ~35 points on the mask (seed ~19), **Peak** slightly inward (~-0.05, preserving existing normals so they're not recomputed), then a wrangle sets `N.z = 0` to flatten normals so vines grow relatively straight down instead of splaying in random directions.
+5. **Vine growth (Simple Tree Tools):** **IFT Trunk Maker** fed the seed points via a spare-input + seed-points connection; segments ~40 (smoother curves), length ~0.5 (randomized), weight ~0.14 (randomized); layered **Noise** (amplitude, size ~0.6, tuned offset); strong downward **Gravity Tropism** (~2) plus **Chaos** (~0.375) for organic hanging droop; **Tree Mesher** with a flat "heal" profile for thin vine geometry; name-tag and merge over the bridge.
+6. **Rock base shapes:** **Platonic** (dodecahedron) with a noise offset, **Scatter** (~7 points, uniform resolution ~50 for point placement quality) inside it, then **Voronoi Fracture** using those points as emitters/seeds to break the platonic into irregular rock chunks (Exploded View to preview).
+7. **Center pieces for uniform processing:** Pack the fractured pieces, run a wrangle setting `v@P = 0` on packed primitives to move every rock to the world origin (avoiding an explicit for-each just for this step), then unpack.
+8. **Per-rock edge damage (For Each, Compile Block):** **For Each (name/primitive)** over each rock: Remesh (~0.2), Attribute Blur (2 iterations), small **Mountain** (amplitude ~0.19, positive/non-zero-centered offset, small element size) for micro-surface bumps, then **Boolean/Volume Intersect** to carve subtle chips — identical cheap-damage pattern to the Part 2 bridge stones; wrap the loop in a **Compile Block** (multi-threaded) for speed.
+9. **VDB surface detail via Volume VOP:** Remesh again (~0.2), **VDB From Polygons** (low initial resolution, exterior band ~1-3 voxels for extra outside detail), convert back to polygons for live preview; build a **Volume VOP** binding directly to the `density` volume primitive (not surface/absolute) that: samples a primary **Worley Cellular F2-F1** noise (frequency ~3, offset ~80, fractal detail on position, source-mean ~1.1 to punch holes) and adds it to density; separately runs a **Sparse Convolution noise** (zero-centered -1..1, amplitude ~0.35) to *distort the sampling position* fed into the primary noise (rather than adding directly) for more organic pitting; duplicates the whole chain with different tuning (repetition ~0.5, multiply-constant ~0.16, unclamped range ~0.745 for a "bulging" look, Turbulent Noise variant, frequency ~1, offset ~170, complemented) and blends both noise layers together into final density.
+10. **Class + LOD versions:** inside the fracture/damage loop, read the loop **iteration** via a Metadata node and store it as a `class` primitive attribute (since for-each doesn't expose piece index directly by default); after the loop, build both a full-res "high poly" version and a **Poly Reduce**'d (~5%) low-poly proxy version, merge both together, and Compile-Block/Multi-thread the whole rock-generation network for practical iteration speed; cache to disk via a **File Cache** (single frame, not time-dependent) once satisfied, then split high/low-poly outputs by `class` for downstream use.
+11. **Custom fog volume (instead of Karma's built-in fog box):** build a Bound around the merged scene geometry (terrain, trees, rocks, bridge — remembering to actually wire in all relevant merge inputs), **VDB From Polygons** to generate a base fog volume (density ~0.5), then a Volume VOP: relative-bounding-box Z position → Vector to Float → **Fit Range** (with Complement to reduce fog near the front/camera, source-mean and low-bound offsets, multiply-constant for overall density ~0.3) drives density falloff, layered with a 3D **Turbulent Noise** (Sparse Convolution, frequency ~0.6, offset ~100, amplitude/roughness tuned) added into the sampled position for non-uniform, organic fog density instead of a flat directional gradient.
+12. **Scatter rocks along the river/lake edge:** Object Merge the low-poly rock proxy plus the terrain/river mask from Part 1; **Scatter** a handful of points on the saved river mask (seed tuned, relax disabled); **Connectivity** (points) + **Attribute from Pieces** to assign each scattered rock instance its own `class`; **Attribute Randomize** (custom ramp-shaped distribution) drives `pscale` biased toward mostly-small rocks with occasional large ones, plus an overall **Multiply constant** scale factor (~1.3); Copy to Points the (packed) rocks onto the scattered points, then merge high-poly rocks in for the final render-quality pass, tuning scatter/connectivity seeds until the distribution reads naturally.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Object Merge, Remesh (Voxel/Grid, multiple resolutions), Match Size (mean/center), Sweep (ribbon), Attribute Wrangle (VEX: `pcopen()`/`pcnumfound()` proximity mask; `dot()`-based normal-direction masking; `chramp()`-driven relative-bbox-position edge taper; `N.z=0` normal flattening; `v@P=0` packed-primitive centering; per-piece cheap edge-damage math), Scatter, Peak (preserve normals option), Platonic (dodecahedron), Voronoi Fracture, Pack/Unpack, For Each (name/primitive, wrapped in Compile Block with multi-threading), Attribute Blur, Mountain, Boolean/Volume Intersect, VDB From Polygons (exterior band control), Convert VDB, Volume VOP (binding to `density`; Worley Cellular F2-F1 noise; Sparse Convolution / Turbulent Noise for position-distortion and direct density addition; Fit Range, Complement, Multiply Constant, Vector to Float, Relative Point/Bounding-Box Position), Metadata (loop iteration → `class` attribute), Poly Reduce (proxy LOD), Merge, File Cache (single-frame), Blast (class-based split), Bound, Connectivity, Attribute from Pieces, Attribute Randomize (custom ramp), Copy to Points. Third-party: Simple Tree Tools (IFT Trunk Maker: segments, length, weight, Noise, Gravity Tropism, Chaos; Tree Mesher: flat "heal" profile for thin vine strands).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — combines VEX point-cloud queries (`pcopen`), a hand-authored multi-layer VDB volume-noise shading network for both rock surface detail and custom fog density, and Compile-Block-wrapped per-piece procedural loops; assumes strong VEX and VOP/volume fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (continuation of the same terrain/bridge project; UI consistent with Houdini 20.5).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #vdb #procedural #fracture #environment #scattering #volumes #fog #third-party-plugin #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Direct continuation of environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md and environments-in-houdini-part-2---stone-bridge.md (same author, same bridge/terrain project — reuses the Part 2 cheap-edge-damage pattern and the Part 1 river/lake mask). Author announces the next part will move scattering systems and materials into Solaris; cross-link once ingested.
