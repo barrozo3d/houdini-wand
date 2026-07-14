@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=fF01Lyg_G48
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20"
+tags: [heightfield, terrain, procedural, erosion, texturing, materials, environment, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-heightfields-and-cliffs/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini Heightfields and Cliffs
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-heightfields-and-cliffs <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -112,30 +108,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/houdini-heightfields-and-cliffs/frame_000.jpg
+- [1:30] tutorials/frames/houdini-heightfields-and-cliffs/frame_001.jpg
+- [3:10] tutorials/frames/houdini-heightfields-and-cliffs/frame_002.jpg
+- [4:20] tutorials/frames/houdini-heightfields-and-cliffs/frame_003.jpg
+- [5:10] tutorials/frames/houdini-heightfields-and-cliffs/frame_004.jpg
+- [6:10] tutorials/frames/houdini-heightfields-and-cliffs/frame_005.jpg
+- [9:20] tutorials/frames/houdini-heightfields-and-cliffs/frame_006.jpg
+- [10:20] tutorials/frames/houdini-heightfields-and-cliffs/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a rocky terrain with embedded cliff/rock formations using layered Heightfield noise/distortion, a **two-pass erosion workflow** (low-res pass first, then mask-preserved resample to high-res for a second, finer erosion pass), the third-party **Pegasus** toolset's Heightfield Material/Tint nodes for procedural terrain texturing/coloring, and a final split-and-quad-remesh step so the cliff geometry holds up under render-time Triplanar displacement.
 
 ### Summary
-[PENDING EXTRACTION]
+The terrain starts as a 500x700 Heightfield with a **Worley Cellular F1** noise (complemented for a desert-like look), then distorted with a very-high-element-size, high-amplitude Heightfield Distort by Noise for more interesting broad shapes. Rock/cliff formations are added by taking a heavily-distorted separate shape and projecting it onto the base terrain, then using **Mask Expand set to "height"** (instead of plain mask mode) to get squared-off rock-like silhouettes; this is incorporated into the terrain via the "mountain" heightfield layer, with additional distortion restricted to just the cliff area and a blurred-mask blend at the base so the rock formations integrate smoothly into the surrounding terrain rather than looking pasted-on. A **Volume VOP** adds a custom cloud-type noise, bind-exported to the mask channel and Remapped (raising output max) to create a cloud-like density pattern used to drive erosion variation. **First erosion pass** runs at low resolution (~2M voxels) — enough to establish major valley/drainage shapes but too coarse for fine rock detail. The mask from erosion is then re-loaded via **Heightfield Copy Layer** (source: mountain, destination: mask), blurred specifically over the rock formations, and the whole heightfield is **Resampled up to ~40M voxels**; a fresh terrain-limiting mask (so erosion doesn't over-erode the actual rock formations) enables a **second, finer erosion pass** that produces much more convincing rock-valley detail. A **Mask by Feature** (flat-area detection) plus **Heightfield Flatten** then smooths/flattens areas that shouldn't retain erosion noise (e.g. path or building-pad areas), for a cleaner final terrain silhouette. Texturing uses the third-party **Pegasus** Heightfield Material system: a base mask selecting everything gets a base ground texture; a Mask by Feature (occlusion-based) darkens crevices; a flat-area mask adds grass texture (color + optional height blend, with the grass texture's own distortion tuned so it doesn't read as an obviously-repeating tile) — layered further with a **secondary noise mask + gradient Tint** (green-to-yellowish-white) to break up uniform grass coloring, an increased "tinge" value for stronger color variance, cliff-area masks adding rock texture/brightness, and a final **tight occlusion mask + gradient Tint** for subtle ambient-occlusion-like darkening in crevices (kept deliberately subtle rather than a strong occluded look). Finally, since the cliff's baked texture detail visually falls apart even at mid-distance, the terrain is converted to polygons and the previously-saved "mountain" point attribute is used to **split the cliff geometry from the rest of the terrain** (Blast/isolate by that attribute), the isolated cliff mesh is **QuadRemeshed** (reduced/remeshed, apparently inside a loop per-piece) for clean topology, then merged back over the original terrain — giving the cliff a proper quad mesh that can receive real render-time displacement via the new Houdini 20 **Triplanar** node in Solaris, rather than relying on a texture that can't hold up under scrutiny.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base terrain noise:** Heightfield (500x700), **Heightfield Noise** (Worley Cellular F1, Complement enabled for a desert-like look).
+2. **Broad distortion:** **Heightfield Distort by Noise** with a very high element size and amplitude for more interesting large-scale terrain variation.
+3. **Rock formation shape:** take a separately-built, heavily-distorted shape, project it onto the base terrain, then apply **Mask Expand set to "height" mode** (not plain mask) to get squared-off, rock-like silhouettes.
+4. **Integrate into the mountain layer:** incorporate the rock shape into the terrain's "mountain" heightfield layer; restrict additional distortion to just the cliff/rock area; blur the base/bottom transition (via another masked, blurred heightfield layer) so the rock integrates smoothly rather than looking pasted on; save the result to the mountain layer.
+5. **Cloud-noise mask for erosion variation:** **Volume VOP** adding a custom cloud-type noise, bind-exported to the mask channel, then **Remap** (raise output max, compute range) to shape the cloud-like density pattern used to bias the upcoming erosion.
+6. **First (low-res) erosion pass:** clear the mask, run **Heightfield Erode** at the current low resolution (~2M voxels) — establishes major valley/drainage shapes but lacks fine detail.
+7. **Preserve mask + resample to high resolution:** **Heightfield Copy Layer** (source: mountain, destination: mask) to reload the mask onto the rock formations, **Blur** the erosion result specifically over those formations, then **Heightfield Resample** up to ~40M voxels for much finer detail capacity.
+8. **Second (high-res) erosion pass:** build a mask limiting erosion to the terrain (so the actual rock formations aren't over-eroded), then run a **second Heightfield Erode** pass at the new high resolution — produces convincing valley/rock detail.
+9. **Flatten unwanted noise:** **Mask by Feature** (flat-area detection) + **Heightfield Flatten** to smooth/flatten specific areas that shouldn't retain erosion-driven noise.
+10. **Pegasus base texture:** using the third-party **Pegasus Heightfield Material** system, create a mask selecting everything and apply a base ground texture.
+11. **Occlusion darkening + grass layering:** a Mask by Feature (occlusion-based) darkens crevices; a flat-area mask adds a grass texture/color (with height blend optional), tuning the grass's own distortion so its tiling doesn't read obviously; layer in a secondary noise mask + gradient **Tint** node (green → yellowish-white) with an increased "tinge" strength for natural color variation across the grass.
+12. **Cliff texture + tight AO:** mask the cliff areas specifically to add rock texture and increased brightness; finish with a tight occlusion mask + gradient Tint for subtle crevice darkening (kept intentionally understated).
+13. **Convert + split cliff from terrain:** convert the finished heightfield to polygons; using the previously-saved "mountain" point attribute, **Blast**/isolate the cliff geometry from the rest of the terrain.
+14. **Quad remesh the cliff:** run the isolated cliff mesh through a reduce + **QuadRemesh** pass (mentioned as done per-piece, likely in a loop) to get clean, render-ready quad topology.
+15. **Recombine + render-time displacement:** merge the remeshed cliff back over the original terrain; in Solaris, target the cliff geometry specifically with the new Houdini 20 **Triplanar** node to add real render-time displacement, since the baked texture alone wasn't convincing at mid-distance.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Heightfield, Heightfield Noise (Worley Cellular F1, Complement), Heightfield Distort by Noise, Heightfield Project, Mask Expand (height mode vs. mask mode), Heightfield Layer (mountain), Blur (masked), Volume VOP (custom cloud noise, bind export to mask), Heightfield Remap (compute range, output max), Heightfield Erode (x2 — low-res then high-res pass), Heightfield Copy Layer (source/destination layer targeting), Heightfield Resample (low → ~40M voxels), Mask by Feature (flat-area and occlusion-based detection), Heightfield Flatten, Heightfield to Polygons, Blast (attribute-based cliff isolation), QuadRemesh. Third-party Pegasus toolset: Heightfield Material, Heightfield Tint (gradient-driven color tinting), various Pegasus mask nodes (by feature, by height, by direction, by constant). Karma X-Style Triplanar (Houdini 20, Solaris render-time displacement).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines multi-pass heightfield erosion at different resolutions, custom volume-noise masking, and a third-party procedural-texturing toolset (Pegasus); assumes solid heightfield fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20 (explicitly references "the new Triplaner node in the 20"; Pegasus tools referenced as a separate paid/third-party masterclass series).
 
 ### Tags
-[PENDING EXTRACTION]
+#heightfield #terrain #procedural #erosion #texturing #materials #environment #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with environments-in-houdini-part-1---heightfields.md (same author, overlapping heightfield/erosion vocabulary) once indexed together; author references an earlier video covering the rock-formation projection technique in more detail.

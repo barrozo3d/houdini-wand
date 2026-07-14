@@ -2534,9 +2534,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fF01Lyg_G48
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20
+- **Tags:** #heightfield #terrain #procedural #erosion #texturing #materials #environment #advanced
+- **Summary:** Builds a rocky terrain with embedded cliffs using a two-pass erosion workflow (low-res then mask-preserved high-res resample), third-party Pegasus Heightfield Material/Tint texturing, and a final cliff-splitting + QuadRemesh pass for real render-time Triplanar displacement.
 - **File:** tutorials/houdini-heightfields-and-cliffs.md
 
 
