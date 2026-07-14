@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=FvM09fA0cKY
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, procedural, scattering, environment, python, vegetation, third-party-plugin, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/environments-in-houdini-part-3---vegetation-with-simple-tree-tools/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Environments in Houdini  | Part 3  - Vegetation with Simple Tree Tools
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py environments-in-houdini-part-3---vegetation-with-simple-tree-tools <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Introduction and bug fix [0:00]
@@ -379,30 +375,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:35] tutorials/frames/environments-in-houdini-part-3---vegetation-with-simple-tree-tools/frame_000.jpg
+- [3:30] tutorials/frames/environments-in-houdini-part-3---vegetation-with-simple-tree-tools/frame_001.jpg
+- [6:30] tutorials/frames/environments-in-houdini-part-3---vegetation-with-simple-tree-tools/frame_002.jpg
+- [12:50] tutorials/frames/environments-in-houdini-part-3---vegetation-with-simple-tree-tools/frame_003.jpg
+- [20:00] tutorials/frames/environments-in-houdini-part-3---vegetation-with-simple-tree-tools/frame_004.jpg
+- [33:00] tutorials/frames/environments-in-houdini-part-3---vegetation-with-simple-tree-tools/frame_005.jpg
+- [43:00] tutorials/frames/environments-in-houdini-part-3---vegetation-with-simple-tree-tools/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Part 3 of the environment series: growing vines and a full tree using the paid **Simple Tree Tools** plugin (Trunk Maker → Branch Maker → Tree Mesher → Leaf Scatter modular chain with Tropism/Noise/Chaos modifiers), converting opacity-based Megascans grass assets into true mesh geometry via a **Python script** that batch-inserts an Opacity-to-Mesh converter node across many variant subnetworks, then scattering trees for the background.
 
 ### Summary
-[PENDING EXTRACTION]
+Opens with a quick bug-fix from Part 2: the random top-brick rotation VEX had a bracket misplaced, accidentally mixing the rotation-angle randomization with the zero-centered position offset, causing bricks to rotate consistently to one side instead of both; moving the parenthesis fixes it. The main lesson uses **Simple Tree Tools** (a third-party paid plugin, explicitly recommended over Houdini's native/free tree tools like TreeLab for quality/versatility) to grow vines directly onto the stone bridge: the bridge geometry is remeshed/dilated to offset vine growth from the surface, clipped to only the near side, remeshed again for mask resolution, and an **Attribute Noise** float ("mask") drives a **Scatter** (~200 points) that seeds an **IFT Trunk Maker** — using the scattered points as an optional-seed spare input — with strong **Tropism** (attraction to the bridge surface, strength ~5) plus layered noise for the winding vine look. An **IFT Branch Maker** grows secondary vine branches (length ~0.01, sample-count driven amount) with looser Tropism (`~1`, floaty rather than surface-hugging) to host scattered leaves, meshed via **Tree Mesher**. Vine leaves come from an **Atlas Processor** (Megascans stencil texture) piped through **Leaf Scatter** with custom-geo leaves, bend/fold shaping, size/rotation randomization, and careful "defined pieces" packing to avoid per-instance material assignment issues. A separate, simpler procedural **tree** is built the same modular way — Trunk Maker (thin trunk, weight ~0.2) → multiple layered Branch Makers (main canopy branches with a length-falloff ramp and pitch-angle control; a secondary paired set of side branches using "incremental row" rotation logic; smaller sub-branches with parent-bias disabled; a final "tweak"-style branch layer using a different growth algorithm, "by agent" or similar, for fine twig detail) → gravity/chaos-tropism modifiers and noise at each stage → Leaf Scatter (oak Atlas texture, deliberately avoiding leaf placement in the tree's center via the tweak-branch grouping, since real trees are sparse there) → Tree Mesher. For grass, rather than fighting the plugin's own grass generation (found unsatisfying), the author reuses a **Megascans desert grass asset pack** imported via a previously-built custom Python asset importer, but since Megascans vegetation uses **opacity-map-based alpha cutouts** (incompatible with Karma's ray-tracing pipeline), a second previously-covered tool, **Opacity to Mesh**, is needed per variant — automated at scale via a **Python script** (Houdini Python Source Editor) that iterates over `hou.selectedNodes()`, walks each variant subnetwork's children, creates an Opacity-to-Mesh node per File node (wiring the opacity map input), and rewires the subnet's output — turning a tedious manual per-variant task into one function call. The lesson ends by scattering background trees across a grid (object-merged single tree, Scatter ~32 points, Copy to Points as **Pack Instance**, normal-based up-orientation, then attribute-driven random scale via a ramp-shaped Noise and random Y-axis rotation via Attribute VOP/`v@N` direction-only randomization) to fill out the environment.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Bug fix from Part 2:** move a misplaced parenthesis in the random-rotation VEX wrangle so the rotation-angle randomization no longer shares scope with the zero-centered position-offset randomization — restores rotation happening symmetrically to both sides instead of only one.
+2. **Vine growth surface prep:** Object Merge the bridge section, **Remesh (Voxel/Grid)** at ~0.02 with tuned adaptivity, **Dilate** slightly to offset vines from the actual bridge surface, **Clip** along Z to restrict vines to one visible side only, then a second coarser Remesh (~0.1) purely to support a usable scatter mask resolution.
+3. **Vine seed mask:** **Attribute Noise** (float, "mask") with element size ~1.2 and a tuned offset, remapped/contrasted (~0.8 range, ~0.6 contrast) to concentrate density where vines should start; **Scatter** ~200 points on that mask (seed ~0.68, relax disabled).
+4. **Vine trunks:** **IFT Trunk Maker**, fed the scattered points via a spare-input connection (for traceability); tune length (~0.6) and weight (~0.075); enable **Tropism** (attraction toward the bridge geometry, strength ~5) for the vines to visually cling/creep along the surface; layer noise (amplitude ~0.75, size ~0.2, reduced roughness, tuned offset) for organic winding.
+5. **Vine branches:** **IFT Branch Maker** off the trunks (length ~0.01, sample-based branch amount, default start/end), Tropism switched to Y-axis attraction with weight ~1 for a looser, floatier branch spread (rather than surface-hugging) meant to host leaf scatter points; add secondary noise (amplitude ~0.4) for variation; **Tree Mesher** converts trunk+branch curves to renderable mesh.
+6. **Vine leaves:** **Atlas Processor** (Megascans stencil texture, Quick Shade preview) → bend (~50) and fold (~-32) shaping → dilation tuning (transform-to-origin needs correct dilate value, e.g. 0, to align pieces) → **Leaf Scatter** fed the branch curves and the custom-geo leaf atlas; switch to "Custom Leaves" mode; use "Defined Pieces" packing (copies one instance at a time) to avoid material-assignment issues from instance packing; randomize size, rotation, and pitch angle; tune scatter seed/global seed until the leaf distribution reads well; **Pack** the result.
+7. **Simple procedural tree — trunk + main branches:** **IFT Trunk Maker** (thin weight ~0.2); **IFT Branch Maker** for the main canopy with length-between-nodes ~0.1 (i.e., resample-like spacing), jittered seed, a length-falloff **ramp** narrowing branch length toward the top, tuned pitch angle, and Gravity/Tropism (moved "up") plus Chaos (~0.2) and Noise (size/amplitude reduced for subtlety) modifiers.
+8. **Secondary paired branches:** duplicate/rebuild a Branch Maker restricted to a start/end range (~0.2-0.4) along the trunk, scattered to just 2 branches (optionally "alternate" placement) for an artistic below-canopy pair; set pitch angle (~74°), disable Gravity Tropism, and use "incremental row" rotation (or disable it and rotate 90° manually) to control branch facing.
+9. **Fine sub-branches + tweaks:** a further Branch Maker layer (length ~0.4, width ~0.7, parent-bias disabled) with its own noise for small twigs; a final duplicated branch layer switched to a different growth **algorithm** ("by agent"/world-based) specifically for fine "tweak" twigs, with noise/chaos removed and length re-tuned — this tweak layer is later used to selectively host leaf scatter so leaves don't appear in the tree's naturally sparse center.
+10. **Tree leaves:** Atlas Processor (oak texture) with its own bend (~90 fold, ~48 bend) and dilation tuning, fed into Leaf Scatter restricted (via point group, or in this case relying on the tweak-branch structure naturally centering scatter away from the trunk) with larger leaf size (~1.8-1.9) and randomization; Tree Mesher for the final mesh.
+11. **Grass via Megascans + Opacity-to-Mesh automation:** reuse a previously-built custom **Python asset importer** to bulk-import a Megascans desert-grass variant pack; since these use opacity-map alpha cutouts (incompatible with Karma's raytracer), reuse a previously-covered **Opacity to Mesh** custom node (built from an opacity map input) — but instead of manually wiring it into every variant subnetwork, write a **Python script** (Source Editor) that: takes `hou.selectedNodes()` as the target container(s), iterates `container.children()`, creates an Opacity-to-Mesh node per subnet, finds each subnet's `file` (opacity-map) node, wires its output into the new node's input, rewires the subnet's Output node to the new node, and lays out the network — applied across all grass variants in one function call.
+12. **Background tree scattering:** build a **Grid** (10x5, positioned back), Object Merge the finished tree, add normals (`v@N` set to Y-up via a quick wrangle since default orientation faced along Z/X), **Scatter** (~32 points, relax disabled), **Copy to Points** set to **Pack Instance** mode for performance; randomize scale via **Attribute Adjust Float** using ramp-shaped Noise (min/max tuned to avoid tiny trees, e.g. floor ~0.4) multiplied by a constant size factor (~0.6); randomize Y-axis rotation via **Attribute Adjust Vector** on the normal (direction-only randomization, ~±180° range) so trees don't all face the same way; verify nothing crashed/broke by re-scattering and adjusting noise offset/seed until the background reads naturally without looking overpowering.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Native SOPs: Object Merge, Remesh (Voxel/Grid), Dilate, Clip, Attribute Noise, Scatter, Attribute Wrangle (Y-up normal, VEX bracket bug fix from Part 2), Grid, Copy to Points (Pack Instance mode), Attribute Adjust Float (ramp-shaped Noise for scale randomization), Attribute Adjust Vector (direction-only rotation randomization). Simple Tree Tools plugin (third-party, paid): IFT Trunk Maker (length, weight, Tropism strength/target, Noise), IFT Branch Maker (length, width, sample-based branch count/amount, start/end range, alternate placement, incremental row rotation, pitch angle, parent-bias toggle, growth algorithm selection e.g. "by agent"), Atlas Processor (stencil texture import, Quick Shade preview, bend/fold, dilation), Leaf Scatter (custom-geo leaves, Defined Pieces packing, size/rotation/pitch randomization, point-group restriction), Tree Mesher, Gravity/Chaos Tropism modifiers. Python (Source Editor): `hou.selectedNodes()`, `container.children()`, `item.createNode()`, iterating subnet items by node type (`file`), rewiring node inputs/outputs, `layoutChildren()` — used to batch-insert Opacity-to-Mesh converter nodes across many Megascans grass-variant subnetworks.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — the plugin-driven tree/vine workflow is approachable via UI parameters, but the Python batch-automation script and the underlying Opacity-to-Mesh/Atlas-processing custom tools (covered in prior videos, referenced but not fully re-explained here) require more advanced familiarity.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (continuation of the same terrain/bridge project; UI consistent with Houdini 20.5).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #procedural #scattering #environment #python #vegetation #third-party-plugin #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Direct continuation of environments-in-houdini-part-2---stone-bridge.md (same author, same bridge project — fixes a bug introduced there and adds vegetation). Author announces the next part will cover vines refinement, rocks, and fog for this same scene; cross-link once ingested (see environments-in-houdini-part-4---vines-rocks-and-fog.md).

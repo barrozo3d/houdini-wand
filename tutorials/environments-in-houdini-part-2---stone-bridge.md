@@ -352,4 +352,4 @@ Advanced/Expert — an hour-plus of dense VEX (quaternion rotation about arbitra
 ---
 
 ## Related Tutorials
-Direct continuation of environments-in-houdini-part-1---heightfields.md (same author, same terrain/bridge project) — cross-link explicitly. Author also announces planned Part 3/4 covering vines, trees, and rocks for this same bridge scene; cross-link once ingested.
+Direct continuation of environments-in-houdini-part-1---heightfields.md (same author, same terrain/bridge project) — cross-link explicitly. Followed by environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md (vines, trees, grass) and environments-in-houdini-part-4---vines-rocks-and-fog.md; cross-link once both are indexed.

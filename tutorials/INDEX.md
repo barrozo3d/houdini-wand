@@ -1994,9 +1994,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=FvM09fA0cKY
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #procedural #scattering #environment #python #vegetation #third-party-plugin #intermediate
+- **Summary:** Grows vines and a tree on the bridge using the Simple Tree Tools plugin (Trunk/Branch Maker, Tropism, Leaf Scatter), converts Megascans opacity-based grass to real mesh via a Python-automated Opacity-to-Mesh batch script, then scatters background trees.
 - **File:** tutorials/environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md
 
 
