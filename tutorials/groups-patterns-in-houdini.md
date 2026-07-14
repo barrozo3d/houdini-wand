@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=FLWrmz8QPZQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, procedural, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/groups-patterns-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Groups Patterns in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py groups-patterns-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -135,30 +131,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/groups-patterns-in-houdini/frame_000.jpg
+- [2:15] tutorials/frames/groups-patterns-in-houdini/frame_001.jpg
+- [4:35] tutorials/frames/groups-patterns-in-houdini/frame_002.jpg
+- [5:30] tutorials/frames/groups-patterns-in-houdini/frame_003.jpg
+- [7:30] tutorials/frames/groups-patterns-in-houdini/frame_004.jpg
+- [9:30] tutorials/frames/groups-patterns-in-houdini/frame_005.jpg
+- [10:50] tutorials/frames/groups-patterns-in-houdini/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A survey of seven group-selection patterns spanning Group Expression normal thresholds, range/partition/connectivity-based endpoint selection, bounding-box-driven procedural edge-loop selection, curvature-based corner detection for clean curve resampling, and VEX-based nearest-point grouping.
 
 ### Summary
-[PENDING EXTRACTION]
+(1) **Normal-based grouping:** `N.y` alone in a Group Expression only reliably selects top/bottom box primitives for cube-like proportions; `abs(N.y) > 0.5` (a thresholded absolute-value check) works regardless of box dimensions. The equivalent can be done non-expression-wise with a **Group (Normals)** node ("Keep by Normals" set to Y, 0, with "include normals matching opposite direction" to get both faces) — but the expression approach is the only way to invert the selection (e.g., grab the X/Z-facing primitives instead) since the Group node has no such invert option. (2) **Selecting shape endpoints via Group Range:** on a swept multi-column ribbon, a Group Range with a select-amount expression (`columns + 1` since points are 1-indexed, subtracted from total point count) isolates the end primitives/points; for just one end, swap the second input to `endpoints` for a simpler expression. An alternative uses Group Range's "Equal Partitions" range type, set to the original line's point count, then offsetting the selected partition. (3) **Connectivity-based end-group splitting:** running **Connectivity** with the previously-selected "ends" group as its point-group input yields a `class` attribute; a Group node with `class == 0` selects one end-group, `class == 1` the other, and `class == -1` inverts/excludes both. (4) **First point of each curve, without construction-order access:** if you don't control curve generation order (so you can't just group the first point pre-copy and let it propagate through Copy to Points), use **Group Range** with Start range type, inverted, and the Connectivity toggle enabled to isolate one point per curve. (5) **Procedural edge-loop selection via bounding box:** **Group by Bounding Region** lets you select a specific horizontal loop on a subdivided box by setting the region size to the box's actual X/Z dimensions (read via a Bounding Box expression for procedural robustness) with a very thin Y-axis scale, and computing the Y-center via `(half box height) - (box height / subdivisions) * desired loop index` to target any specific loop by number. (6) **Curvature-based corner-preserving resample:** naively resampling a hand-drawn curve (even with "resample by polygon edge") smooths sharp corners away; instead, **Measure (Curvature)**, group points above a curvature threshold (~0.9) as corners, **Cut** the curve at those points (breaking it into separate un-connected primitives so each resamples independently without smoothing across corners), clean up excess points with **Facet** (remove inline points, tuned by distance), then **Fuse** back into a single primitive — ready for a clean Sweep profile. (7) **Nearest-point grouping via VEX:** in a wrangle running over `detail` (once, not per-point), read the second input's single point position, call `nearpoint()` against the first input using that position, and set a named point group (e.g. "pin_group") to that found point number — a simple, always-correct way to dynamically group "whichever point is closest to X" procedurally; demonstrated combined with unshared/boundary-point selection and Shortest Path from a center point to build a radiating "cracks from center" effect.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Normal threshold expression:** `abs(N.y) > 0.5` in a Group Expression (Primitives) reliably selects top+bottom box faces regardless of box proportions, unlike a bare `N.y` check; invert the sign/axis to instead grab X/Z-facing primitives — something the equivalent Group (Normals) node cannot do by itself.
+2. **Group (Normals) node equivalent:** enable "Keep by Normals," set direction to Y/0, and enable "include normals matching opposite direction" to select both the top and bottom primitive in one non-expression node.
+3. **End-primitive selection via Group Range expression:** `total_points - (columns + 1)` as the select-amount (Points mode) isolates the far-end primitives of a swept multi-column shape; using `endpoints` as the second input with the same logic selects just one end simply.
+4. **Equal-Partitions alternative:** Group Range with Range Type = "Equal Partitions," Number of Partitions set to the source line's point count, then offsetting which partition is selected — an alternate way to reach the same endpoint-selection result.
+5. **Splitting an end-group into two via Connectivity:** run **Connectivity** using the previously-built "ends" group as its point-group input to generate a `class` attribute; Group nodes with `class==0`, `class==1`, or `class==-1` (inverted) isolate each side independently.
+6. **First-point-per-curve without construction order:** **Group Range** (Start type, inverted, Connectivity toggle enabled) selects exactly the first point of each disconnected curve primitive when you can't rely on generation order to propagate a pre-copy group.
+7. **Procedural bounding-box edge-loop selection:** **Group by Bounding Region**, sizing the region to the box's true X/Z dimensions (via a Bounding Box expression, e.g. `bbox("op:...", D_XSIZE)`, for procedural robustness across resizes) with a thin Y-axis scale; center the region on Y using `(half_height) - (box_height / num_subdivisions) * loop_index` to procedurally target any specific horizontal loop by index.
+8. **Curvature-based corner grouping:** **Measure** (Curvature) on a closed/polygon curve, Group points where curvature exceeds a threshold (~0.9) to mark corners.
+9. **Cut + independent resample:** **Cut** the curve at the corner-point group (breaking it into separate, unconnected primitives), then Resample — because each segment is now its own primitive, resampling no longer smooths across the sharp corners the way a single connected curve would.
+10. **Cleanup:** **Facet** (remove inline points, tuning the distance/tolerance) to eliminate excess points introduced by the segment-wise resample, then **Fuse** to rejoin everything into a single primitive, ready for a clean Sweep cross-section profile.
+11. **VEX nearest-point grouping:** in an Attribute Wrangle set to run over `detail` (once, not per point), read the second input's point-0 position, call **`nearpoint()`** against the first input's geometry with that position to find the closest point number, then set a named point group (e.g. `i@group_pin_point = 1` on that found point) — guarantees a correct nearest-point group regardless of geometry changes, since it's computed dynamically rather than hardcoded.
+12. **Combined radiating-crack effect:** group unshared/boundary points, select a subset, and use **Shortest Path** from the VEX-found nearest/center point to each selected boundary point to procedurally generate radiating crack-like curves.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Group (Expression: `abs(N.y) > 0.5`-style normal thresholding; Normals mode: Keep by Normals + include-opposite-direction), Group Range (Points/Primitives, select-amount expressions using point counts, Equal Partitions range type, Start range type + Connectivity toggle), Connectivity (`class` attribute generation from a seed point group), Group by Bounding Region (Bounding Box size expressions for procedural robustness, thin-axis scale, computed center offset), Measure (Curvature), Cut, Resample (note: "subdivision curves" and "by polygon edge" both smooth corners on a single connected primitive), Facet (remove inline points), Fuse, Sweep, Attribute Wrangle (VEX: `nearpoint()` for detail-scope nearest-point grouping, group-attribute assignment), Shortest Path.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — approachable group/expression patterns; the curvature-cut-resample and detail-scope VEX nearest-point techniques are the most non-obvious and broadly reusable tricks.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era group/expression toolset).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #procedural #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with direct-and-procedural-modeling-in-houdini.md and direct-vs-procedural-in-houdini.md (same author, overlapping group-selection/VEX-cleanup philosophy) once both are indexed together.

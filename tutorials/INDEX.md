@@ -2484,9 +2484,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=FLWrmz8QPZQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #procedural #tips #intermediate
+- **Summary:** Seven group-selection patterns: thresholded normal expressions, Group Range endpoint/partition selection, Connectivity-based class splitting, procedural bounding-box edge-loop selection, curvature-based corner-preserving curve resampling, and detail-scope VEX nearest-point grouping via nearpoint().
 - **File:** tutorials/groups-patterns-in-houdini.md
 
 
