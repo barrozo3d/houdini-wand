@@ -1704,9 +1704,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ha85low9Bmo
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21
+- **Tags:** #karma #solaris #lops #vdb #scattering #instancing #materials #vegetation #benchmark #intermediate
+- **Summary:** Benchmarks four leaf-rendering approaches in Karma: flat cards (16s), opacity-map cutouts (2m35s), the new Stencil Map setting (27s), and fully meshed opacity-to-geometry leaves (16s) — plus the Solaris scatter/proxy/instancing pipeline used to build the test scene.
 - **File:** tutorials/houdini-21-opacity-vs-stencil-vs-geometry.md
 
 

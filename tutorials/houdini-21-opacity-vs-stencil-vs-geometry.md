@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ha85low9Bmo
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21"
+tags: [karma, solaris, lops, vdb, scattering, instancing, materials, vegetation, benchmark, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-21-opacity-vs-stencil-vs-geometry/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 21 | Opacity vs Stencil vs Geometry
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-21-opacity-vs-stencil-vs-geometry <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -191,30 +187,51 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:35] tutorials/frames/houdini-21-opacity-vs-stencil-vs-geometry/frame_000.jpg
+- [1:05] tutorials/frames/houdini-21-opacity-vs-stencil-vs-geometry/frame_001.jpg
+- [1:30] tutorials/frames/houdini-21-opacity-vs-stencil-vs-geometry/frame_002.jpg
+- [2:00] tutorials/frames/houdini-21-opacity-vs-stencil-vs-geometry/frame_003.jpg
+- [4:00] tutorials/frames/houdini-21-opacity-vs-stencil-vs-geometry/frame_004.jpg
+- [6:35] tutorials/frames/houdini-21-opacity-vs-stencil-vs-geometry/frame_005.jpg
+- [7:20] tutorials/frames/houdini-21-opacity-vs-stencil-vs-geometry/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A direct render-time benchmark comparing four ways to render leaf/foliage cards in Karma (Houdini 21): full opacity-less card geometry, opacity-map cutout cards, the new **Stencil Map** render-geometry setting, and fully meshed (opacity-to-geometry-converted) leaves — with a practical Solaris scatter/instancing/material pipeline shown afterward for how the scene was actually built.
 
 ### Summary
-[PENDING EXTRACTION]
+Four identical leaf-scatter setups (~6000 packed instances) are benchmarked on the same demo scene. Baseline geometry (flat cards, no opacity map, no real cutout shape) rendered in **26s** (later re-verified closer to ~15-16s after the author suspected a measurement fluke on the first run). Switching the material to use an **opacity map** (real leaf-shaped alpha cutout) balloons render time to **2 minutes 35s** — a dramatic slowdown, plus a noted Houdini 21 bug requiring a render restart for time-to-first-pixel to behave normally. Enabling the new **Stencil Map** option (Render Geometry Settings → Stencil Map, using the same opacity-mapped material) renders in **27s** — visually equivalent cutout quality to full opacity, at almost the same speed as the no-cutout baseline. Finally, converting the opacity map into actual mesh geometry (fully meshed leaf shapes, no opacity/stencil involved) renders in **16s** — matching the flat-card baseline speed while providing a *real* geometric cutout (correct silhouette, not just alpha-tested). Conclusion: opacity-based cards are by far the worst option time-wise; Stencil Map is a solid middle ground (~27s vs 2:35 for full opacity, same visual cutout quality) but still notably slower than avoiding transparency entirely; the best options are either fully meshed geometry (best quality/speed tradeoff, more setup work) or plain flat cards with no cutout at all when foliage is distant/small enough in frame not to matter. The second half of the video walks through the actual production setup used to generate these test assets: a tree built with **Simple Tree Tools**, leaves scattered and Packed (~6000 instances) with a low-poly render proxy built via Unpack → get a few points → **VDB From Particles** → Convert VDB (with adaptivity) → Poly Reduce, exported as a separate proxy file. A Houdini 21 bug is noted: merging trunk+branches with leaves in the same file breaks the Stencil Map, so trunk/branches and leaves must be exported as **separate files**. For the meshed-geometry version, an **Atlas Processor** plus the author's own "Opacity to Mesh" HDA (to be shared on Patreon) converts the opacity-based leaf atlas into real mesh geometry before running the same Leaf Scatter pipeline. In Solaris, a Switch alternates between the opacity-based and meshed leaf variants (referencing trunk/branches, leaves, and proxy separately), organized into Render/Proxy folders with matching `purpose` primvars (render vs. proxy) — with a note that if both proxy and render versions display simultaneously, resetting the render ROP fixes it. A Collection feeds a basic Instancer, materials (albedo, roughness, normal, translucency, plus an `opacity` input for the opacity-based variant) are applied with Dinwoldie? shading and albedo exposure/hue tuning, and the Stencil setting is applied on the appropriate variant to reproduce the benchmark results shown earlier.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Baseline test (no opacity, no stencil):** render flat leaf-card geometry with no opacity map and no Stencil Map enabled — fastest full-quality-looking result (~15-16s), but geometry silhouette is just a flat rectangle, not a real leaf cutout shape.
+2. **Opacity-map test:** switch the material to use a real opacity/alpha map for the leaf cutout shape — dramatically slower (~2m35s); also triggers a known Houdini 21 bug requiring a render restart for correct time-to-first-pixel behavior.
+3. **Stencil Map test:** using the same opacity-mapped material, enable **Stencil Map** in Render Geometry Settings — renders in ~27s, visually equivalent cutout quality to full opacity but far faster; still notably slower than the no-cutout baseline.
+4. **Meshed-geometry test:** convert the opacity map into actual mesh geometry (via an Atlas Processor + custom Opacity-to-Mesh HDA) so the leaf shape is real geometry, not alpha-tested — renders in ~16s, matching the flat-card baseline speed while providing a true geometric cutout silhouette.
+5. **Interpret results:** rank from best to worst — meshed geometry (best quality/speed) ≈ flat cards without cutout (fastest, but no real silhouette) > Stencil Map (good middle ground) >> full opacity maps (worst, avoid at scale).
+6. **Tree + leaf production setup:** build a tree with **Simple Tree Tools**; scatter and Pack leaves (~6000 instances); build a lightweight render proxy via Unpack → sample a few points → **VDB From Particles** → Convert VDB (tuned adaptivity) → **Poly Reduce**, exported as a separate proxy file.
+7. **Separate-file workaround for a Houdini 21 stencil bug:** merging trunk+branches geometry together with the leaves in one exported file breaks Stencil Map functionality — export trunk/branches and leaves as **two separate files** to avoid this.
+8. **Meshed-leaf conversion:** use an **Atlas Processor** plus a custom "Opacity to Mesh" HDA (author's own tool, to be shared) to convert the opacity-based leaf atlas texture into real mesh geometry before feeding the same Leaf Scatter pipeline used for the opacity-based variant.
+9. **Solaris variant switching:** build a **Switch** between the opacity-based and fully-meshed leaf variants, each referencing its own trunk/branches, leaves, and proxy files; organize into separate Render and Proxy folders with matching `purpose` primvars (enable/disable primvar toggling between them); if both proxy and render display simultaneously, reset the render ROP to fix it.
+10. **Instancing + materials:** build a Collection feeding a basic Instancer; apply materials (albedo, roughness, normal, translucency, plus an `opacity` input specifically for the opacity-based leaf variant) with tuned exposure/hue on the albedo; apply a simple trunk material; enable the Stencil setting on the appropriate variant, and tune SSS limit (path-trace samples left at default) for the final comparison renders shown at the start of the video.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Karma render settings: **Stencil Map** (Render Geometry Settings), opacity material input, path-trace samples, SSS limit. SOPs: Simple Tree Tools (leaf/branch generation), Scatter, Pack, Unpack, VDB From Particles, Convert VDB (adaptivity), Poly Reduce (proxy LOD), Atlas Processor, custom "Opacity to Mesh" HDA (author-built, unreleased at time of recording). LOPs/Solaris: Switch (opacity-based vs. meshed variant toggle), `purpose` primvar (render/proxy), Collection, Instancer, Material Library (albedo/roughness/normal/translucency/opacity shader inputs).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — primarily a render-settings/benchmark comparison; the production pipeline (VDB proxy generation, Opacity-to-Mesh conversion, Solaris variant switching) assumes familiarity with Solaris instancing and Simple Tree Tools from prior videos.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21 (explicitly titled "Houdini 21"; Stencil Map is a new-to-21 render feature per the transcript, with a noted contemporaneous bug the author already reported to SideFX).
 
 ### Tags
-[PENDING EXTRACTION]
+#karma #solaris #lops #vdb #scattering #instancing #materials #vegetation #benchmark #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md (same author, same Simple Tree Tools + Atlas Processor + Opacity-to-Mesh vocabulary) once indexed together.
