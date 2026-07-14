@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=at27qaTVrFc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, vex, procedural, expressions, furniture, product-viz, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/modern-furniture-modeling-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Modern Furniture Modeling in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py modern-furniture-modeling-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -202,30 +198,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:50] tutorials/frames/modern-furniture-modeling-in-houdini/frame_000.jpg
+- [2:00] tutorials/frames/modern-furniture-modeling-in-houdini/frame_001.jpg
+- [6:30] tutorials/frames/modern-furniture-modeling-in-houdini/frame_002.jpg
+- [9:00] tutorials/frames/modern-furniture-modeling-in-houdini/frame_003.jpg
+- [11:40] tutorials/frames/modern-furniture-modeling-in-houdini/frame_004.jpg
+- [13:30] tutorials/frames/modern-furniture-modeling-in-houdini/frame_005.jpg
+- [17:00] tutorials/frames/modern-furniture-modeling-in-houdini/frame_006.jpg
+- [19:15] tutorials/frames/modern-furniture-modeling-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Modeling a modern designer table with a stacked, rotating, tapered "petal ring" base — a striped triangulated strip is deformed into multiple stacked cylindrical rings via **Petal Form** (a curve-based radial deformer), each ring individually offset in rotation using a **for-each-loop iteration index expression**, then the whole stack is reshaped with a **Linear Taper (squish preset)** and finished with a Poly Bevel — a build the author calls too precise to be practical to hand-model directly.
 
 ### Summary
-[PENDING EXTRACTION]
+The base pattern starts as a **Grid** (10x1, alternating-triangle remesh mode) that gets **Copy-and-Transform**'d using the bounding-box size as the offset (so shapes stack edge-to-edge), scaled down to 0.3 — critically **pivoting the scale from the shared meeting edge** (via a copy-pasted `Z-mean` expression in Pivot Transform) rather than each shape's own center, so the scaled copies visually taper toward the join. Three separate Copy nodes output differently-scoped groups (`copy_group_0`, `copy_group_1`, and an unscaled `copy_group_3`), which are combined via **Group Combine** (subtracting overlapping groups) to isolate exactly the geometry belonging to each "level" (ring) of the eventual stack — with a debugging note that Houdini's group-name-list syntax requires **space-separated** names in a "keep all but" expression, not comma-separated. A **Name from Groups** node converts the level groups into a proper `name` attribute, enabling a **For Each (name/primitive)** loop to process each ring independently: inside the loop, every-other primitive (the "filler" triangles) is grouped via Group Range and promoted to edges (excluding shared edges) to isolate the unwanted **middle seam edges**, which are then unioned with the boundary/unshared edges (another Group Combine pass) and **Dissolved** to clean up the strip before deformation. **Petal Form** (fed a subdivided Circle in the ZX plane) bends the flat striped strip into a cylindrical ring — described as "a bit tricky to work with," requiring the correct axis pair (X/Z) and switching the length parameter to a **fraction of curve length** (rather than absolute) to get proper wrapping. A visible seam artifact where the strip's start/end don't align cleanly is fixed via **Fuse** set to output **snap points** (not merge them outright), promoting that snap-point group to edges (boundary-only), then a second real Fuse plus Dissolve on that specific edge to close the seam invisibly. Since all the loop-generated rings initially stack at the same position, **Match Size** (mean/max alignment, referencing the *previous* loop iteration via a duplicated Fetch/feedback input) staggers them into a proper vertical stack; some ring curves need **Reverse Curve** to correct triangle-pattern orientation. Since every ring's triangle pattern starts at the same rotational phase, a **Transform** rotates each ring by `(360 / grid_columns) * (iteration - 1)`, read via a **Metadata** node exposing the for-each loop's `iteration` as a spare input/detail attribute — the `-1` term intentionally skips rotating the very first ring (iteration 0) so the base ring stays in its original orientation while subsequent rings each rotate one additional increment, creating a spiraling/staggered visual pattern up the stack (with an important side note: Match Size's Pivot must be set to **None**, not automatic, or the subsequent rotation won't pivot correctly from the ring's true center). Finally, a **Linear Taper** node (bend-node taper preset, entered/pressed B interactively) squeezes the stacked-ring cylinder into an hourglass-like silhouette — using a **B-spline capture ramp** with an added control point to shape exactly where the squish concentrates, and tuning the capture length — followed by Fuse + Normal to reconnect now-disconnected geometry after the taper deformation, **Fill (triangle fan)** to cap the open top/bottom, and a final **Poly Bevel** (~0.5) to soften/pinch the capped edges for the finished table-base shape.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base strip pattern:** Grid (10x1, alternating-triangle remesh setting, e.g. 30 columns) for the initial striped triangle strip.
+2. **Copy + center-pivoted scale:** **Copy and Transform**, offsetting by the shape's own bounding-box size (edge-to-edge stacking), scaling to ~0.3 — fix the scale pivot by copying a **Z-mean expression** into Pivot Transform so scaling happens from the shared meeting edge, not each shape's own center.
+3. **Output per-level groups:** run three Copy nodes with different group outputs (`copy_group_0`, `copy_group_1`, unscaled `copy_group_3`), then use **Group Combine** (subtracting overlapping group sets) to isolate exactly the primitives belonging to each ring "level."
+4. **Fix the group-list syntax bug:** in a "keep all but the level groups" expression, group names must be **space-separated**, not comma-separated, or the filter silently fails.
+5. **Convert groups to a name attribute:** **Name from Groups** turns the per-level groups into a proper `name` attribute for looping.
+6. **Per-ring cleanup loop:** **For Each (name/primitive)**; inside, Group Range selects every-other ("filler") primitive, promotes to edges (excluding shared edges) to isolate unwanted middle seam edges, unions with boundary/unshared edges via another Group Combine, then **Dissolve** to remove them before deforming.
+7. **Cylindrical deformation:** feed a subdivided **Circle** (ZX plane) into **Petal Form** to bend the flat strip into a ring; select the correct axis pair (X/Z) and switch the length parameter to **fraction of curve length** (not absolute) for correct wrapping.
+8. **Close the deform seam:** **Fuse** set to output snap points (not merge outright), promote the snap-point group to edges (boundary-only), then a second real Fuse + Dissolve on that specific edge to seamlessly close the ring.
+9. **Stack the rings:** **Match Size** (mean/max alignment, Pivot explicitly set to **None**) referencing the *previous* loop iteration (via a duplicated Fetch/feedback input) to stagger each ring vertically into a proper stack; **Reverse Curve** on rings where the triangle pattern orientation needs flipping.
+10. **Per-ring rotation offset:** add a **Metadata** node exposing the for-each loop's `iteration` as a spare input; **Transform** each ring by `(360 / grid_columns) * (iteration - 1)` — the `-1` skips rotating the first ring (iteration 0), so the stack builds a progressively-rotated spiral pattern.
+11. **Overall silhouette shaping:** apply a **Linear Taper** (bend node's taper/"squish" preset) to the full stacked-ring cylinder; use a **B-spline capture ramp** (with an added control point) to precisely control where the squish concentrates, tuning the capture length for the desired hourglass profile.
+12. **Reconnect + cap:** **Fuse** + **Normal** to reconnect geometry disconnected by the taper; **Fill** (triangle fan mode) to cap the open top/bottom.
+13. **Finish:** **Poly Bevel** (~0.5) to soften/pinch the capped edges for the final table-base shape.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Grid (alternating-triangle remesh mode), Copy and Transform (bounding-box-size offset, Pivot Transform Z-mean expression for center-pivoted scale), Group Combine (multi-pass level isolation, space-separated group-name syntax), Name from Groups, For Each (name/primitive loop), Group Range (every-other primitive selection), Group Promote (point/edge, shared-edge exclusion), Dissolve, Petal Form (circle-driven radial deform, axis selection, fraction-of-curve-length mode), Fuse (snap-points-only mode, then full fuse), Match Size (mean/max, Pivot: None, Fetch/feedback reference to previous iteration), Reverse Curve, Metadata (loop iteration as spare input/detail attribute), Transform (expression-driven per-iteration rotation), Linear Taper (bend-node taper preset, B-spline capture ramp with added control point, capture length), Normal, Fill (triangle fan), Poly Bevel.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — heavy use of group-combine logic and for-each-loop iteration expressions, but no VEX required; assumes comfort with procedural group manipulation and node-based deformers (Petal Form, Taper).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era modeling toolset).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vex #procedural #expressions #furniture #product-viz #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Author is building a larger Houdini + Unreal environment and mentions a couch/chair simulation asset from the same project — cross-link once a matching tutorial is found in this batch. Shares the Metadata-node iteration-index rotation pattern with model-and-rig-a-wardrobe-in-houdini.md.

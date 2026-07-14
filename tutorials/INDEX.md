@@ -2514,9 +2514,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=at27qaTVrFc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #vex #procedural #expressions #furniture #product-viz #intermediate
+- **Summary:** Models a designer table base by Petal-Form-deforming a triangulated strip into stacked rings, offsetting each ring's rotation via a Metadata-node iteration expression, then reshaping the stack with a Linear Taper squish and Poly Bevel finish.
 - **File:** tutorials/modern-furniture-modeling-in-houdini.md
 
 
