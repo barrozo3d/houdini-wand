@@ -1714,9 +1714,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=1QTfNMlvF1E
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #opencl #vellum #animation #procedural #texturing #cops #tips #intermediate
+- **Summary:** Four production tips from a straw-rig project: meshing an animated curve via Sweep's second input, faking stop-motion with a frame-gated solver lerp, adding Vellum spring secondary motion transferred back via Point Deform, and generating a tileable stripe texture with hand-written OpenCL.
 - **File:** tutorials/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more.md
 
 

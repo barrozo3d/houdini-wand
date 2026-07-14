@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=1QTfNMlvF1E
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, opencl, vellum, animation, procedural, texturing, cops, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Daily dose of Houdini Tips | Sweep secrets, opencl textures and more
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -111,30 +107,45 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:35] tutorials/frames/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more/frame_000.jpg
+- [1:35] tutorials/frames/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more/frame_001.jpg
+- [2:35] tutorials/frames/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more/frame_002.jpg
+- [3:30] tutorials/frames/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more/frame_003.jpg
+- [4:10] tutorials/frames/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more/frame_004.jpg
+- [5:20] tutorials/frames/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A grab-bag of production tips learned while rigging/animating a drinking straw: meshing an accordion-fold rig with **Sweep**'s second input, faking stop-motion with a **sub-solver** lerp, adding secondary motion via a **Vellum spring solver**, and generating a tileable candy-cane stripe pattern with hand-written **OpenCL**.
 
 ### Summary
-[PENDING EXTRACTION]
+Covers four independent tricks from one project. First: to mesh an animated curve/rig (the straw's accordion joints) instead of using Skin, connect the curve only to Sweep's *second* input with default settings — remembering to close the implicit backbone or the mesh stays open. Second: to fake a stop-motion "pop" on the accordion folds, drive a simple line-based deformation with Attribute Noise (VOP), then gate it through a **Solver** that only lerps toward new positions on specific recorded frames (rather than continuously), producing a stepped, non-continuous motion. Third: to add a springy secondary-motion overshoot to the straw, build a Vellum rig using a **Vellum Constraint** set to Pin to Target with tuned stiffness/damping, run it through a **Vellum Solver** with gravity removed, then transfer that curve-only motion back onto the full straw geometry via **Point Deform** — sweeping both the rest and animated curves with the same radius as the real geometry first, which makes Point Deform's job much easier than deforming from a bare curve. Fourth: texturing the striped straw pattern procedurally in **COPs using OpenCL** — computing `frac(uv.y * repetitions)` for the tiling stripe pattern, `floor(uv.y * repetitions)` as a per-stripe index, and feeding that index into Houdini's built-in `random` OpenCL function for per-stripe random color/value variation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Accordion mesh from Sweep:** feed the rigged/animated curve into **Sweep**'s *second* input only (leave the first/cross-section input default) to generate geometry directly from the curve's cross-section-implicit shape; follow with UV + Normal calculation. Remember to enable "close implicit backbone" or the resulting mesh is left open.
+2. **Stop-motion fake:** convert the animated geometry to a simple line, run an **Attribute Noise (VOP)** to jitter position with the animation for texture, then build a **Solver** (sub-solver) that only updates/lerps to the current animated position on specific pre-identified frames (recorded manually where the accordion folds visibly "pop"), copying position from the second input and lerping from the previous held frame — producing a deliberate stepped/stop-motion look instead of smooth continuous motion.
+3. **Vellum spring secondary motion:** build a Vellum setup on the simplified line: a **Vellum Constraint** node set to "Pin to Target" with tuned stiffness and damping ratio, run through a **Vellum Solver** with gravity disabled, producing a fast, springy overshoot effect on top of the base animation.
+4. **Transferring motion back to full geometry:** rather than Point Deform-ing straight off a bare curve, **Sweep both the rest-pose and the Vellum-animated curve** using the same radius as the real straw geometry, then use **Point Deform** with those two swept tubes (rest + animated) as the deform pair — this gives Point Deform much more geometry to match against than a 1D curve, producing a cleaner secondary-motion transfer onto the final mesh.
+5. **Procedural stripe texture via OpenCL (COPs):** using the UV map in texture space, compute a tiling stripe pattern as `frac(uv.y * repetitions)` (repetitions tunable, e.g. 20 vs. 80 used here); compute a per-stripe index as `floor(uv.y * repetitions)`; feed that index into Houdini's built-in OpenCL `random` function (via the provided random-number VEX/OpenCL header) to get one random value per stripe; multiply the random value by the stripe pattern for per-stripe colorization, keeping the background always white; finish with a 45° rotate transform on the pattern before feeding it as albedo into a preview material.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes/techniques used: Sweep (second-input-only meshing trick, "close implicit backbone" option), UV + Normal calculation, Attribute Noise (VOP), Solver/sub-solver (frame-gated lerp for stop-motion), Vellum Constraints (Pin to Target, stiffness, damping ratio), Vellum Solver (gravity disabled), Point Deform, second Sweep pass (rest + animated curve, matched radius). OpenCL/VEX for texturing: `frac(uv.y * repetitions)` for tiling stripes, `floor(uv.y * repetitions)` for stripe index, Houdini's built-in `random` OpenCL function seeded by stripe index, Transform (2D, 45° rotation) on the resulting pattern, fed as albedo into a preview material — all inside a CopNet.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced — combines several non-obvious workflow tricks (Sweep's second input, frame-gated solver lerping, Vellum spring rigs, and hand-written OpenCL) that assume familiarity with Houdini's solver/VOP/Vellum systems.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (Copernicus/OpenCL COPs workflow matches the 20.5-era UI).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #opencl #vellum #animation #procedural #texturing #cops #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with any other cgside COPs/OpenCL-texturing or Vellum secondary-motion tutorials once extracted from this batch.
