@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=6wqRXRV7oxk
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [kinefx, rigging, vellum, simulation, vex, procedural, animation, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/kinefx-and-vellum-fluid-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Kinefx and Vellum Fluid in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py kinefx-and-vellum-fluid-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -157,30 +153,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:50] tutorials/frames/kinefx-and-vellum-fluid-in-houdini/frame_000.jpg
+- [2:30] tutorials/frames/kinefx-and-vellum-fluid-in-houdini/frame_001.jpg
+- [4:30] tutorials/frames/kinefx-and-vellum-fluid-in-houdini/frame_002.jpg
+- [6:20] tutorials/frames/kinefx-and-vellum-fluid-in-houdini/frame_003.jpg
+- [7:20] tutorials/frames/kinefx-and-vellum-fluid-in-houdini/frame_004.jpg
+- [10:30] tutorials/frames/kinefx-and-vellum-fluid-in-houdini/frame_005.jpg
+- [15:00] tutorials/frames/kinefx-and-vellum-fluid-in-houdini/frame_006.jpg
+- [17:20] tutorials/frames/kinefx-and-vellum-fluid-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A homage/breakdown recreating a Reddit-viral "squeezed toothpaste tube" animation (originally by Max Vujje) entirely in Houdini: **Vellum cloth** to get two believable tube states (full vs. squeezed-empty) blended procedurally, a **KineFX line rig** capturing the tube via the fast-but-crude **Capture by Proximity** algorithm, a custom VEX "unrolling spiral" rig-wrangle animation to simulate the tube physically curling/uncurling as it's squeezed, a Point Deform + diagonal-rotation-matrix trick to keep the tube's cap/top piece correctly oriented as it follows the animated body, and a final **Vellum Fluid** sim (with sine-wave-randomized velocity and a shading trick using per-particle colored trail lines) for the extruded paste itself.
 
 ### Summary
-[PENDING EXTRACTION]
+The tube body starts as simple modeling (circle + rounded square merged and Poly Bridged, UVs computed early via bottom-point grouping for potential later texturing, capped and beveled). Rather than simulating the actual squeeze, the tube's two "poses" — a naturally-drooping filled state and a squeezed/emptied state — are each produced as separate **Vellum cloth sims** (with the polyfilled cap-patch group's edges Group-Expanded for extra bend stiffness, value 10 vs. 1 elsewhere) and simply **`lerp()`-blended between the two cached position sets** over a 1-48 frame animated fit range, since both share identical topology. That blended shape feeds a simple **KineFX line rig**: a Z-axis line Match-Sized and Resampled onto the tube (with a saved `curveu`/curve-view attribute), Rig Doctor-initialized, and captured via **Capture by Proximity** — chosen explicitly for speed over rigging accuracy ("not the best capturing system... just the fastest one"). To get the desired straighter, less-organically-rounded look for parts of the tube, a **Group by Range** isolates specific point intervals, and a custom rig wrangle (credited to community member "Swalch") computes a procedurally-animated **unrolling spiral**: an angle/offset drives a spiral shape, a Ramp gives positional control over the spiral's falloff, and a `fit()`-based time expression animates it from fully unrolled to nearly fully rolled — this spiral motion is applied via **Bone Deform** (rest position + this newly animated position as the two inputs) to physically simulate the tube curling as paste is squeezed out, followed by an Attribute Blur to soften self-intersection artifacts from the fast capture algorithm. For the cap/top piece (a separately-modeled static mesh — an extruded spiral shape positioned at the tube's opening) to correctly follow the tube's animation: the tube's cap-patch area is grouped, converted to points, and a **near-point + bounding-box-center** lookup finds the correct attachment point and its normal each frame; a **diagonal rotation matrix** (`dihedral()`-style, from base position/normal to the target reference point/normal) plus position offset (subtract-then-re-add center, the pattern reused across several videos in this batch) orients the static cap piece correctly; a **Point Deform** (rest state = first frame, target = the animated tube) then deforms the cap to follow — but produced an unwanted stretching artifact on a first attempt, fixed by blending two Point Deform results (one Attribute-Blurred first) together via a mask so the outer part of the cap doesn't over-stretch while the inner deforming part still follows correctly. Everything is merged for the final animated tube+cap. The **Vellum Fluid** paste itself starts from the previously-saved patch/cap primitive group (isolated via Blast, cleaned of small stray primitives via Measure + Blast), Peaked/Extruded slightly, then **Time Blend**-interpolated to add fractional in-between frames and avoid visible stepping in the sim. Vellum Fluid is configured with high viscosity, some surface tension, and a relatively small particle size; colored guide-tube lines (for later shading, since UVs weren't planned) transfer normals, and a **Point Velocity from Normals** wrangle drives emission direction, with an **Attribute Adjust Float** scaling velocity magnitude over time and a **sine-wave-based randomization** (tunable amplitude/frequency) added on top to make the extruded paste wiggle unpredictably left-right rather than emitting in a perfectly straight line. The animated cap geometry itself is used as the FLIP/Vellum collision shape, the ground plane provides the floor collision, and the Vellum Solver just needs increased substeps for stability. The final mesh is built by passing age and the colored guide-line attribute through as shading data, with particle separation reduced relative to particle size (called out as generally good practice for Vellum Fluid) — noted honest caveats: the mask driving mesh smoothing isn't perfectly smooth due to insufficient point density, and the whole sim took ~10 minutes / ~50MB cache on modest hardware, i.e. this is a comparatively cheap effect to attempt.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base tube modeling:** Circle + rounded-Square, merge, **Poly Bridge**; center the shape; group bottom points → promote to edges → compute UVs (useful for later texturing); Polyfill the cap, Bevel hard edges, compute UVs on those parts too, add normals.
+2. **Two Vellum cloth "poses":** using the polyfilled cap/patch group's edges (Group Expanded for extra stiffness — bend stiffness 10 on those edges vs. 1 elsewhere), run **two separate Vellum cloth sims**: one where the tube is simply dropped/settles naturally (partially full look), and one tuned via bend-stiffness values to represent the squeezed/emptied state.
+3. **Blend the two cached states:** since both sims share identical topology, **`lerp()`** the position attribute between the two cached geometries, driven by a `fit()` of the current frame (1 to 48) into a 0-1 blend factor, for a procedurally-animated squeeze transition.
+4. **KineFX rig setup:** build a Z-axis **Line**, Match Size it to the tube, Resample while saving a `curveu` attribute, transfer that curve data onto the tube, Rig Doctor to initialize the rig, then **Capture by Proximity** (fast but imprecise capture algorithm, chosen deliberately for speed) to bind the tube to the line rig.
+5. **Isolate straighter sub-sections:** **Group by Range** selects specific point intervals along the rig line where a straighter (less uniformly rounded) look is wanted, rather than applying the same treatment everywhere.
+6. **Custom unrolling-spiral rig wrangle:** (community-credited to "Swalch") build a procedurally animated spiral from an angle + offset, use a **Ramp** for positional control over the spiral's shape/falloff, and animate the unroll amount via a `fit()`-based time expression (fully unrolled → nearly fully rolled).
+7. **Apply the spiral animation via Bone Deform:** feed the rig's rest position and the newly-animated spiral position into **Bone Deform** to physically curl/uncurl the tube body as it's squeezed; Attribute Blur afterward to soften self-intersection artifacts from the fast capture algorithm.
+8. **Cache and clean up:** cache the animated tube, delete unneeded attributes (keep normals + UVs) and groups (keep only the patch group) to keep the cache lean.
+9. **Cap/top attachment point:** group the tube's cap-patch area, convert to points, compute the **bounding-box center** of that group, then use **Near Point** from that center position to find and select the specific attachment point (with normals added, critical for orientation).
+10. **Orient the static cap piece:** compute a **diagonal/rotation matrix** (`dihedral()`-style) transforming from the cap piece's base position/normal to the target reference point/normal (found in step 9), then apply position (subtract-then-re-add center) and the rotation — the same base/target-normal orientation pattern reused across multiple videos in this batch.
+11. **Deform the cap to follow the tube:** **Point Deform**, rest state = first frame of the cap geometry, target = the animated tube — produces an initial stretching artifact on the outer, less-deforming part of the cap.
+12. **Fix the stretch artifact via masked blend:** run a second Point Deform pass through an **Attribute Blur** first, then blend the blurred and unblurred results together using a mask so the outer cap stays stable while the inner region still follows the tube's deformation correctly; final Attribute Blur, then merge cap + tube for the complete animated asset.
+13. **Fluid source prep:** Blast down to the previously-saved cap/patch primitive group, clean up small stray primitives (Measure + Blast by size threshold), Peak/Extrude slightly, delete unneeded attributes, then **Time Blend** to add fractional sub-frames and avoid visible stepping artifacts in the simulation.
+14. **Vellum Fluid configuration:** high viscosity, some surface tension enabled, relatively small particle size; separately build colored guide-tube "trail" lines (for shading, since no UVs are planned for the fluid) transferring normals from the source geometry.
+15. **Velocity + randomization:** **Point Velocity from Normals** for base emission direction; **Attribute Adjust Float** scales velocity magnitude over time; layer a **sine-wave-based randomization** (tunable amplitude and frequency) on top so the extruded paste wanders left-right unpredictably instead of emitting perfectly straight.
+16. **Collisions and solve:** use the animated cap geometry as the collision shape (since it's also animated, matching the squeeze motion) plus a ground plane; increase Vellum Solver substeps for stability; everything else left at default.
+17. **Meshing + shading data:** mesh the resulting Vellum Fluid particles, passing through **age** and the **colored guide-line attribute** as shading data; reduce particle separation relative to particle size (called out as generally good Vellum Fluid practice) for cleaner mesh results; note the resulting mask/mesh smoothing isn't perfectly smooth due to insufficient point density in this pass, requiring more resolution to fully fix.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Modeling: Circle, Square (rounded), Merge, Poly Bridge, Group (bottom points), Group Promote, UV compute, Polyfill, Bevel, Normal. Vellum: Vellum Cloth Solver (x2 poses, Group Expand for bend-stiffness edges, bend stiffness values), Attribute Wrangle (VEX: `lerp()` position blend driven by `fit(frame, 1, 48, 0, 1)`). KineFX: Line, Match Size, Resample (curveu save), Rig Doctor, Capture by Proximity, Group by Range, Rig Wrangle (VEX: spiral angle/offset construction, Ramp-driven falloff, `fit()`-based unroll animation), Bone Deform, Attribute Blur. Cap orientation: Group, Convert to Points, Group Point Bounding Box Center, Near Point, Normal, Attribute Wrangle (VEX: `dihedral()`-style rotation matrix from base to target normal, center subtract/re-add position pattern), Point Deform (x2, one blurred), mask-driven Blend. Fluid: Blast, Measure (size-threshold cleanup), Peak, Extrude, Time Blend (fractional sub-frames), Vellum Fluid (Configure Fluid: viscosity, surface tension, particle size, particle separation), Point Velocity from Normals, Attribute Adjust Float (velocity scale over time), Attribute Wrangle (VEX: sine-wave randomization, amplitude/frequency), Vellum Solver (substeps, collision geometry from animated cap + ground), mesh (age + color-line attribute pass-through).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Expert — combines KineFX rigging, a hand-built VEX spiral-unroll animation, dihedral-rotation-based orientation for a deforming attached piece, and a full Vellum Fluid sim with custom velocity randomization; assumes strong VEX, rigging, and simulation fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (KineFX/Vellum Fluid workflow consistent with Houdini 20.5-era tools; credits Max Vujje's original Reddit-viral simulation as inspiration).
 
 ### Tags
-[PENDING EXTRACTION]
+#kinefx #rigging #vellum #simulation #vex #procedural #animation #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson.md (same author, overlapping Vellum-fluid + rig-driven-squeeze technique) and any other cgside KineFX rigging tutorials once indexed together — shares the dihedral-rotation orientation pattern with houdini-tips-to-save-the-day.md and hard-surface-techniques-in-houdini.md.

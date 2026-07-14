@@ -2404,9 +2404,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=6wqRXRV7oxk
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #kinefx #rigging #vellum #simulation #vex #procedural #animation #advanced
+- **Summary:** Recreates a squeezed-toothpaste-tube animation: Vellum cloth blend between two lerped tube poses, a KineFX Capture-by-Proximity rig with a custom VEX unrolling-spiral animation, a dihedral-rotation Point Deform fix for the following cap piece, and a sine-wave-randomized Vellum Fluid paste sim.
 - **File:** tutorials/kinefx-and-vellum-fluid-in-houdini.md
 
 
