@@ -1484,9 +1484,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=oEIXFY-Kxdk
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21
+- **Tags:** #modeling #rigging #vex #procedural #skeleton #deformation #intermediate
+- **Summary:** Transforms a plain open-ended tube into a posed glove asset via a temporary bone-capture skeleton, a VEX-driven edge-equalizing wrangle, and multiple Bone Deform + Delta Mesh passes to blend a fingers-apart capture pose against the final closed pose (plus wrinkle detail via a Z-axis point mask).
 - **File:** tutorials/creating-assets-from-default-geometry-in-houdini-21.md
 
 

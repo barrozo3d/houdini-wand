@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=oEIXFY-Kxdk
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21"
+tags: [modeling, rigging, vex, procedural, skeleton, deformation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/creating-assets-from-default-geometry-in-houdini-21/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Creating assets from default geometry in Houdini 21
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py creating-assets-from-default-geometry-in-houdini-21 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -195,30 +191,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/creating-assets-from-default-geometry-in-houdini-21/frame_000.jpg
+- [3:00] tutorials/frames/creating-assets-from-default-geometry-in-houdini-21/frame_001.jpg
+- [6:25] tutorials/frames/creating-assets-from-default-geometry-in-houdini-21/frame_002.jpg
+- [7:40] tutorials/frames/creating-assets-from-default-geometry-in-houdini-21/frame_003.jpg
+- [8:55] tutorials/frames/creating-assets-from-default-geometry-in-houdini-21/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Turning an open-ended cylindrical mesh (a "template" tube) into a posed, sculpted asset (here, a glove) by building a temporary skeleton with **bone capture**, posing it twice (fingers-apart capture pose vs. final closed pose), and blending the resulting **delta mesh** deformations together with VEX-driven masks.
 
 ### Summary
-[PENDING EXTRACTION]
+Starts from a plain open-ended tube, equalizes its ragged end edge with a hand-written VEX wrangle that projects points onto a local axis (via oriented-bounding-box transform + dot product), then polyfills and unrolls a skeleton from the mesh using **Skeleton from Mesh**-style resampling. The skeleton is posed apart (to avoid finger-intersection during capture), captured onto the mesh via **bone capture lines + pet conform + capture by harmonic**, then deformed back through a "real" closed pose using **Bone Deform + Delta Mesh** so the fingers separate cleanly without self-intersecting. Two more delta-mesh passes (per-Z-axis point-position blur/mask) recombine rest/posed states to add wrinkle-like surface detail near the joints, and the piece finishes with a subdivide + 3-point lighting/AO render.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start from the template tube body; extract one open end (ragged/uneven boundary).
+2. Compute the OBB (oriented bounding box) of the unshared boundary group and save its transform attribute (matrix) for later use as a local rest-space frame.
+3. In a VEX wrangle (Attribute Wrangle) over just the unshared-edge point group: grab one axis of the saved OBB transform matrix, dot-product each point's position against that axis to get a signed distance (in front of / behind the reference point), then subtract along that axis to equalize/flatten the ragged edge — an alternative to simply transforming into rest space, inverting, and moving points on a plain axis.
+4. Polyfill the now-flat end to close the tube, then build a skeleton: resample the capped mesh, delete extra attributes/groups, and derive a bone chain running along the tube with points centered per "finger".
+5. Manually pose the skeleton with a **Rig Pose** node, spreading the "fingers" apart (to leave capture room and avoid intersections) — this is the "capture pose".
+6. Capture geometry to the skeleton using **Bone Capture Lines** (subdivides curves) → **Pet Conform** (conforms lines to the remeshed mesh) → **Capture by Harmonic** (chosen over Capture by Distance, which gave a worse result given the tight finger spacing).
+7. Deform with **Bone Deform** using the capture pose, then generate a **Delta Mesh** to get a clean static result for that pose.
+8. Add a second **Rig Pose** for the true final pose (fingers closer together, more natural), run another Bone Deform + Delta Mesh from the capture-pose result.
+9. Run a third Bone Deform + Delta Mesh back to the original rest position/pose, then blend rest ↔ posed states via a wrinkle-style deformer using a **point attribute mask along the Z axis** (bounding-box-relative float attribute) to localize surface wrinkling near joints.
+10. Subdivide the final mesh and light with 3-point lighting + ambient occlusion for the final render; note UVs exist but are not relaxed/flattened in this pass.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes used: Object Merge, Bound (oriented bounding box), Attribute Wrangle (custom VEX — the only VEX in the whole build), Polyfill, resample/skeleton-generation chain, Rig Pose (x2, capture pose + final pose), Bone Capture Lines, Pet Conform, Capture Attributes (Capture by Harmonic, not Capture by Distance), Bone Deform (x3 — capture pose, final pose, rest pose), Delta Mesh (x3, one per Bone Deform), attribute blur (on points, for wrinkle blending), a bounding-box-relative Z-axis mask attribute for localized wrinkle deformation, Subdivide. VEX snippet: extracts one axis vector from a 4x4 transform matrix, computes `dot(position, axis)` for a signed local-space distance, and displaces points along that axis to equalize the boundary edge.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — no complex VEX beyond a single wrangle, but requires solid understanding of bone capture/deform workflows, delta mesh blending, and local-space transform math (matrix axis extraction + dot products).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21 (per video title; UI matches Houdini 21's dark theme).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #rigging #vex #procedural #skeleton #deformation #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers bone-capture/delta-mesh asset creation from primitive geometry — cross-link with any future rigging, skeleton, or delta-mesh-deformation tutorials once extracted from this batch.
