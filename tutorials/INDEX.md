@@ -2624,9 +2624,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=5jfjCGDdbqs
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #materials #shaders #mtlx #karma #cops #compositing #procedural #product-viz #intermediate
+- **Summary:** Fakes an infinite-mirror LED sign using a Ray-Back-Face two-sided material (glass front, mirror back) sandwiching a segment-colored, sweep-ribbon LED strip treated as a self-illuminating light source via Render Geometry Settings, finished with a COPs blur-and-add bloom pass.
 - **File:** tutorials/infinite-mirror-in-karma-xpu.md
 
 
