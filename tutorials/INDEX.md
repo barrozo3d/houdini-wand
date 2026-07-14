@@ -2684,9 +2684,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=BUJg3ILS1Aw
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5
+- **Tags:** #vex #python #pipeline #unreal #fbx #houdini-engine #instancing #procedural #advanced
+- **Summary:** Exports a packed-instance-heavy cathedral scene to Unreal: recovers per-instance transforms via a For Each + Extract Transform loop, auto-routes packed-vs-single geometry via an intrinsic-typename switch, batch-exports FBX via Python, and reconstructs the scene in Unreal via an input-less Houdini Engine HDA of instance point clouds.
 - **File:** tutorials/export-a-full-scene-from-houdini-to-unreal.md
 
 

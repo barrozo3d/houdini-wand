@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=BUJg3ILS1Aw
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5"
+tags: [vex, python, pipeline, unreal, fbx, houdini-engine, instancing, procedural, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/export-a-full-scene-from-houdini-to-unreal/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Export a full scene from Houdini to Unreal
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py export-a-full-scene-from-houdini-to-unreal <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -252,30 +248,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/export-a-full-scene-from-houdini-to-unreal/frame_000.jpg
+- [5:30] tutorials/frames/export-a-full-scene-from-houdini-to-unreal/frame_001.jpg
+- [9:20] tutorials/frames/export-a-full-scene-from-houdini-to-unreal/frame_002.jpg
+- [15:00] tutorials/frames/export-a-full-scene-from-houdini-to-unreal/frame_003.jpg
+- [21:00] tutorials/frames/export-a-full-scene-from-houdini-to-unreal/frame_004.jpg
+- [27:00] tutorials/frames/export-a-full-scene-from-houdini-to-unreal/frame_005.jpg
+- [31:20] tutorials/frames/export-a-full-scene-from-houdini-to-unreal/frame_006.jpg
+- [34:30] tutorials/frames/export-a-full-scene-from-houdini-to-unreal/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Exporting a large (~10M-poly), packed-primitive, `copy`-and-transform-heavy cathedral scene from Houdini to Unreal efficiently: converting packed instances back into true point clouds with correctly recovered per-instance transforms (via a **For Each + Extract Transform** loop, not a single Extract Transform), auto-detecting packed-vs-single-mesh geometry per named part with an **intrinsic `typename` string-match switch**, batch-exporting each unique mesh via a **Python-automated FBX ROP**, and finally reconstructing the whole scene inside Unreal using **Houdini Engine** to load an input-less HDA containing all the point clouds (each carrying an `unreal_instance` string attribute) alongside individually-imported single meshes.
 
 ### Summary
-[PENDING EXTRACTION]
+The scene mixes packed-primitive `Copy` instances (not `Copy to Points`) with occasional manual post-pack transforms, which breaks naive approaches: a straight `add`+delete-geometry-keep-points+`Copy to Points` round-trip works for untouched objects but silently fails for pieces that were transformed after packing (e.g. plaster walls), because the packed transform doesn't survive a plain Object Merge + re-copy. Unpacking to fix UVs also destroys the transform outright; a single **Extract Transform** node on unpacked geometry recovers a transform but with wrong orientation. The reliable fix (found empirically, credited as a suggestion) is a **For Each (primitive) loop**: inside the loop, unpack each individual packed primitive and run **Extract Transform** on just that one piece, then Copy-to-Points the result — this reproduces the original packed placement exactly, unlike a single global Extract Transform on the whole unpacked set. To automate across every named part of the scene (each part already carries a `name` attribute), an outer **For Each (name/primitive)** loop wraps the whole extraction chain, with a **Fetch/Metadata node** feeding the current iteration's name into an Object Merge path expression (`` `detail("../meta1", "value", 0)` ``-style backtick string expression) so the same network processes every named object automatically. Since only *some* parts are packed-instance geometry (others are single meshes meant to export once, like the floor or altar), a **Switch** driven by a **string-match expression against the packed primitive's intrinsic `typename` attribute** (found via the geometry spreadsheet's Intrinsics tab, matched with a `packed*` wildcard) automatically routes packed geometry to the point-cloud path and non-packed geometry to a plain pass-through, inside the same automated loop. Each point (one per instance) gets an `unreal_instance` string attribute (via a wrangle reading the same Fetch/meta name) which Unreal's Houdini-Engine-imported point cloud will later use to look up which Instanced Static Mesh Component to assign — left as a placeholder path string in Houdini since the real Unreal content-browser reference path isn't known until after import, to be manually reassigned per-instance-group in the Unreal Details panel. Single, non-instanced meshes are exported directly via a **ROP FBX** node whose output filename is dynamically built from the same Fetch/meta name attribute, gated by a **Switch on `npoints`** (if the incoming geometry has zero points, i.e., is a plain mesh and not a point cloud, route it to be exported as an FBX); the actual "click Render" step is automated via a **Python node** calling `hou.parm(...).pressButton()` on the ROP's Execute parameter. Point clouds are grouped (`points_unreal`) and blasted out for a separate export path: since Houdini Engine HDAs conventionally take *inputs*, but this asset needs to carry the point clouds *without* any input wiring (so it can be dropped into Unreal as a self-contained actor), the points are instead written to a `.bgeo` cache via a **ROP Geometry** output node (capturing all point attributes), reloaded via a **File** SOP referencing that cache by absolute path, wrapped in a Subnet, and converted into a **Digital Asset** (HDA) with no exposed inputs. A critical FBX-export detail: the ROP FBX node must have **"Z up" axis conversion and unit conversion enabled** (Houdini works in meters, Unreal in centimeters) or imported meshes will be misscaled/misoriented. In Unreal, the single meshes are imported normally (Convert Scene unticked, default translation/rotation/scale) and the HDA is loaded via the Houdini Engine plugin, producing a native point-cloud/instance actor whose per-group Instanced Static Mesh Component slots are then manually assigned (ceiling → lamp holders → lamps → ornaments/windows → pillars → plaster walls → seats) by referencing the imported meshes, while single meshes (altar, door front, floor, glass) are simply dragged into the level and their transforms reset to reconstruct the full cathedral.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Diagnose the export problem:** identify that the scene mixes packed-primitive `Copy` (not `Copy to Points`) instances, occasional post-pack manual transforms, and occasional unpacking (for UV variation) — all of which break a naive point-cloud extraction.
+2. **Naive approach and its failure:** Add+Delete Geometry (keep points) → Object Merge → Copy to Points reproduces placement correctly only for objects that were *never* transformed after packing; for objects like the plaster walls (transformed post-pack), this silently produces wrong placement.
+3. **Single Extract Transform limitation:** unpacking a packed-primitive set and running one **Extract Transform** node recovers a transform, but with incorrect orientation in this particular scene (likely due to prior unpack/repack transformations elsewhere in the chain).
+4. **Correct fix — per-piece Extract Transform in a loop:** wrap the extraction in a **For Each (primitive)** block: inside, Object Merge the target geometry, Unpack a single piece, run **Extract Transform** on just that piece, then feed the recovered transform into Copy to Points — this reliably reproduces the exact original packed placement, unlike a single global Extract Transform.
+5. **Automate across all named parts:** wrap the whole per-object extraction chain in an outer **For Each (name/primitive)** loop; add a **Fetch/Metadata node** exposing the current loop iteration's name value, referenced via a backtick string expression (`` `detail(-1, "iteration", 0)` ``/meta-node-value style) in the inner Object Merge's target-object path, so the same network automatically processes every named object in sequence.
+6. **Filter packed vs. single-mesh geometry:** since some named parts (e.g., floor, altar) are single meshes that should export once (not become instanced point clouds), add a **Switch** driven by a string-match expression testing the packed primitive's **intrinsic `typename`** attribute (inspected via the geometry spreadsheet's Intrinsics panel) against a `packed*` wildcard pattern (`match("packed*", intrinsic("...", "typename"))`-style) to automatically route packed geometry down the point-cloud path and everything else down a pass-through path.
+7. **Tag instance attribute:** on the resulting per-instance points, a wrangle sets a string `unreal_instance` attribute (again reading the Fetch/meta name) — left as a placeholder value in Houdini since the real Unreal asset-reference path isn't known until after import; reassigned manually per-group later inside Unreal's Details panel.
+8. **Export single (non-instanced) meshes:** a **Switch on `npoints`** (0 points = plain mesh, not a point cloud) routes single-mesh geometry to a **ROP FBX** node whose output filename is dynamically built from the same Fetch/meta name attribute (e.g., `seats.fbx`); automate pressing "Render"/Execute via a **Python node**: `hou.parm("path/to/rop_fbx1/execute").pressButton()`.
+9. **Critical FBX axis/unit settings:** in the ROP FBX node, enable **"Convert to specified axis system" (Z up)** and **unit conversion** (Houdini meters → Unreal centimeters) — without this, imported meshes come in at the wrong scale/orientation.
+10. **Group and export point clouds separately:** **Group** all instance point clouds under a `points_unreal` group, Blast to isolate them; since a standard Houdini Engine HDA typically needs inputs but this asset must be self-contained (droppable into Unreal with no wiring), instead write the points to disk via a **ROP Geometry** output (`.bgeo`, capturing all point attributes) rather than exporting them as an HDA input.
+11. **Build the input-less HDA:** load the cached point-cloud file back in via a **File** SOP (using the node's **absolute path**, obtained via middle-click → copy path, not a relative reference), wrap it in a **Subnet**, then use **Digital Asset → New Asset** (IP file directory, no prefix) to convert the subnet into a proper HDA with zero exposed inputs.
+12. **Import to Unreal:** create a new empty level with a Directional Light; drag in the exported FBX single meshes (untick "Convert Scene," leave translation/rotation/scale at defaults); load the HDA via the **Houdini Engine** plugin to generate the native point-cloud/instance actor.
+13. **Assign instance meshes in Unreal:** in the Houdini Engine asset's Details panel, manually assign each Instanced Static Mesh Component slot (in order: ceiling, lamp holders, lamps, ornaments/windows, pillars, plaster walls, seats) to the corresponding imported mesh asset.
+14. **Place single meshes:** drag the individually-imported single meshes (altar, door front, floor, glass) into the level and reset their transforms to align with the instanced geometry, completing the reconstructed scene.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Add (delete geometry, keep points), Object Merge, Copy to Points (with "pack and instance" enabled for performance), For Each (primitive; and separately, name/primitive for the outer automation loop), Unpack, Extract Transform (per-piece, inside the loop — not a single global call), Fetch/Metadata node (exposing loop iteration's `name` value via backtick string expression), Switch (string-match on intrinsic `typename` for packed-vs-single routing; separate Switch on `npoints` for single-mesh export routing), Attribute Wrangle (VEX: setting the `unreal_instance` string attribute from the fetched name), ROP FBX (dynamic output filename via detail-attribute expression; Z-up axis conversion + unit conversion settings), Python node (`hou.parm(path).pressButton()` to automate FBX export), Group (`points_unreal`), Blast, ROP Geometry (`.bgeo` cache output), File SOP (absolute-path reload), Subnet, Digital Asset / HDA creation (New Asset, no exposed inputs). Unreal: Houdini Engine plugin (loading the input-less HDA), Instanced Static Mesh Component assignment per point-cloud group, standard FBX static mesh import (Convert Scene off, default transform).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — combines a non-obvious per-piece Extract Transform workaround, VEX/expression-driven automation across a full named-part scene, Python-scripted batch FBX export, and cross-application HDA/Houdini-Engine pipeline knowledge.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5 (Houdini Engine + FBX ROP workflow consistent with 19.5-era tooling; predates the Solaris-centric later tutorials from the same author).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #python #pipeline #unreal #fbx #houdini-engine #instancing #procedural #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers Unreal/Houdini-Engine pipeline export — cross-link with any future Unreal-interop or Houdini Engine tutorials once extracted from this batch.
