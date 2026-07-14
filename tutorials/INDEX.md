@@ -1544,9 +1544,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Quj03TwHAN4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20
+- **Tags:** #modeling #vex #uv #procedural #hard-surface #tips #cops #intermediate
+- **Summary:** Compares direct vs. procedural approaches across several real assets: sign/modulo-based selection wrangles, thickness-ramp insets, recursive feedback-loop extrusion, Group Fill Pattern for UV seams, Fill Boundary flood-fill selection, and Enumerate-by-name indexing for COPs.
 - **File:** tutorials/direct-vs-procedural-in-houdini.md
 
 

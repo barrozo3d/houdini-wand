@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Quj03TwHAN4
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20"
+tags: [modeling, vex, uv, procedural, hard-surface, tips, cops, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/direct-vs-procedural-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Direct vs Procedural in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py direct-vs-procedural-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -228,30 +224,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/direct-vs-procedural-in-houdini/frame_000.jpg
+- [3:50] tutorials/frames/direct-vs-procedural-in-houdini/frame_001.jpg
+- [6:10] tutorials/frames/direct-vs-procedural-in-houdini/frame_002.jpg
+- [9:20] tutorials/frames/direct-vs-procedural-in-houdini/frame_003.jpg
+- [13:20] tutorials/frames/direct-vs-procedural-in-houdini/frame_004.jpg
+- [15:50] tutorials/frames/direct-vs-procedural-in-houdini/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A wide-ranging comparison of direct/interactive modeling vs. procedural (VEX/group-based) approaches for selection, extrusion, UV seam-picking, and boundary/topology operations, using several real production examples (a sushi box, a "Crassa" creature-like shape, a spray bottle, and an image-reward piece for COPs).
 
 ### Summary
-[PENDING EXTRACTION]
+Walks through when procedural selection beats manual grouping and vice versa. Sign-of-position wrangles replace manual top/bottom group creation on a symmetric box; vertex-index-modulo wrangles select every-other edge for beveling; attribute-driven bevel widths let one Polybevel vary per group instead of needing multiple nodes; a Poly Extrude "thickness ramp" trick (instead of plain Inset) avoids merging all points at high inset values while still producing a controllable inset-like result; boundary groups + Poly Bridge stitch unshared edges from two separate extrude outputs. A feedback-loop (Fetch) recursive extrusion technique repeatedly extrudes+insets along point normals without stacking duplicate Poly Extrude nodes, careful to disable "preserve groups" each iteration to avoid group accumulation. For UV seams, a small manual edge-loop selection is expanded via **Group Fill Pattern**'s Loops/Rings mode (extend to edge, close path, no self-intersection) to auto-generate full seam loops, then UV Flatten + Rectify cleans the result. A generalizable direct-to-procedural translation shows how manual point selection tools (H = select boundary loop, Shift+H = extend) can be replicated procedurally: average the boundary point positions, find the nearest point to that average as a flood-fill seed, then use **Fill Boundary** (name "fill", start point, boundary group) to flood-fill the interior — importantly different (and more correct) than simply Group Promoting a point selection to edges, which can wrongly include extra boundary edges. The video's philosophy: default to procedural where practical, but drop to direct/manual modeling (e.g. draw-curve + Revolve for a spray-can cap) when procedural would be needlessly complex — manual UV seam selection is also explicitly endorsed as fine for one-off, non-generator assets. Finally, for sending piece-based geometry to COPs texturing, **Enumerate** by name (not raw primitive index) generates a clean per-piece index, then a wrangle using `find()` against the array of unique name values remaps indices to start at 1 (not 0) so the COPs background doesn't collide with a legitimately-indexed piece.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Sign-based top/bottom selection:** on a box centered at the origin, run a primitive wrangle: `i@top = sign(@P.y) == 1; i@bottom = sign(@P.y) == -1` (conceptually) to group top/bottom primitives without manual Group SOPs.
+2. **Every-other-vertex selection for bevel:** run a vertex wrangle constrained to the top/bottom prim groups, selecting every 4th (or Nth) vertex via a modulo check on vertex/point index, then Vertex→Edge group promotion, feeding a Polybevel.
+3. **Attribute-driven bevel width:** instead of scaling by a constant, drive Polybevel's width from a per-group/per-point float attribute (`pscale`-like) so different edge groups (e.g. top prim vs. rest) get different bevel amounts from one node, with a default fallback value for ungrouped edges.
+4. **Thickness-ramp inset alternative:** on a Poly Extrude, instead of a large Inset value (which eventually merges all points together), enable "Spine Control" and shape the **Thickness Ramp** to get a controllable inset-like taper without point-merging; less geometrically precise than a real Inset but visually sufficient.
+5. **Boundary group + Poly Bridge:** Group the unshared points with "Create Boundary Groups" enabled (produces `unshared0`/`unshared1` sub-groups per boundary), promote each to edges, then Poly Bridge between the two boundary edge groups to stitch them together.
+6. **Recursive extrusion via feedback loop:** instead of stacking many Poly Extrude+Inset node pairs, build a **Fetch/feedback loop** (set iteration count, e.g. 2) that on each pass: extrudes along point normal by an amount, insets, and outputs a new boundary group — critically disabling "preserve groups" on each pass so groups don't accumulate duplicate boundary sets across iterations.
+7. **UV seam auto-completion via Group Fill Pattern:** manually select just a few key edges (loop-adjacent) forming a partial seam pattern, put them in a group, then run **Group Fill Pattern** (base group = your selection, mode = Loops/Rings, "extend to edge", "close path", disable "avoid self intersections") to automatically extend the pattern into full topological seam loops; finish with UV Flatten on the seam group + **Rectify** (needed or UVs come out skewed/misaligned).
+8. **Direct→procedural translation for interior flood-fill selection:** replicate the "select boundary (H), then flood-fill interior" manual workflow procedurally: Group Expand a boundary point group over `detail` scope, average all boundary point positions, find the nearest actual point to that average to use as a flood-fill seed, then use **Fill Boundary** ("fill" name, start point group, boundary group) to flood the interior; a plain Group Expand alone does NOT reproduce this correctly. Group Promote that fill selection to primitives with "include elements entirely containing the original group", then take an edge selection **from the boundary group's attribute** rather than promoting the point group directly to edges — the direct point→edge promotion incorrectly includes extra edges that the attribute-boundary-based group does not.
+9. **When to go direct instead of procedural:** for a spray-can cap shape, a hand-drawn curve + Revolve is faster and gives clean UVs "for free," versus building the same profile with ramps/VEX; for end caps, Group Expression selecting primitives with "5 sides or greater" isolates n-gon caps cheaply for a Poly Bevel finishing pass.
+10. **VEX inflation mask:** compute `length(@P)` (vector length of position) as a radial falloff, normalize/invert it (Fit/Normalize Float, 1→0), and feed that mask into a **Soft Peak** node's mask input to control inflation intensity per-region.
+11. **Manual UV seam selection is fine:** for one-off, non-procedurally-generated shapes (e.g. a cap), manually selecting seams and feeding UV Flatten is explicitly endorsed — there's no benefit to forcing a procedural seam-selection unless building a reusable generator.
+12. **Per-piece index for COPs texturing:** use **Enumerate** driven by the `name` attribute (not raw primitive number) to get a stable per-piece index; since index 0 collides with the COPs background (also rasterized as 0), remap with an Attribute Wrangle on primitives that does `i@index = find(unique_name_values[], s@name) + 1` (conceptually), producing indices starting at 1 so the background stays distinguishable at index 0.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Box, Attribute Wrangle (primitives — sign(@P.y) grouping; vertices — modulo-based every-Nth selection; primitives — find()-based re-indexing), Group Promote (point↔edge, vertex↔edge, with "include only elements on boundary" caveats), Polybevel (attribute-driven width), Poly Extrude (Spine Control, Thickness Ramp as an inset alternative), Group (unshared points, Create Boundary Groups → unshared0/unshared1), Poly Bridge, Fetch/feedback loop (recursive extrude+inset, preserve-groups toggle), Group Fill Pattern (Loops/Rings mode, extend to edge, close path, avoid-self-intersections), UV Flatten + Rectify, Draw Curve + Revolve, Group Expression (n-gon/"5 sides or greater" selection), Group Expand (over detail scope), Fill Boundary (name, start point, boundary group), length()/normalize/Fit Float, Soft Peak (mask input), Enumerate (by name attribute), find() VEX function against unique attribute values.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced — a broad "greatest hits" of production-tested selection and topology tricks; requires solid VEX and group/attribute fundamentals to follow each mini-example.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20 (mentions "Rectify... I believe in Odini 20"; UI matches Houdini 20-era look).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vex #uv #procedural #hard-surface #tips #cops #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with direct-and-procedural-modeling-in-houdini.md (same author, overlapping VEX-cleanup philosophy) and any cgside COPs/texturing tutorials once extracted from this batch.
