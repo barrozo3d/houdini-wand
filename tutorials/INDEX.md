@@ -1374,9 +1374,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=f5vt8n8CB-U
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H18+, uses Exoside QuadRemesher)
+- **Tags:** #rbd #procedural #vex #quadremesh #fracture #advanced
+- **Summary:** Part 1 of a multi-part series (model prep only — rigging/animation/liquid-stretch sim covered in later parts not in this transcript). Builds a hollow chocolate bar fractured via a noise-randomized Clip feedback loop, quad-remeshes pieces independently using Exoside QuadRemesher with vertex-color polycount hints, and closes resulting seams with a custom VEX intersect()-based snap trick.
 - **File:** tutorials/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson.md
 
 

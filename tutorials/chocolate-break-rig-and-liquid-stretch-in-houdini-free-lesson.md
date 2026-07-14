@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=f5vt8n8CB-U
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H18+, uses Exoside QuadRemesher)"
+tags: [rbd, procedural, vex, quadremesh, fracture, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Chocolate break rig and Liquid Stretch in Houdini Free Lesson
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -225,30 +221,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [2:16] tutorials/frames/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson/frame_000.jpg
+- [4:17] tutorials/frames/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson/frame_001.jpg
+- [7:29] tutorials/frames/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson/frame_002.jpg
+- [9:35] tutorials/frames/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson/frame_003.jpg
+- [12:14] tutorials/frames/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson/frame_004.jpg
+- [16:29] tutorials/frames/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson/frame_005.jpg
+- [21:49] tutorials/frames/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson/frame_006.jpg
+- [23:04] tutorials/frames/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+**Part 1 of a multi-part series** (this ingest covers only the model-prep/fracture-setup portion; the video continues into rigging/animation and a liquid-stretch simulation not covered in this transcript segment). Builds a hollow chocolate bar with a noise-randomized interior fracture pattern using repeated Clip nodes, then quad-remeshes the resulting interior "field" faces per-piece (using Exoside QuadRemesher driven by vertex-color polycount hints) and closes remaining seams with an intersect-based VEX snapping trick.
 
 ### Summary
-[PENDING EXTRACTION]
+Starts from an imported chocolate-bar mesh, quad-remeshed and locked for a stable base. Builds an interior "shell" by branching off a Shrink Wrap–style inward-offset copy (peaked inward, snapped via a min-position VEX pass, smoothed, and normal-reversed) merged back with the original to give the bar real wall thickness. The break pattern comes from a **feedback loop of Clip nodes**: each iteration adds Attribute Noise (driving the clip's Rest-based cut line so it isn't a flat cut) and randomizes both the clip's plane offset and rotation per-iteration using the loop's iteration number fed through a spare-input expression — producing an irregular, non-repeating multi-piece fracture. The newly-exposed interior "field" faces (kept in their own group specifically so they can be reprocessed) are remeshed separately from the outer shell since they don't hold up well straight out of the clip. Rather than quad-remeshing everything at once (unreliable at this density), pieces are grouped by measured area into "small" vs. large groups, each given a different vertex-color intensity (**Exoside QuadRemesher reads vertex colors as a local polycount density hint** — more red = more polygons), then remeshed in a loop targeting a fixed overall polygon budget (7000→5000 in this pass) using both vertex colors and primitive groups as density/boundary guides. A **Connectivity** pass gives each resulting piece a `class` id for later per-piece iteration, and a normal-based "inside faces" selection (normals near the Z-axis, both directions) isolates just the newly-exposed interior. Because pieces were quad-remeshed independently, some don't line up cleanly at their shared boundaries — fixed with a custom **VEX intersect-snap wrangle**: build a normal direction per point (derived from the *sign* of a saved reference normal's Z component rather than sampling the primitive normal directly, since primitive-normal sampling in a point-context wrangle running over a primitive group interpolates poorly for the topmost points that matter most), then use the `intersect()` VEX function to find where a short ray along that direction hits the opposing surface, and snap the point to that intersection when found — closing small gaps between independently-remeshed pieces without a full re-topology pass.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Import the chocolate-bar mesh, delete unneeded attributes, **QuadRemesh** and lock the result as a stable working base.
+2. **Build interior thickness**: branch off, **Shrink Wrap**-style peak the copy inward slightly, then run a wrangle that sets each point's position to the minimum position sampled from the original unified mesh (`v@P = min-position-of-original`) to snap the interior surface cleanly; smooth (Strength ~100, Quality 1) for a cleaner (if only interior-facing) result, reverse normals, recompute normals, and merge with the original — clipping now shows correct wall thickness.
+3. Attribute Delete down to just Position/Normal (plus whatever else is needed later), to start clean for the fracture pass.
+4. **Fracture via repeated Clip + noise loop**: use a feedback for-loop (not Boolean Fracture, which the author found didn't suit this case) doing 2-3 clip iterations. Each pass: **Attribute Noise** (vector, driven off a saved `rest` attribute rather than `P` so the noise doesn't drift with position; example tuned values ~0.06 amplitude, 0.39 element size, offset ~4.79) feeds a **Clip** node set to cut around a chosen axis using Primitives + the Rest attribute (not straight `P`) for an organic, non-flat cut line.
+5. **Randomize each loop iteration's cut**: via a spare input referencing the loop's metadata node, build a per-iteration offset expression (iteration number × a scale factor, e.g. `iteration * 0.12`) to shift the noise pattern each pass, and separately randomize the Clip's **Distance** parameter (fit into roughly ±0.2) the same way — producing visibly different, non-repeating cut patterns per iteration instead of identical parallel cuts.
+6. After the clip loop, build groups from the resulting clip edges/caps ("field" faces) so they can be identified and reprocessed later — check results with an Exploded View.
+7. **Remesh just the interior field faces** separately (they don't hold up well raw from the clip) — several iterations, small target size (~0.1) via a native Remesh node, run in a loop.
+8. Before feeding to a full-mesh QuadRemesh, run **another general Remesh pass over everything non-field** (a handful of iterations, tuned target size) — evens out polygon distribution and gives Exoside QuadRemesher a cleaner starting point, generally recommended practice before quad-remeshing.
+9. Build a **Connectivity** pass (Primitive class) so pieces can later be iterated over individually; **measure area per piece** and use a Group Expression (`area <= threshold`, ~0.65 in this example) to tag a "small pieces" group for special handling.
+10. **Vertex-color-driven QuadRemesh density**: since Exoside QuadRemesher can read vertex colors as a local polygon-density hint, paint small pieces a stronger red value (e.g. 0.5-1.0) and larger pieces a weaker/default red — more red = denser output — to balance detail without blowing the overall poly budget; requires the color be stored as `Cd`, point-interpolated.
+11. Clean up extraneous groups (Group Delete) before feeding to QuadRemesher, keeping only the relevant field-group definitions so they don't confuse the boundary-matching. Configure **Exoside QuadRemesher**: target polycount (~5000-7000 depending on pass), enable "Use Vertex Colors" and "Use Primitive Groups," connectivity/class settings per-piece — the author notes an odd version-dependent quirk where an iteration-based cache filename workaround was needed in one Houdini version but not in the current one (worth testing on your own version).
+12. **Cache the remeshed result** to a File Cache (non-time-dependent) to avoid recomputing repeatedly — loading it back confirms it's identical to the live result, safe to work from disk going forward.
+13. **Isolate the newly-exposed interior faces**: group r-edges (Group by normal, Edges, angle threshold ~28°) for reference, then build an "inside group" via **Group → Keep by Normals** along the relevant axis (threshold ~60°, both directions enabled) — refined further with a Group Expression testing `abs(P.z) < threshold` (~0.5) intersected with the normal-based selection, to reliably isolate just the true interior faces.
+14. **Fix piece-boundary seams with a custom VEX snap**: some independently-remeshed pieces don't line up because they were processed as separate parts. Save a stable reference normal (`_normal`, computed before further manipulation) so it survives into a later wrangle. In an Attribute Wrangle restricted to the inside group: derive a working direction from **the sign of the saved normal's Z component** multiplied against a pure Z-axis vector (rather than sampling the primitive normal directly — primitive-normal sampling in a point wrangle running over a primitive group interpolates poorly for the topmost, most-important points). Use VEX's **`intersect()`** function to cast a short ray along that direction against the same input (restricted to the inside group so it doesn't snap to unrelated geometry), and where an intersection is found (checked via the returned primitive index not being -1), snap the point's position to the intersection point — closing small gaps between mismatched piece boundaries. A **Normal** node (angle ~45°) afterward smooths out most remaining shading artifacts from the fix, and the author notes correcting a sign-direction mistake mid-video (the direction needed negating) that meaningfully improved gap-closing.
+15. Video continues (in a later segment not covered by this transcript) into fracturing the small pieces further and moving on to rigging/animating the break and the liquid-stretch simulation.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+QuadRemesh (base lock) → Shrink-wrap-style inward peak + min-position wrangle + Smooth (100/1) + Reverse Normals + Merge (interior thickness) → Attribute Delete → feedback for-loop: **Attribute Noise** (vector, Rest-driven) → **Clip** (Primitives + Rest, per-iteration randomized offset/rotation via spare-input iteration expression) → field-face grouping → Remesh (interior field faces, small target size) → general Remesh (pre-QuadRemesh cleanup) → **Connectivity** (class) + Measure (area) + Group Expression (small-pieces threshold) → Cd vertex-color painting (density hint) → Group Delete (cleanup) → **Exoside QuadRemesher** (target polycount, Use Vertex Colors, Use Primitive Groups) → File Cache → Group by Normal (r-edges) + **Keep by Normals** + Group Expression (`abs(P.z)<threshold`) for inside-group isolation → Attribute Wrangle (`intersect()`-based snap using sign-of-saved-normal direction) → Normal (angle ~45°, shading cleanup).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines custom fracture-via-clip-loop construction, per-piece independent quad-remeshing with vertex-color density control, and a hand-written VEX intersect-based gap-closing trick; assumes solid prior VEX and procedural-fracture experience.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; relies on the third-party **Exoside QuadRemesher** plugin, compatible with any modern Houdini (H18+).
 
 ### Tags
-[PENDING EXTRACTION]
+#rbd #procedural #vex #quadremesh #fracture #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [Cleaning fractured geometry in Houdini](cleaning-fractured-geometry-in-houdini.md) — shares #rbd #vex #cleanup; that tutorial's two-input nearpoint-based interior-face removal is a related but distinct approach to cleaning up fracture byproducts, worth comparing against this video's intersect-based snap-together fix.
