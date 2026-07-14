@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=FxrSPbnI3tI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, vex, uv, procedural, product-viz, course, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/new-houdini-course---procedural-product-shots-part-1-free/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # New Houdini Course  - Procedural Product Shots | Part 1 Free
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py new-houdini-course---procedural-product-shots-part-1-free <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -166,30 +162,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:50] tutorials/frames/new-houdini-course---procedural-product-shots-part-1-free/frame_000.jpg
+- [2:20] tutorials/frames/new-houdini-course---procedural-product-shots-part-1-free/frame_001.jpg
+- [4:25] tutorials/frames/new-houdini-course---procedural-product-shots-part-1-free/frame_002.jpg
+- [6:25] tutorials/frames/new-houdini-course---procedural-product-shots-part-1-free/frame_003.jpg
+- [7:25] tutorials/frames/new-houdini-course---procedural-product-shots-part-1-free/frame_004.jpg
+- [9:50] tutorials/frames/new-houdini-course---procedural-product-shots-part-1-free/frame_005.jpg
+- [12:10] tutorials/frames/new-houdini-course---procedural-product-shots-part-1-free/frame_006.jpg
+- [15:40] tutorials/frames/new-houdini-course---procedural-product-shots-part-1-free/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Part 1 (free preview) of a paid multi-part course modeling a rounded product container: a rounded-square base from an asymmetric per-corner **Peak/Bevel** with a point-order-dependent `pscale` attribute, a **diagonal Boolean split** (matched by re-projecting a resampled/blurred surface) to divide the shape into "above"/"below" halves, an Exoside-QuadRemesher pass with **primitive-group-boundary preservation** so a subsequent **Group Transfer** carries clean edge flow across the remeshed geometry, a VEX array-based **group name reversal** trick (needed for later shading/UV logic), and a final interior-primitive **crease-before-subdivide** pass for sharp inner corners without losing the rounded outer silhouette.
 
 ### Summary
-[PENDING EXTRACTION]
+The base starts as a 1x1 **Grid** (2x2, no subdivisions) with points **Sorted** so point 0 lands in a specific corner, then a `pscale` **Attribute Adjust Float** gives that corner a bigger bevel value (0.5) versus the rest (0.2 default) via an "all but point 0" attribute expression — feeding a **Peak/Bevel-based-on-points** pass (1 amount, 8 divisions, scale-by-attribute) for an asymmetric rounded-corner look (one corner more rounded than the others). A diagonal **Clip** (X/Z axes, all primitives) splits the shape into two halves, saving the clip edge plus above/below primitive groups for later use; the shape is Extruded (individual elements, insert-style) to create wall thickness, with the extrude-front group saved and isolated (Blast), then cleaned up via Resample + Attribute Blur (3 iterations, not affecting border points) for smooth rounded interior corners. The base shape is Object-Merged back in and **Boolean** (Shatter mode, Surface-Surface since the base has no thickness) cuts the extruded shell against it. To prep for quad remeshing, a **Divide** ("Try and Light") pass plus Fuse cleans topology, then the mesh is Remeshed fairly densely specifically because groups need to survive the remesh — critically, Houdini's native QuadRemesher doesn't reliably preserve primitive groups, so the **Exoside QuadRemesher** (recommended as a worthwhile ~$70 perpetual-license purchase) is used instead, with **"Use Primitive Group Boundaries"** enabled (fed the saved above/below Boolean groups) to keep the remesh topology aligned to those group boundaries — after fixing a missed group-input connection, the remesh result correctly preserves the split. A subsequent **Group Transfer** (needing sufficient polygon density from an extra Remesh pass at a fine edge length, ~0.01) then successfully carries the original groups' edge-flow information onto the new quad-remeshed topology — described as a genuinely powerful combined workflow (remesh + group-boundary preservation + group transfer) worth the plugin cost. A **Name from Groups** node creates a `name` attribute from the "below"/"above" groups, but since their alphabetical/creation order isn't what's needed downstream, a **VEX array-reversal trick** manually reorders them: build a `names[]` array from `prim(0, "name", uniqueval)`-style unique-value lookup, **reverse the array**, then re-derive each primitive's name by finding its original index in the *un-reversed* list and using `names[(idx+1) % len(names)]` to remap it to the reversed order — described as "a bit of work" but functional. A **Group from Attribute Boundary** (on the `name` attribute, excluding unshared) isolates the seam edge between the two halves; a simple planar **UV Texture** projection (Y axis) handles UVs, reversed and offset to land in UDIM tile 1001, with the pre-reversal position saved as a `rest` attribute for later use. From here, the model branches into two halves via a **Blast + Split** (by `name`, not normal) — one half (`b_polys`) gets **Poly Extruded** inward (distance ~-0.2) to hollow out the container interior, with the extrude-front group saved as `base_container` for later reuse, followed by Normal (crease angle 55). A second Poly Extrude adds a slight **taper** via **Spine Control**'s thickness ramp (dropping the far end to 0.8) to match a slightly tapered reference profile, then the whole shell is given real thickness (~0.009) with both front and back groups saved (UVs explicitly not needed on this pass — noted as fixable later via a "UV unwrap" auto-approach if ever required). The boundary group is Group-Promoted to **points** (not edges — a subtle but important distinction the author catches mid-video, since promoting from edges rather than points didn't preserve the geometry correctly) then to primitives; **Group Expand** by one step isolates the boundary ring, and a second two-step expand isolates the deeper **interior primitives** specifically to receive a crease. A small cosmetic **Poly Bevel** (~0.005, ignore-flat-edges, angle ~59, 2 divisions) softens those interior primitives slightly before a **Crease** (value 10) locks their edges sharp; a final **Subdivide** (depth 1) then rounds everything else off smoothly while the creased interior primitives stay crisp — without the crease step, those primitives would incorrectly round off along with the rest of the shape. The part ends with a Normal recompute and a named Null output, with the next installment (behind Patreon) planned to cover UV/texturing/shading of the modeled container.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base grid + point ordering:** 1x1 Grid (2x2, no subdivisions), **Sort** to place point 0 in the target corner (needed for the asymmetric bevel that follows).
+2. **Asymmetric corner bevel:** create a `pscale` float attribute, **Attribute Adjust Float** setting a bigger value (0.5) on point 0 and a smaller default (0.2) on the rest via an "all but point 0" expression; run **Peak/Bevel-based-on-points** (amount 1, 8 divisions, scale-by-attribute) for one visibly-more-rounded corner.
+3. **Diagonal split:** **Clip** on the X/Z axes (all primitives, diagonal cut ~0.15) to divide the shape in two, saving the clip edge plus above/below primitive groups.
+4. **Extrude + smooth interior:** Extrude (individual elements, insert-style, ~0.055) saving the extrude-front group; isolate that group (Blast), Resample (~0.05 length) + Attribute Blur (3 iterations, border points excluded) for a smooth rounded interior.
+5. **Boolean cut against the base:** Object Merge the original flat base, **Boolean** (Shatter mode, Surface-Surface since the base has no thickness) to cut the extruded shell.
+6. **Pre-remesh cleanup:** **Divide** ("Try and Light") + Fuse, then Remesh at sufficient density specifically to support group preservation through the next step.
+7. **QuadRemesh with group-boundary preservation:** since Houdini's native quad remesher doesn't reliably keep primitive groups, use the **Exoside QuadRemesher** with **"Use Primitive Group Boundaries"** enabled (feeding the saved above/below groups) — double-check the group input is actually wired, or the boundary constraint silently fails.
+8. **Group Transfer onto the remesh:** run an extra fine **Remesh** pass (edge length ~0.01) beforehand to ensure enough polygon density, then **Group Transfer** to carry the original edge-flow groups cleanly onto the new quad topology.
+9. **Name + reverse group order (VEX):** **Name from Groups** creates a `name` from the below/above groups; in a wrangle, build a `names[]` array via unique-value lookup on the `name` attribute, **reverse the array**, find each primitive's original index in the un-reversed list, and remap using `names[(idx+1) % len(names)]` to reorder the names as needed downstream.
+10. **Seam + UVs:** **Group from Attribute Boundary** (on `name`, excluding unshared) isolates the seam between halves; simple planar **UV Texture** (Y axis), reversed and offset into UDIM tile 1001; save the pre-reversal position as a `rest` attribute for later use; output a named `top` Null.
+11. **Split by name and extrude the container wall:** **Blast + Vertex Split** by the `name` attribute (not normal-based) to separate the halves; **Poly Extrude** the `b_polys` group inward (~-0.2) to hollow the container interior, saving the extrude-front group as `base_container`; add Normal (crease angle 55).
+12. **Taper via Spine Control:** a second Poly Extrude uses **Spine Control**'s thickness ramp (drop the far-end value to ~0.8) for a subtle tapered profile matching the reference.
+13. **Add shell thickness:** thicken the single-sided mesh (~0.009), saving both extrude-front and back groups; UVs intentionally skipped for now (can be added later via an auto UV-unwrap approach).
+14. **Boundary group → points → primitives:** Group Promote the boundary group to **points** specifically (not edges, which was found not to preserve the geometry correctly), then to primitives.
+15. **Isolate interior primitives for creasing:** **Group Expand** the boundary by 1 step (the boundary ring itself), then a second expand by 2 steps to isolate the deeper **interior primitives** that need creasing; verify via Exploded View.
+16. **Crease + subdivide:** small cosmetic **Poly Bevel** (~0.005, ignore flat edges, angle ~59, 2 divisions) on the interior primitives, then **Crease** (value 10) to lock their edges sharp before a final **Subdivide** (depth 1) — without the crease, those primitives would incorrectly round off along with the rest of the shape.
+17. **Finish:** recompute Normal, output a named Null for the next part of the course (UV/shading, covered on Patreon).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Grid, Sort (point reorder), Attribute Adjust Float (`pscale`, all-but-point-0 expression), Peak/Bevel (points-based, scale-by-attribute), Clip (X/Z diagonal, group save), Extrude (individual elements, insert-style, front-group save), Blast, Resample, Attribute Blur (iterations, border-point exclusion), Object Merge, Boolean (Shatter, Surface-Surface), Divide, Fuse, Remesh (multiple passes, density tuning), Exoside QuadRemesher (third-party plugin — Use Primitive Group Boundaries option), Group Transfer, Name from Groups, Attribute Wrangle (VEX: unique-value array build via `prim(0,"name",uniqueval)`-style lookup, array reverse, index `find()`, modulo-based remap `names[(idx+1)%len(names)]`), Group from Attribute Boundary (exclude unshared), UV Texture (planar, Y axis, reverse + UDIM-tile offset), rest attribute save, Vertex Split (by name attribute), Poly Extrude (x2 — interior hollow-out, and Spine Control taper), Spine Control (thickness ramp), Normal (crease angle), Group Promote (point-then-primitive, points not edges), Group Expand (1-step and 2-step passes), Poly Bevel (ignore-flat-edges, angle threshold), Crease, Subdivide.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — mostly straightforward modeling logic, but the VEX array-based group-name reversal and the QuadRemesher-group-boundary-preservation workflow require above-average procedural-modeling comfort.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era modeling toolset; explicitly a paid-course free preview part).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vex #uv #procedural #product-viz #course #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Part 1 of a paid multi-part "Procedural Product Shots" Patreon course (author explicitly continues UV/shading/rigging/animation in subsequent paid parts, not covered in this free video) — cross-link with any later parts of this same course if found in this batch.

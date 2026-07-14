@@ -1634,9 +1634,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=FxrSPbnI3tI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #vex #uv #procedural #product-viz #course #intermediate
+- **Summary:** Free Part 1 of a paid course: models a rounded container via asymmetric per-corner Peak/Bevel, a diagonal Boolean split with Exoside QuadRemesher group-boundary preservation + Group Transfer, a VEX array-reversal trick for group naming, and a crease-before-subdivide pass for sharp interior corners.
 - **File:** tutorials/new-houdini-course---procedural-product-shots-part-1-free.md
 
 
