@@ -1724,9 +1724,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=CHySFnWfKLk
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20
+- **Tags:** #modeling #vex #vdb #tops #solaris #lops #karma #materials #shaders #procedural #usd #advanced
+- **Summary:** End-to-end dusty-wine-bottle pipeline: SOPs modeling with VDB/QuadRemesher cleanup and fur-based dust generation, TOPnet-wedge USD variant authoring, and Solaris instancing with primpath-parsed per-instance label/dust shading randomization.
 - **File:** tutorials/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris.md
 
 

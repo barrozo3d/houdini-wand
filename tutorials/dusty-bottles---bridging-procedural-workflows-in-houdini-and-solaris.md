@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=CHySFnWfKLk
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20"
+tags: [modeling, vex, vdb, tops, solaris, lops, karma, materials, shaders, procedural, usd, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Dusty Bottles - Bridging procedural workflows in Houdini and Solaris
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -328,30 +324,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris/frame_000.jpg
+- [5:20] tutorials/frames/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris/frame_001.jpg
+- [8:00] tutorials/frames/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris/frame_002.jpg
+- [11:00] tutorials/frames/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris/frame_003.jpg
+- [13:10] tutorials/frames/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris/frame_004.jpg
+- [17:00] tutorials/frames/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full end-to-end procedural pipeline for a "dusty wine bottle" shot: modeling the bottle/cork/wire-cage/dust-cluster details in SOPs, driving model variations through a **TOPnet wedge**, referencing those variants into **Solaris/LOPs** with a point-instancer, and building randomized per-instance shading using primvar-driven seeds — all built inside SOPs first (never SubNetwork/Subnet create) specifically so it exports cleanly to USD for Solaris referencing.
 
 ### Summary
-[PENDING EXTRACTION]
+The bottle body starts as a revolved profile (deliberately computing but not using default revolve UVs, since a manual UV-flatten + Rectify pass gives cleaner top/bottom control), then gets poly-extruded and subdivided for thickness. The neck/foil "top part" uses alternating-vertex edge selection converted to curves, randomized per-curve length/pscale via VEX curve attributes (a Houdini 20 feature — curves can now carry attributes for use in Sweep), swept with a flat cross-section for a foil-drip look, then boolean-merged with a VDB-based smoothing pass (VDB From Polygons → VDB Smooth → VDB Reshape → remesh via the third-party **Exoside QuadRemesher** plugin, chosen because Houdini's built-in quad remesher gave worse topology here). Dust is generated as a separate "fur"-like layer: a noise-perturbed normal-based mask (capturing which surface areas would naturally collect dust, with extra randomization matching an uneven reference) drives an **Fur/Hair-gen** node's thickness and density, plus bend/freeze/clamp adjustments to fake clustered dust clumps like in the reference photo. Separate "detail" geometry (wire cage/cord around the bottle) is built from a 2-point curve, boolean-intersected against the bottle, resampled, distributed via Mountain-based jitter, and swept twice (tube-then-tube-on-curve) with twist and a Number-Wrangle-driven per-strand random offset for natural variation; the cork is modeled with a simple subdivide/polyfill/bevel/manual-seam-QuadRemesher pass. All the "pink" randomization-driver nodes (dust noise offset, random Y rotation, on/off switches for optional details) are wired to a **TOPnet wedge** that generates multiple output variants (5 shown) as USD variants, referenced into Solaris where a Point Instancer scatters bottles across a grid with a per-point "bottle ID" attribute for shading randomization. Shading blends a bottle-glass MaterialX layer (refraction/roughness/transmission + a projected label texture) with a dust MaterialX layer (roughness+sheen, tiled via Karma's tile/track banner texture node offset by a bottle-ID-derived random float) using the same normal-based dust mask (with extra contrast/offset) as the mix factor. Per-instance label texture variation is achieved via a **Material Assign primpath expression**: splitting the instance's primpath by "/", extracting the numeric model-variant index with `opdigits`, and using that as a random seed to pick between multiple pre-built texture-projection COPs nodes bound through the material's C-VEX file-parameter binding — giving each bottle instance a different label/text pattern without needing per-instance geometry variants.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Bottle body:** model in SOPs (not Subnet, for clean USD export) — Revolve the profile curve (computing default UVs but discarding them), Poly Extrude for thickness, Subdivide (x2), manual UV Flatten + Rectify on a manually-promoted boundary edge group for cleaner top/bottom UV control than the revolve default.
+2. **Foil/neck detail:** Group Promote/expand the relevant vertex range, select every-other vertex, convert to line, build an "aperture vector" by normalizing `P`; randomly select some curves (via a `rand()` expression + seed), and use **VEX curve attributes** (new in Houdini 20 — curves can carry per-curve attributes usable directly by Sweep) to randomize per-curve length; build a `pscale` ramp from curve-U (curveu) with a VEX snippet targeting a mean pscale of ~0.6 via a max() expression; Sweep using a flat cross-section (second input) instead of the default round profile for a drip/foil look.
+3. **Base + boolean cleanup:** VDB From Polygons on the swept drips, Blast bottom primitives by range (matching the revolve's division count) to keep only the top, Polyfill the resulting bottom cap, slight Transform + Remesh + Mountain, then Boolean to combine and extract the largest connected piece.
+4. **Smoothing pass:** VDB From Polygons → SDF Union (combining shapes) → VDB Reshape → VDB Smooth → VDB Reshape again (extra dilation) → convert back to polygons → remesh with the **Exoside QuadRemesher** plugin (Houdini's stock quad remesher gave inferior topology on this shape).
+5. **Dust layer:** Blast the outer surface, merge with the (conditionally visible) top part; build a mask from a **Noise VOP on normals** (zero-centered offset) to identify dust-collecting areas, adding extra randomization to match an uneven real-world reference; feed into a **Fur/Hair-gen** node, masking both thickness and density by that mask; randomize hair length, add bend, freeze, and clamp settings to emulate the clustered-dust look seen in reference photos; tag with a `name` attribute for later material combination.
+6. **Wire cage/cord detail:** Object Merge the bottle, Subdivide; build a 2-point curve, Poly Extrude + Mirror so it intersects the bottle; Boolean (union mode) with resampling to conform to the bottle surface; slight Mountain-based jitter distribution; Sweep (round, N columns, with twist) to build tube strands, then a second Sweep-on-curve pass for "curves on curves"; randomize position via a **Noise VOP** with a unique offset per curve/frame (each curve gets a different seed) for varied "rope" strand looks; a separate circular-sort + Sweep pass builds a ring/band detail, using a Numbers Wrangle (`@ptnum`/iteration index, zero-centered offset) as a fast way to generate exactly two points for small connecting geometry, then Poly Extrude + Subdivide + Mountain + thickness for the final cord piece.
+7. **Cork:** Subdivide, Polyfill, Blast the fill cap, slight scale + reverse, Poly Extrude, Bevel, QuadRemesher (with a few manually-picked UV seams), Subdivide + Mountain for surface variation.
+8. **TOPnet-driven variation:** wire all randomization-driver nodes ("pink" nodes: dust noise offset, random Y-axis rotation instead of full remodeling, on/off switches for optional detail groups) into a **TOPnet wedge** that generates a random integer/float per variant (feeding switches and rotation/offset parameters) across N wedge iterations (5 shown), outputting each as a geometry variant for USD variant-set export (author notes an easier alternative video exists for the USD-variant export step, linked in the description rather than covered here).
+9. **Solaris (LOPs) assembly:** reference the multi-variant geometry stage, use **Explore Variants** (Use Bounds mode) to inspect/select the different bottle variations, flatten the stage, feed into a **Point Instancer** built from a simple Grid + bend, saving a **bottle ID** (per-point number) attribute for later shading randomization; add a warm key light and a cooler, bluish fill light (not meant to mimic literal sunlight, but visually effective).
+10. **Bottle-glass shading:** blend a bottle-color (greenish) with transmission/refraction into a base bottle material, using the label texture projection COP (built earlier, promoted as a `file` parameter with a default location) fed through a **File node** for the label.
+11. **Dust shading + mix:** a second material (roughness + sheen tuned) is blended with the bottle-glass material via **Mix (MtlX Mix)**, using the same normal-based dust mask attribute (with added contrast/offset) as the mix factor so dust collects more visibly, even on nominally "clean" flat areas; the dust material's own texture is offset per-instance by feeding the point's `bottle ID` through a random-float expression added to position before a Karma **Tile/Track (UDIM-style) Banner** texture node, then converted to RGB.
+12. **Per-instance label variation via primpath expression:** on the bottle's **Material Assign**, use a VEX Bindings Expression that splits the primitive's primpath by "/" into an array, extracts the model-variant number from the path segment via `opdigits()`, and uses that number as a random seed (`random(seed) * N + 1` style, to stay within valid projection-node indices) to pick between multiple pre-built **texture-projection nodes** (Texture Projection 1, 2, ...); the chosen file path is bound to the material's promoted `file` parameter via the C-VEX bindings panel, so each instance renders a different label pattern without separate per-instance geometry. Also demonstrated: reading the USD **primvar** function directly (e.ar. splitting a primpath string) as an alternative to a manually-authored bottle-ID attribute when one isn't already available.
+13. **Render setup:** simple camera with depth of field, Karma XPU render settings, sample count tuning.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Revolve, Poly Extrude, Subdivide, UV Flatten + Rectify, Group Promote/Expand, Convert Line, Attribute Wrangle (VEX: normalize P for aperture vector, curve-attribute randomization new to H20, pscale ramp via curveu + max() expression), Sweep (flat vs. round cross-section, twist), VDB From Polygons, Boolean (union, largest-piece extraction), VDB Reshape, VDB Smooth, Exoside QuadRemesher (third-party plugin), Mountain, Fur/Hair Generate (thickness/density masks, bend, freeze, clamp), Noise VOP (on normals, zero-centered offset; per-curve seeded position offset), Numbers Wrangle (iteration-index point generation), Bevel, Polyfill. TOPs: wedge (random integer/float generation driving switches, rotation, noise offset) for USD-variant model generation. LOPs/Solaris: Explore Variants (Use Bounds), Flatten Stage, Point Instancer (Grid-based scatter, per-point bottle-ID attribute), Material Assign (VEX Bindings Expression: primpath split by "/", `opdigits()` extraction, random-seeded projection-node selection), File node (label texture), MaterialX Mix (dust/glass blend via mask attribute), Karma Tile/Track Banner texture node (UDIM-style per-instance texture offset), Light (key + fill), Camera (depth of field), Karma XPU render settings.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — combines VDB reconstruction, third-party quad remeshing, fur-based dust generation, TOPnet-driven USD variant authoring, and non-trivial primpath-parsing VEX for per-instance shading randomization in Solaris.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20 (explicitly references "new to 20" curve attributes for Sweep; UI matches Houdini 20 Solaris/Karma XPU workflow).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vex #vdb #tops #solaris #lops #karma #materials #shaders #procedural #usd #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with any other cgside Solaris/LOPs, TOPs-variation, or VDB-reconstruction tutorials once extracted from this batch — shares the "procedural SOPs → TOPnet wedge → Solaris instancer" production pipeline pattern.
