@@ -2044,9 +2044,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=24vjgnyZRTw
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #cops #karma #solaris #texturing #materials #lighting #procedural #advanced
+- **Summary:** Full-scene build combining hand-authored VEX point/quaternion-rotation attributes in SOPs with a COPs Stamp Points network to bake a stone-paving texture set (albedo/roughness/displacement with embedded logo), then Solaris assembly with gobo-filtered rectangle light and Karma DOF.
 - **File:** tutorials/houdini-mini-course-cops-vex-and-karma.md
 
 

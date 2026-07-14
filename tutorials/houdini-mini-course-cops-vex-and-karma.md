@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=24vjgnyZRTw
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, cops, karma, solaris, texturing, materials, lighting, procedural, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-mini-course-cops-vex-and-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini Mini Course  |  Cops, Vex and Karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-mini-course-cops-vex-and-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -912,30 +908,62 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:05] tutorials/frames/houdini-mini-course-cops-vex-and-karma/frame_000.jpg
+- [4:00] tutorials/frames/houdini-mini-course-cops-vex-and-karma/frame_001.jpg
+- [10:30] tutorials/frames/houdini-mini-course-cops-vex-and-karma/frame_002.jpg
+- [13:20] tutorials/frames/houdini-mini-course-cops-vex-and-karma/frame_003.jpg
+- [17:00] tutorials/frames/houdini-mini-course-cops-vex-and-karma/frame_004.jpg
+- [21:30] tutorials/frames/houdini-mini-course-cops-vex-and-karma/frame_005.jpg
+- [26:00] tutorials/frames/houdini-mini-course-cops-vex-and-karma/frame_006.jpg
+- [45:00] tutorials/frames/houdini-mini-course-cops-vex-and-karma/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full-scene mini-course combining hand-authored VEX point attributes in SOPs with a **Stamp Points** COPs network to generate a stone-paving texture set (albedo, roughness, displacement) with an embedded logo, then assembling and lighting the scene in Solaris with a **gobo-filtered rectangle light** and Karma depth of field.
 
 ### Summary
-[PENDING EXTRACTION]
+Rather than using the Tile Sampler COP directly, the author deliberately combines SOPs and COPs: a 21x21 Grid's primitive centroids become points (Extract Centroid style wrangle), a radial distance-from-center mask (`length(@P)`) is used to delete a circular cluster of center points, and a single point is re-added exactly at the bounding-box center to host a logo tile later. A chain of point wrangles sets up everything **Stamp Points** needs: a `stamp` attribute (1 on the center point, 0 elsewhere, via `select()`), a `pscale` (5 for the center/logo tile, 1 for the rest), a random point group (`i@randpts = random(@ptnum) < threshold`) for a "some tiles rotate more" artistic effect, a `mask_rot` attribute (randomized per point) that will scale rotation amount, and finally the actual rotation math: a random angle between -π and π built into a **quaternion** around a fixed axis, applied via `qrotate()` to a base normal vector, with the random-group's rotation additionally multiplied by `mask_rot` so grouped tiles rotate more dramatically than others. In COPs, a Sub Import (External reference to the SOP null) is Rasterized into COPs space (position/bbox fit to the "app"/COPs default space), then **Stamp Points** reads the point cloud (radius ~0.042) to distribute per-point rotated square tiles — with a second stamp layer (`stamp=1`) loading a downloaded Arduino-logo image (RGB-to-Mono, Maximum mode) so the center tile displays the logo instead of a rotated square. The resulting stamped tile-ID pattern is used to build three texture maps. **Displacement/height:** a Distort (Fractal noise, UV-based, Perlin type) breaks up the tile edges; a second Fractal noise (Worley Cellular F2-F1, centered 0.5) plus a Remap fakes hairline cracks between tiles, blended via a **Minimum** node; **Segment by Connectivity** assigns per-tile IDs, and two **Random Mono** nodes (seeded from those IDs) drive a blend (widening/lightening some tiles) and a **Compare** (A > B threshold) to selectively knock out some tile segments for variety; further per-ID Random Mono nodes multiplied over the mask add per-tile displacement height variation, plus a UV-Transform-driven random-rotation pass and a Ramp-based radial falloff (multiplied in) fake elevation/angle variation between tiles, with additional Fractal-noise layers (parallel-type) blended in (Max, not Multiply) for fine surface grain and blurred slightly before output. **Albedo:** a Polyhaven ground texture is UV-Sampled, multiplied by the tile mask, then color-corrected per-tile (HSV Adjust driven by a Random Mono from the tile IDs, so different tiles get different saturation/hue) — a second, darker copy of the same texture is blended in as the "grout"/ground-gap color using the tile mask, and a final global HSV Adjust unifies the overall look. **Roughness:** built cheaply from RGB-to-Mono of the (pre-HSV-adjusted) albedo, Remapped to keep some specular highlight range, with a Fractal-noise variation layer Remapped and combined via **Maximum** (not Multiply) for lighter fleck areas, then blurred slightly. In Solaris, the scene assembles a paving Grid + a separately-modeled water-ripple Grid (Mountain noise with Lattice/Gradient warp for puddle shapes), MaterialX/Karma builders wire the three COPs-baked maps into base color/roughness/displacement (displacement amount tuned up since the Solaris-side grid is 10x larger than the COPs-space unit grid), and a simple transmissive water shader is built separately. Lighting uses a **Rectangle Light** with a **Light Filter Library → Gobo filter** (a grayscale barn-door/dapple texture) to cast a patterned light-and-shadow break across the stones — tuned via filter width/size and light intensity — combined with a low-intensity Karma Physical Sky/sun fill and Karma's native camera depth of field (f-stop, focus distance via Shift-click-to-set-focus). Render Geometry Settings' dicing quality is raised on the ground to resolve the displacement properly. The whole thing is finished with iterative displacement-amount, specular, and gobo-position tuning until the final look matches the author's reference render.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base point grid (SOPs):** Grid (ZX plane, 21x21) → wrangle to extract primitive centroids as points (equivalent to Extract Centroid).
+2. **Circular center clearing:** wrangle computing `f@center = length(@P)`, then a second wrangle removing points where `center` is below a threshold — carves a circular gap in the point grid.
+3. **Re-add a single center point:** wrangle running over `detail`, computing `getbbox_center()`, and adding exactly one point there — this becomes the logo tile's anchor.
+4. **Stamp/pscale setup:** wrangle setting `i@stamp = (@ptnum == detail(0, "center_pt", 0)) ? 1 : 0` and a corresponding `pscale` (5 for center, 1 elsewhere) — Stamp Points reads the `stamp` attribute to pick which "layer"/stamp variant to draw per point.
+5. **Random rotation-amount group + mask:** wrangle creating a point group `randpts` via `random(@ptnum) < threshold` (seeded) for tiles that should rotate more; a separate `mask_rot` attribute (randomized per point, different seed) that scales how much extra rotation those grouped tiles get.
+6. **Rotation VEX:** build a random angle between -π and π (`fit01(random(...), -PI, PI)`-style), construct a **quaternion** around a fixed axis via `quaternion(angle, axis)`, apply to a base normal via **`qrotate()`**; for points in the `randpts` group, additionally multiply the rotation angle by `mask_rot` for a stronger, more varied rotation on those tiles.
+7. **Bring points into COPs:** Sub Import (External reference to a Null output of the SOP network) → **Rasterize** the points into COPs space (position + bounding-box scale-to-fit against the "app"/default COPs space).
+8. **Stamp Points (base tiles):** feed the rasterized points into **Stamp Points** (radius ~0.042) to draw a rotated-square tile per point, using the point's rotation/stamp/pscale attributes.
+9. **Logo stamp layer:** add a second Stamp Points layer keyed to `stamp == 1`; load the downloaded logo image, convert **RGB to Mono** (Maximum mode) and feed it as the stamp-1 shape so the center point renders the logo instead of a plain square tile.
+10. **Tile-edge cracking:** **Distort** (Fractal Noise, UV-based, Perlin type) on the stamped pattern for edge breakup; a second **Fractal Noise** (Worley Cellular F2-F1, centered 0.5) + **Remap** fakes crack lines; blend the two via **Minimum**.
+11. **Per-tile ID + variety:** **Segment by Connectivity** assigns unique IDs per tile; two **Random Mono** nodes seeded from those IDs drive a blend (lightening some tiles) and a **Compare** (A > B, tunable threshold) to selectively remove/merge some tile segments.
+12. **Displacement build-up:** further per-ID Random Mono multiplied over the tile mask for per-tile height variation; a **UV Transform** randomly rotates tile UVs (seeded by tile ID) for varied surface direction; a **Ramp** driven by position (radial-style) multiplied in fakes an elevation/tilt gradient across the whole tile field; layered Fractal Noise (parallel type) blended via **Maximum** (not Multiply, to preserve highlights) for fine grain; final slight Blur.
+13. **Albedo build:** load a Polyhaven ground texture, **UV Sample** it onto the stamped geometry, multiply by the tile mask; per-tile **HSV Adjust** driven by a tile-ID Random Mono for varied saturation/hue per stone; a second, darker copy of the same texture blended in (via the tile mask) as the grout/gap color; final global HSV Adjust for overall color grading; output as a named `albedo` Null.
+14. **Roughness build:** RGB-to-Mono of the pre-color-corrected albedo, Remap (keep input max ~0.6 for some specular range), blended with a Fractal-Noise variation layer via **Maximum** for lighter fleck areas, slight Blur, output as `rough`.
+15. **Solaris scene assembly:** paving Grid (~50 divisions, reversed UV Texture) plus a separate water-ripple Grid using Mountain (Worley-cell noise) plus Lattice/Gradient warp for puddle shapes, transformed up into place; standard Render Geometry Settings, Material Library, Dome Light (Polyhaven HDRI), Karma Render Settings.
+16. **Materials:** Karma Material Builder for the ground (albedo → base color, roughness float → specular roughness, displacement float → displacement input at amount ~0.25-0.5, tuned up since the Solaris grid is 10x larger than the COPs unit grid); a separate simple water material (transmission = 1, light-blue tint, tuned depth).
+17. **Camera + DOF:** create a Camera, frame the shot; use Shift-click on the camera to set focus distance interactively; set F-stop (~0.1) for shallow depth of field.
+18. **Gobo lighting:** **Rectangle Light** + **Light Filter Library → Gobo** filter (grayscale barn-door texture) applied via the light's Light Filter parameter; tune filter width/size and light intensity until the dappled light/shadow break reads clearly across the stones; combine with a low-intensity Karma Physical Sky sun for fill.
+19. **Displacement quality:** raise Render Geometry Settings' **dicing quality** on the ground geometry so the Karma render actually resolves the baked displacement map at sufficient detail.
+20. **Iterative tuning:** adjust displacement amount, noise element sizes, specular/roughness values, gobo position/size, and light intensities across several render passes until the result approximates the reference look.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Grid, Attribute Wrangle (VEX: centroid extraction, `length(@P)` radial mask, `getbbox_center()` detail-scope point addition, `select()`-style stamp/pscale assignment, `random(@ptnum)` group creation, quaternion + `qrotate()` rotation math with `mask_rot` scaling), Null (SOP→COPs bridge). COPs: Sub Import (External), Rasterize (position/bbox fit to app space), Stamp Points (radius, multi-layer stamp attribute, custom shape/logo stamping), RGB to Mono (Maximum mode), Distort (Fractal Noise, UV-based), Fractal Noise (Perlin, Worley Cellular F2-F1, parallel type), Remap, Minimum/Maximum blend modes, Segment by Connectivity, Random Mono (ID-seeded), Compare, UV Transform (random rotation), Ramp (position-driven), Blur, UV Sample, HSV Adjust (per-tile and global), Blend. Solaris/Karma: Grid, Mountain (Worley-cell noise), Lattice/Gradient Warp, Karma Material Builder (base color/specular roughness/displacement inputs), Render Geometry Settings (dicing quality), Material Library, Dome Light (Polyhaven HDRI), Rectangle Light, Light Filter Library (Gobo filter), Camera (F-stop, focus-distance shift-click), Karma Physical Sky, Karma Render Settings.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines hand-authored VEX (quaternion rotation, detail-scope point manipulation), a dense multi-layer COPs texturing network, and full Solaris scene/lighting assembly; assumes solid VEX and COPs fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (Copernicus/COPs Stamp Points workflow and Karma XPU/Solaris pipeline consistent with Houdini 20.5).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #cops #karma #solaris #texturing #materials #lighting #procedural #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with other cgside COPs-materials tutorials (custom procedural materials with Houdini and Karma, designer-like materials in Cops) once indexed together — shares the Stamp Points / per-tile Random Mono ID-driven variation vocabulary.
