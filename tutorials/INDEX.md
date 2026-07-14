@@ -1564,9 +1564,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=yeA_0tL3GlU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21
+- **Tags:** #vex #rigging #animation #cops #procedural #skeleton #shaders #texturing #noise #advanced
+- **Summary:** Builds a procedural leaf skeleton via custom curvature-clustering landmark detection and near-point-based spine construction, rigs and animates it with point-ID/time-seeded noise, then creates a double-sided front/back leaf shader in COPs using an intersect() ray-cast trick.
 - **File:** tutorials/double-sided-leaf-animation-using-cops-in-houdini-21.md
 
 

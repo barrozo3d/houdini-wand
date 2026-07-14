@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=yeA_0tL3GlU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21"
+tags: [vex, rigging, animation, cops, procedural, skeleton, shaders, texturing, noise, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/double-sided-leaf-animation-using-cops-in-houdini-21/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Double Sided Leaf Animation using Cops in Houdini 21
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py double-sided-leaf-animation-using-cops-in-houdini-21 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Project overview [0:00]
@@ -253,30 +249,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/double-sided-leaf-animation-using-cops-in-houdini-21/frame_000.jpg
+- [2:30] tutorials/frames/double-sided-leaf-animation-using-cops-in-houdini-21/frame_001.jpg
+- [8:10] tutorials/frames/double-sided-leaf-animation-using-cops-in-houdini-21/frame_002.jpg
+- [11:40] tutorials/frames/double-sided-leaf-animation-using-cops-in-houdini-21/frame_003.jpg
+- [15:50] tutorials/frames/double-sided-leaf-animation-using-cops-in-houdini-21/frame_004.jpg
+- [20:10] tutorials/frames/double-sided-leaf-animation-using-cops-in-houdini-21/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a fully procedural leaf skeleton (auto-detected corner landmarks → generated spine geometry → rig wrangle bend/noise animation) driven from a traced leaf-texture silhouette, then creating a **double-sided front/back leaf shader in COPs** using an intersect-based ray trick to sample different textures on each face without duplicating geometry.
 
 ### Summary
-[PENDING EXTRACTION]
+Starts by tracing a leaf's alpha texture into mesh geometry (Trace SOP) and moving it into UV space (0-1) for easier COPs work later. The hardest part is fully procedural landmark detection: since curvature analysis on the raw boundary is noisy, the mesh is duplicated into a heavily blurred "rest" version (position stored as a `rest` attribute, blurred, then swapped into `P` via a rest/current branch — a workaround for the fact COPs/SOPs can only swap between `P` and `uv`, not arbitrary attributes) so curvature analysis reads clean corner peaks; curvature is thresholded and copied back to the original mesh, then a custom VEX "clustering" pass (comparing each landmark point's curvature to the previous one within a `detail`-scope loop, starting a new "class" whenever the difference exceeds ~0.1) groups contiguous high-curvature runs into per-corner classes, and the middle point of each class is picked as the actual landmark (via nearest-point lookup) instead of using Group Expand naively (which fails because each cluster has a different point count). From these landmarks, an interior skeleton is built: interior points are classified convex/concave via cross-products of adjacent edge directions, converted to lines, and a Boolean/centroid extraction generates additional centerline landmarks; corner points are bridged to these interior centroids using a **near-point-along-direction "safe distance" trick** to fake ray-intersection without an actual ray/intersect call (adjustable by a manipulable target-offset distance). A "spine" primitive (2 points, positive/negative offset via `i*2-1` sign trick) is built per landmark using a for-loop (not for-each) to avoid Copy/Transform overhead, replicated across all leaflets via a numbers-wrangle loop. The spine geometry feeds a rig (Rig Doctor + Rig Wrangle) that bends each leaflet segment around its curve with an optional 90°-Z transform-attribute correction to fix a mirrored-curl bug, then a Vop/VEX noise driven by point ID (as a pseudo-seed) and a custom spare `time` parameter animates a natural, slightly randomized flutter (tunable frequency, amplitude, offset), finally applied via Bone/Point Deform onto the visible mesh. The second half moves to **COPs**: the outline mesh is rasterized to position space, and a wrangle performs an `intersect()` ray-cast per-pixel from the current rasterized position along -Z to find the mesh's back face, retrieving its position/normal/UV (with a small offset subtracted from the ray origin to avoid losing front-face coverage) — comparing the front vs. back-hit normal's Z sign produces a red/green front/back mask, which is then used to blend between two independently Texture-Sampled front/back leaf textures for a true double-sided material with zero extra geometry.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Setup:** trace the leaf alpha texture (via Copernicus alpha extraction) into mesh geometry with **Trace**, then transform UVs into the 0-1 live space so later COPs work aligns directly.
+2. **Clean curvature signal:** copy `P` to a `rest` attribute, heavily **Blur** the rest-position copy, then branch/swap so curvature measurement runs on the smoothed rest geometry instead of the noisy live boundary (note: only `P`↔`uv` can be swapped natively, forcing an explicit branch workaround for a custom attribute).
+3. **Landmark detection:** **Measure** (Curvature) on the blurred geometry → **Attribute Copy** curvature back to the original mesh (same point count) → **Attribute Expression**/threshold to select high-curvature points as a landmark point group.
+4. **Class-clustering VEX (over detail):** expand the landmark group, iterate all its points, and for each compare current curvature to the previous point's saved curvature; start a new integer `class` whenever the difference exceeds a threshold (~0.1), incrementing a running class counter — produces distinct per-corner clusters even though cluster sizes vary (which is why naive Group Expand-to-single-point fails).
+5. **Middle-point selection per class (over detail):** for each unique class value, expand that class's point group and pick the point at index `len(group)/2` as the representative corner landmark, then snap to it via **Near Point**.
+6. **Interior skeleton:** classify interior points as convex/concave via cross product of adjacent (next-edge, previous-edge) direction vectors in a wrangle; convert convex points to line, extract a **centroid**, Boolean/**Shatter** against a bound rectangle to isolate centerline segments, extract additional centroid landmarks from those.
+7. **Bridge landmarks:** generate points along the middle, sort by proximity-to-center, assign an ID to connect them in order; extend to boundary points via **Near Point**, adding a point at the found position; **Poly Bridge** from corner points to center points to the edge (skipping point 0, the pre-sorted middle).
+8. **Fake-intersect "safe distance" trick:** to connect a spine line to the mesh boundary without an actual ray-intersect call, use **Near Point** with a manipulated target position (`position + direction * distance`), tuning the distance manually (too large skips the intended point; too small is safer) — run over the unshared/boundary group with the mesh as the near-point target, saving the resulting distance as a per-point "safe check" value for later reuse.
+9. **Spine construction (for loop, not for-each):** for each of the landmark points, build a 2-point/2-vertex "spine" primitive in a plain **for loop**: compute a sign via `i*2-1` (maps 0/1 → -1/+1) to place points above/below (or front/back), repeat the near-point + safe-distance lookup with the sign applied to the direction, add points and vertices to complete each spine primitive; group the result as `spine`. Note the orientation attribute (`_n`, the along-X out-vector from Orient Along Curve) only orients correctly when the same geometry is wired into the node's **second input** — even without moving it, this second-input connection alone fixes the normal/orientation direction.
+10. **Replicate across leaflets:** a **Numbers Wrangle** iterates over the frame/leaflet count (6 in this case) to duplicate the spine-building logic per leaflet without Copy/Transform, using nested for loops to build the falloff shape per copy, then Transfer Attributes carries the orientation data forward for rigging.
+11. **Rigging:** **Rig Doctor** initializes the `name` attribute for the rig; a **Rig Wrangle** drives the primary bend; a second Rig Wrangle implements an (ultimately unused, experimental) curling effect, corrected for a mirrored-curl bug via an **Adjust Transform** that rotates the transform attribute 90° around Z on the correct group — general lesson: manipulating the rig's transform attribute directly is the most powerful/flexible way to control a rig.
+12. **Noise-driven animation:** disable to get a plain angle-controlled bend-around-curve rig; enable a VEX/VOP **noise** using **point ID as a pseudo-seed** (valid substitute for `@P` since it runs on points) plus a custom spare **time** parameter to drive frequency; tune frequency (more turbulent), amplitude (stronger sway), and offset (different seed variation) for a natural, non-repeating flutter; finish with **Bone/Point Deform** onto the render mesh.
+13. **COPs double-sided shader — rasterize + intersect:** import the leaf outline mesh into COPs, **Rasterize** its position into the -1..1 COPs coordinate space; in a wrangle, call **`intersect()`** from the current rasterized position along `-Z` against the mesh's first input to find the corresponding back-face hit, retrieving its position (`ipos`), normal, and UV; subtract a small offset from the ray origin/direction before intersecting — otherwise, since the ray starts exactly on the front-face geometry, some coverage is lost (a flat mesh needs this nudge to work at all); tune max-distance as needed.
+14. **Front/back mask:** compare the hit normal's Z component — if `> 0.1`, output red (back face); otherwise green (front face); multiply by a primitive-based white mask (created via `if (eq primitive) → white`) to clean the outline edges.
+15. **Dual-texture blend:** assign the retrieved UVs to a UV output port, **Texture Sample** the front texture and the back texture separately, extract the mask's channel (e.g. green) and use it to **Blend** between the two sampled textures for the final double-sided look; a **Light** COP is added afterward purely to add a fake 3D-shaded feel to the flat preview.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Trace, UV Transform, Attribute Copy (rest position), Blur, Branch (P/uv swap workaround), Measure (Curvature), Attribute Expression (threshold), Attribute Wrangle (VEX class-clustering over detail; convex/concave classification via cross product; middle-point-by-index selection; near-point safe-distance spine construction with `i*2-1` sign trick; for-loop-based spine primitive building), Group Expand, Near Point, Convert to Line, Extract Centroid, Boolean/Shatter, Poly Bridge, Orient Along Curve (second-input orientation fix), Numbers Wrangle (leaflet-count iteration), Transfer Attributes, Rig Doctor, Rig Wrangle (x2 — bend + curling), Adjust Transform (90° Z rotation fix), VOP/VEX Noise (point-ID seed, custom spare `time` parameter: frequency/amplitude/offset), Bone/Point Deform. COPs: Rasterize (position to -1..1 space), Wrangle (VEX `intersect()` ray-cast, Z-sign face classification, primitive-based mask), Channel Extract, Texture Sample (x2, front/back), Blend (mask-driven), Light.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — combines custom curvature-based procedural landmark detection, hand-built skeleton/rigging from scratch, and a non-trivial COPs ray-intersect double-sided-shading trick; assumes strong VEX and rigging fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21 (per video title; UI matches Houdini 21's Copernicus/COPs workflow).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #rigging #animation #cops #procedural #skeleton #shaders #texturing #noise #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with other cgside COPs-texturing and rigging/VEX-tips tutorials (double-sided shading, procedural landmark detection, KineFX rigging) once extracted from this batch.
