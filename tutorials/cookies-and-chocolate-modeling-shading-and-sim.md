@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=c90ervPv5ro
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "any modern (H19+, uses Exoside QuadRemesher)"
+tags: [vdb, flip, fluid, materials, karma, procedural, uv, baking, mardini, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/cookies-and-chocolate-modeling-shading-and-sim/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Cookies and chocolate | Modeling, shading and Sim
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py cookies-and-chocolate-modeling-shading-and-sim <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -164,30 +160,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:56] tutorials/frames/cookies-and-chocolate-modeling-shading-and-sim/frame_000.jpg
+- [2:39] tutorials/frames/cookies-and-chocolate-modeling-shading-and-sim/frame_001.jpg
+- [5:16] tutorials/frames/cookies-and-chocolate-modeling-shading-and-sim/frame_002.jpg
+- [8:33] tutorials/frames/cookies-and-chocolate-modeling-shading-and-sim/frame_003.jpg
+- [9:22] tutorials/frames/cookies-and-chocolate-modeling-shading-and-sim/frame_004.jpg
+- [16:44] tutorials/frames/cookies-and-chocolate-modeling-shading-and-sim/frame_005.jpg
+- [22:50] tutorials/frames/cookies-and-chocolate-modeling-shading-and-sim/frame_006.jpg
+- [24:50] tutorials/frames/cookies-and-chocolate-modeling-shading-and-sim/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full "cookie + chocolate drizzle" production pipeline: VDB-based volumetric cookie sculpting (layered noise/distortion via Volume Sample), decoration scatter-and-indent via SDF-gradient deformation, bake-based texturing, and a hand-built custom velocity-field FLIP simulation to make chocolate fluid wrap and stick around the cookie shape (rather than just flowing off it).
 
 ### Summary
-[PENDING EXTRACTION]
+**Cookie modeling**: starts from a Tube shaped via a relative-bounding-box ramp mask and a position-tapering VEX snippet, converted to VDB, then heavily detailed entirely in volume space using **Volume Sample** to distort position with layered noises (turbulence, Worley F2F1 inverted-and-distorted, masked to protect the bottom) plus an *unclamped* Fit Range trick (creating a hard-clipped plateau effect instead of a smooth falloff) for an overall bulge/crack pattern, and a final broken-surface detail layer. The 400k-poly VDB-derived mesh is separately volume-resampled down to a clean low-poly bake target. **Decorations**: a simple curve-swept shape (Rig Wrangle-bent, scale-rampped, quad-remeshed) is scattered onto AO-masked cookie regions (few points, randomized p-scale/orient), then — instead of the usual VDB-boolean-subtract approach — indentations are faked cheaply by packing spheres at the decoration points, building a VDB from them, and in a wrangle sampling that sphere-VDB's SDF/gradient directly against the cookie mesh to push points inward along the gradient wherever they intersect (blended against a blurred position copy for a softer result) — avoiding a full VDB-subtract round trip. **Texturing**: quick-and-dirty UVs (clip + UV Flatten on clip edges, transferred back to unclipped geometry), then a from-scratch Bake Geometry Textures pass (curvature/AO/cavity/thickness) feeding a simple procedural noise-warped base color, cavity-masked color adjustments, and a manually-painted AO/ID-based mix — described explicitly as "quick and dirty but it works." **Fluid simulation** (the most involved part): rather than a stock FLIP setup, two custom **velocity VDB fields** are hand-built — one a straightforward inward-pointing gradient field (from an SDF, negated) that pulls fluid toward the cookie, and a second, more elaborate field that **rotates a reference direction around Y using a mask-driven ramp** (built because the built-in Flow Field/Potential Flow SOP kept producing directions that escaped the cookie's bounds and the author couldn't tame it) to make the fluid appear to wrap/curl around the shape instead of just falling straight down. These fields, plus a density-by-attribute pass and a fog-volume mask (built from a sine-wave-on-mask pattern to bulge fluid out of the indentation areas specifically), drive a standard FLIP sim (viscosity enabled, particle separation/grid scale tuned, emission capped to a fixed frame). The result is meshed (Particle Fluid Surface → VDB reshape/smooth → poly convert), motion blur/velocity transfer skipped since render motion is negligible for this shot. **Final assembly**: merge cookie + fluid, export to USD, sublayer into a lighting/shading/render scene (area + dome lights, simple camera), MaterialX shading using the baked ID/AO/normal maps (subsurface scattering for both the cookie's cream and the chocolate, minimal extra complexity).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Cookie base shape**: Tube → PolyBevel + remesh/smooth → VDB from Polygons (initial resolution) → VDB Smooth → Resample (double voxel resolution for later detail headroom).
+2. **Overall taper/mask shape**: relative point-bounding-box Y split feeds a Ramp to shape the cookie's silhouette; a VEX snippet manipulates `P.x`/`P.z` for a tapering effect — this and subsequent detail passes are all applied via **Volume Sample**, distorting position directly rather than working in mesh space.
+3. **Layered volume distortion**: (a) a turbulence noise with most of its Y-component stripped out (to avoid an "all over the place" look) drives an initial position distortion; (b) a Worley F2F1 noise, inverted, further distorted by a second turbulence noise (zero-centroid-per-length), fit/clamped and scaled down, masked via a Y-based ramp so the bottom stays undistorted, and blended against the un-noised result using that mask; (c) after the Volume Sample, an additional "unified noise" (fractal, frequency-controlled) is added over density using an **unclamped Fit Range** — deliberately not clamping produces a hard plateau/cutoff look rather than a smooth falloff — masked by both a Y-ramp and a bounding-box-center distance falloff (to protect the center from too much noise) and scaled down; (d) a final broken/pitted detail layer (another fractal unified noise, offset, inverted, fit-ranged, multiplied down) adds small surface "spots."
+4. **Convert to mesh + optimize**: Convert to Polygons gives ~400k polys (fine for direct render, too dense for UVs/baking) — separately, from the volume, do another **Volume Resample** (fewer voxels) → Smooth → Convert to get a clean low-poly base to bake onto.
+5. **Decorations**: build a simple Line → Resample → **Rig Wrangle** (curve-parameter-driven bend via a ramp, exposed angle parameter, rotation around X, adjustable bend-start offset) → Sweep (with a Scale ramp for shape) → Exoside QuadRemesh (bottom cleanup) → Smooth.
+6. **Place decorations**: mask cookie regions by feature (AO-based, remapped), Scatter over the mask, Blast out unwanted low-mask areas, select a handful of points (e.g. 4, exploiting scatter's point-order randomization), randomize p-scale (~0.8-1.0) and orient, Copy to Points.
+7. **Fake indentations without a VDB-subtract round-trip**: at each decoration point, inject/pack a small sphere, transform it up slightly, build a **VDB from Polygons** from the spheres, then in a wrangle sample that sphere-VDB's **SDF and gradient** against the cookie mesh directly — where the cookie intersects/is near a sphere, push points inward along the gradient. Blend (lerp) between the resulting deformed position and a blurred copy of the original position for a softer, less sharp indentation edge.
+8. **UVs (quick approach)**: since the low-poly base doesn't UV cleanly out of the box, use Exoside quad-remesh-adjacent clipping around one axis, save the clip edges as a seam group, run UV Flatten based on that seam group, then UV Transfer the result back onto the unclipped geometry (avoiding an unwanted visible seam cut in the final mesh).
+9. **Baking**: Bake Geometry Textures loading both low-poly and high-poly ("ipoly"), baking curvature/occlusion/cavity/thickness (author notes not all baked maps end up used) — cable-pack everything into one bake bundle, fetch + unpack for use downstream.
+10. **Texturing (deliberately quick/dirty)**: build a base color from layered noise + warping + a simple two-stage RGB adjustment; blend in cavity-mask-driven color adjustments for the albedo; reuse the baked albedo (converted toward black/white) blended into the AO/ID channel for extra variation — previewed directly but noted to look different once actual low-value shading is applied at render time.
+11. **Fluid sim setup — velocity field 1 (attraction)**: Remesh the cookie, pick one point via bounding-box-max on an axis, compute Distance From Geometry from that point to build a directional mask; build a VDB from Polygons with an activated velocity VDB referencing that mask VDB, then in a Volume Wrangle sample the **gradient** of the cookie's SDF, normalize and **negate it** (SDF gradients point outward by default; negating makes them point inward/toward the cookie) to get an attraction field; copy the cookie's transform and reposition.
+12. **Velocity field 2 (wrap/rotation, the more complex one)**: reuses the base velocity VDB, SDF, and mask as three inputs into a Volume Wrangle. Samples the mask (a 0-1 gradient from a reference point to the mesh) and the SDF/gradient; builds a flattened directional reference vector, derives per-voxel bounding-box-relative masks (X/Y/Z), remaps one into a "Z bias" ramp, and uses that bias to **rotate the reference direction around Y** (with a signed offset so left/right sides rotate oppositely), then **lerps between the original direction and the rotated one** based on the same Z-bias ramp — this hand-rolled rotate-by-ramp trick was built specifically because the native Flow Field/Potential Flow SOP produced directions escaping the cookie's bounds and proved hard to tame on a first/second attempt with it.
+13. **Fog/density mask for indentations**: a separate VDB from Polygons + Fog Volume built from the earlier mask, combined with a **sine wave whose frequency is driven by the mask itself** (masking the top/bottom to avoid unwanted effects there) — produces low values inside the decoration indentations and higher ("bulge") values elsewhere, later used to modulate fluid behavior so it visually bulges out of the non-indented areas specifically.
+14. **FLIP source & sim**: a Sphere source (positioned near the top/back), Mountain-distorted with animated noise, feeding a basic FLIP Source (particle separation matched to the FLIP object, jittered seeds) plus the earlier SDF surface; a wrangle gives the source an **animated velocity** — a quaternion built from an initial `(0,-1,0)`-style direction, time-driven frequency/offset, and a sine-based rotation angle (capped by a max-angle parameter) — plus an assigned density attribute for density-by-attribute use downstream. The DOP network itself: standard FLIP object (particle separation, viscosity enabled, reduced grid scale for extra resolution), Volume Source emitting only until a fixed frame (~168) from the first source geometry, then **Density by Attribute** (remapping density between two values so parts of the fluid flow faster/slower — some areas "get stuck"), and **both custom velocity fields added into the sim's velocity** via Volume Sample V — the attraction field and the rotated wrap field — plus a Gas Field Wrangle reducing velocity specifically in the indentation regions (using the earlier mask), surface tension, and volume limits. A Static Object collider uses the cookie's VDB.
+15. **Mesh the fluid**: stop-party the FLIP sim, Fluid Compress, cache to packed points, **Particle Fluid Surface** to extract a mesh, then VDB from Particles → VDB Smooth SDF → VDB Reshape SDF → convert to polygons, with a final Normals/position-blur/normal-blur pass for a cleaner surface. Motion blur / velocity transfer to render time is explicitly skipped since the fluid moves too slowly for it to matter in this shot.
+16. **Assembly & shading**: merge cookie + fluid geometry, apply the cookie's saved transform, recompute normals, export to USD; in a lighting/render scene, sublayer the mesh (rendering the low-poly, not the ipoly, with increased dicing), add an area light + dome lights (low intensity, for reflections) and a camera. MaterialX shading imports the baked ID/AO/normal maps at native bake scale; albedo gets a slight gamma push for contrast on the cream; cookie/decoration/cream materials all use subsurface scattering with distinct colors/scale, described as an intentionally simple, "lazy" shading setup.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Tube → relative-bbox Ramp mask + VEX taper snippet → VDB from Polygons → VDB Smooth → Resample → layered **Volume Sample** distortions (turbulence noise, Worley F2F1 inverted+distorted, Y-ramp + bbox-center-distance masks, unclamped Fit Range) → Convert to Polygons (high-poly) / separate Volume Resample→Smooth→Convert (low-poly bake target) · decoration Line→Resample→**Rig Wrangle** (curve-param bend)→Sweep→Exoside QuadRemesh→Smooth → AO-based mask → Scatter/Blast/point-select → randomized p-scale/orient → Copy to Points → packed spheres → VDB from Polygons (spheres) → SDF/gradient-sampling wrangle (indent-and-blend-with-blur) · UV: Clip (seam group) → UV Flatten → UV Transfer · **Bake Geometry Textures** (curvature/occlusion/cavity/thickness) → Cable Pack/fetch/unpack → noise-warped base color + cavity-masked adjustments · fluid: Remesh + Distance From Geometry (attraction mask) → VDB from Polygons (velocity-activated) → Volume Wrangle (`volumegradient`/negate for attraction; mask+SDF+gradient-driven ramp-rotation-around-Y + lerp for wrap field) → Fog Volume + mask-driven sine wave (indentation bulge mask) → FLIP Source (Sphere+Mountain, quaternion-animated velocity wrangle, density attribute) → DOP network (FLIP object, viscosity, reduced grid scale, Volume Source capped-frame emission, **Density by Attribute**, dual Volume Sample V velocity injection, Gas Field Wrangle indentation-velocity reduction, Static Object collider) → Fluid Compress → **Particle Fluid Surface** → VDB from Particles → VDB Smooth/Reshape SDF → polygon convert → normals/blur cleanup → merge + transform + USD export → Solaris sublayer + lights/camera + MaterialX (ID/AO/normal, subsurface scattering materials).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines heavy volume-space (VDB) sculpting with layered custom noise math, a cheap SDF-gradient indentation trick as an alternative to VDB boolean subtraction, from-scratch bake-based texturing, and a genuinely custom hand-rolled velocity-field FLIP setup (including a rotate-by-ramp workaround for a native node that didn't behave as needed) — this is presented as an overview/breakdown of a finished personal project, not a beginner walkthrough.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; relies on the third-party **Exoside QuadRemesher** plugin and standard FLIP/VDB/Solaris/MaterialX tooling, consistent with any modern Houdini (H19+).
 
 ### Tags
-[PENDING EXTRACTION]
+#vdb #flip #fluid #materials #karma #procedural #uv #baking #mardini #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [Chocolate Swirl Effect with Houdini](chocolate-swirl-effect-with-houdini.md) — shares #vdb #procedural #materials; that tutorial's Soft-Transform/Lattice-from-Volume swirl technique is a complementary VDB-sculpting approach to this video's layered Volume-Sample noise distortion for organic food-asset detailing. Also cross-link with [Cleaning fractured geometry in Houdini](cleaning-fractured-geometry-in-houdini.md) and [Chocolate break rig and Liquid Stretch in Houdini Free Lesson](chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson.md) — shares #vex #procedural, both dealing with custom VEX-driven geometry manipulation on chocolate/food subjects from the same creator.

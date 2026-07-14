@@ -2984,9 +2984,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=c90ervPv5ro
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H19+, uses Exoside QuadRemesher)
+- **Tags:** #vdb #flip #fluid #materials #karma #procedural #uv #baking #mardini #advanced
+- **Summary:** Full cookie + chocolate-drizzle pipeline: VDB volume-sculpted cookie (layered Volume Sample noise distortion, unclamped Fit Range for hard-edged bulges), SDF-gradient-based decoration indentations (cheaper than VDB boolean subtract), bake-based texturing, and a hand-built dual velocity-field FLIP sim (attraction field + a custom rotate-by-ramp wrap field, built after the native Flow Field SOP proved unmanageable) so the chocolate wraps around the cookie shape instead of just flowing off.
 - **File:** tutorials/cookies-and-chocolate-modeling-shading-and-sim.md
 
 
