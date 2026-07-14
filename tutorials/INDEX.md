@@ -1814,9 +1814,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ARJFJC79k3k
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #python #hda #procedural #tips #advanced
+- **Summary:** Builds a custom Python Viewer State HDA ("Draw Points on Geo") from scratch: a GeometryIntersector for surface-snapped point placement, nearestPoint()-driven drag-to-move and middle-click delete, and live hou.GeometryDrawable preview/committed-point feedback.
 - **File:** tutorials/interactive-tools-with-houdini-python-states-draw-pts-on-geo.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ARJFJC79k3k
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [python, hda, procedural, tips, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/interactive-tools-with-houdini-python-states-draw-pts-on-geo/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Interactive Tools with Houdini Python States | Draw pts on geo
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py interactive-tools-with-houdini-python-states-draw-pts-on-geo <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -375,30 +371,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/interactive-tools-with-houdini-python-states-draw-pts-on-geo/frame_000.jpg
+- [2:00] tutorials/frames/interactive-tools-with-houdini-python-states-draw-pts-on-geo/frame_001.jpg
+- [8:00] tutorials/frames/interactive-tools-with-houdini-python-states-draw-pts-on-geo/frame_002.jpg
+- [9:40] tutorials/frames/interactive-tools-with-houdini-python-states-draw-pts-on-geo/frame_003.jpg
+- [17:00] tutorials/frames/interactive-tools-with-houdini-python-states-draw-pts-on-geo/frame_004.jpg
+- [20:00] tutorials/frames/interactive-tools-with-houdini-python-states-draw-pts-on-geo/frame_005.jpg
+- [22:30] tutorials/frames/interactive-tools-with-houdini-python-states-draw-pts-on-geo/frame_006.jpg
+- [31:20] tutorials/frames/interactive-tools-with-houdini-python-states-draw-pts-on-geo/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a custom interactive **Python Viewer State** HDA from scratch ("Draw Points on Geo" — the same tool referenced/used in several other tutorials in this batch, e.g. for manually placing fracture seed points on the perfume bottle) that lets a user click-drag to add points directly on a mesh surface (via a **Geometry Intersector**, not the default construction-plane/grid intersection), drag existing points to reposition them, and middle-click to delete them — with live on-screen visual feedback built from `hou.GeometryDrawable`.
 
 ### Summary
-[PENDING EXTRACTION]
+The HDA is built around a multi-parm **Add** SOP (one entry per drawn point) wrapped in a Subnet and converted to a Digital Asset with the "Interactive" template plus "On Draw" and "Handle States" enabled. By default, the state's built-in interaction intersects against the flat construction plane/grid — not what's wanted, since points should snap onto the actual input geometry. The fix requires manually building a **`hou.GeometryIntersector`** (from `viewerstate.utils`, aliased `su`) in `onEnter`, initialized against the geometry pulled from the state's first input node (`self.node.inputs()[0]`) — critically the geometry of that connected node, not the tool's own Add-node output (an early bug in the video: intersecting against the tool's own guide/output geometry instead of the actual input mesh caused mysterious failures until this was corrected by properly separating a dedicated **Guide** node in the HDA's Type Properties from the Add node driving the actual points). In `onMouseEvent`, the default plane-intersection call is replaced with `self.geo_intersector.intersect(origin, direction)` using the ray data from `ui_event.ray()`; `.intersected` and `.position` (the hit point in world space) become available once this succeeds. A `reason` check (`ui_event.reason() != hou.uiEventReason.Active`) causes the tool to call `self.finish()` and return early on any non-drag/active event, restricting interaction specifically to left-mouse-drag. On a left-button press with a successful intersection, a new point is added at the intersection position (`self.start()` + `insertMultiParmInstance` at `self.pointCount()`, followed by setting position parms) — but first, a **`nearpoint()`**-style lookup (`points_geo.nearestPoint(position, group=None, max_distance=0.1)`) checks whether the click landed near an *existing* point; if so, that existing multi-parm instance's position is updated instead of creating a new entry, giving drag-to-move behavior. Middle-mouse-button clicks near an existing point instead call `node.parm("points").removeMultiParmInstance(near_point_index)` to delete that point entry. For live visual feedback, two `hou.GeometryDrawable` instances are created in `onEnter`: a "preview" drawable (greenish, larger radius) showing where a point *would* be placed as the mouse hovers/drags (built by constructing a temporary SOP verb — `hou.sopNodeTypeCategory().nodeVerb("add")`, `setParms({"points": [...], "usept": True, ...})`, `execute()` — and feeding the resulting geometry into the drawable each frame the intersection succeeds), and a persistent white, smaller-radius "committed points" drawable showing all points actually added so far (fed from the real Add node's geometry, updated in `onEnter` and rendered every frame in `onDraw`). Handle-related boilerplate (since the tool only needs drawables, not manipulable handles) is stripped out as unnecessary. The tool finishes with a simple on-screen instructional message string (built via `state.msg`/similar, using explicit newlines) summarizing the three interactions: left-drag to add a point, left-drag over an existing point to move it, middle-drag to delete a point.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base HDA scaffold:** create an **Add** SOP (multi-parm point entry) fed from the test input geometry; wrap in a **Subnet**, convert to a **Digital Asset** using the Interactive template, enabling "On Draw" and "Handle States".
+2. **Diagnose default behavior:** entering the tool by default draws points via intersection against the flat construction plane — not the actual input mesh — necessitating a custom Geometry Intersector.
+3. **Initialize the intersector on enter:** in `onEnter`, grab `self.node.inputs()[0]` (the connected geometry-providing node, not the tool's own Add output), store its geometry, and build a **`hou.GeometryIntersector`** (via `viewerstate.utils`, aliased `su`) targeting that geometry and the current scene viewer.
+4. **Replace default ray intersection:** in `onMouseEvent`, use `ui_event.ray()` for origin/direction and call `self.geo_intersector.intersect(origin, direction)` instead of the default plane test; debug via printing `.intersected` to confirm hits/misses.
+5. **Restrict to active drag only:** check `ui_event.reason() != hou.uiEventReason.Active` and call `self.finish()` / return early for any other event reason, so the tool only responds to actual mouse-drag interaction.
+6. **Add a point on left-drag:** on a successful intersection with the left mouse button, call `self.start()`, `insertMultiParmInstance(self.pointCount())` on the points multi-parm, and set the new instance's position from `self.geo_intersector.position`.
+7. **Near-point lookup for drag-to-move:** before deciding to add vs. move, use `points_geo.nearestPoint(position, group=None, max_distance=0.1)` — if a point is found within that radius, update its existing multi-parm instance's position instead of creating a new one; otherwise fall back to creating a new point.
+8. **Fix the "wrong geometry" bug:** initially the state accidentally intersected against the tool's own guide/output geometry rather than the real input mesh, breaking the near-point logic silently; fixed by adding a dedicated **Guide** node in the HDA's Type Properties (Node → Guide Geometry) wired separately from the Add node that actually drives the drawn points.
+9. **Delete on middle-click:** check for middle mouse button plus a valid near-point index, then call `node.parm("points").removeMultiParmInstance(near_point_index)` to remove that specific point entry.
+10. **Preview drawable (hover feedback):** build a `hou.GeometryDrawable` (geometry type Point, greenish color, larger radius) in `onEnter`; each frame the intersection succeeds, construct a temporary point via a **SOP verb** (`hou.sopNodeTypeCategory().nodeVerb("add")`, `setParms({"usept": True, "pt": [position]})`, `execute(geo, [])`) and feed the resulting geometry into the preview drawable via `setGeometry`, so the user sees exactly where a point would land before committing.
+11. **Committed-points drawable:** build a second `hou.GeometryDrawable` (white, smaller radius) fed from the real Add node's actual output geometry, refreshed in `onEnter` and drawn every frame in `onDraw` — shows all points genuinely added so far, distinct from the hover preview.
+12. **Strip unused handle boilerplate:** since the tool only needs drawables (not manipulable 3D handles), remove the default `onHandleToState`/`onStateToHandle`-style boilerplate that ships with the Interactive template.
+13. **On-screen instructional message:** set a multi-line status message string (left mouse drag = add point; left mouse drag over existing point = move it; middle mouse drag = delete point) so the tool is self-documenting when active.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Add (multi-parm point entries), Subnet, Digital Asset (Interactive template, On Draw + Handle States enabled), Type Properties → Node → Guide Geometry (dedicated guide node, separated from the Add node). Python (`viewerstate.utils` aliased `su`, `hou` module): `hou.GeometryIntersector` (geometry + scene-viewer initialization, `.intersect(origin, direction)`, `.intersected`, `.position`), `onEnter`/`onMouseEvent`/`onDraw` state callbacks, `ui_event.ray()`, `ui_event.reason()` / `hou.uiEventReason.Active`, `self.start()`/`self.finish()`, multi-parm manipulation (`insertMultiParmInstance`, `removeMultiParmInstance`, `pointCount()` helper), `geometry.nearestPoint(position, group, max_distance)`, `hou.GeometryDrawable` (geometry type Point, `params` dict for color/radius, `.show`, `.setGeometry`, `.draw(handle)`), `hou.sopNodeTypeCategory().nodeVerb("add")` (temporary SOP verb execution for preview-point geometry, `setParms`, `execute`).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — full custom Python Viewer State authoring (geometry intersection, multi-parm manipulation, SOP verb execution, GeometryDrawable feedback) requiring solid Python/HOM and Houdini state-machine fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era Python Viewer States API; the resulting HDA — "Place Points on Geo" — is the same tool referenced across several other tutorials in this batch, e.g. for manually placing RBD fracture seed points).
 
 ### Tags
-[PENDING EXTRACTION]
+#python #hda #procedural #tips #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with houdini-beginner-tutorial-creating-a-perfume-bottle.md and houdini-techniques-to-improve-your-level.md (same author, same "Place Points on Geo" HDA referenced/used as a finished tool) once indexed together.

@@ -822,4 +822,4 @@ Intermediate — explicitly framed as beginner-friendly and VEX-light (only simp
 ---
 
 ## Related Tutorials
-Cross-link with dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris.md (same author, similar product-viz bottle-modeling + VDB workflow) and hard-surface-techniques-in-houdini.md (shares the Compile-Block-with-spare-inputs pattern) once indexed together.
+Cross-link with dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris.md (same author, similar product-viz bottle-modeling + VDB workflow) and hard-surface-techniques-in-houdini.md (shares the Compile-Block-with-spare-inputs pattern) once indexed together. The custom "Place Points on Geo" HDA used here for manual fracture-seed placement is built from scratch in interactive-tools-with-houdini-python-states-draw-pts-on-geo.md.
