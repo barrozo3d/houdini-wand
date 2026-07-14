@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=WAyk2xCn5rs
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20+ (Solaris/Karma, MaterialX)"
+tags: [materials, karma, triplanar, hda, uv, texturing, heightfields, vdb, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/cliff-texturing-with-karma-and-material-x/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Cliff texturing with karma and material X
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py cliff-texturing-with-karma-and-material-x <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -89,30 +85,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:48] tutorials/frames/cliff-texturing-with-karma-and-material-x/frame_000.jpg
+- [1:21] tutorials/frames/cliff-texturing-with-karma-and-material-x/frame_001.jpg
+- [1:46] tutorials/frames/cliff-texturing-with-karma-and-material-x/frame_002.jpg
+- [2:44] tutorials/frames/cliff-texturing-with-karma-and-material-x/frame_003.jpg
+- [3:06] tutorials/frames/cliff-texturing-with-karma-and-material-x/frame_004.jpg
+- [3:38] tutorials/frames/cliff-texturing-with-karma-and-material-x/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Introduces a custom "CGS Triplanar" MaterialX HDA (a faster, UV-free triplanar projection node with built-in tiling randomization) and uses it to shade a heightfield/VDB cliff by mixing a rock texture pair via a convexity mask and blending in grass via a slope mask, all channels sharing tiling/seed settings via reference nodes.
 
 ### Summary
-[PENDING EXTRACTION]
+Compares a custom MaterialX HDA ("CGS Triplanar," a MaterialX port of the author's earlier VEX-based triplanar tool) against the stock MaterialX triplanar node on two test spheres. The custom node projects textures without requiring UVs, exposing a randomization Seed, Tiling amount, a Triplanar Blending control (blend sharpness between the three projection axes), and a UV Blending control (sharpness between repeated tile instances). The signature accepts Color (albedo), Float (roughness/displacement), and Vector3 (normal maps) inputs. In a side-by-side render, the stock MaterialX triplanar shows obvious repeating tiling and breaks down on normal/displacement channels due to blending artifacts between the three projection directions, while the custom node hides repetition convincingly and handles normal/displacement channels correctly. Applied to a heightfield+VDB cliff (built as shown in earlier videos on the channel) with custom convexity and slope masks (the slope mask built in a Point VOP): a base rock Megascans texture is mixed with a second rock texture using the convexity mask (concavity could be used instead for a different look), then a grass texture is blended on top using the slope mask. All the remaining material channels (roughness, normal, displacement) use matching texture sets, with their triplanar nodes wired via **Reference** nodes so every channel shares identical tiling/seed/randomization settings automatically. Finished with a simple ocean plane and extra set-dressing elements for the final shot.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Custom triplanar node overview**: the "CGS Triplanar" MaterialX HDA takes inputs for two texture sets (for masked blending) plus a **Signature** parameter (Color/Float/Vector3) that adapts it for albedo, roughness/displacement, or normal-map use respectively.
+2. Exposed controls: **Seed** (randomizes the projection look if the default doesn't suit), **Tiling** amount, **Triplanar Blending** (controls blend sharpness between the X/Y/Z projection axes), and **UV Blending** (controls the sharpness of the transition between repeated tile instances) — no UVs required at all, since it's a pure triplanar/world-space projection.
+3. **Validate with a side-by-side test**: two spheres, one wired through the custom node, one through the stock MaterialX triplanar, sharing identical texture/tiling/randomization inputs (achieved by just swapping the Signature and texture inputs) for a fair comparison.
+4. **Comparison result**: the stock node visibly repeats its tiling pattern and produces broken-looking normal maps and displacement (blending artifacts where the three projection directions meet); the custom node hides the repetition convincingly and renders normal/displacement channels correctly.
+5. **Build masks for shading** on the heightfield/VDB cliff geometry (constructed using the channel's earlier heightfield+VDB techniques): a **convexity mask** and, via a **Point VOP**, a **slope mask** (surface-angle-based).
+6. **Base rock shading**: bring the geometry into Solaris, wire up the custom triplanar node loading a Megascans cliff rock texture, then mix in a second rock texture using the **convexity mask** as the blend factor (swap to the concavity mask instead for a different distribution of the two textures).
+7. **Grass layer**: blend a grass texture on top of the combined rock base using the **slope mask** — steeper areas stay rock, flatter areas pick up grass.
+8. **Channel consistency**: for roughness, normal, and displacement, load the matching texture sets into their own triplanar node instances, but drive their tiling/seed/randomization parameters via **Reference** nodes pointing back to the main triplanar setup — guarantees every channel's projection lines up rather than drifting out of sync.
+9. **Final scene assembly**: add a simple ocean plane and a few extra set-dressing elements around the cliff for the final presentation shot; the author notes this is a deliberately quick setup and that more masks (additional noise-driven blends, etc.) could be layered in for further variation.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Custom **CGS Triplanar** MaterialX HDA (Signature: Color/Float/Vector3; parameters: Seed, Tiling, Triplanar Blending, UV Blending) vs. stock MaterialX triplanar node (comparison) → heightfield + VDB cliff base geometry → Convexity mask + Point VOP-built **Slope mask** → triplanar-mixed rock textures (convexity-driven blend) → grass layer (slope-driven blend) → matching roughness/normal/displacement triplanar instances wired via **Reference** nodes for shared tiling/seed settings → ocean plane + set dressing.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — using the custom HDA itself is straightforward, but understanding *why* triplanar projection needs careful blending controls (and recognizing the stock node's failure modes on normal/displacement channels) benefits from some shading/lookdev background.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 20+ (Solaris/Karma, MaterialX-based shading network); relies on a custom author-distributed MaterialX HDA (CGS Triplanar), not a stock Houdini node.
 
 ### Tags
-[PENDING EXTRACTION]
+#materials #karma #triplanar #hda #uv #texturing #heightfields #vdb #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with [Cliff Face in Houdini](cliff-face-in-houdini.md) — shares the same cliff-building/procedural-texturing subject matter, with that tutorial covering the geometry construction and a full manual COPS texturing pipeline as an alternative to this video's triplanar-MaterialX shading approach.

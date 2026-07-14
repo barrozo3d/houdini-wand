@@ -2794,9 +2794,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=WAyk2xCn5rs
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H20+ (Solaris/Karma, MaterialX)
+- **Tags:** #materials #karma #triplanar #hda #uv #texturing #heightfields #vdb #intermediate
+- **Summary:** Introduces a custom "CGS Triplanar" MaterialX HDA (UV-free projection with Seed/Tiling/Triplanar-Blending/UV-Blending controls) that hides tiling repetition and handles normal/displacement channels correctly, unlike the stock MaterialX triplanar node. Applies it to a heightfield+VDB cliff, mixing rock textures via a convexity mask and grass via a slope mask, with all channels synced via Reference nodes.
 - **File:** tutorials/cliff-texturing-with-karma-and-material-x.md
 
 
