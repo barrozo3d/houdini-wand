@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=M6W_EP48BaI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, texturing, uv, baking, materials, shaders, mtlx, karma, procedural, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/custom-procedural-materials-with-houdini-and-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Custom Procedural Materials with Houdini and Karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py custom-procedural-materials-with-houdini-and-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Creating the pattern [0:00]
@@ -199,30 +195,50 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/custom-procedural-materials-with-houdini-and-karma/frame_000.jpg
+- [1:35] tutorials/frames/custom-procedural-materials-with-houdini-and-karma/frame_001.jpg
+- [4:40] tutorials/frames/custom-procedural-materials-with-houdini-and-karma/frame_002.jpg
+- [7:15] tutorials/frames/custom-procedural-materials-with-houdini-and-karma/frame_003.jpg
+- [11:35] tutorials/frames/custom-procedural-materials-with-houdini-and-karma/frame_004.jpg
+- [15:05] tutorials/frames/custom-procedural-materials-with-houdini-and-karma/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a procedural "old mattress" tufted-fabric material for Karma/MaterialX by generating low-poly geometric proxies (bulge pattern + stitching pattern) purely from curves/copies/clips, baking color+normal+displacement maps from those proxies onto a flat plane, then combining the baked maps with layered noise inside a MaterialX shader network.
 
 ### Summary
-[PENDING EXTRACTION]
+Covers three linked stages: (1) building a tileable bulging/tufted pattern from curve-clip geometry and displacing it via a boundary-distance mask to fake a puffy mattress surface, (2) building a separate embroidered stitching pattern from a traced reference image using the same alternating-curve-cut trick (helped by Houdini 20's new Carve by Attribute node), and (3) baking both hi-res proxies down to color/normal/displacement maps on a flat low-res plane, then assembling a full MaterialX shader that layers noise, the baked flower/stitch masks, and two chained normal maps to produce the final upholstered-fabric material rendered in Karma.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Bulge/tufted pattern geometry:** Start with a circle → Carve → save its bounding-box size as an attribute → Copy the curve several times, centered → Box Clip using the saved bbox X/Z attributes to extract a tileable pattern → Polypatch (curves aren't joined) → group center points and cut, yielding 4 separate wedge shapes forming one tile.
+2. **Squaring the tile:** Since the raw tile isn't square, use a Transform where the scale = (largest bbox axis) / (smaller bbox axis) applied to the larger axis, producing a square tile that can be baked to a square texture; re-save the new bbox size for reuse.
+3. **Building the bulge mesh:** Copy the squared pattern into a grid, sort primitives by proximity to points, range-select the last four primitives, group one, blast the rest, grid the polypatches, Polyfill, blast away the curves, and remesh.
+4. **Bulge displacement mask:** Group the unshared (boundary) points of each patch, run Distance Along Geometry from that group to build a radial falloff mask, blur it slightly, then use a Point VOP/Point Wrangle to displace points along normal by that distance-based mask — producing the bulging/tufted look.
+5. **Color-map prep for baking:** Rebuild the same clipped pattern, generate connectivity, re-clip with the saved bbox size, then cut all primitives by point and (in a wrangle) assign an alternating attribute per primitive (e.g. "red, blue, red, blue...") so **Carve by Attribute** (new in Houdini 20) can split the curve alternately without a manual Blast; sweep the result and color it, and this becomes the bake source for the iris/color detail.
+6. **UV setup for baking:** Create a flat rectangular bound plane, group the top vertices, and use UV Flatten with those pinned vertices to properly orient the UVs before baking; add extra subdivisions to the low-res mesh since it helps bake quality; bake color and displacement (height) maps — displacement needs normalizing/equalizing to be visible since raw values are subtle.
+7. **Stitching-pattern geometry (second pattern):** Trace a reference image and place it flat on the ground; divide the plane along Z by computing (bbox Z size / desired division count, e.g. ~150) — repeatable per axis; group inner edges by mean edge angle, dissolve, and build curves from that edge group; Fuse polypatches into single primitives and resample; use Polycut to cut primitives, removing every second curve (same alternating-pattern idea as before); Sweep the result to get 3D stitching geometry.
+8. **Stitching bake:** Import a traced/painted reference texture via Attribute from Map (a flat mesh doesn't need much subdivision since colors spread out fine), promote the color to primitives for flatter shading, add a background plane so bakes don't render transparent, and bake normal + color maps for both hi-res and flat low-res proxy meshes (max-ray-distance setting lets overlapping bake geometry work fine); can layer in an external, tileable found texture (a flower pattern) as long as it tiles seamlessly and is manipulated to fit — perfectly fine within a procedural workflow.
+9. **Shading (MaterialX/Karma):** Build the surface from a **Unified Noise** (Worley-type) disturbed/distorted by a second fractal noise for the base "waviness"; import the baked flower-pattern texture and split it into channels via a Separate/Vector-to-Float node, then remap/clamp channels to isolate leaves vs. flowers masks; use **Color Mix** nodes driven by those masks to colorize leaves and flowers separately, add a beige background color, and use the sum of both masks as the final mix factor.
+10. **Stitch coloring + normal layering:** Import the picked stitching mask to color the stitches, multiply the base noise on top for subtle variation; chain **two Normal Map** nodes (import image → Normal Map node → feed as the "normal" input of a second Normal Map node) to combine the mattress-bulge normal with a separate textile-weave normal map; plug the baked displacement into the Displacement input for the waving/bulge effect, and route the baked stitching displacement in as well (noted as "a bit too big" but left as-is).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes/techniques used: Circle, Carve, Copy to Points (bbox-based), Box Clip, Polypatch, Group Create (center points / unshared points / bbox), Blast, Transform (non-uniform scale to square a pattern), Sort (by proximity to points), Polyfill, Remesh, Distance Along Geometry, Blur, Point Wrangle/Point VOP (mask-driven displacement along normal), Connectivity, Attribute Wrangle (alternating per-primitive attribute), **Carve by Attribute** (new in Houdini 20), Sweep, Color (constant, keyed blue for masking), UV Flatten (with pinned vertices), Attribute from Map, Bake Texture (color + displacement + normal, hi-res and low-res flat proxy), max-ray-distance bake setting. Shading (MaterialX): Unified Noise (Worley), fractal noise disturbance, Separate Color/Vector to Float, Remap, Clamp, Color Mix (mask-driven), two chained Normal Map nodes, Displacement input on the Karma surface/displacement shader.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced — no complex VEX, but requires understanding of bbox-driven tiling patterns, UV baking pipelines (hi-res to low-res), and layered MaterialX shading with multiple normal maps and mask-driven color mixing.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (references "new to all in the 20" for Carve by Attribute; UI matches 20.5 Karma/MaterialX workflow).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #texturing #uv #baking #materials #shaders #mtlx #karma #procedural #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with any other cgside COPs/materials/baking-focused tutorials (e.g. designer-like materials in COPs, custom procedural materials series) once extracted from this batch.

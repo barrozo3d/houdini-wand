@@ -2564,9 +2564,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=M6W_EP48BaI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #texturing #uv #baking #materials #shaders #mtlx #karma #procedural #intermediate
+- **Summary:** Builds a procedural tufted-mattress material by generating bulge and stitching patterns from curve-clip geometry, baking color/normal/displacement maps to a flat plane, then assembling a layered MaterialX shader with masked noise and chained normal maps for Karma.
 - **File:** tutorials/custom-procedural-materials-with-houdini-and-karma.md
 
 
