@@ -2704,9 +2704,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=g6PQu2FRKGo
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** any modern (H18+)
+- **Tags:** #vex #for-loop #optimization #performance #procedural #intermediate #advanced
+- **Summary:** Rules for successfully compiling for-loop blocks (including nested loops) on a procedural Roman-bridge brickify setup: use spare inputs instead of direct node references, replace bbox()/centroid() expressions with VEX wrangles, and relay outer-loop iteration data into inner loops via a duplicated Block Begin node set to "Fetch Input," chained per nesting level since dependencies can't cross block boundaries directly.
 - **File:** tutorials/compiling-nested-loops-in-houdini.md
 
 
