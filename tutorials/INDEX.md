@@ -1754,9 +1754,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=lT0b8D6LmtM
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #uv #procedural #modeling #deformation #tips #advanced
+- **Summary:** Four deep-dives: a custom-named-normal dot-product mask for inside/outside selection without network access, a general UV-orient-up HDA using UV-space gradient measurement, a ramp-driven Resample by Density fix for pscale-broken uniform distribution, and three conform-to-surface methods (Lattice, Surface Deform, ribbon-sweep Point Deform with UV-Sample-driven deformation matrices).
 - **File:** tutorials/houdini-tips-to-save-the-day.md
 
 

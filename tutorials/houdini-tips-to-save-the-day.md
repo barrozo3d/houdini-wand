@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=lT0b8D6LmtM
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, uv, procedural, modeling, deformation, tips, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tips-to-save-the-day/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini tips to save the day
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-tips-to-save-the-day <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -137,30 +133,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/houdini-tips-to-save-the-day/frame_000.jpg
+- [1:50] tutorials/frames/houdini-tips-to-save-the-day/frame_001.jpg
+- [3:50] tutorials/frames/houdini-tips-to-save-the-day/frame_002.jpg
+- [5:00] tutorials/frames/houdini-tips-to-save-the-day/frame_003.jpg
+- [6:20] tutorials/frames/houdini-tips-to-save-the-day/frame_004.jpg
+- [7:30] tutorials/frames/houdini-tips-to-save-the-day/frame_005.jpg
+- [9:00] tutorials/frames/houdini-tips-to-save-the-day/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Four deep-dive procedural tricks: deriving an inside/outside mask purely from **per-piece custom normals** (`_N`) when you don't have access to the network that built the geometry, a general-purpose **UV-orient-up HDA** that works on any UV-island layout (even mirrored/scrambled ones) using UV-space gradient measurement, a **ramp-driven resample-by-density** technique for keeping copy-to-points distributions visually uniform despite varying `pscale`, and three different approaches (Lattice/Surface Deform, a custom ribbon-sweep + Point Deform, and a UV-Sample-driven deformation-matrix method) for **conforming repeated geometry to a curved surface** like a cylinder or sphere.
 
 ### Summary
-[PENDING EXTRACTION]
+**Inside/outside mask without network access:** given only a finished geometry (no access to how it was built), Connectivity assigns a `class` per piece, Extract Centroid + Group by class gets one representative point per piece, and **Orient Along Curve** computes a custom per-piece normal saved under a **different name** (`_N`, not `normal`) so it doesn't collide with the mesh's real normals; that custom attribute is copied back onto the full geometry, and a dot product between the real surface normal and this custom `_N` attribute (output as a mask, sign-inverted for the opposite selection) cleanly separates outside-facing vs. inside-facing pieces — usable directly in a Clip by Attribute. **UV-orient-up HDA:** rather than fighting UV Flatten's tendency to produce inconsistently-rotated or inverted islands (especially with mirrored geometry), a general HDA runs Connectivity **by UV islands** to assign each island an ID, uses **Relative Point Bounding Box** to extract the island's Y-direction component, then **measures the gradient of that Y value per-piece** — critically using the **UV attribute instead of P** as the position input to the gradient measure (avoiding any need to actually swap `P = UV` first, since the position-source parameter can just be pointed at `uv` directly), giving an "up tangent" direction per island. A geo-scoped VOP variable unwraps the geometry in-place to get each island's UV-space bounding-box center, subtracts that center (to rotate around the island's own pivot), computes the rotation angle via `atan2()`, rotates around the Z axis (the axis UVs conceptually operate on), then re-adds the center offset to restore position — producing correctly "up"-oriented UVs for arbitrarily scrambled or mirrored island layouts. **Uniform distribution with varying pscale:** copying shapes onto points along a curve normally gives uniform spacing, but introducing `pscale` variation (e.g. mirrored across the curve's X bounding box, larger in the middle, smaller at the ends) breaks that visual uniformity; the fix is an inverted ramp (matching the pscale variation's shape) fed into **Resample by Density**, letting you control segment count and re-align the varying-scale copies so the overall distribution still reads as evenly spaced despite the non-uniform individual sizes. **Conforming geometry to a curved surface (three methods):** (1) the simplest approach re-projects a Grid onto the target tube/sphere, then uses a **Lattice in point mode** (tuning radius) to conform separate "tower" objects to that projected grid — doesn't work when the target surface has real thickness, since Re-project can't handle that; (2) **Surface Deform** works better in many cases but can over-deform the source shape in some situations; (3) for a more complex multi-shape case (rounded-rectangle towers swept around a circle), a custom pipeline computes a per-point **aperture vector** (normalized `P`) during the initial build, sweeps a second "ribbon" copy of the same geometry with **Up assigned to the normals** (so it can be cleanly re-projected onto the sphere), and uses that ribbon as the **rest** shape input to a **Point Deform** against the actual sphere-deformed geometry — giving a look different from (and sometimes better than, less "bulged") Surface Deform's result on the same input. A fourth variant reads a **deformation matrix via UV Sample**: since the ribbon geometry was UV-flattened, its computed per-point deformation matrix (built from normals + aperture vector) can be looked up by UV coordinate on the target shape — critically, if the target shape has no native UVs, you can still build a throwaway UV attribute via **UV Sample based on position** (accepting stretched/meaningless UV shapes, since only the lookup matters, not the UV layout itself) and use that same "position-derived UV" both to sample and to store the deformation matrix — demonstrating that **UV Sample is a general-purpose "look up any attribute by proximity" tool**, not just for texture UVs.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Per-piece custom normal (inside/outside mask):** run **Connectivity** for a `class` attribute per piece, **Extract Centroid** + Group to get one representative point per piece, **Orient Along Curve** to compute a custom per-piece normal saved under a non-default name (`_N`) so it doesn't overwrite the mesh's real `normal` attribute.
+2. **Copy the custom normal back + build the mask:** copy the `_N` attribute back onto the full geometry, then compute `dot(normal, _N)` and output it as a mask — this cleanly separates outside-facing pieces from inside-facing ones (invert the sign for the opposite selection); feed into **Clip by Attribute**.
+3. **UV-island connectivity for orient-up HDA:** run **Connectivity by UV islands** to assign each island a unique ID.
+4. **UV-space gradient measurement:** use **Relative Point Bounding Box** to extract each island's Y-direction component, then **Measure** (Gradient) that Y value per-piece — pointing the measure's position-source parameter at the **UV attribute instead of P**, avoiding any need to literally swap `P = UV` first.
+5. **Rotate islands to face up (VEX):** in a geo-scoped VOP, unwrap the geometry in-place to get each island's UV-space bounding-box center; subtract that center (to rotate around the island's own pivot), compute the rotation angle via **`atan2()`** from the measured gradient's up-tangent, rotate around Z (the UV-space rotation axis), then re-add the center offset to restore the island's original position — works on arbitrarily scrambled or mirrored UV layouts.
+6. **Base uniform copy setup:** copy a shape to points along a curve for a naturally uniform spacing baseline.
+7. **Introduce varying pscale:** mirror a bounding-box-derived value (e.g. X size) to make copies larger in the middle and smaller at the ends, which visually breaks the previously-uniform spacing.
+8. **Re-uniform via ramp + Resample by Density:** build an inverted ramp matching the pscale variation's shape, feed it into **Resample by Density** (tuning segment count), and adjust pscale to re-align — restoring a visually even-looking distribution despite the underlying scale variation.
+9. **Conform via Lattice (simple case, no thickness):** re-project a Grid onto the target tube/sphere, then use **Lattice** in point mode (tuning radius) to conform separate tower objects to that projected grid — fails once the target surface has real thickness (Re-project can't handle that case).
+10. **Conform via Surface Deform (alternative):** apply **Surface Deform** directly instead of the Lattice approach — generally works better with thickness, but can over-deform the source shape in certain situations; compare both to pick the better result per-case.
+11. **Complex multi-shape conform — build a deformable ribbon:** while building the source geometry (e.g. rounded-rectangle towers swept around a circle), compute a per-point **aperture vector** (`normalize(P)`) early on; separately Sweep a second "ribbon" copy of the geometry with **Up assigned to the normals** so it can be cleanly re-projected onto the target sphere.
+12. **Point Deform via the ribbon:** use the flat/rest ribbon as the rest-state input and the sphere-re-projected ribbon as the deformed-state input to a **Point Deform** targeting the actual repeated tower geometry — produces a different (sometimes better, less "bulged-out") look compared to Surface Deform on the same source.
+13. **Deformation-matrix via UV Sample (advanced variant):** since the ribbon was UV-flattened, compute a per-point deformation matrix from normals + aperture vector, then look it up on the target shape via **UV Sample** using the ribbon's UV coordinates.
+14. **UV Sample without real UVs:** if the target shape has no native UVs at all, build a throwaway UV attribute via **UV Sample based on position** (the resulting UV shapes will be stretched/meaningless, but that's fine since only the lookup matters) — use that same position-derived UV attribute both to sample and to store the deformation matrix, demonstrating UV Sample's general use as a "look up any attribute by proximity" tool rather than strictly a texturing feature.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Connectivity (`class` attribute, and UV-island mode), Extract Centroid, Group, Orient Along Curve (custom-named normal output, e.g. `_N`), Attribute Copy, Attribute Wrangle (VEX: `dot()` for inside/outside mask, sign inversion), Clip (by attribute), Relative Point Bounding Box, Measure (Gradient, UV-based position source), VOP (geo-scoped, in-place unwrap for bounding-box center, `atan2()` rotation angle, Z-axis rotation, center-offset restore), Ramp (inverted, pscale-shape-matched), Resample by Density, Grid, Re-project, Lattice (point mode, radius), Surface Deform, Sweep (ribbon variant with Up = normals), Point Deform (rest/deformed ribbon inputs), UV Flatten, UV Sample (attribute lookup by UV or by position-derived UV), Attribute Wrangle (VEX: aperture-vector `normalize(P)` computation, deformation-matrix construction from normals + aperture vector).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — combines custom-named-attribute VEX tricks, gradient-based UV-space rotation math, and three distinct conform-to-surface deformation strategies; assumes strong procedural-modeling and VEX fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era toolset; Surface Deform and Point Deform workflow consistent with current versions).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #uv #procedural #modeling #deformation #tips #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with groups-patterns-in-houdini.md and essential-procedural-techniques-in-houdini.md (same author, overlapping VEX-tips/UV-manipulation vocabulary) and houdini-tips-expressions-vex-recursive-cuts-and-more.md (shares the intrinsic/attribute-driven procedural-selection philosophy) once indexed together.
