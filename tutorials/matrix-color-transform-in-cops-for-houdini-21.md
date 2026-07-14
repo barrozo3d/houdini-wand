@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ZDlL81gmafE
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21"
+tags: [cops, vex, opencl, python, color-management, cgi-integration, hda, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/matrix-color-transform-in-cops-for-houdini-21/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Matrix color transform in cops for Houdini 21
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py matrix-color-transform-in-cops-for-houdini-21 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -150,30 +146,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:45] tutorials/frames/matrix-color-transform-in-cops-for-houdini-21/frame_000.jpg
+- [1:10] tutorials/frames/matrix-color-transform-in-cops-for-houdini-21/frame_001.jpg
+- [1:35] tutorials/frames/matrix-color-transform-in-cops-for-houdini-21/frame_002.jpg
+- [2:00] tutorials/frames/matrix-color-transform-in-cops-for-houdini-21/frame_003.jpg
+- [4:05] tutorials/frames/matrix-color-transform-in-cops-for-houdini-21/frame_004.jpg
+- [6:35] tutorials/frames/matrix-color-transform-in-cops-for-houdini-21/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A custom-built **color-chart-based color-correction toolset** for HDRIs/footage in COPs: a **Matrix Color Transform** HDA with an interactive Python-States UI (new to Houdini 21's COPs) that lets you drag-align a reference color-chart overlay onto a photographed color chart, samples/averages the swatch regions in real time, and solves a **least-squares color transform matrix** from the comparison — plus a companion **Apply Color Matrix** HDA that applies (or, via a second inverted matrix, reverses) that same correction to any other image, enabling a full round-trip color-correction workflow for HDRI/footage integration work.
 
 ### Summary
-[PENDING EXTRACTION]
+The workflow: drop a **Matrix Color Transform** COP, feed it a cropped-down HDRI image containing a physical color chart (chart region pre-extracted in Affinity Photo), then enter the node's custom **Python States** tool (Houdini 21's new COPs Python state support) — a fully custom UI with working undo/redo — to drag-align four corner handles of a rendered reference color-chart overlay onto the photographed chart in the image, with a **live real-time preview** of the resulting color correction as you align. A **sample-area radius** parameter controls how many pixels around each swatch position get averaged (larger radius = more robust averaging), and a **downsample** parameter (default 30%, adjustable up to 100%) trades render responsiveness for sampling accuracy — the author recommends the downsampled/blurred default since it naturally smooths out per-pixel noise in the averaging. Exiting the tool leaves a computed **color matrix** output on the node, which feeds into a separate **Apply Color Matrix** COP alongside any target image (the same HDRI, a different HDRI, or footage) to bake in the correction. To reverse a correction (round-trip workflow), a second Matrix Color Transform node takes the *already color-corrected* image as input and computes its **inverse matrix**, which an Apply Color Matrix node can then use to revert back to the original uncorrected colors — useful for testing or for applying a look non-destructively. All internal color math explicitly targets **ACEScg** color space by default. Under the hood (walked through briefly, not built live): SOPs generate a rectangular reference color-chart shape (via Bound, for a clean rectangle) and a second, user-manipulated "deformed" version whose relationship to the rectangular reference produces a **difference matrix** — this matrix is what actually warps the four-corner-handle interaction into a proper per-swatch sample grid; a loaded color chart's known reference colors are set to Linear color space (for ACEScg-correct math) as swatch point-color attributes. A VEX-driven sampling pass iterates over every chart point, reading its position and known reference color, and comparing that to the **live-sampled color** from the image at the corresponding (radius-averaged) location — computed per-pixel for responsiveness. From the resulting reference-vs-sampled color-pair dataset, the actual color transform is solved via a **least-squares** algorithm (described as "not much... just simple code"), and the resulting matrix is packed into **three vectors** via Vector Pack so it can travel as a portable "color matrix" attribute — which the separate Apply Color Matrix node then reads and applies (again just a small VEX snippet). The tool also uses some **VEX for tangent/up-vector calculation** (to correctly orient/apply the deformation matrix to the swatch points) and some **OpenCL**, including atomic functions, learned specifically while building this tool. The whole custom interactive tool (Python States UI) runs to roughly 400 lines of Python. This is presented as a **released product** (a Patreon top-tier perk this month, and separately purchasable) rather than a full from-scratch tutorial — the author gives a brief architecture walkthrough and offers to produce a dedicated deep-dive video if there's sufficient viewer interest.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Prep the source image:** extract just the color-chart region from a full 360° HDRI (or other footage) in an external tool like Affinity Photo.
+2. **Set up the correction node:** drop a **Matrix Color Transform** COP and connect the cropped color-chart image as its source.
+3. **Interactive alignment (Python States tool):** enter the node's custom tool; drag the four corner handles of a rendered reference color-chart overlay to align with the photographed chart in the image, watching a live real-time preview of the resulting color correction.
+4. **Tune sampling quality:** increase the **sample area/radius** parameter to average more surrounding pixels per swatch for a more robust color reading; adjust the **downsample** percentage (default 30%, up to 100%) — higher gives more accuracy at the cost of responsiveness, though the default's implicit blur/averaging is often sufficient.
+5. **Extract the computed matrix:** exit the tool; the node now outputs a computed **color matrix**.
+6. **Apply the correction:** drop an **Apply Color Matrix** COP, feeding it the target image (the same HDRI, a different one, or footage) plus the color matrix from step 5, to bake in the color correction.
+7. **Round-trip / revert:** build a second **Matrix Color Transform** node fed the *already-corrected* image, and use its **invert matrix** option/output; feed that inverted matrix into another Apply Color Matrix node to revert the image back to its original, uncorrected colors.
+8. **Color space awareness:** remember the tool operates in **ACEScg** by default — swatch/reference colors and comparisons are all done in that space.
+9. **(Architecture, not required to use the tool) Reference vs. deformed chart matrix:** in SOPs, build a clean rectangular reference chart shape via **Bound**, and a second "deformed" version manipulated by the four draggable corner handles; the difference between the two produces a **difference/deformation matrix** used to warp sample positions per swatch.
+10. **(Architecture) Load reference chart colors:** load a known color chart's reference swatch colors, set to **Linear** color space for ACEScg-correct math, as point-color attributes on the chart geometry.
+11. **(Architecture) Per-swatch sampling loop:** a VEX pass iterates every chart point, reads its position and known reference color, and compares it against the **live radius-averaged sampled color** from the source image at that location — computed per-pixel (one-pixel-by-one-pixel) for real-time responsiveness.
+12. **(Architecture) Least-squares matrix solve:** from the resulting reference-vs-sampled color pairs, solve the actual 3x3-ish color transform matrix via a **least-squares** algorithm; pack the result into **three vectors** (Vector Pack) to travel as a single portable "color matrix" attribute.
+13. **(Architecture) Apply Color Matrix implementation:** a small VEX snippet reads the packed color-matrix attribute and applies it to an input image's pixel colors — this is the entirety of the companion Apply Color Matrix HDA's logic.
+14. **(Architecture) Supporting tech:** some VEX computes tangent/up vectors needed to correctly orient the deformation matrix on the swatch points; some **OpenCL** (including atomic functions, newly learned while building this) is used elsewhere in the pipeline; the interactive UI itself is built with Houdini 21's new **Python States for COPs**, at roughly 400 lines of Python.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Custom HDAs: **Matrix Color Transform** (Python-States interactive alignment UI, sample-area/radius parameter, downsample parameter, live preview, color-matrix output, invert-matrix capability), **Apply Color Matrix** (reads a packed color-matrix attribute, applies to any input image). Underlying SOPs/COPs/VEX: Bound (rectangular reference shape), point-color attribute loading (Linear color space for ACEScg), Attribute Wrangle (VEX: per-point reference-vs-sampled color comparison, tangent/up-vector computation for deformation-matrix orientation, least-squares matrix solve, matrix-apply snippet), Vector Pack (matrix→3-vector packing for portable attribute storage), OpenCL (including atomic functions). Python: Houdini 21's new COPs Python States API (custom interactive tool, ~400 lines, undo/redo support).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Expert — building this tool required custom VEX least-squares matrix solving, OpenCL atomic functions, and ~400 lines of Python States UI code; using the finished HDAs, however, is simple drag-and-align interaction.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21 (explicitly built around "Python states for cops... new to all the 21").
 
 ### Tags
-[PENDING EXTRACTION]
+#cops #vex #opencl #python #color-management #cgi-integration #hda #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with houdini-tips-solaris-vdbs-cops-and-more.md and from-sops-to-final-render-with-karma.md (same author, overlapping CGI-integration/color-workflow domain) once indexed together — this tool is presented as a commercial/Patreon-exclusive release rather than a full tutorial, so implementation details are only briefly summarized.

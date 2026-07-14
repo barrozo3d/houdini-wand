@@ -1574,9 +1574,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ZDlL81gmafE
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21
+- **Tags:** #cops #vex #opencl #python #color-management #cgi-integration #hda #advanced
+- **Summary:** Demos a custom Matrix Color Transform + Apply Color Matrix HDA pair (Houdini 21 COPs Python States UI) that interactively aligns a color-chart overlay, solves a least-squares color-correction matrix, and applies/inverts it on HDRIs or footage for CGI-integration color matching.
 - **File:** tutorials/matrix-color-transform-in-cops-for-houdini-21.md
 
 
