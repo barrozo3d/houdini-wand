@@ -2014,9 +2014,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ER_W3w3SkGk
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #heightfield #terrain #procedural #environment #vex #intermediate
+- **Summary:** Builds a battlefield terrain heightfield with a hand-authored VOP Z-gradient mask, layered masked noise displacement, and a box-taper lake feature distorted via a Volume-Sample mask trick (to avoid breaking geometry endpoints) then flattened and edge-blended.
 - **File:** tutorials/environments-in-houdini-part-1---heightfields.md
 
 

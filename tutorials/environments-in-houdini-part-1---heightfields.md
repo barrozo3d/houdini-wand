@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ER_W3w3SkGk
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [heightfield, terrain, procedural, environment, vex, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/environments-in-houdini-part-1---heightfields/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Environments in Houdini | Part 1 -  Heightfields
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py environments-in-houdini-part-1---heightfields <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Introduction and overview [0:00]
@@ -314,30 +310,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/environments-in-houdini-part-1---heightfields/frame_000.jpg
+- [2:00] tutorials/frames/environments-in-houdini-part-1---heightfields/frame_001.jpg
+- [6:20] tutorials/frames/environments-in-houdini-part-1---heightfields/frame_002.jpg
+- [9:50] tutorials/frames/environments-in-houdini-part-1---heightfields/frame_003.jpg
+- [14:00] tutorials/frames/environments-in-houdini-part-1---heightfields/frame_004.jpg
+- [17:00] tutorials/frames/environments-in-houdini-part-1---heightfields/frame_005.jpg
+- [22:40] tutorials/frames/environments-in-houdini-part-1---heightfields/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Part 1 of an environment-production series: building a battlefield terrain heightfield from scratch using a hand-authored VOP-based Z-axis gradient mask (instead of the built-in Heightfield Pattern's ramp preset), layered masked noise displacement for organic ground/hill variation, and a box-carved, distort-masked lake/river feature with flattening and edge-blending controls.
 
 ### Summary
-[PENDING EXTRACTION]
+The terrain starts as a basic **Heightfield** (Z size 700), with a custom gradient mask built manually in VOPs for finer control than the built-in Heightfield Pattern ramp preset: a Vector to Float extracts the Z component of position, **Fit Range** normalizes it (using base-relative-reference divided by 2, negated on one side) into a 0-1 gradient, complemented/inverted to bias more toward the back, then reshaped through a spline **Ramp** parameter (rather than the default linear falloff) for a more organic transition — saved to a named mask layer via Heightfield Copy Layer for reuse. A second mask (Mask From Geometry, sourced from a shrunk Bound box copied symmetrically across ±X/±Z, then blurred) protects the terrain edges from displacement. Ground detail comes from layered, masked **Heightfield Noise** passes (Worley F2-F1 noise types, low amplitude ~15, small element size) combined with **Heightfield Distort by Noise** (element size ~1000, distort amount ~400, decreased roughness for a more pleasing result) — masked so noise/distortion only affects the correct regions, and repeated with different intensity/offset/element-size values for a second "back area" noise layer after a **Heightfield Resample** bump in resolution (500K → 4M points) for finer detail capacity. The lake feature starts as a scaled/tapered **Box** (uniform scale ~80, Taper with inverted capture length and Y component removed to avoid displaying along Y), converted into a mask via Mask From Geometry, then distorted with Heightfield Distort by Noise (amplitude ~30, element size ~100) — noting that distorting the geometry directly breaks its endpoint connections, fixed by instead distorting the *mask* via a **Volume Sample** (reading the mask value at each point's position, exported/bound to a `mask` attribute) combined with a Transform Matrix Z-scale to keep the lake's silhouette anchored. The lake shape is then flattened to ground level via Heightfield Remap (masked, clamped to output min/max around -15), with deliberate leftover displacement on the back edge (via a second Fit Range + complement + partial source-mix blend) so the lake doesn't end abruptly and instead trails into a "path." Additional lake-side paths get their own expanded mask, layered noise, and distortion (again favoring lower roughness for a cleaner break-up of the perfectly round lake edge), plus a **Mask Shrink** pass (for a later rock-scattering mask) saved via Copy Layer. Finally, water is built from a simple **Grid** scaled/matched to the heightfield's XZ dimensions (via Match Size, scale-to-fit, offset down slightly on Y) with a blue color and partial-alpha Constant assigned for a translucent water look.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base terrain:** create a **Heightfield**, set Z size to 700 (default is too large).
+2. **Custom Z-gradient mask (VOP):** instead of Heightfield Pattern's built-in ramp preset (found hard to control), build a Heightfield VOP: Vector to Float extracts `P.z`, **Fit Range** (base-relative-reference divided by 2, one side negated) normalizes it against the volume's actual Z bounds, Complement inverts it to bias the effect toward the back of the terrain, then route through a **Ramp** parameter (spline interpolation) instead of a linear falloff for a more organic transition curve; export to the `mask` channel and save via **Heightfield Copy Layer** for later reuse.
+3. **Edge-protection mask:** build a **Bound** (with a copy-paste trick mirroring one size value across ±X/±Z to shrink the bound symmetrically), convert via **Mask From Geometry**, and Blur it — used later to keep terrain edges from being displaced by noise.
+4. **Overall ground displacement:** add a **Heightfield Noise** (Worley F2-F1 type, off-center, low amplitude ~15, small element size) masked by the edge-protection mask so edges stay clean, then a **Heightfield Distort by Noise** (element size ~1000, distort amount ~400, mask-loaded, offset ~600, reduced roughness) for large-scale organic ground variation.
+5. **Back-area hill detail:** duplicate the mask via Copy Layer, apply another **Heightfield Noise** (intensity ~17, matching element size, offset ~100, reduced roughness) restricted to the back region, run a **Heightfield Resample** (Grid mode, boosting point count from ~500K to ~4M) for finer distortion capacity, then a further **Heightfield Distort by Noise** (amplitude ~36-ish range, element size ~100, reduced roughness) to break up the back hills.
+6. **Lake base shape:** create a **Box**, uniform-scale to ~80, then **Taper** it (invert capture length: positive→negative 1, remove/zero the Y component so it doesn't taper vertically) with a strong taper amount (~6) for an elongated lake/river silhouette; convert to a mask via **Mask From Geometry**.
+7. **Distort the lake mask (not the geometry):** distorting the Box geometry directly with Heightfield Distort by Noise (amplitude ~30, element size ~100, roughness ~2.3) breaks its endpoint connections; instead distort the *mask value* via a **Volume Sample** VOP (sampling the mask at each point's position, exported/bound to a `mask` attribute) combined with a **Transform Matrix** (scale along Z) to keep the lake's endpoints anchored while still getting organic edge distortion.
+8. **Flatten the lake:** **Heightfield Remap** (masked, "clamp to minimum"/"clamp to maximum" both set to the same value, ~-15) to push the lake area down to a flat water level; deliberately blend in a bit of leftover displacement toward the back edge (via a second Fit Range with an increased range ~0.7 and a reduced Source Mix) so the lake trails naturally into a path instead of ending abruptly.
+9. **Lakeside paths:** expand the lake mask (**Mask Expand**, ~55) to cover a wider path area, layer another Heightfield Noise (~38 intensity, element size ~96) and Heightfield Distort by Noise (amplitude ~36, element size ~100, reduced roughness) to break up the lake's perfectly round edge into a natural-looking shoreline/path.
+10. **Rock-scatter mask:** run **Mask Shrink** (~45) on the lake mask, save via Copy Layer for later use scattering rocks, then Mask Clear + convert to a polygon mesh via **Height Field to Polygons**.
+11. **Water surface:** build a simple **Grid**, use **Match Size** (scale-to-fit, using the heightfield's actual XZ dimensions multiplied by a small factor like 0.1 to match units) and offset slightly down on Y to sit just below the terrain surface; assign a blue **Color** and a **Constant** VOP/shader parameter with alpha ~0.7 for a translucent water look.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Geo Container, Heightfield (ZX size), Heightfield VOP (Vector to Float, Fit Range, Complement, Ramp parameter with spline interpolation, Volume Sample), Heightfield Copy Layer, Bound (symmetric shrink via copy-pasted parameter), Mask From Geometry, Blur, Heightfield Noise (Worley F2-F1 type, amplitude, element size, off-center option), Heightfield Distort by Noise (element size, distort amount, offset, roughness — lower roughness consistently favored for cleaner results), Heightfield Resample (Grid mode, resolution scale), Box (uniform scale), Taper (capture length invert, component removal), Transform Matrix (Z-scale), Heightfield Remap (clamp min/max, source mix), Mask Expand, Mask Shrink, Height Field to Polygons, Grid, Match Size (scale to fit), Color, Constant (alpha).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — heightfield fundamentals plus a custom VOP-based gradient mask and a non-obvious mask-vs-geometry distortion trick for the lake; approachable for anyone comfortable with Heightfield nodes and basic VOPs.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era heightfield toolset).
 
 ### Tags
-[PENDING EXTRACTION]
+#heightfield #terrain #procedural #environment #vex #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+First part of a multi-part environment series — author explicitly plans Part 2 to cover the bridge, then vegetation/plants; cross-link once those are ingested. Also cross-link with environment-creation-with-houdini---part-1.md and environment-creation-with-solaris-in-houdini.md (same author, same terrain/heightfield domain) once indexed together.
