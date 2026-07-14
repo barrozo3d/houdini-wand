@@ -1654,9 +1654,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=0C8ek1aDe8o
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.590
+- **Tags:** instancing, optimization, vex, matrices, opacity-to-mesh, hda, vegetation, python, usd, solaris
+- **Summary:** Converts a heavy baked opacity-leaf tree into a lightweight instanced asset by extracting one leaf, resetting its transform, and reconstructing each original leaf's matrix via nearpoint/clip/orientalongcurve/lookat, then re-instancing via Copy to Points and Pack and Instance; also demos the author's Opacity to Mesh HDA with leaf-isolation thresholds.
 - **File:** tutorials/optimizing-baked-trees-with-instancing-in-houdini.md
 
 

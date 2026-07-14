@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=0C8ek1aDe8o
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.590"
+tags: [instancing, optimization, vex, matrices, opacity-to-mesh, hda, vegetation, python, usd, solaris]
+extraction_status: complete
 frames_dir: tutorials/frames/optimizing-baked-trees-with-instancing-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Optimizing Baked Trees with Instancing in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py optimizing-baked-trees-with-instancing-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -177,30 +173,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/optimizing-baked-trees-with-instancing-in-houdini/frame_000.jpg
+- [1:40] tutorials/frames/optimizing-baked-trees-with-instancing-in-houdini/frame_001.jpg
+- [4:20] tutorials/frames/optimizing-baked-trees-with-instancing-in-houdini/frame_002.jpg
+- [5:20] tutorials/frames/optimizing-baked-trees-with-instancing-in-houdini/frame_003.jpg
+- [6:40] tutorials/frames/optimizing-baked-trees-with-instancing-in-houdini/frame_004.jpg
+- [8:40] tutorials/frames/optimizing-baked-trees-with-instancing-in-houdini/frame_005.jpg
+- [10:20] tutorials/frames/optimizing-baked-trees-with-instancing-in-houdini/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Convert a heavy, pre-baked opacity-leaf tree asset (millions of points) into a lightweight instanced asset by extracting a single representative leaf, resetting it to the origin, then re-deriving each original leaf's position/orientation/scale as a matrix so the single leaf can be `copytopoints()`-instanced back — massively reducing memory/point count versus converting every opacity leaf to full geometry.
 
 ### Summary
-[PENDING EXTRACTION]
+Baked, high-poly assets (e.g. from MaxTree/Megascans) with opacity-mapped leaves are expensive to convert to real mesh at full resolution (millions of points). Instead of converting every leaf, the video extracts one leaf, zeroes its transform, converts it once, then reconstructs a per-leaf transform matrix (via `nearpoint()`, `clip`, `convertline`, `resample`, `orientalongcurve`, and `maketransform`/`lookat`) from each original leaf's UV-space "center" reference point, so all leaves can be recreated cheaply via Copy to Points → Pack and Instance. The same author's separate "Opacity to Mesh" HDA (sold on Patreon) is also demonstrated for converting opacity-based foliage assets (ferns, PolyHaven shrubs) into real geometry directly, including a leaf-isolation threshold control for mixed leaf/stem/flower assets.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Isolate the leaves group from the baked tree using its `shop_materialpath`/name attribute, then run **Connectivity** to assign a per-leaf class ID (~40,000 leaves in the example tree).
+2. Promote UVs to a point attribute (splitting UV seams first) so each leaf's UVs sit at consistent positions across all leaves (since MaxTree/Megascans leaves reuse one atlas layout).
+3. Blast out a single leaf (class 0) to work on in isolation; unwrap in place (`geo unwrap`), compute the UV bounding-box center via a detail-mode `nearpoint()`, and store that point's world position as a `center` attribute.
+4. **Clip** the leaf using its UVs at the `center` X position, **Convert Line** the clip edges to build a small curve relating to the tree's branch, then attribute-promote and **Resample** (1 segment) to collapse it to a 2-point line; **Orient Along Curve** stores the tangent as a vector attribute.
+5. Build a 4x4 transform matrix per leaf using `lookat()` (feeding "from"/"to" vectors and an up vector along Y) inside a wrangle, then translate the matrix by the current position to get a proper world transform (Z axis along the curve, Y pointing out, X on local X).
+6. Extract just the curve's first point (the point to instance), invert the single isolated leaf's transform using that matrix (bringing it to the origin, oriented along Z), then use a **Unit Transform**-style scale (target scale ÷ original Z-size) to normalize leaf length — this whole block runs inside a **Compile Block** for performance.
+7. Repeat the matrix-computation chain (clip → convertline → matrix) for every leaf simultaneously by copying the detail `center` attribute onto all leaf points, so every leaf gets its own respective transform.
+8. Convert the computed per-leaf matrix into a Houdini `transform` attribute readable by Copy to Points: translate the matrix by `-P` (reset position component), scale by the stored rest-length, cast to a `4@transform` matrix.
+9. **Copy to Points** the single optimized leaf onto all the per-leaf transform points, then **Pack and Instance** — reproducing the original tree's position, orientation, and scale with a fraction of the geometry, exportable to USD or as instanced point clouds for Solaris.
+10. (Separate demo) The author's **Opacity to Mesh HDA**: load an opacity texture, set remesh size and trace/resample step size, transfer position (and optionally material) attributes so geometry isn't left in UV space, and use a "select only leaves" threshold + isolation-mask option to skip non-leaf 3D geometry (stems/flowers) for large mixed assets — dramatically faster than converting the whole mesh when leaves are pre-isolated.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Attribute Delete, Connectivity, Split by UV seams + Attribute Promote (UV to point), Blast (isolate one class), `geo unwrap`, detail-mode `nearpoint()` wrangle (stores `center` attribute), Clip (on UVs), Convert Line, Attribute Promote, Resample (1 segment), Orient Along Curve, VEX wrangle with `lookat()`/`maketransform`-style matrix construction (from/to/up vectors), Compile Block, Unit Transform (target scale ÷ Z-size), Transform (matrix translate by `-P`, scale by rest length), Copy to Points, Pack and Instance; separate **Opacity to Mesh** custom HDA (Patreon) with remesh size, trace step size/resample settings, position/material attribute transfer, and a leaf-isolation threshold for filtering 3D stem/flower geometry.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (VEX matrix construction with `lookat()`, curve-based orientation extraction, and compile-block optimization assume solid procedural/VEX fundamentals).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.590 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+instancing, optimization, vex, matrices, opacity-to-mesh, hda, vegetation, python, usd, solaris
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Opacity Maps vs Geo in Karma](opacity-maps-vs-geo-in-karma.md) — companion render-optimization technique tackling the same opacity-leaf performance problem from the rendering side rather than the instancing side.
+- [Environments in Houdini Part 3 - Vegetation with Simple Tree Tools](environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md) — shares the same author's Opacity-to-Mesh HDA workflow for converting foliage plugin assets to real geometry.
