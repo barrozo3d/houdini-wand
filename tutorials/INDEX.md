@@ -2654,9 +2654,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ItIlLC6mlF4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #procedural #scattering #tips #intermediate
+- **Summary:** Three tips: combinatorial geometry variants via Attribute from Pieces random selection in a for-each loop, centroid-corrected concentric radial shapes with Remap-Attribute pscale gradients, and a seeded VEX step-orient rounding trick for Scatter/Copy to Points.
 - **File:** tutorials/houdini-procedural-tips-variants-concentric-shapes-and-step-orient.md
 
 

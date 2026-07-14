@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ItIlLC6mlF4
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, procedural, scattering, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-procedural-tips-variants-concentric-shapes-and-step-orient/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini Procedural Tips | Variants, Concentric Shapes and Step Orient
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-procedural-tips-variants-concentric-shapes-and-step-orient <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -70,30 +66,51 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/houdini-procedural-tips-variants-concentric-shapes-and-step-orient/frame_000.jpg
+- [1:10] tutorials/frames/houdini-procedural-tips-variants-concentric-shapes-and-step-orient/frame_001.jpg
+- [2:00] tutorials/frames/houdini-procedural-tips-variants-concentric-shapes-and-step-orient/frame_002.jpg
+- [2:45] tutorials/frames/houdini-procedural-tips-variants-concentric-shapes-and-step-orient/frame_003.jpg
+- [3:30] tutorials/frames/houdini-procedural-tips-variants-concentric-shapes-and-step-orient/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Three community-sourced procedural tricks: generating combinatorial geometry **variants** (e.g. vase + stem/flower combos) via packed-piece random selection inside a for-each loop, building **concentric radial shapes** from unshared-edge boundary curves with a centroid-corrected re-centering fix, and adding a **seeded step-orient** to Scatter/Copy to Points setups (which natively lack a rotation seed) via a custom VEX rounding trick.
 
 ### Summary
-[PENDING EXTRACTION]
+**Variant generation** (adapted from a Maxon-team technique, refined with Discord help): each geometry category (e.g. 3 vase variations, 3 stem/flower variations) gets its own **Connectivity** attribute named `class` and is Packed; all categories are merged, then a second Connectivity pass assigns a `name` attribute across the whole merged set. Inside a **For Each (named primitive)** loop, the geometry is unpacked and, using **Attribute from Pieces**, a random piece is selected per iteration (with the loop's iteration number feeding the random seed for reproducible-but-varied results per point) and fed into **Copy to Points** — critically requiring the **"piece" attribute** to be set on Copy to Points so it knows to distribute per-piece rather than copying the whole merged set. Running the loop once per geometry category (vases, then stems/flowers) produces a combinatorial explosion of variations limited only by how much source geometry is fed in. **Concentric shapes**: built per-piece inside a loop (a single shape wouldn't need the loop) by grouping each primitive's unshared/boundary edges, converting to a curve, and initially recentering via **Extract Centroid** — but the author found the extracted centroid can sit visibly off-center for asymmetric shapes, so instead a **Measure** (Centroid) pass computes a truer centroid, and a wrangle computes the offset between that measured centroid and the world origin, moving the shape there for reliable re-centering before it's copied outward. Points for the radial copies are generated with a count matching the desired number of concentric rings; each point gets an **index/ID attribute**, and `pscale` is driven by an **Attribute Adjust Float** using its Remap-Attribute option (setting min/max scale, remapping the index attribute from 0 to the total point count) — producing a smooth inner-to-outer scale gradient when the shape is Copied to Points onto them (credited to a separate Discord contributor). **Step-orient with a seed**: Scatter + Line's built-in "Round To" step-orientation feature works but has no seed attribute for the rotation itself, so a VEX approach instead generates a fully random rotation, rounds it to the desired step increment with a controllable seed, and adds a small extra angle-variation on top of the stepped result for a touch of natural irregularity beyond the rigid stepping.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Per-category packing:** for each geometry category (e.g. 3 vase variants), run **Connectivity** (named `class`) then **Pack**; repeat for each other category (e.g. stems/flowers).
+2. **Global naming pass:** **Merge** all packed categories together, then run a second **Connectivity** producing a `name` attribute spanning the whole combined set.
+3. **Per-object random selection loop:** inside a **For Each (named primitive)** loop, Unpack the current object's pieces, use **Attribute from Pieces** to randomly select one piece per iteration (seeding the random pick from the loop's iteration number for repeatable-but-varied results), and feed the selection into **Copy to Points**.
+4. **Enable piece-based copying:** on Copy to Points, set the **"piece" attribute** parameter so it distributes the randomly-selected individual piece per point rather than the whole merged geometry.
+5. **Iterate per category:** run the loop for each geometry category needed (vases in one pass, stems/flowers in another) to build the final combinatorial variant scene — total unique combinations scale with however much source geometry is supplied.
+6. **Boundary curve per shape (concentric setup):** inside a per-piece loop, group each primitive's unshared/boundary edges and convert to a curve, forming the base radial "petal"/ring shape.
+7. **Initial (flawed) recentering attempt:** **Extract Centroid** to move the shape toward the origin — works for symmetric shapes but can leave the centroid visibly off-center for irregular/asymmetric shapes.
+8. **Corrected recentering:** use **Measure** (Centroid mode) to compute a true geometric centroid, then a wrangle computing the offset between that centroid and world origin and subtracting it from `P` — reliably centers any shape regardless of asymmetry.
+9. **Radial point generation:** generate points equal to the desired number of concentric copies; assign each an **index/ID** attribute.
+10. **Scale gradient via Remap Attribute:** use **Attribute Adjust Float**'s Remap Attribute option — set min/max scale values and remap the index attribute's range (0 to point count) — producing `pscale` values that smoothly grow (or shrink) from center to edge.
+11. **Final copy:** **Copy to Points** the corrected, centered shape onto the scaled radial points for the finished concentric-ring result.
+12. **Seeded step-orient (VEX):** in place of Scatter/Line's native "Round To" step feature (which lacks a rotation seed), write a VEX snippet that generates a fully random rotation, **rounds it to a chosen step increment** using a controllable seed parameter, then adds a small extra random angle-variation on top of the stepped value for subtle natural irregularity beyond rigid, perfectly-even stepping.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Connectivity (`class` and `name` attribute modes), Pack, Merge, Unpack, For Each (named primitive), Attribute from Pieces (random piece selection, iteration-seeded), Copy to Points (piece attribute enabled), Group (unshared/boundary edges), Convert Line, Extract Centroid, Measure (Centroid mode), Attribute Wrangle (VEX: centroid-to-origin offset calculation and repositioning; step-orient rotation — random angle generation, step-rounding with seed, added angle variation), Attribute Adjust Float (Remap Attribute option: min/max scale, index-attribute remap range), Scatter, Line (Round To step-orient feature, native limitation: no rotation seed).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — each tip is compact but assumes comfort with for-each loops, attribute-from-pieces workflows, and basic VEX for the custom step-orient rotation logic.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era toolset).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #procedural #scattering #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with groups-patterns-in-houdini.md and essential-procedural-techniques-in-houdini.md (same author, overlapping VEX-tips/procedural-selection format) once indexed together.
