@@ -1414,9 +1414,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=JMfMxHi48Zs
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #uv #opencl #mpm #simulation #materials #shaders #karma #procedural #tips #advanced
+- **Summary:** Five tips: a spiral-Boolean peeling effect with animated UV-driven mask displacement, OpenCL-based force application to an MPM dive target, distance-mask snapping of sim mesh to clean source geometry, a controllable Karma/MaterialX planar projection, and an exact-count nearest-points VEX trick using pcfind()+find().
 - **File:** tutorials/essential-procedural-techniques-in-houdini.md
 
 

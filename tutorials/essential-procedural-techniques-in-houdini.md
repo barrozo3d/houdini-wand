@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=JMfMxHi48Zs
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, uv, opencl, mpm, simulation, materials, shaders, karma, procedural, tips, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/essential-procedural-techniques-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Essential Procedural Techniques in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py essential-procedural-techniques-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -211,30 +207,61 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/essential-procedural-techniques-in-houdini/frame_000.jpg
+- [1:20] tutorials/frames/essential-procedural-techniques-in-houdini/frame_001.jpg
+- [2:00] tutorials/frames/essential-procedural-techniques-in-houdini/frame_002.jpg
+- [3:05] tutorials/frames/essential-procedural-techniques-in-houdini/frame_003.jpg
+- [6:20] tutorials/frames/essential-procedural-techniques-in-houdini/frame_004.jpg
+- [7:45] tutorials/frames/essential-procedural-techniques-in-houdini/frame_005.jpg
+- [9:20] tutorials/frames/essential-procedural-techniques-in-houdini/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five unrelated but reusable procedural tricks: an animated "peeling" reveal effect built from a spiral-swept Boolean cut plus UV-driven animated mask displacement, applying forces to an MPM sim's dive target via **OpenCL** (Houdini's recommended method over VEX for this), snapping simulation-meshed geometry back onto clean source geometry via a distance-based blend mask, a controllable **planar projection** setup for Karma/MaterialX that avoids projecting onto the back side, and a VEX trick to get an **exact** number of nearest points (unlike Near Points' inconsistent island-based results).
 
 ### Summary
-[PENDING EXTRACTION]
+**Peeling effect:** starting from a deformed QuadSphere ("potato" shape), a spiral curve is aligned to the centroid and reprojected onto the potato surface; the potato's own normals are copied to a `pscale`/orient-style attribute so the spiral can be Swept using those normals (without this, the sweep result is a broken mess). The subdivided potato gets a Distance-from-Geometry mask relative to the spiral curve, which is Clipped and promoted from a point group to a vertex group (needed to correctly align UVs later) — a **Boolean** using that clipped geometry is what actually cuts the peel strip free. A **UV Flatten** along that vertex group produces clean, aligned UVs; a Point Wrangle then reads the UV.x component, builds an **animated ramp-based mask driven by curve-U plus a time-based offset** (fit `time` between 0-1 seconds, offset from -1 to 1), and finally displaces `P.y` by that mask times an amplitude — producing a growing/peeling reveal animation.
+
+**MPM force via OpenCL:** for a spinning-bottle liquid-splash effect, the sim is run in the bottle's *rest space* (not literally spinning), with the actual animated spin stored as a **transform attribute** (from an animated-noise-driven rotation) copied to a detail attribute and carried into the DOP network — critical because DOPs otherwise only reads the first frame of an attribute, not the animated value per substep. Since Houdini recommends OpenCL (not VEX) for applying forces to an MPM sim's dive target, the author reimplements a simple gravity-via-transform-attribute VEX snippet in OpenCL: bind the `force` attribute (OpenCL can create attributes), bind the detail transform-matrix attribute, expose a gravity parameter, and in the kernel multiply gravity by the matrix using **`matrix3` conversion (ignoring translation)** before assigning to `force` — after simulating in rest space, the saved transform attribute is reapplied to the final meshed geometry to get the correctly "spinning" result seen in the render.
+
+**Snap sim mesh to clean source geometry:** simulation-meshed geometry touching a rigid object (e.g., a bottle) typically has ugly bumps at the contact area; since the bottle was modeled procedurally with known groups, its interior geometry can be reused as a clean projection target. A point-wise **distance-to-bottle mask** is Fit-ranged between 0 and a tunable offset value, and a lerp/blend between the current (bumpy) position and the bottle-projected position — driven by that distance mask — snaps only the near-contact points cleanly to the bottle surface while leaving distant points untouched; finished with a small Peak to force slight intersection, an Attribute Blur, and reapplying the earlier transform.
+
+**Controllable planar projection (Karma/MaterialX):** instead of a naive position→UV mapping (which projects identically on both front and back), swizzle the rest/current position, combine X and Y into a Vector2 to drive an Image node's UVs, and insert a **Place2D**-style node in between to expose scale, offset (X/Y), pivot, and rotation controls; critically set the Image node's wrap/address modes to **Constant** (not the default tiling/mirror) to avoid back-side bleed. Multiply the image's alpha by a Z-axis-facing mask to get a correct alpha, then Mix the projected logo over a flat background color using that alpha — yielding a fully adjustable (scale/offset/pivot/rotate) decal-style logo projection.
+
+**Exact-count nearest points (VEX):** Near Points' default behavior returns inconsistent point counts per query point (more than requested, in uneven "islands"), which is often undesirable. The fix: in a wrangle, use **`pcfind()`** (the array-returning point-cloud find, not `nearpoints()`) against input 1 (the actual target mesh, not the sparse query points) to retrieve exactly N point numbers into an array detail/point attribute, then on the sparse query points read that array via `find()` to check whether the current point number exists in the found set — grouping only exact matches. This guarantees precisely the requested number of nearby points (even just 1) instead of Near Points' default all-or-nothing island behavior.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Peel base + spiral:** transform/deform a QuadSphere into a potato shape; Subdivide for later steps; build a spiral curve aligned to the potato's centroid, reproject it onto the potato surface, copy the potato's surface normals to an attribute so **Sweep** can use them directly (otherwise the swept ribbon is malformed).
+2. **Peel mask + Boolean cut:** on the subdivided potato, compute **Distance from Geometry** relative to the spiral curve, Clip based on that mask, promote the resulting point group to a **vertex group** (required for correct UV alignment later), then run a **Boolean** using that clipped piece against the main geometry — this Boolean is what actually separates the peel strip.
+3. **UV alignment:** **UV Flatten** using the saved vertex group to get clean, axis-aligned UVs along the peel strip (without the vertex group, UVs come out unusable for the next step).
+4. **Animated peel mask (VEX):** Split the UVs and promote to a point attribute so a Point Wrangle can read `UV.x` directly; build a ramp lookup driven by curve-U (`curveu`) plus a **time-based offset** (`fit(time, 0, 1, -1, 1)` conceptually) to create a mask that grows/animates across the surface between frames.
+5. **Apply peel displacement:** subtract the animated mask (scaled by an amplitude) from `P.y` to physically displace the peel strip as it "grows," producing the final peeling reveal animation.
+6. **MPM rest-space sim + transform capture:** simulate the MPM liquid in the bottle's **rest space** rather than literally spinning the container; separately drive an animated-noise-based rotation, capture it as a **transform attribute** (matrix), and copy it to a detail attribute so it survives into the DOP network (which otherwise only reads the first frame of a per-point/detail attribute, not its per-frame animated value).
+7. **OpenCL gravity-via-transform kernel:** inside the MPM solver's dive target, replace a VEX force snippet with an **OpenCL** kernel: bind a `force` output attribute (OpenCL supports creating attributes), bind the detail transform-matrix attribute, expose a `gravity` parameter, and in the kernel convert the matrix to a 3x3 (`matrix3`) to strip translation, multiply by the gravity vector, and assign the result to `force`.
+8. **Reapply transform after sim:** after the MPM sim completes and is meshed in rest space, reapply the earlier-saved transform attribute to the final geometry to get the visually "spinning bottle" splash effect seen in the render.
+9. **Clean contact-area snapping:** after meshing simulation geometry that touches a rigid prop (e.g., bottle interior, reused from the original procedural model's groups), compute a per-point **distance to the bottle geometry**, Fit-range it between 0 and a tunable offset to build a blend mask, then **lerp** between the current (bumpy) position and a version of the geometry projected onto the bottle surface, using that mask as the blend factor — snapping only near-contact points cleanly; finish with a small **Peak** (to force slight intersection for a clean render seam), an **Attribute Blur**, and reapply any saved transform.
+10. **Planar projection setup (MaterialX/Karma):** read `P` (or a `rest` primvar for animated objects) via Material Expression/primvar reader, swizzle out the X and Y components, combine into a Vector2 via **Combine/Vector 2 Float**, feed as UVs into an **Image** node (set Wrap/Address mode to **Constant** on both axes to prevent back-face bleed), and insert a **Place2D**-style node between the swizzle and the image to expose Scale, Offset (X/Y), Pivot, and Rotate controls.
+11. **Correct alpha + composite:** multiply the projected image's alpha channel by a Z-axis-facing mask (so the logo doesn't appear on the back side) to get a clean alpha, then **Mix** the projected logo over a flat background color using that alpha as the mix factor.
+12. **Exact-count near-point selection (VEX):** on the target mesh (input 1), run `pcfind()` (or an array-returning point-cloud query) to retrieve exactly N nearest point numbers relative to each sparse query point, storing the result as an array attribute; on the sparse query points (input 2), read that array and use **`find()`** to test whether the current point number is present (result ≥ 0 if found, negative if not), grouping only the matches — guarantees exactly N points found per query, unlike Near Points' inconsistent default behavior.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: QuadSphere, Transform, Subdivide, curve/spiral generation, Align (to centroid), Ray/reproject, Attribute Copy (normals for Sweep), Sweep, Distance from Geometry (Measure), Clip, Group Promote (point→vertex), Boolean, UV Flatten, Split UVs (Split Vertex Points-style), Attribute Promote (vertex→point for UV.x access), Attribute Wrangle (VEX: `chramp()`/curve-U + time-based fit for animated mask; position displacement via mask*amplitude; `pcfind()` + `find()` for exact-count nearest-point matching), Peak, Attribute Blur. DOPs/MPM: rest-space simulation, animated-noise-driven rotation → Transform Matrix → detail attribute copy, OpenCL node (bound `force` output, bound detail transform attribute, exposed `gravity` parameter, `matrix3` conversion to strip translation) as the dive-target force method (Houdini's recommended approach over VEX for MPM). Karma/MaterialX: Primvar Reader (position/rest), swizzle/Separate, Combine (Vector2), Place2D-style transform node (scale/offset/pivot/rotate), Image (Wrap/Address mode: Constant), Mix (alpha-driven composite).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — spans UV-driven procedural animation, OpenCL kernel authoring for MPM dive targets, and non-trivial point-cloud VEX; each tip assumes strong existing Houdini fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI/MPM/OpenCL workflow consistent with Houdini 20.5-era tools).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #uv #opencl #mpm #simulation #materials #shaders #karma #procedural #tips #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with any other cgside VEX-tips or MPM/simulation tutorials once extracted from this batch — the OpenCL dive-target force technique and exact-nearest-point VEX pattern are broadly reusable across other procedural/sim setups.
