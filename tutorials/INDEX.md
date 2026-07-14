@@ -2034,9 +2034,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=R3ClxIiqxag
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #vex #vdb #flip #simulation #uv #procedural #food #advanced
+- **Summary:** Full brownie pipeline: a near-point random-clustering fracture technique with Mountain displacement for organic chunks, a UV-Flatten-based per-cluster centroid extraction fix for correct piece rotation, a normal-blend wrangle to conform crack geometry onto a VDB cake proxy, and a variable-viscosity FLIP fudge-drizzle simulation.
 - **File:** tutorials/how-to-not-bake-brownies-in-houdini.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=R3ClxIiqxag
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, vex, vdb, flip, simulation, uv, procedural, food, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/how-to-not-bake-brownies-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # How to (not) bake brownies in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py how-to-not-bake-brownies-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -159,30 +155,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/how-to-not-bake-brownies-in-houdini/frame_000.jpg
+- [1:45] tutorials/frames/how-to-not-bake-brownies-in-houdini/frame_001.jpg
+- [4:00] tutorials/frames/how-to-not-bake-brownies-in-houdini/frame_002.jpg
+- [6:40] tutorials/frames/how-to-not-bake-brownies-in-houdini/frame_003.jpg
+- [8:20] tutorials/frames/how-to-not-bake-brownies-in-houdini/frame_004.jpg
+- [9:30] tutorials/frames/how-to-not-bake-brownies-in-houdini/frame_005.jpg
+- [10:40] tutorials/frames/how-to-not-bake-brownies-in-houdini/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full food-modeling pipeline for a chocolate brownie: a **near-point-based random clustering** technique (scatter + nearest-point lookup) to fracture a subdivided top layer into organic Voronoi-like chunks with Mountain-noise-driven displacement, a **UV-flatten-based centroid extraction** trick to get a correct per-cluster pivot for individual-piece rotation (avoiding Extract Centroid's whole-mesh-centroid pitfall on disconnected clusters), a **normal-blend re-projection** wrangle to conform separately-generated crack/layer geometry back onto a VDB cake proxy, and a **FLIP fudge-drizzle** simulation using variable viscosity (via a point-from-volume viscosity attribute) for varied streak thickness.
 
 ### Summary
-[PENDING EXTRACTION]
+The brownie top starts as a Box, grouped by normal (positive X) and edge-length-filtered to select and Bevel specific edges, with outer frames grouped (via max edge length) for the layering/cracking pass. That grouped layer is Blasted out, Remeshed for uniform point distribution, and Subdivided heavily. The core **organic-cluster fracture technique**: Scatter a handful of points on the remeshed surface, then in a wrangle use **near-point lookup with a randomized seed** to assign each surface point to its nearest scattered point, producing a `cluster` attribute that behaves like a randomized Voronoi partition; a **Mountain** node (applied per-cluster with a saved rest state) displaces each resulting chunk, giving an organic broken-chocolate look instead of the flat, hard-edged Voronoi fracture you'd get without the Mountain pass. A second, finer clustering pass (more scattered points, restricted to areas where the first pass's density value exceeds ~0.9) subdivides only some of the bigger chunks into smaller ones rather than uniformly re-fracturing everything. Cluster IDs (originally floats/random values, some negative) are converted to clean enumerated integers, promoted to primitive, and fed into a **Vertex Split** (which needs a primitive or vertex attribute, hence the promotion) to physically separate each cluster into an individual disconnected piece; **Edge Smooth** (slow but worth it) rounds the contours, and each piece is displaced along its normal by an amount randomized per-cluster (seed-controllable). Some pieces are randomly deleted (seed-controllable) so the layering doesn't read as fully "solid." Unshared/boundary points get a **Surface Distance**-based falloff (normalized, blurred) mixed with noise to selectively displace piece edges outward more than piece interiors, creating an uneven, natural-looking crumbly edge rather than uniform displacement everywhere. To rotate each disconnected piece around its own correct pivot (Extract Centroid alone can fail here since pieces are all part of one connected mesh and Extract Centroid computes a whole-mesh centroid, not a per-cluster one), the author instead **UV Flattens** the geometry (creating one UV island per cluster), promotes the cluster ID to primitive, moves the flattened UV shell into 3D space, and runs **Extract Centroid on that UV-space geometry per cluster** — then **UV Samples** that centroid position (and separately the normal) back onto the original 3D position using the UV coordinates as the lookup key. With a correct per-cluster centroid and normal now available, each piece is randomly rotated (±8°) around its own normal via **`qrotate()`**, adding chaotic, naturalistic variation to the otherwise-flat layered chunks. The interior "cake" part is built by converting to VDB and layering three noises: a basic one removes parts of the shape (breaking up the cake's silhouette), and two additional Alligator/turbulent noises at different scales (one low-frequency, one high-frequency) are mixed together for a varied cake-crumb surface look. A simplified proxy version of this cake geometry is built specifically so the earlier-extracted cluster centroid points can be **re-projected onto it** — otherwise the layering/cracking chunks would float above/offset from the actual cake surface rather than sitting flush on it. To conform the crack/layering geometry onto this bumpy proxy surface (rather than floating flat above it), a wrangle reads the initial flat surface's normal and the proxy's (blurred) normal, builds a rotation from one to the other, and applies it while separately subtracting/re-adding the piece's center position — constraining the geometry to hug the proxy surface with natural randomized variation instead of sitting rigidly flat. That conformed geometry is then Thickened and run through simple VDB operations (high-frequency noise + a `fit()`-based range remap) to add small surface cracks. A chocolate/fudge drizzle effect (referenced as similar to a previous "short" video) is built via **FLIP**: the proxy geometry is Clipped down the middle and the resulting fill polygons Blasted away (since the Clip itself provides the fill), Thickened, and converted to a **Point from Volume** with a **viscosity attribute** so the FLIP sim can vary streak thickness per-emission-point (thicker/longer streaks vs. shorter ones) rather than using one uniform viscosity value; the FLIP Solver uses a POP Source across all points plus loaded collision geometry, with **Viscosity + Viscosity by Attribute** and some **surface tension** enabled — after a Time Shift and standard surface/point meshing, the result is transformed slightly to better fit the initial cake shape.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base bevel modeling:** Box → Group by normal (positive X) → promote to edges, filter by max edge length → Bevel; separately group outer frames (also via max edge length) for the later layering/cracking pass.
+2. **Prep for clustering:** Blast the grouped layer geometry, Remesh for uniform point distribution, Subdivide heavily for enough resolution to fracture finely.
+3. **Organic cluster fracture (core technique):** Scatter a handful of points on the remeshed surface; in a wrangle, use a **near-point lookup with a randomized seed** to assign each surface point a `cluster` ID matching its nearest scattered point — an organic, randomizable alternative to a strict Voronoi Fracture.
+4. **Displace clusters organically:** save a `rest` state, apply **Mountain** noise per-cluster — without this step the result reads as a flat Voronoi fracture; with it, the chunks look organically broken.
+5. **Second, localized clustering pass:** scatter more points and restrict the new cluster assignment to areas where the first pass's density attribute exceeds ~0.9 — subdividing only some larger chunks into smaller pieces rather than uniformly re-fracturing the whole surface.
+6. **Clean cluster IDs:** convert the (possibly negative, non-sequential) random cluster values into clean enumerated integers, promote to primitive (required since Vertex Split expects a primitive or vertex attribute, not a point attribute).
+7. **Physically separate pieces:** **Vertex Split** by the cluster ID to break the single connected mesh into individually disconnected pieces; **Edge Smooth** (slow, but improves contour quality) rounds each piece's silhouette.
+8. **Per-piece displacement + culling:** displace each piece along its normal by a per-cluster randomized amount (seed-controllable); randomly delete some pieces (seed-controllable) so the layer doesn't read as fully solid/filled.
+9. **Edge-biased displacement:** group unshared/boundary points, compute a **Surface Distance** attribute from them, normalize and tune its falloff, Attribute Blur it, then mix it with noise to displace piece edges outward more than piece interiors — producing an uneven, crumbly-edge look rather than uniform per-piece displacement.
+10. **Correct per-cluster pivot via UV Flatten:** since Extract Centroid on the whole connected mesh gives a wrong (whole-mesh) centroid rather than a true per-cluster one, **UV Flatten** the geometry (one UV island per cluster), promote the cluster ID to primitive, move the flattened UVs into 3D space, and run **Extract Centroid** on that UV-space layout per cluster — giving a correct individual pivot per piece.
+11. **UV Sample the centroid + normal back:** use **UV Sample** to bring both the computed centroid position and the piece's normal back onto the original 3D geometry via the UV coordinates as the lookup key (needed since the geometry will be displaced and pieces are otherwise hard to address individually).
+12. **Randomized per-piece rotation:** with a correct centroid and normal now available per piece, rotate each piece randomly (±8°) around its own normal using **`qrotate()`** for naturalistic chaotic variation.
+13. **Cake interior via VDB + layered noise:** convert the base cake shape to VDB; apply a basic noise to remove/break up parts of the silhouette, then mix two Alligator/turbulent noises at different scales (one low-frequency, one high-frequency) for a varied crumb-like surface.
+14. **Cake proxy for re-projection:** build a simplified proxy version of the cake geometry, then **re-project** the earlier-extracted cluster centroid points onto this proxy — without this, the layering/cracking chunks would float above or offset from the real cake surface.
+15. **Conform crack geometry to the bumpy proxy (normal-blend wrangle):** in a wrangle, read the flat surface's normal and the proxy's blurred normal, build a rotation transforming one into the other, and apply it while subtracting/re-adding the piece's center position — constraining the flat crack/layer geometry to hug the actual bumpy cake surface with natural variation instead of sitting rigidly flat.
+16. **Surface crack detail:** Thicken the conformed geometry, convert to VDB, and add small cracks via a high-frequency noise combined with a `fit()`-based range remap.
+17. **FLIP fudge drizzle setup:** Clip the proxy geometry down the middle, Blast away the resulting fill polygons (the Clip's own fill supplies the needed cap), Thicken, convert to **Point from Volume**, and assign a per-point **viscosity attribute** so different emission points can produce varying streak thickness/length.
+18. **FLIP simulation:** POP Source across all points, load collision geometry, enable **Viscosity + Viscosity by Attribute** and some **surface tension** in the FLIP Solver; Time Shift a settled frame, mesh both the surface and the points, then Transform slightly to better align with the initial cake shape.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Modeling: Box, Group (normal-based, max-edge-length filtering), Poly Bevel, Blast, Remesh, Subdivide, Scatter, Attribute Wrangle (VEX: near-point cluster assignment with random seed; cluster-ID enumeration from `random()`; per-cluster rotation via `qrotate()`; normal-to-normal rotation blend for surface conforming), Mountain (per-cluster, with rest-state save/apply), Attribute Promote (point→primitive for Vertex Split), Vertex Split, Edge Smooth, Surface Distance (unshared-point falloff), Attribute Blur, UV Flatten (per-cluster island isolation), Extract Centroid (run on UV-space geometry), UV Sample (centroid position + normal lookup by UV), Group (unshared points). VDB: Convert VDB, layered Unified/Alligator/Turbulent noise (multi-scale mixing, `fit()` range remap for cracks), VDB Reshape/Smooth-style ops. FLIP/DOP: Clip, Thicken, Point from Volume (viscosity attribute), POP Source, FLIP Solver (Viscosity, Viscosity by Attribute, Surface Tension), Time Shift, surface + point meshing, Transform.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — combines a custom near-point clustering fracture technique, a non-obvious UV-flatten-based per-cluster centroid extraction workaround, VDB layered-noise cake modeling, and a variable-viscosity FLIP drizzle sim; assumes strong VEX and simulation fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era VDB/FLIP toolset; references a prior "short" video covering a similar drizzle technique).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vex #vdb #flip #simulation #uv #procedural #food #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with cookies-and-chocolate-modeling-shading-and-sim.md, chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson.md, and handy-houdini-tips-vellum-uvs-modeling-and-more.md (same author, same chocolate/dessert-modeling project family, shares the wrinkle/peak and VDB-noise-crack vocabulary) once indexed together.
