@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=62Mo7udZM_o
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [cops, procedural, texturing, noise, terrain, environment, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/creating-cliff-shapes-in-cops-free-lesson/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Creating Cliff Shapes in Cops | Free Lesson
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py creating-cliff-shapes-in-cops-free-lesson <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -210,30 +206,50 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/creating-cliff-shapes-in-cops-free-lesson/frame_000.jpg
+- [2:20] tutorials/frames/creating-cliff-shapes-in-cops-free-lesson/frame_001.jpg
+- [7:50] tutorials/frames/creating-cliff-shapes-in-cops-free-lesson/frame_002.jpg
+- [13:20] tutorials/frames/creating-cliff-shapes-in-cops-free-lesson/frame_003.jpg
+- [16:10] tutorials/frames/creating-cliff-shapes-in-cops-free-lesson/frame_004.jpg
+- [24:20] tutorials/frames/creating-cliff-shapes-in-cops-free-lesson/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a tileable, all-procedural cliff-face height/color texture entirely inside a **COPs (Copernicus) network** by layering noise, distortion warps, ramps, and a feedback loop — no 3D geometry, sculpting, or displacement painting involved.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a `polygon`/regular-polygon COP shape (5-sided base), the tutorial builds up a rock-face pattern by blending an ISO-distance-inverted shape with a Cube 3D COP-constant, then repeatedly layering **tileable 2D noises** (never 3D noise, which wouldn't tile without mesh-based position/`P`/`uv` attributes) through **Multi-Directional Warp** and **Directional Warp** nodes to distort the base shape into irregular rock-like silhouettes. Ramps and Levels COPs reshape the tonal range into a "leaf"-like blended mass, ISO/Blend (min-darken) combinations merge multiple distorted variants, and a **Scatter Shapes** COP randomly places/rotates/scales the resulting shapes across a tile (with scale/jitter/angle variance) to build the final cliff-face look, previewed with Ambient Occlusion / 3-point lighting. A second pass duplicates the scatter setup with different seed/scale/jitter values for added variation, then both scatter layers are blended together via another noise-driven directional warp. Finally, an optional **feedback loop** (Block Begin/End COPs carrying texture + iteration count) repeatedly applies a non-uniform directional warp per iteration (intensity scaled by `iteration / total_iterations`, with Trail Length 1) to add an extruded/eroded look to parts of the cliff.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create a CopNet; start with a **Polygon** COP set to regular, 5 sides, as the base shape.
+2. Add **ISO Distance** (inverted) off the polygon, then **Layer Properties** set to "Height" type to get a sloped gradient result.
+3. Add a **Cube 3D** COP-constant node (pre-built rig: cube + transform + rasterize depth) and **Equalize** it against the ISO shape to normalize ranges (white point ~0.5), then **Blend** the two with Min-Darken.
+4. Layer a **tileable 2D fractal noise** (not 3D — 3D noise won't tile without mesh position data) at a small scale (~0.02–0.08) through a **Multi-Directional Warp**, driven by the noise as intensity (~20–26), followed by an **RGB(A) to Mono** conversion (many COPs only accept RGBA).
+5. Add further noise layers (a stretched/transformed noise, a Crystal noise at element size ~0.5) each piped through **Directional Warp** nodes with tuned intensity/angle values, plus a **Slope Blur** for additional softening — building up the distorted rock silhouette incrementally.
+6. Use a **Ramp** COP (vertical, Levels-adjusted) blended (min) with the noise stack to reshape into a leaf/rock-like tonal mass; **Fetch** nodes reuse the same ramp/crystal noise elsewhere to avoid re-wiring duplicate nodes.
+7. Combine 2-3 distorted shape variants (including a mirrored copy via **Transform** with flip) using **Pack** (Cop Pack) to bundle them for scattering.
+8. Use **Scatter Shapes** to randomly instance/tile the packed shapes across the canvas — key parameters: scale variance (~0.38), jitter (~1.21), angle variance (tuned per pass, e.g. ~11.3), and seed — then preview with **Ambient Occlusion** or 3-point lighting to check the cliff-face read.
+9. Duplicate the Scatter Shapes setup with a different seed/scale/jitter/stretch to build a second variation layer; blend the two scatter layers together via a Rectangle-noise-driven Directional Warp + min-blend + Remap.
+10. (Optional) Build a **feedback loop**: Block Begin (outputs mono texture + iteration count, starting iteration=0, constant=1) → Non-Uniform Directional Warp (intensity driven by `iteration / total_iterations`, Trail Length = 1 to get an extrude effect) → RGBA-to-Mono → Block End (feeds texture + iteration+1 back to Begin) — set total iterations (e.g. 4) to control how many times the erosion/extrude warp is re-applied.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+COPs used: Polygon (regular, 5 sides), ISO Distance (inverted), Layer Properties (Height type), Cube 3D (constant), Equalize, Blend (Min-Darken / Subtract variants), tileable 2D Noise / Fractal Noise, Multi-Directional Warp, Directional Warp (several instances), RGB(A) to Mono, Crystal Noise, Rectangle Noise, Transform (flip/mirror), Ramp (vertical, with Levels), Fetch (reuse existing nodes without rewiring), Cop Pack, Scatter Shapes (scale variance, jitter, angle variance, seed), Ambient Occlusion / 3-point lighting preview, Slope Blur, Remap, Block Begin/Block End (feedback loop with mono texture + iteration count constants), Add (iteration+1), Divide (iteration/total for normalized intensity). No VEX in this tutorial — pure node-graph COPs work.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — no VEX/scripting required, but demands a working knowledge of tileable-vs-3D noise behavior, COP RGBA/mono conversion quirks, and building custom feedback loops with Block Begin/End.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly; UI matches Houdini 20.5/21-era Copernicus (COPs) context toolbar.
 
 ### Tags
-[PENDING EXTRACTION]
+#cops #procedural #texturing #noise #terrain #environment #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Continuation of a multi-part cliff/rock-wall COPs series (references "last time" and "the next part we will start to create the stems") — cross-link with any other cgside COPs/procedural-texturing tutorials (e.g. rock wall, moss, materials-in-COPs) once extracted from this batch.
