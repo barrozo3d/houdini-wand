@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=c_t8JwyHJrA
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, kinefx, rigging, vex, fracture, procedural, furniture, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/model-and-rig-a-wardrobe-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Model and Rig a Wardrobe in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py model-and-rig-a-wardrobe-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -110,30 +106,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/model-and-rig-a-wardrobe-in-houdini/frame_000.jpg
+- [1:45] tutorials/frames/model-and-rig-a-wardrobe-in-houdini/frame_001.jpg
+- [3:20] tutorials/frames/model-and-rig-a-wardrobe-in-houdini/frame_002.jpg
+- [4:10] tutorials/frames/model-and-rig-a-wardrobe-in-houdini/frame_003.jpg
+- [5:00] tutorials/frames/model-and-rig-a-wardrobe-in-houdini/frame_004.jpg
+- [7:40] tutorials/frames/model-and-rig-a-wardrobe-in-houdini/frame_005.jpg
+- [9:00] tutorials/frames/model-and-rig-a-wardrobe-in-houdini/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Modeling a wardrobe/shelving unit with **recursively randomized shelf divisions** (a Voronoi-Fracture-based alternative to a plain Divide node, seeded per-iteration for varied panel splits), then rigging its accordion-style **bi-fold sliding doors** with KineFX — a community-shared (Swalch/CG Wiggle Discord) rig wrangle that alternates rotation direction per panel and halves the rotation on the outer/first panel so the fold visually "closes" symmetrically.
 
 ### Summary
-[PENDING EXTRACTION]
+The wardrobe's back panel starts as a Grid, Copied several times using a **bounding-box-driven expression** for perfect alignment, then centered. To divide the resulting large panel into an irregular grid of shelf/drawer sections, rather than a plain Divide node, a **loop-based recursive Voronoi Fracture** is used: each iteration randomly Switches (`random()` × input count) between a horizontal-only split (computed via bounding-box Y-size / 2) and a vertical-only split (matched-size line via uniform scale), reassembled to the desired section count. Since Voronoi Fracture needs actual **point centers**, not raw line intersections, the split lines are Resampled and Subdivided specifically to generate center points, with the original/outer points (from a Group Range selection) Blasted away, leaving evenly-spaced interior centers; those interior points are then Point-Jittered with a **seed that changes per for-each iteration** (via the loop's `iteration` detail attribute) for organic randomized subdivision instead of a rigid grid. After building up the fractured panel pattern, the silhouette/edges are extracted (via Inset + Extrude), points Fused, extruded back for thickness, a Bound added for the back panel, and everything merged into the base wardrobe carcass (author notes name attributes could be added per-part for later shading, but weren't in this pass, since it's just a demo). **Rigging the sliding-door "accordion" panels:** starting from the base wardrobe's front frame (e.g. 10 divisions halved via Blast to isolate every-other primitive), an Object Merge per primitive (named via a prefix + primitive-number string) sets up individual door panels; a rig point is placed at each panel's **left-center** (Bounding Box Center combined with Bounding Box Mean), grouped via Add, initialized with **Rig Doctor**, captured via **Capture by Group** (using the name attributes), and driven by **Bone Deform**. The actual fold/open animation logic lives in a **Rig Wrangle** (shared by community member "Swalch" via the CG Wiggle Discord, accessible through Matteo Stella's Patreon): a user-facing rotation-angle parameter (input in degrees, converted to radians), an **alternating sign** (`-1` for even points, `1` for odd, so adjacent panels fold in opposite directions like a real accordion door), and a special case for the very first panel — an `if` check multiplying its rotation by **half** the angle (all other panels multiply by the full 1x) so the outermost hinge panel only swings half as far, keeping the fold symmetric and closing flush; the final pre-rotation is applied to the local transform (rotating around the **Y axis**) as `panel_angle * panel_sign * (half-multiplier for panel 0)`. Mirroring this rigged half onto the other side produces the complete pair of accordion sliding doors, then Match-Sized onto the main wardrobe body. **Panel/divider pattern (recap):** the general technique used throughout — computing a `density` value as `(axis_size / ceil(axis_size)) * density_constant` and feeding it into a Divide node's per-axis division count — is the same bounding-box-driven, integer-safe division-count pattern the author has shared repeatedly across other videos; increasing the density constant produces finer divisions, decreasing it produces coarser ones; finished with Extrude + Normal recompute for the paneled surface look.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base panel array:** Grid → Copy (bounding-box-driven expression for perfect alignment) → center.
+2. **Randomized recursive division setup:** inside a for-each loop, use a **Switch** driven by `random()` × input count to alternate between a horizontal split (bbox Y-size / 2) and a vertical split (matched-size line via uniform scale) each iteration.
+3. **Generate true point centers for Voronoi:** Resample and Subdivide the split lines specifically to produce point centers (Voronoi Fracture requires actual points, not raw line/edge intersections).
+4. **Isolate interior centers:** Group Range selects the original/outer points; Blast removes them, leaving only the evenly-distributed interior center points needed to seed the fracture.
+5. **Randomize per iteration:** apply Point Jitter to the interior points with a **seed sourced from the for-each loop's `iteration` detail attribute** — changes every recursive pass for organic, non-repeating subdivision.
+6. **Reassemble to target section count:** repeat the loop for the desired number of shelf/drawer sections, reassembling results each pass.
+7. **Extract panel silhouette:** Inset + Extrude to pull out clean edge geometry from the fractured pattern, Fuse points, Extrude back for material thickness.
+8. **Assemble the carcass:** add a Bound for the back panel, merge all pieces into the base wardrobe (name attributes optional per-part, skipped here as a demo).
+9. **Isolate door-panel primitives:** from the base wardrobe's front frame, Blast to keep every-other primitive (e.g. half of 10 divisions) — these become individual bi-fold door segments.
+10. **Per-panel setup:** Object Merge each primitive (named via prefix + primitive number), place a rig point at each panel's **left-center** (Bounding Box Center + Bounding Box Mean), group with Add.
+11. **KineFX rig init:** **Rig Doctor** to initialize transforms, **Capture by Group** (using the panel name attributes) to bind geometry to rig points, **Bone Deform** to apply the resulting animation.
+12. **Custom rig wrangle (Swalch/CG Wiggle):** expose a rotation-angle parameter (degrees, converted to radians internally); compute an **alternating sign** (`-1` even points / `1` odd points) so adjacent panels fold in opposite directions; special-case the first/outermost panel via an `if` to multiply its rotation by **half** the angle (others use the full multiplier) so the hinge panel swings only half as far.
+13. **Apply the rotation:** pre-rotate the local transform around the **Y axis** by `panel_angle * panel_sign * (half-factor if panel 0)`.
+14. **Mirror + finalize:** Mirror the rigged half to produce the complete accordion door pair, **Match Size** onto the main wardrobe body.
+15. **General panel-division pattern (reused technique):** compute `density = (axis_size / ceil(axis_size)) * density_constant`, feed into a **Divide** node's per-axis division count for integer-safe, tunable panel counts (higher constant = finer divisions); finish with Extrude + recomputed Normals for the surface panel look.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Modeling: Grid, Copy (bounding-box expression alignment), For Each loop (iteration detail attribute for per-pass random seeding), Switch (random-driven horizontal/vertical split alternation), Resample, Subdivide (point-center generation for Voronoi), Group Range, Blast, Point Jitter (iteration-seeded), Voronoi Fracture, Inset, Extrude, Fuse, Bound, Merge, Divide (bounding-box/ceil-driven density expression), Normal. Rigging/KineFX: Object Merge (per-primitive, name-prefixed), Bounding Box Center, Bounding Box Mean, Add (grouping), Rig Doctor, Capture by Group (name-attribute-based), Bone Deform, Rig Wrangle (VEX: `radians()` conversion, alternating even/odd sign, `if`-based half-rotation for the first panel, pre-rotate around Y using panel angle × sign × half-factor), Mirror, Match Size.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — the recursive Voronoi-based division and KineFX rig wrangle are non-trivial but well-explained; assumes comfort with for-each loops, group/point manipulation, and basic KineFX rigging concepts.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era KineFX/modeling toolset; rig wrangle credited to community member Swalch via the CG Wiggle Discord).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #kinefx #rigging #vex #fracture #procedural #furniture #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with kinefx-and-vellum-fluid-in-houdini.md (same author, overlapping KineFX rig-wrangle and Capture-based rigging vocabulary) once indexed together — the general bounding-box/ceil-driven Divide-density pattern is reused across multiple other cgside tutorials in this batch.

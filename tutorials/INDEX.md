@@ -2164,9 +2164,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=c_t8JwyHJrA
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #kinefx #rigging #vex #fracture #procedural #furniture #intermediate
+- **Summary:** Models a wardrobe with recursively randomized shelf divisions via an iteration-seeded Voronoi Fracture loop, then rigs its accordion sliding doors with a KineFX Capture/Bone Deform setup and a community rig wrangle that alternates fold direction and halves the outermost panel's rotation.
 - **File:** tutorials/model-and-rig-a-wardrobe-in-houdini.md
 
 
