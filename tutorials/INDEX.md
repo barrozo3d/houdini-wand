@@ -2414,9 +2414,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=cRr4R54DRKw
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #karma #materials #shaders #mtlx #vex #procedural #modeling #tips #intermediate
+- **Summary:** Six tips: MaterialX Round Edge + noise-blended edge breakup, camera View Mask Opacity to hide off-frame geometry, Sublime Text as an external VEX editor with syntax highlighting, near-uniform non-square grid division, and a ceil()-based Divide-node density expression for consistent roof-panel sizing across sections.
 - **File:** tutorials/houdini-and-karma-tips-and-tricks.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=cRr4R54DRKw
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [karma, materials, shaders, mtlx, vex, procedural, modeling, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-and-karma-tips-and-tricks/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini and Karma tips and tricks
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-and-karma-tips-and-tricks <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -168,30 +164,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:50] tutorials/frames/houdini-and-karma-tips-and-tricks/frame_000.jpg
+- [1:40] tutorials/frames/houdini-and-karma-tips-and-tricks/frame_001.jpg
+- [2:40] tutorials/frames/houdini-and-karma-tips-and-tricks/frame_002.jpg
+- [4:50] tutorials/frames/houdini-and-karma-tips-and-tricks/frame_003.jpg
+- [6:15] tutorials/frames/houdini-and-karma-tips-and-tricks/frame_004.jpg
+- [7:55] tutorials/frames/houdini-and-karma-tips-and-tricks/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Six unrelated production tips: render-time edge breakup on hard-surface props via **MaterialX Round Edge** blended with noise, hiding geometry outside the camera frustum with the **View Mask Opacity** setting, wiring Sublime Text as Houdini's external VEX code editor with syntax highlighting, an expression trick for near-uniform grid divisions on non-square rectangles, and a **Divide node** density-expression pattern for consistent panel sizing across differently-sized roof sections.
 
 ### Summary
-[PENDING EXTRACTION]
+**Edge breakup:** instead of (or in addition to) a real Bevel, a **Round Edge** MaterialX node (with a tuned radius) is plugged into the shader's normal input to fake rounded, worn edges purely in shading — its second output is a "round mask" isolating just the affected edge area. That mask drives a **Mix** node blending between the round-edge-modified normals and a version of those same normals additionally perturbed by **noise**, so the beveled look isn't perfectly smooth/uniform but has a broken-up, worn character — described as working well for mid-range to background props but not ideal for extreme close-ups. **Camera mask opacity:** pressing D on a camera and setting **View Mask Opacity to 1** fully darkens/hides everything outside the camera's frame in the viewport — useful when animating and wanting to visually ignore off-screen geometry. **Sublime as external VEX editor:** set Sublime Text as the external editor in Edit → Preferences, then use "Edit in External Editor" on any VEX expression field to edit code there instead of Houdini's built-in editor; VEX syntax highlighting isn't included by default and requires installing Sublime's Package Control, then searching and installing a VEX-specific syntax package, followed by restarting the expression-editing session. **Evenly divided non-square grid:** for a rectangle that isn't square (e.g. 12x8), perfectly uniform square cells aren't always achievable, but setting the row count and then computing the column count as `rows * (size_x / size_y)` gets very close to uniform cells as long as the two dimensions share a common factor — not perfect, but close enough for most purposes. **Consistent Divide-node density across differing panel sizes (roof modeling):** for a complex multi-section roof where each section has a different footprint, first orient each polygon section into a consistent local space (so the Divide node's density logic behaves predictably), run **Divide** with density-X and density-Z parameters computed via `ceil(bbox_size / bbox_size * density)` style expressions (dividing the section's actual bounding-box size by itself and multiplying by a density constant, rounded via `ceil()` to guarantee whole-number divisions) — this keeps sub-panel/tile size visually consistent across differently-sized roof sections rather than each section getting an independent, mismatched division count — then transform each section back to its original position/orientation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Round Edge shading:** plug a **MaterialX Round Edge** node (with a specified radius) into the shader's normal input to simulate a beveled/rounded edge purely at render time without modeling a real bevel.
+2. **Blend in noise for broken-up edges:** take Round Edge's rounded-normal output and a second copy of those same normals perturbed by **Noise**; use a **Mix** (MtlX Mix) node to blend between the two, using Round Edge's second output (a "round mask" isolating the affected edge region) as the mix factor — produces a naturally worn, non-uniform edge-breakup look; works well mid-range to background, less convincing extreme close-up.
+3. **Hide off-camera geometry in viewport:** press **D** on a camera to open its parameters, go to the Camera tab, and set **View Mask Opacity** to 1 — fully darkens everything outside the camera's visible frame, useful for focusing on frame content during animation work.
+4. **Set Sublime as external editor:** Edit → Preferences → set External Editor to Sublime Text; on any VEX code field, use "Edit in External Editor" to open it in Sublime instead of Houdini's built-in code panel.
+5. **Enable VEX syntax highlighting in Sublime:** Tools → Install Package Control (one-time setup), then Preferences → Package Control → Install Package, search for a VEX syntax package and install it; close and reopen the external-editor session for highlighting to take effect.
+6. **Near-uniform grid division (non-square rectangle):** set the grid's row count to a chosen value, then set the column count expression to `rows * (size_x / size_y)` — gets column/row cell sizes very close to square/uniform as long as the two rectangle dimensions share a common factor; not mathematically perfect but visually close enough.
+7. **Consistent panel density across roof sections (orientation step):** for a multi-section roof where sections differ in size/orientation, first reorient each section's polygons into a consistent local coordinate space so the Divide node's density behaves predictably per-section.
+8. **Divide node density expression:** in the reoriented space, set the Divide node's density-X and density-Z parameters using an expression that takes the section's actual bounding-box size, divides it by itself, and multiplies by a target density constant — wrapped in **`ceil()`** to force a whole-number division count — guaranteeing visually consistent sub-panel sizing across sections regardless of each section's actual footprint size.
+9. **Restore original placement:** after dividing in the reoriented local space, transform each section back to its original position/orientation in the full roof assembly.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+MaterialX/Karma: Round Edge (radius parameter, dual outputs — rounded normals + round mask), Noise (normal perturbation), Mix/MtlX Mix (mask-driven blend). Camera parameters: View Mask Opacity (Camera tab). External tooling: Sublime Text (Edit in External Editor, Package Control, VEX syntax package). SOPs: Grid (rows/columns expressions), Transform (orientation for consistent local space), Divide (density-X/density-Z expressions using bounding-box size + `ceil()` for whole-number panel counts).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — each tip is a short, self-contained technique; the roof Divide-node consistency trick requires the most procedural-modeling comfort (orientation + bounding-box-driven density expressions).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (Karma/MaterialX Round Edge and MtlX Mix nodes consistent with Houdini 20.5-era shading tools).
 
 ### Tags
-[PENDING EXTRACTION]
+#karma #materials #shaders #mtlx #vex #procedural #modeling #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with other cgside VEX-tips and hard-surface tutorials (hard-surface-techniques-in-houdini.md, daily-dose-of-houdini-tips) once indexed together — shares the "quick production trick" format.
