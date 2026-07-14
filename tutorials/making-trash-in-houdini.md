@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=KCy4Sw3nbcQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, rbd, vellum, vdb, vex, uv, procedural, environment, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/making-trash-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Making Trash in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py making-trash-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -171,30 +167,62 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/making-trash-in-houdini/frame_000.jpg
+- [1:40] tutorials/frames/making-trash-in-houdini/frame_001.jpg
+- [3:20] tutorials/frames/making-trash-in-houdini/frame_002.jpg
+- [4:20] tutorials/frames/making-trash-in-houdini/frame_003.jpg
+- [5:40] tutorials/frames/making-trash-in-houdini/frame_004.jpg
+- [7:20] tutorials/frames/making-trash-in-houdini/frame_005.jpg
+- [9:00] tutorials/frames/making-trash-in-houdini/frame_006.jpg
+- [10:40] tutorials/frames/making-trash-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A five-asset trash-prop pipeline for a forest-litter environment: a **crushed soda can** via RBD (Voronoi Fracture + soft/glue constraints + a falling-box collider, with mid-sim constraint switching), a **chip bag** via a hand-tuned Vellum cloth "attract toward center + noise" velocity trick, a **VDB-deformed cup** (gradient-based volume displacement using a smoothed sphere SDF), a **spine-controlled poly-extrude container** with two variants (clean noise-clipped version and an experimental ZBrush-in-Houdini crumple pass), and a **squash-transformed bottle** with a soft-transform-based label wrap.
 
 ### Summary
-[PENDING EXTRACTION]
+**Crushed can:** starting from a revolved/QuadRemeshed profile curve (reused from a prior tutorial's scan asset) with UVs picked via a saved seam group, the can is Scattered with 500 points and **Voronoi Fractured** to generate crushable pieces plus RBD glue constraints; the top rim points are pinned (selected via **Relative Point Bounding Box**) so the can's top stays rigid while the body crushes; **RBD Configure** tunes collision padding and shrink amount, constraints are converted to surface points (generally works better), and constraint properties are set to **Soft** with **Switch Constraints set to Glue** and plasticity enabled — soft/glue values tuned higher specifically on the can's top for extra rigidity there. A falling Box acts as the crushing collider; partway through the sim (frame 18), the constraints are **switched to RBD** to transition from a soft-holding-together phase into a proper rigid-body break/crush phase. Finally **RBD Deform Pieces** deforms the original (proxy) incoming geometry using the simulated constraint data, Time Shift grabs the crushed final frame, and Match Size sets real-world scale. **Chip bag:** built from a planar patch **Inflated** (a new Houdini 20.5 node), with boundary edges saved before a bit of end-clipping, UV Flattened using those boundary edges as seams for near-perfect UVs; a **Vellum Cloth** sim gets its crinkled look not from a POP Attract but from a hand-built velocity in the Vellum Solver: a vector from each point toward the **bounding-box center** (`bbcenter - P`) pulls geometry inward, with **zero-centered position noise** layered in for a non-uniform, organic crinkle, and the resulting velocity scaled down to avoid overly fast motion; finished with post-process subdivision and thickness, then Time Shifted, cached, and placed on the floor. **Cup (two versions):** a Tube is deformed by a smoothed-sphere **VDB**: a **Volume Sample + Volume Gradient** pair computes a displacement direction, and points are moved along that gradient scaled by the sampled SDF value — effectively a bespoke "bulge" deformer using volume data instead of a dedicated deform node. A center loop is selected by picking every Nth point matching the tube's column count (offset tunable to select different loops), Subdivided ("Veon wrap cylinder" — likely "Open Subdiv" catmull-clark), boundary groups promoted to edges: one boundary is Polyfilled + Poly-Beveled for a rim, the other Converted to Line and Swept for a base — producing the cup shape, Match-Sized to real-world scale. The second cup variant reuses the same mesh and the previously-selected middle point range, applying a **Soft Transform** along one axis (tuning soft radius) to pinch/reshape the profile differently, then Peaked and Match-Sized. **Container:** a Grid, slightly transformed, with its front group Extruded and Polypatched for a rounded look; unshared edges are **Poly Extruded with Shape set to Curved**, using **Spine Control**'s magnet parameters to sculpt the curve profile; edges are clipped on both axes for cleaner subdivision, UV Flattened (no manual seams needed), Subdivided for enough resolution to support a later noise-driven **Clip by Attribute** pass (creating dissolve/decay-like cuts), Poly Extruded for thickness (polycount reduced afterward since the noise step didn't need that much density), and Match-Sized. A second, experimental container variant merges in single-sided geometry, Remeshes, hand-sculpts with the **Flatten** and **Move** sculpt brushes for a crumpled look, Subdivides, and runs **Mesh Sharpen** plus an **Attribute Blur (Proximity mode)** (similar effect to Mesh Sharpen) to emphasize creases — but the resulting mesh was "still broken and cursed," so it's Remeshed again, **Measure (Curvature)** flags sharp edges, and a **Remesh by Attribute** step (adaptive, target mesh size reduced specifically in convex areas) re-projects onto the original crumpled version for cleaner topology, finished with a light Mesh Sharpen, softened normals, and recomputed UVs — the author candidly calls this second pass "not very successful." **Bottle:** a resampled profile Curve (one point saved for a later handle/neck feature) is Revolved, Fused, and reshaped with a **Soft Transform** (scale along Z, tuned soft radius) on an expanded point-group loop to squash the silhouette; the label is created by Group-Expanding and promoting to primitives, Blasting away the label region, Peaking it slightly outward, merging back, and Subdividing for a raised label look (author notes it should probably be colored), then Match-Sized to finish.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Can base:** reuse a revolved/QuadRemeshed profile curve; pick UVs via a saved seam group.
+2. **Fracture setup:** Scatter 500 points, **Voronoi Fracture** for crushable pieces + constraints; pin the top rim (selected via Relative Point Bounding Box) so it stays rigid.
+3. **RBD configuration:** tune collision padding/shrink amount in **RBD Configure**; convert constraints to surface points; set constraint properties to **Soft** with **Switch Constraints: Glue** (plasticity enabled), using higher soft/glue values specifically on the can's top.
+4. **Simulate + collide:** run the sim with a falling Box collider crushing the can; at **frame 18, switch the constraints to RBD** to transition from soft-hold to rigid break/crush behavior.
+5. **Deform + finalize:** **RBD Deform Pieces** applies the simulated constraint motion to the original proxy geometry; Time Shift the crushed final frame; Match Size to real-world scale.
+6. **Chip bag base:** Planar Patch → **Inflate** (new in Houdini 20.5) for volume; save boundary edges before clipping the ends; UV Flatten using those saved boundaries as seams for clean UVs.
+7. **Vellum crinkle velocity (custom, not POP Attract):** in the Vellum Solver, compute `bbcenter - P` as a velocity vector pulling points toward the bag's bounding-box center; add **zero-centered position noise** for non-uniform organic crinkling; scale the resulting velocity down to avoid overly fast motion.
+8. **Finish the bag:** post-process subdivision + thickness, Time Shift, cache, place on the floor.
+9. **Cup VDB deform:** build a smoothed-sphere **VDB**; use **Volume Sample + Volume Gradient** to compute a displacement direction per point, then move each point along that gradient scaled by the sampled SDF value for a bulge-style deformation.
+10. **Cup rim/base construction:** select a center loop (every Nth point matching the tube's column count, offset tunable), Subdivide, promote boundary groups to edges — Polyfill + Poly-Bevel one boundary for the rim, Convert to Line + Sweep the other for the base; Match Size.
+11. **Cup variant B:** reuse the same mesh and the earlier middle point-range selection; apply a **Soft Transform** (single-axis scale, tunable soft radius) for a differently-pinched profile; Peak and Match Size.
+12. **Container base:** Grid, slight Transform, Extrude the front group, Polypatch for roundness.
+13. **Spine-controlled edge extrude:** Poly Extrude the unshared edges with **Shape: Curved**, sculpting the profile via **Spine Control**'s magnet parameters.
+14. **Container UV + decay noise:** Clip both axes for cleaner subdivision, UV Flatten (no manual seams needed), Subdivide for resolution, then a noise-driven **Clip by Attribute** pass to fake dissolve/decay cuts.
+15. **Finish container:** Poly Extrude for thickness, reduce polycount (not needed after the noise pass), Match Size.
+16. **Experimental crumpled container variant:** merge single-sided geometry, Remesh, hand-sculpt with **Flatten** and **Move** brushes for a crumpled look, Subdivide, apply **Mesh Sharpen** + **Attribute Blur (Proximity mode)** to emphasize creases.
+17. **Clean up the crumpled result:** Remesh again, **Measure (Curvature)** to flag sharp edges, run **Remesh by Attribute** (adaptive, reduced target mesh size in convex areas) and re-project onto the original crumpled shape for better topology; finish with a light Mesh Sharpen, softened normals, recomputed UVs, and Transform into place.
+18. **Bottle base:** resample a profile Curve (saving one point for a later neck/handle feature), Revolve, Fuse.
+19. **Squash the bottle:** expand a point-group loop, apply **Soft Transform** (Z-axis scale, tunable soft radius) to reshape the silhouette.
+20. **Bottle label:** Group Expand + promote to primitives, Blast away the label region, Peak it slightly outward, merge back, Subdivide for a raised label look; Match Size to finish.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Modeling: Revolve, QuadRemesher (third-party), Group (seam), UV Flatten, Grid, Extrude, Polypatch, Poly Extrude (Shape: Curved, Spine Control magnet parameters), Clip (both axes, and noise-driven Clip by Attribute), Subdivide, Match Size, Curve, Fuse, Soft Transform (tunable soft radius), Group Expand, Group Promote, Blast, Peak, Remesh, Mesh Sharpen, Attribute Blur (Proximity mode), Measure (Curvature), Remesh by Attribute (adaptive, target mesh size), Transform. RBD/Vellum: Scatter, Voronoi Fracture (with constraints output), Relative Point Bounding Box (pin selection), RBD Configure (collision padding, shrink), constraint-to-surface-points conversion, RBD Constraint Properties (Soft, Switch Constraints: Glue, plasticity), RBD Bullet Solver (mid-sim constraint switch at frame 18), RBD Deform Pieces, Time Shift, Inflate (new in 20.5), Vellum Solver (custom VEX velocity: `bbcenter - P`, zero-centered position noise, velocity scale-down), Vellum post-process (subdivision, thickness). Volume: VDB conversion, Volume Sample, Volume Gradient (gradient-based point displacement scaled by SDF value).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — combines RBD constraint-switching simulation, custom Vellum velocity VEX, volume-gradient deformation, and adaptive curvature-based remeshing; assumes strong procedural-modeling and simulation fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (explicitly references "Inflate... a new node for 20.5").
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #rbd #vellum #vdb #vex #uv #procedural #environment #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Author announces a planned follow-up environment/scattering video using these trash assets — cross-link once that tutorial is found in this batch. Shares the Relative Point Bounding Box pinning technique and RBD-constraint-switching pattern with other cgside RBD/simulation tutorials once indexed together.

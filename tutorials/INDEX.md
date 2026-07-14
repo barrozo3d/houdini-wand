@@ -1744,9 +1744,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=KCy4Sw3nbcQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #rbd #vellum #vdb #vex #uv #procedural #environment #advanced
+- **Summary:** Five trash-prop assets: a crushed can via RBD with mid-sim glue-to-rigid constraint switching, a chip bag via custom Vellum center-attract velocity + noise, a VDB-gradient-deformed cup, a spine-controlled noise-clipped container (plus an experimental sculpt-and-adaptive-remesh crumple variant), and a soft-transform squashed bottle.
 - **File:** tutorials/making-trash-in-houdini.md
 
 
