@@ -2454,9 +2454,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=qtzO_NoQbtE
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #vex #vellum #hard-surface #procedural #subdivision #tips #advanced
+- **Summary:** Five hard-surface tricks recreating an ArtStation prop: UV-as-position flattening to Box Clip curved geometry, noise-driven bend-stiffness for varied Vellum cloth patterns, boundary-group-controlled Exoside QuadRemesher, crease-based corner preservation under Subdivide, and a VEX rotation-matrix orient-to-point snap.
 - **File:** tutorials/hard-surface-techniques-in-houdini.md
 
 

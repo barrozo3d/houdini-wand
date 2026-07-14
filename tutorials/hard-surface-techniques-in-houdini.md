@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=qtzO_NoQbtE
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, vex, vellum, hard-surface, procedural, subdivision, tips, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/hard-surface-techniques-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Hard Surface Techniques in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py hard-surface-techniques-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -141,30 +137,50 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/hard-surface-techniques-in-houdini/frame_000.jpg
+- [0:55] tutorials/frames/hard-surface-techniques-in-houdini/frame_001.jpg
+- [3:05] tutorials/frames/hard-surface-techniques-in-houdini/frame_002.jpg
+- [4:25] tutorials/frames/hard-surface-techniques-in-houdini/frame_003.jpg
+- [6:20] tutorials/frames/hard-surface-techniques-in-houdini/frame_004.jpg
+- [8:10] tutorials/frames/hard-surface-techniques-in-houdini/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five hard-surface techniques used to recreate a sci-fi prop from an ArtStation reference: **flattening curved geometry via UV-as-position** to make a Box Clip behave like it were on a flat surface, randomizing Vellum-simulated cloth pad patterns with a noise-driven bend-stiffness attribute, controlling Exoside QuadRemesher results by feeding it primitive-group boundaries, a **crease-based subdivision** trick to keep sharp corners while still rounding the rest of a shape, and a **VEX-based orient-to-point** snap (an alternative to Copy to Points) for aligning a box to a manually-picked target point/normal.
 
 ### Summary
-[PENDING EXTRACTION]
+For the cloth pads: after basic extrude/bevel modeling, pieces are grouped in batches of 8 (via `primnum / 8`, with a `shift by 4` sort so groups align correctly with the visual layout), then a **For Each (name/primitive)** loop saves a `rest` position, selects/converts the bottom to vertices, runs **UV Flatten**, promotes UVs to points, and assigns the UV attribute directly to position — flattening the curved geometry into a literal flat plane so a **Box Clip** (which only makes sense on planar/axis-aligned geometry) can cleanly clip the sides — something not possible directly on the curved original. The rest position is then extracted and the clipped shape sent back to its original curved placement, followed by a **QuadRemesh** (which softens the shape slightly) and a **Ray** projection back onto the original surface to restore precision. For Vellum cloth-pattern variation: identical geometry pieces produce identical simulation results by default (visibly unrealistic against the reference), fixed by creating a **noise-driven bend-stiffness attribute** before the seam constraint (min value raised off zero, tuned element size) and feeding it into the Vellum solver's Volume Cloth "bend stiffness scale" via that attribute — giving each pad a slightly different, more natural simulated pattern. For quad remeshing multi-piece hard-surface geometry with the third-party **Exoside QuadRemesher**: enabling "Use Primitive Groups Boundaries" (fed by primitive groups created *before* the remesher) prevents corners from getting "jacked up," producing dramatically cleaner topology than the default; the groups themselves come from a Boolean result, Group (min edge angle) on the sharp/art edges, **Edge Cusp** to separate the mesh along those edges, **Connectivity** to assign a per-piece `class`, and **Group from Name** (using the class attribute with a name prefix, deleting any unwanted groups) before Fusing points and running the remesher. For preserving sharp corners under Subdivide: rather than accepting the smoothed/rounded corners a plain Subdivide produces (problematic where inner extrusions/insets exist), a **Group Combine** of the corner edges feeds a **Crease** node with a high crease value — leaving the corner sharp while the rest of the shape (where no crease is applied) still smooths naturally, avoiding a chunky low-poly look without needing to give up subdivision entirely. Finally, to align a box precisely onto a manually-picked point in the middle of a curve-bridged shape (rather than fighting Copy to Points' orientation/normal quirks), a **VEX snippet** (reused from a previously-shared script) reads the base primitive's number and normal, extracts the target point's normal, builds a **rotation matrix** from the base-polygon normal to the target-point normal, and uses the target point's position to orient the box directly — described as functionally similar to what Copy to Points can achieve, but avoiding the need to fiddle with the copied object's initial rotation/orientation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Batch grouping for cloth pads:** after extrude/bevel modeling, group primitives in batches of 8 via `primnum / 8`, applying a `shift by 4` sort beforehand so the batches align with the intended visual segment boundaries.
+2. **Flatten curved geometry for clipping (For Each loop):** inside a **For Each (name/primitive)** loop: save the current position as a `rest` attribute; select and convert the bottom face to vertices; run **UV Flatten**; promote the resulting UVs to points; assign the UV attribute directly to `P` — producing a literally flat version of the curved piece.
+3. **Clip on the flattened version:** run a **Box Clip** on the now-flat geometry to clip the sides — a clean, simple planar clip that would be geometrically awkward or impossible directly on the original curved surface.
+4. **Restore curvature:** extract the saved `rest` position and transform the clipped geometry back to its original curved placement.
+5. **Clean up post-clip:** run **QuadRemesh** (which softens the shape slightly) followed by a **Ray** projection back onto the original reference surface to recover precision lost from the remesh softening.
+6. **Randomize Vellum cloth pattern (bend stiffness noise):** before the seam constraint, create a **bend stiffness** point attribute driven by noise (raise the noise's minimum value off zero, tune element size for pattern scale); in the **Volume Cloth** constraint node, set "Bend Stiffness Scale" to reference that attribute — each identical-geometry pad now simulates with a slightly different bend response, breaking up the otherwise-identical repeated pattern.
+7. **QuadRemesh boundary control:** enable **"Use Primitive Groups Boundaries"** on the Exoside QuadRemesher and feed it primitive groups built *before* the remesh step — without this, sharp corners get corrupted/jumbled in the remesh output; with it, topology stays clean and subdivision-ready.
+8. **Build the remesh boundary groups:** start from a Boolean result; **Group** the sharp/art edges via a min-edge-angle threshold; **Edge Cusp** those edges to separate the mesh into disconnected pieces at that boundary; **Connectivity** to assign each resulting piece a `class` attribute; **Group from Name** (using the class attribute as a name prefix, deleting unwanted/unused groups) to produce the final primitive groups; **Fuse** points, then run the QuadRemesher with those groups feeding its boundary control.
+9. **Crease sharp corners before Subdivide:** **Group Combine** the specific corner edges that must stay sharp (not the whole shape's edges); feed that group into a **Crease** node with the operation set to "Add to Existing Value" and a high crease amount; **Subdivide** afterward — corners with the crease stay sharp while ungrouped edges (the shape's rounded/curved sections) still smooth naturally, avoiding both an all-rounded look and a chunky unsubdivided low-poly look, especially important where inner extrusions/insets meet a corner.
+10. **VEX orient-to-point (snap a box to a manual target):** in an Attribute Wrangle, read the base primitive's number and normal (`prim_normal = ...`), extract the target point's normal (`target_pt`), build a **rotation matrix** transforming from the base-polygon normal to the target-point normal, then use the target point's position combined with that rotation matrix to directly orient/position a box primitive — achieves precise alignment to a manually-selected mid-point without needing Copy to Points' orientation workarounds or messing with the source object's initial rotation.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Extrude, Bevel, Blast (batch grouping via `primnum/8` + sort/shift), For Each (name/primitive), Attribute Wrangle (VEX: rest-position save; UV-to-position assignment; rotation-matrix orient-to-point using base/target normals and positions), UV Flatten, Attribute Promote (UV→point), Box Clip, QuadRemesh (Exoside third-party plugin — Use Primitive Groups Boundaries option), Ray, Volume Cloth (Vellum constraint, Bend Stiffness Scale by attribute), Noise (bend-stiffness attribute generation), Boolean, Group (min edge angle threshold), Edge Cusp, Connectivity (`class` attribute), Group from Name (name-prefix, class attribute, delete unused groups), Fuse, Group Combine (corner-edge selection), Crease (Add to Existing Value, high crease amount), Subdivide.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines several non-obvious procedural-modeling tricks (UV-as-position flattening, boundary-controlled quad remeshing, VEX rotation-matrix orientation) that assume solid VEX and hard-surface-modeling fundamentals.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era hard-surface/Vellum toolset).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vex #vellum #hard-surface #procedural #subdivision #tips #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with direct-and-procedural-modeling-in-houdini.md and groups-patterns-in-houdini.md (same author, overlapping group/VEX-cleanup and orientation-via-VEX vocabulary) once indexed together.
