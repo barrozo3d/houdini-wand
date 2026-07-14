@@ -2834,9 +2834,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rVduzdrKYZg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #karma #materials #shaders #mtlx #triplanar #cgi-integration #procedural #tips #intermediate
+- **Summary:** Five tips: polar UV Project HDRI-projected lighting sets with invisible-to-primary shadow catchers, per-object randomized Triplanar offsets to fix repetition, the free fSpy Cam Loader HDA, a VEX random-rotation+surface-orient wrangle that preserves both, and Connectivity-seeded random attributes for color variation on merged geometry.
 - **File:** tutorials/houdini-tips-and-tricks-2.md
 
 

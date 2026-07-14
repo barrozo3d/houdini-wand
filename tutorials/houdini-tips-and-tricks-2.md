@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rVduzdrKYZg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, karma, materials, shaders, mtlx, triplanar, cgi-integration, procedural, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tips-and-tricks-2/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini tips and tricks #2
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-tips-and-tricks-2 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -117,30 +113,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/houdini-tips-and-tricks-2/frame_000.jpg
+- [1:55] tutorials/frames/houdini-tips-and-tricks-2/frame_001.jpg
+- [3:00] tutorials/frames/houdini-tips-and-tricks-2/frame_002.jpg
+- [3:50] tutorials/frames/houdini-tips-and-tricks-2/frame_003.jpg
+- [5:20] tutorials/frames/houdini-tips-and-tricks-2/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five tips: projecting a spherical HDRI onto simple geometry (via a **polar UV Project**) to build a lit CGI-integration set with a shadow catcher, fixing Triplanar repetition across multiple merged objects with a per-piece randomized position offset, using a free **fSpy Cam Loader HDA** for camera-matched image-based modeling, a reusable VEX **random-rotation + surface-orient wrangle** for Scatter/Copy to Points, and a **Connectivity-seeded random attribute** for adding color/gain variation to merged geometry (leaves/fruit) without needing separate per-object pieces.
 
 ### Summary
-[PENDING EXTRACTION]
+**Spherical HDRI projection:** starting from a simple Grid (fit to the floor) extruded into walls/other set pieces, a **UV Project** node set to **Polar** type creates a spherical projection matching an HDRI panorama; the projection is manually transformed (translate/rotate gizmos) to align with the reference image, and the HDRI is fed into a **MaterialX Uber/Lights** shader's emission color so the geometry itself visibly displays the projected environment. Real assets and a shadow catcher are added on top; since the projected "set" geometry only exists to contribute lighting/shadows (not to be seen directly), its **Render Geometry Settings → Render Visibility** is set to **"Invisible to Primary Rays"** so it lights the scene but doesn't render. A **Background Plate** node combined with the shadow catcher and the original image lets the final composite show real objects seamlessly added onto the photographed backplate. **Fixing Triplanar repetition across merged objects:** Triplanar's default position-based tiling (adjusted via a **Position node + Multiply** for scale, **Add** for offset) shows an obviously repetitive pattern across multiple identical objects (e.g. church pews) even after switching Position space to World; the real fix is feeding the Add/offset node a **per-object randomized attribute** (built with Attribute Randomize) so each mesh gets its own unique X/Y/Z Triplanar offset — critically requiring the geometry to be **Packed** first so there's exactly one point (and thus one random value) per object/piece. **fSpy camera matching:** using the free, third-party **fSpy Cam Loader HDA**, align vanishing-point lines on a reference photo in the standalone fSpy app, save as JSON, then in Houdini load both the JSON and the source image into the HDA and click "Read File" + "Create Camera" to instantly get a matched camera (with projection support) for image-based modeling — link provided in the video description, tool is free. **Random rotation + surface orient (VEX, updated from an earlier video):** a wrangle placed between Scatter and Copy to Points exposes UI channels for min/max rotation per axis (with a re-roll/reseed option), an optional toggle to orient instances along the scattered surface's normal **without discarding the random rotation already applied**, and a final offset along the surface normal to lift instances off the terrain (avoiding floating/clipping issues) — built from a vector of random rotation values combined with the min/max UI channels, converted via `radians()`(described as "alert to quaternions") into a quaternion, and multiplied against the existing `orient` attribute rather than replacing it outright, so both the random spin and the surface alignment are preserved together. **Color/gain variation on merged geometry:** for merged geometry where you want per-piece color/gain variation but don't want to keep pieces separate, isolate the target geometry and run **Connectivity** to get a `class` attribute per contiguous piece, then in a wrangle generate a 0-1 random attribute seeded by that class value — applied identically to both leaves (driving shader **gain** via a Ramp in Solaris) and fruit (driving **base color** via the same pattern), giving natural per-cluster variation without ever needing to split the merged mesh apart.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Build the projection set:** start from a Grid fit to represent the floor, extrude walls/other simple shapes to roughly match the reference photo's geometry.
+2. **Polar UV projection:** apply **UV Project** set to **Polar** type for a spherical projection matching an HDRI panorama; manually align it to the reference image using translate/rotate gizmos.
+3. **Display the projection:** feed the HDRI image into a **MaterialX Uber/Lights** shader's emission color input so the projected geometry visibly shows the environment texture.
+4. **Hide the set from camera, keep its lighting:** set the projection-set geometry's **Render Geometry Settings → Render Visibility** to **"Invisible to Primary Rays"** so it still contributes bounce lighting/shadows without appearing directly in the render.
+5. **Composite over the real backplate:** add a **Background Plate** node referencing the shadow-catcher object and the original reference image so real CGI assets appear seamlessly composited into the photographed scene.
+6. **Diagnose Triplanar repetition:** notice that Triplanar's default position-driven tiling (Position node + Multiply for scale, Add for offset) repeats obviously across multiple copies of the same object, even after switching Position space to **World**.
+7. **Randomize the Triplanar offset per object:** feed the Add/offset node a per-piece **randomized attribute** (built via Attribute Randomize) so each object gets a unique X/Y/Z Triplanar offset, breaking the repetition.
+8. **Pack before randomizing:** ensure multiple meshes are **Packed** first so exactly one point (and thus one random offset value) exists per object — without packing, the randomization won't apply per-object correctly.
+9. **fSpy camera setup:** align vanishing-point lines in the standalone fSpy app on a reference photo, export as JSON; in Houdini, add the **fSpy Cam Loader HDA**, load the JSON + image, click Read File then Create Camera to get a matched camera ready for image-based modeling and projection.
+10. **Random-rotation wrangle (Scatter → Copy to Points):** expose UI channels for min/max rotation per axis (with re-seed control); build a vector of random rotation values combined with those channels.
+11. **Convert to quaternion and combine:** convert the rotation values (in degrees, via `radians()`) into a quaternion, then **multiply the existing `orient` attribute** by the new rotation quaternion (rather than overwriting it) so any prior orientation data is preserved.
+12. **Surface-orient toggle:** add a checked UI toggle that, when enabled, orients instances along the scattered surface's normal **while still respecting the random rotation** already computed — combining both effects rather than one replacing the other.
+13. **Offset to avoid floating instances:** add a final position offset along the surface normal (Y axis in the flat-terrain case) to lift/seat instances properly against the terrain surface.
+14. **Isolate + connectivity for color variation:** isolate the target merged geometry (e.g. leaves, separately fruit) and run **Connectivity** to assign a `class` attribute per contiguous piece.
+15. **Seeded random attribute:** in a wrangle, generate a random 0-1 value using the `class` attribute as the seed — giving each connected piece a consistent, unique random value.
+16. **Drive shading variation in Solaris:** feed the class-seeded random attribute into a **Ramp** in Solaris to control shader **gain** for the leaves, and reuse the identical pattern to drive **base color** for the fruit — natural per-cluster variation with zero extra modeling work.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Grid, Extrude, UV Project (Polar type), MaterialX Uber/Lights (emission color), Render Geometry Settings (Render Visibility: Invisible to Primary Rays), Background Plate, Shadow Catcher, Position (Triplanar, World space), Multiply (Triplanar scale/dialing), Add (Triplanar offset, attribute-driven), Attribute Randomize (per-piece offset generation), Pack (required before per-object randomization), fSpy Cam Loader HDA (third-party, free — JSON + image load, Read File, Create Camera), Scatter, Copy to Points, Attribute Wrangle (VEX: UI-channel-exposed min/max rotation per axis, `radians()` conversion, quaternion construction, multiplication against existing `orient` attribute, surface-normal-orient toggle, normal-offset lift), Connectivity (`class` attribute per piece), Attribute Wrangle (VEX: class-seeded random 0-1 attribute), Ramp (Solaris, gain/base-color driver).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — each tip is compact; the VEX random-rotation/orient-preservation wrangle and Triplanar packing requirement are the most non-obvious details.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (MaterialX/Karma workflow consistent with Houdini 20.5-era tools).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #karma #materials #shaders #mtlx #triplanar #cgi-integration #procedural #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with from-sops-to-final-render-with-karma.md (same author, same CGI-integration/backplate/shadow-catcher workflow) and essential-procedural-techniques-in-houdini.md (shares the random-rotation-preserving quaternion VEX pattern) once indexed together.
