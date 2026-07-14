@@ -2904,9 +2904,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=OWMKqhVaFF8
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H19.5+ (Solaris)
+- **Tags:** #solaris #instancing #scattering #attributes #beginner #intermediate
+- **Summary:** Controls per-prototype instance probability in a Solaris Instancer using Attribute Randomize's Custom Discrete distribution (one weighted entry per prototype index) wired into the Prototype Index Attribute field. Key gotcha: Attribute Randomize outputs a float but the index field needs an integer — fix with an Attribute Cast, otherwise it silently falls back to index 0 for everything.
 - **File:** tutorials/controlling-instance-probability-in-solaris.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=OWMKqhVaFF8
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H19.5+ (Solaris)"
+tags: [solaris, instancing, scattering, attributes, beginner, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/controlling-instance-probability-in-solaris/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 4
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Controlling instance probability in Solaris
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py controlling-instance-probability-in-solaris <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -53,30 +49,45 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:52] tutorials/frames/controlling-instance-probability-in-solaris/frame_000.jpg
+- [1:10] tutorials/frames/controlling-instance-probability-in-solaris/frame_001.jpg
+- [1:40] tutorials/frames/controlling-instance-probability-in-solaris/frame_002.jpg
+- [1:46] tutorials/frames/controlling-instance-probability-in-solaris/frame_003.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Controls the relative probability of each prototype in a Solaris Instancer (instead of pure random distribution) by building a custom integer index attribute with Attribute Randomize's Custom Discrete distribution mode, wired into the Instancer's Prototype Index Attribute field.
 
 ### Summary
-[PENDING EXTRACTION]
+A short, focused quick-tip: by default, Solaris's Instancer only offers a random distribution (with a Seed) across prototypes, plus an Index field that isn't directly useful for weighted control on its own — the actual mechanism needed is the **Prototype Index Attribute** field. To drive it, build an **Attribute Randomize** node with the attribute renamed to something identifiable (e.g. `probability`), distribution set to **Custom Discrete**, and a table populated with one entry per prototype (starting index at 0) — each entry can be given its own relative weight. The first attempt fails silently with a console warning ("didn't find attribute named probability," everything falling back to index 0) because **Attribute Randomize outputs a float**, while the Instancer's index field requires an **integer** — fixed with a simple **Attribute Cast** node converting the attribute to int. Once cast, adjusting each entry's weight in the Custom Discrete table directly controls how often each prototype/tree variant appears.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Note the Instancer's default limitation: only random distribution (with a Seed) is exposed directly; the plain **Index** field alone isn't useful for controlling per-prototype frequency — the real control point is the **Prototype Index Attribute** field.
+2. Add an **Attribute Randomize** node upstream, rename the output attribute to something clear (e.g. `probability`), and set **Distribution** to **Custom Discrete**.
+3. In the Custom Discrete table, enter the **number of objects/prototypes** you have (e.g. 3), and assign each an **index starting from 0** (matching prototype order) along with a relative weight.
+4. Copy that attribute's name into the Instancer's **Prototype Index Attribute** field.
+5. **First result appears broken** — no visible change, and the viewport console reports a warning that it couldn't find an attribute named `probability`, silently defaulting everyone to index 0 (all one prototype).
+6. **Root cause**: Attribute Randomize outputs a **float** attribute, but the Prototype Index Attribute field expects an **integer**.
+7. **Fix**: insert an **Attribute Cast** node to convert the attribute from float to int — once cast, the Instancer correctly reads per-point index values and each prototype's frequency can now be tuned directly via the Custom Discrete table's per-entry weights.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+**Attribute Randomize** (Distribution: Custom Discrete, one weighted entry per prototype index starting at 0) → **Attribute Cast** (float → int) → Solaris **Instancer** (Prototype Index Attribute field set to the cast attribute's name).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner / Intermediate — simple once you know the required attribute type and field name, but easy to get stuck on the silent float-vs-int mismatch without knowing to check the console warning.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Solaris-based (LOP context); the Instancer LOP and its Prototype Index Attribute field are available from Houdini 19.5 onward.
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #instancing #scattering #attributes #beginner #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+No other indexed cgside tutorial currently covers Solaris Instancer prototype-probability control specifically — cross-link with any future Solaris/instancing tutorials once extracted from this batch.
