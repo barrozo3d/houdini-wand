@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=bqyaPvWT5Gc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [solaris, lops, vex, procedural, scattering, instancing, cops, compositing, karma, environment, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/environment-technical-tips-and-tricks/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Environment Technical tips and tricks
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py environment-technical-tips-and-tricks <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -85,30 +81,47 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/environment-technical-tips-and-tricks/frame_000.jpg
+- [0:35] tutorials/frames/environment-technical-tips-and-tricks/frame_001.jpg
+- [1:20] tutorials/frames/environment-technical-tips-and-tricks/frame_002.jpg
+- [2:10] tutorials/frames/environment-technical-tips-and-tricks/frame_003.jpg
+- [2:40] tutorials/frames/environment-technical-tips-and-tricks/frame_004.jpg
+- [3:20] tutorials/frames/environment-technical-tips-and-tricks/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five compact production tips for large-scale environment work: fast tree proxy generation via Particle Fluid Surface, VEX-driven "lay flat on ground" orientation for scattered rocks, variant-based rock instancing in Solaris without manual subnet splitting, a frustum-based camera-culling VEX snippet for Instancer, and cheap depth-based fog composited in COPs instead of a full volumetric render.
 
 ### Summary
-[PENDING EXTRACTION]
+For tree LOD/collision proxies: unpack the tree, scatter points across it, and run **Particle Fluid Surface** on those points to generate a simplified blob mesh usable as a Solaris viewport/bound proxy — much faster than manually retopologizing. For making scattered rocks lay flat: measure each primitive's area, loop to compute primitive normals, identify the largest-area primitive as the "base" that should touch the ground, group it by comparing against the original total area, then in a wrangle use a **dihedral** transform to rotate from the rock's original normal to the target (down) direction, get the base primitive's centroid, and subtract/orient using a matrix so the rock settles flat — a technique originated by "Swalsh" on the CGWiki Discord. For efficient rock variety in Solaris: build the usual Component Geometry setup, Object Merge all rock variants together, Blast using a combination of the `name` attribute and `@geo_variant_index`, set Component Geometry Variants to "number" mode with the correct count, and feed the result straight into the Instancer's primitive pattern — this grabs different rocks randomly per instance without needing to manually split rocks into separate subnetworks. For camera culling: inside the Instancer, build an Object Network importing the actual Solaris stage camera via **Import Camera**, then after scattering points run a wrangle (based on an "NPT" setup shared on the SideFX forums) computing each point's **NDC (normalized device coordinates)** position relative to that camera, applying some padding margin, to cull/skip instances outside the camera frustum — a first-pass camera-culling approach. For fast fog without expensive volumetric rendering: split the Solaris render into two Render ROPs (main geometry + background), render both to disk in **ACEScg** color space to avoid color mismatches, then in COPs load both passes (compositing over each other using the alpha channel), load a separate depth AOV, normalize and contrast it to isolate/remove the foreground, layer a flat white color behind using that mask so distant background also fogs, and finally use the resulting mask as a simple additive offset on the final composited image to fake atmospheric fog — with NDC-based controls also usable to control fog falloff.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Tree proxy:** Unpack the tree geometry, Scatter points across it, run **Particle Fluid Surface** on those points to generate a simplified blob/metaball-like mesh, and use that as the lightweight Solaris viewport/collision proxy instead of the full tree.
+2. **Rock lay-flat orientation:** Measure the area of all primitives; in a loop, compute primitive normals; identify the primitive with the largest area (the intended "ground contact" face) via a wrangle comparing each primitive's area to the total/original area, grouping the winner.
+3. **Rock lay-flat transform:** in a wrangle, use **dihedral** to build a rotation from the rock's current base-primitive normal to the desired down-facing orientation; extract that base primitive's centroid; subtract the centroid position (to pivot correctly) and apply the orientation via a matrix — resulting in the rock naturally resting flat, ready for scattering.
+4. **Rock variant instancing without subnets:** standard Component Geometry setup; Object Merge all rock variant geometry together in one stream; **Blast** using a combined check of the `name` attribute and `@geo_variant_index` (so each variant's geometry only shows for its matching index); set **Component Geometry Variants** to "number" mode with the exact rock count; create an Output + **Explore Variants**; feed directly into the Instancer's primitive-pattern input — produces fully random per-instance rock variety without manual subnetwork splitting per rock.
+5. **Camera frustum culling:** inside the Instancer's network, add an **Object Network** and import the actual render camera from the stage via **Import Camera**; after the point Scatter, run a VEX wrangle (credited to an "NPT" SideFX-forum setup) that computes each point's position in **NDC space** relative to that camera and applies a padding margin, to determine which instances fall outside the visible frustum (for culling/skip logic) — described as a first-pass ("many first time") camera-culling approach.
+6. **Two-stream fog render:** in Solaris, set up two separate **Render ROPs** — one for all real geometry, one for just the background — and render both to disk simultaneously (select both ROPs, press Render to Disk); render in **ACEScg** color space specifically to avoid color-space mismatches between passes.
+7. **Fog compositing in COPs:** build a CopNet loading both rendered image sequences, compositing one **Over** the other using the alpha channel; separately load a rendered **depth AOV**, normalize it and boost contrast to isolate/remove foreground objects from the fog mask; add a flat white color layered behind (via the same mask) so even the far background receives fog; merge everything together, then use the resulting depth-based mask as a simple additive value offset on the final image to fake atmospheric fog cheaply — noting the same NDC-based technique from the camera-culling tip can also be used to control fog falloff/distance.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Unpack, Scatter, Particle Fluid Surface, Measure (Area), For loop (primitive normals), Attribute Wrangle (VEX: largest-primitive grouping by area comparison, `dihedral()`-based rotation from source to target normal, centroid extraction/subtraction, matrix-based orientation). LOPs: Component Geometry, Object Merge, Blast (`name` + `@geo_variant_index` combined condition), Component Geometry Variants (number mode), Explore Variants, Point Instancer (primitive pattern input), Object Network + Import Camera (inside Instancer), Attribute Wrangle (VEX: NDC-space computation relative to imported camera, padding margin for frustum culling), Render ROP (x2 — geometry + background streams), ACEScg color space. COPs: image load (two render passes), Over (alpha compositing), depth AOV import, Normalize, Contrast, flat-color layer, Merge, additive mask-based fog offset.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced — each tip is short but assumes comfort with VEX (dihedral rotations, NDC math), Solaris variant/instancing concepts, and basic COPs compositing.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (Karma Physical Sky node and Solaris UI visible match Houdini 20.5-era workflow).
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #lops #vex #procedural #scattering #instancing #cops #compositing #karma #environment #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with environment-creation-with-solaris-in-houdini.md and environment-creation-with-houdini---part-1.md (same author, same environment-production domain — shares Component Geometry Variants and Instancer vocabulary) once both are in the index.

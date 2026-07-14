@@ -3074,9 +3074,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=bqyaPvWT5Gc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #solaris #lops #vex #procedural #scattering #instancing #cops #compositing #karma #environment #tips #intermediate
+- **Summary:** Five environment production tips: Particle Fluid Surface tree proxies, dihedral-based VEX rock lay-flat orientation, variant-index rock instancing without subnets, NDC-based camera-frustum culling, and cheap depth-masked fog composited in COPs.
 - **File:** tutorials/environment-technical-tips-and-tricks.md
 
 
