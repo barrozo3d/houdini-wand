@@ -2334,9 +2334,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=t1QemBG462g
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #modeling #vex #procedural #hard-surface #tips #intermediate
+- **Summary:** Hard-surface modeling tips from a spray-bottle build: pattern-based selection expansion, Draw Curve cleanup, VEX neighbourcount() stray-point removal, target-geometry Fuse, and distortion-free per-piece peak/offset via centroid-normal VEX.
 - **File:** tutorials/direct-and-procedural-modeling-in-houdini.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=t1QemBG462g
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [modeling, vex, procedural, hard-surface, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/direct-and-procedural-modeling-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Direct and Procedural Modeling in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py direct-and-procedural-modeling-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -90,30 +86,46 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/direct-and-procedural-modeling-in-houdini/frame_000.jpg
+- [0:55] tutorials/frames/direct-and-procedural-modeling-in-houdini/frame_001.jpg
+- [1:30] tutorials/frames/direct-and-procedural-modeling-in-houdini/frame_002.jpg
+- [2:10] tutorials/frames/direct-and-procedural-modeling-in-houdini/frame_003.jpg
+- [3:15] tutorials/frames/direct-and-procedural-modeling-in-houdini/frame_004.jpg
+- [4:10] tutorials/frames/direct-and-procedural-modeling-in-houdini/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A collection of hard-surface modeling tips (learned while modeling a spray bottle) mixing direct/interactive modeling shortcuts with small targeted VEX snippets for cleanup tasks that Houdini's stock SOPs handle poorly: curve cleanup, stray-point removal, border fusing to a target shape, and distortion-free peak/offset of disconnected pieces.
 
 ### Summary
-[PENDING EXTRACTION]
+Six independent tips from one hard-surface build. (1) Smart direct selection: select a repeating pattern (e.g. every other face on a tube) and expand it forward with Shift+Up Arrow, plus interactive select-by-normal for quick face grouping before extruding. (2) Cleaning a hand-drawn Draw Curve: clip the messy curves to share the same key points, do a large-length resample to capture just the overall curvature, then a fine resample + subdivide to get a smooth clean curve. (3) Removing stray inline points left by a Boolean: Facet's tolerance-based point removal deleted parts of the geometry, so instead a VEX wrangle using `neighbourcount()` groups any point with ≤2 neighbors and blasts them. (4) Fixing bad Boolean topology by fusing border points to a reference shape: extract a curve from the boundary group, expand the border-points group to widen the collapse area, then Fuse with the second input set as target geometry so the fuse operation snaps to the original silhouette instead of shrinking it. (5) Peaking (offsetting) multiple disconnected floating pieces along their own local normal without distortion: naive Peak distorts large offsets, and Assemble+Pick is a valid non-VEX fallback, but the faster/cleaner solution is VEX — either an array-based approach iterating connected-piece point numbers, or a simpler one-liner reading a per-piece centroid normal (ordered consistently by Connectivity) and moving each point along that normal by a multiplier. (6) Final result: a fully modeled spray-bottle asset.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Pattern selection:** in Edit SOP / viewport selection, pick a repeating face pattern, then press **Shift+Up Arrow** to expand the selection forward following the same pattern (not a uniform grow) — lets you keep extruding/manipulating inner faces without manually reselecting; select-by-normal works interactively in the viewport for quick related-face grouping.
+2. **Draw Curve cleanup:** after using **Draw Curve** to hand-sketch a pattern directly on the surface, run **Clip** on all curves to align them to shared key points, then **Resample** with a large segment length to capture only the broad curvature, followed by a second **Resample** at fine length + **Subdivide** to smooth it into a clean usable curve.
+3. **Stray-point cleanup after Boolean:** instead of Facet's tolerance-based inline-point removal (which deleted geometry here), use an **Attribute Wrangle** with VEX's `neighbourcount()` function to group points that have 2 or fewer neighbors, then **Blast** that group.
+4. **Border fuse to target shape:** after a Boolean leaves bad topology, extract a curve from the ABCM/boundary group for reference, **Group Expand** the border-points group to widen the area to be collapsed, then run **Fuse** with the second input set to "target geometry" so points snap onto the reference shape rather than shrinking the silhouette inward.
+5. **Distortion-free peak via VEX (array method):** run **Connectivity** to separate floating pieces, extract each piece's **centroid** (Extract Centroid transfers normals in class order), then in a VEX wrangle run over `numpoints()`, read the centroid normal per piece, gather the point numbers belonging to each piece into an array, and iterate to move each point along its piece's centroid normal — avoids the shape distortion a plain Peak node introduces at larger offsets.
+6. **Distortion-free peak via VEX (simpler point-wise method):** run over points instead, read the piece's normal from the second input (Extract Centroid orders classes so `@ptnum` on the centroid input lines up with the piece's class number), then simply move each point's position along `normal * multiplier` — much shorter and more performant than the array-based version, at the cost of relying on the centroid ordering matching the class order (a full non-centroid version exists but is longer and slower).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Edit/Select (pattern-based selection, Shift+Up Arrow expand-forward, select-by-normal), PolyExtrude, Draw Curve, Clip, Resample (large-length pass then fine-length pass), Subdivide (curve), Facet (point-removal tolerance — noted as unreliable here), Attribute Wrangle (VEX), Blast, Group Expand, Fuse (second input as target geometry), Boolean, Connectivity, Extract Centroid (normal transfer, class ordering), Peak (naive version, causes distortion at scale), Assemble + Pick (non-VEX fallback for the same peak problem). VEX functions: `neighbourcount()` (grouping low-connectivity points), array-based per-piece point iteration reading `normal` and `@ptnum`/piece point-number arrays, and the simpler per-point `v@P += v@N * multiplier` style approach reading normals from the second input.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced — the direct-modeling tips are beginner-friendly, but the VEX cleanup snippets (neighbour count grouping, centroid-ordered per-piece normal offsetting) assume comfort with attribute wrangles and array iteration.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era hard-surface modeling context).
 
 ### Tags
-[PENDING EXTRACTION]
+#modeling #vex #procedural #hard-surface #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with any other cgside hard-surface-modeling or VEX-tips tutorials (e.g. daily-dose-of-houdini-tips series) once extracted from this batch — shares the "small VEX snippet fixes a SOP limitation" pattern.
