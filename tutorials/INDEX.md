@@ -2944,9 +2944,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=2f_40GhnBXI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5
+- **Tags:** #solaris #lops #usd #scattering #instancing #vex #materials #shaders #arnold #procedural #environment #advanced
+- **Summary:** Part 2 of a terrain series: shades the terrain in Solaris with Arnold/Triplanar, then builds a reusable Component Geometry + Point Instancer pipeline with VEX-driven random rotation/scale, USD geo-variant switching for grass/tree/bush variety, and per-part multi-material assignment.
 - **File:** tutorials/environment-creation-with-solaris-in-houdini.md
 
 

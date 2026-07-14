@@ -165,4 +165,4 @@ Not explicitly stated; UI style is consistent with Houdini 19.5-era heightfield/
 ---
 
 ## Related Tutorials
-First part of a multi-part series — author mentions a planned Part 2 covering Solaris shading/lighting/rendering of this same terrain; cross-link once ingested. Also cross-link with other cgside environment/scattering tutorials once extracted from this batch.
+Followed directly by environment-creation-with-solaris-in-houdini.md (same author, same terrain/fields project — Part 2 covers Solaris shading, lighting, and instanced scattering). Also cross-link with other cgside environment/scattering tutorials once extracted from this batch.

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=2f_40GhnBXI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5"
+tags: [solaris, lops, usd, scattering, instancing, vex, materials, shaders, arnold, procedural, environment, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/environment-creation-with-solaris-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Environment creation with Solaris in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py environment-creation-with-solaris-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Initial setup, dome light in Solaris [0:00]
@@ -725,30 +721,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/environment-creation-with-solaris-in-houdini/frame_000.jpg
+- [4:00] tutorials/frames/environment-creation-with-solaris-in-houdini/frame_001.jpg
+- [15:00] tutorials/frames/environment-creation-with-solaris-in-houdini/frame_002.jpg
+- [20:30] tutorials/frames/environment-creation-with-solaris-in-houdini/frame_003.jpg
+- [32:00] tutorials/frames/environment-creation-with-solaris-in-houdini/frame_004.jpg
+- [40:00] tutorials/frames/environment-creation-with-solaris-in-houdini/frame_005.jpg
+- [58:30] tutorials/frames/environment-creation-with-solaris-in-houdini/frame_006.jpg
+- [65:00] tutorials/frames/environment-creation-with-solaris-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Part 2 of a terrain series: bringing the SOP-built terrain/fields into **Solaris (LOPs)** to shade it with Arnold, then building a reusable **Component Geometry + Instancer** pipeline for multi-variant trees, grass, and bushes with VEX-driven random rotation/scale, USD `geo variant` switching, and per-part multi-material assignment.
 
 ### Summary
-[PENDING EXTRACTION]
+The terrain (a Null "outrain" wired to the SOP terrain output) is imported into an empty Solaris stage, lit with a Dome light (fixed light-format bug, Arnold camera samples set low for iteration), and shaded via an **Arnold Material Builder**: a Standard Surface driven by a State Vector (shading normal → Y component) feeding a Ramp for a height-based color mask, blended against Triplanar-projected grass/rock albedo/roughness textures (tuned via Triplanar's repetition and blend-softness controls), plus a displacement map — which required working around a bug where displacement wouldn't appear until switching from a plain material-library assignment to an explicit **Assign Material** LOP with the primitive path set directly to the geometry name. Trees/grass/bushes are each built the same way: a **Component Geometry** network references source geo via Object Merge, builds a lightweight proxy (Match Size + Box, "scale to fit") for viewport/bounds use, and for multi-variant assets (3 grass variants, tree/bush styles) a **Component Geometry Variants** node switches between subnetwork variants using the built-in `@geo_variant_index` USD variable (offset +1 since assets are numbered from 1 but the index starts at 0) — critically requiring **Explore Variants** set to load "children" (not "parent") for the variant switch to actually take effect downstream. Instancing uses a **Point Instancer**: source terrain points come from a **Scatter** LOP (density masked by the saved road/side/field masks from Part 1, selecting specific field `name`/group values), with an **Instancer** (Attribute Wrangle) VEX network adding fully exposed, user-facing controls — random rotation (per-axis min/max ranges, converted to radians, built into a Matrix3 → Quaternion via `orient()`), an optional "surface orient" toggle (switch between world-up rotation vs. aligning to the point's surface normal), and random uniform scale (min/max range affecting `pscale`) — all wired into an on-stage **Edit Parameter Interface** so the controls are exposed cleanly without digging into the network. Multiple instancers are layered/merged for different asset groups (trees on group 0, grass across the fields, bushes along field edges/outlines) each with their own scatter density mask, point count, and seed; per-part **multi-material assignment** on a single instanced mesh (e.g. a bush with separate leaf/stem-1/stem-2 parts) is done by targeting each named USD sub-primitive individually in the Material Assign / Instancer's per-primitive material bindings. The grass shader (Standard Surface: albedo, roughness, normal/bump, and translucency/subsurface-color textures with color correction, plus a per-instance **Color Jitter** varying hue/saturation/gain per instance for natural variation) is built the same way as the terrain shader. The video ends with a full scene combining terrain, randomized trees/grass/bushes across masked field regions, all Arnold-rendered.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Bring terrain into Solaris:** Null the SOP terrain output, switch the Scene view to Stage, reference the terrain in; add a **Dome Light**, fix its light-format setting, lower Arnold camera samples for fast iteration, and rotate the light for more dramatic lighting.
+2. **Terrain shader:** Arnold Material Builder → Standard Surface; drive base color from a **State Vector** (shading normal) → extract Y → Ramp for a height-based gradient mask; layer grass/rock albedo textures via **Triplanar** (tune repetition/relative-reference scale and blend softness to fix visible tiling seams), plus a roughness texture (set to Raw utility colorspace) and a displacement texture.
+3. **Fix displacement not appearing:** switch from a plain out-of-network material-library assignment to an explicit **Assign Material** LOP with the primitive path pointed directly at the geometry's name, and enable **Render Geometry Settings** (subdivision off, displacement on, padding ~3, zero-value ~0.5) on the target primitive.
+4. **Texture rotation fix:** copy the Triplanar's "relative reference"/rotation parameters and paste them onto every texture node in the network so all textures rotate together and stop showing seams.
+5. **Component Geometry for a tree:** Object Merge the source asset, build a proxy via **Match Size + Box** (uniform "scale to fit"), wrap in a Component Geometry network; connect to a **Point Instancer**'s first input, with terrain points scattered via **Scatter** (density from a saved mask, e.g. road-side mask) as the second input.
+6. **Fix scatter showing no points:** Solaris/USD point-based scatter requires unpacking the USD geometry and correctly importing the terrain primitive (set to the geometry's actual name, e.g. "height") before Scatter will produce visible points.
+7. **Randomize rotation/scale (Instancer VEX):** on the Instancer's attribute wrangle, build a random vector via `random()` seeded per point with a user-exposed seed; create min/max rotation range controls (`chf`/`fit` range mapping), build a **Matrix3** from the randomized per-axis rotation values (converted to radians) and derive a quaternion via `orient()`/`quaternion()` for the instance transform; add a toggle (`chi` integer switch) to optionally align instances to the surface **normal** instead of a fixed up-vector; add min/max scale range controls affecting `pscale` via another `random()` call.
+8. **Expose controls on the stage:** use **Edit Parameter Interface** to drag the wrangle's rotation min/max/seed and scale min/max/seed parameters up to the LOP node itself (organized into folders), plus expose the Scatter's number-of-points and global-seed parameters — so all tuning happens without diving into subnetworks.
+9. **Multi-variant assets via USD variants:** for grass (3 variants) or bush styles, build each variant as its own Component Geometry subnetwork (renamed var1/var2/var3), combine with a **Component Geometry Variants** LOP (set to "number" of variants = 3), and reference the correct one per point using the built-in `@geo_variant_index` primvar (offset +1 for 1-indexed asset numbering) inside a string expression built with backticks.
+10. **Critical variant-loading fix:** **Explore Variants** must be set to load the "children" of the variant set (not the parent prim) for the per-point variant index to actually resolve to different geometry — loading the parent always shows the same (first) variant regardless of index.
+11. **Layered multi-group scattering:** merge multiple Scatter+Instancer chains together for different asset categories (trees scattered on one field group, grass scattered broadly across all fields with per-group `name`/group masking reused from Part 1, bushes scattered along field-outline curves) — each pass reusing the Unpack + Combine (mask) + Invert Mask node chain copied from the terrain scatter setup, with its own point count and material assignment.
+12. **Per-part multi-material assignment:** for compound assets with multiple named sub-parts (e.g. a bush's `leaf`, `stem_triangle1`, `stem_triangle2` prims), assign separate materials to each named part individually via the Instancer/Material Assign's per-primitive path targeting, rather than one material for the whole asset.
+13. **Grass/foliage shading:** build a Standard Surface with albedo, roughness (Raw utility colorspace), normal/bump (Bump 2D → Vector Normal), and translucency (fed into Subsurface Color with subsurface weight ~0.4) textures; add a **Color Jitter** node (hue/saturation/gain variation, "per object"/per-instance) driven off the albedo for natural per-blade color variation across thousands of instances.
+14. **Final render tuning:** raise Arnold camera samples for a real preview, adjust instance counts (thousands to tens of thousands), tweak per-material color-correct/jitter ranges, and randomize scatter seeds until the composition reads well.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+LOPs: Reference, Dome Light, Arnold Material Builder, Standard Surface, State Vector (shading normal), Ramp, Triplaner (Triplanar — repetition/relative-reference, blend), Color Correct, Assign Material, Render Geometry Settings (subdivision/displacement/padding/zero-value), Material Library, Component Geometry, Component Geometry Variants (`@geo_variant_index` primvar), Explore Variants (children vs. parent loading mode), Scatter (density masking, group/name selection, number of points, global seed), Point Instancer, Attribute Wrangle on Instancer (VEX: `random()`, Matrix3, `orient()`/quaternion construction, `chf`/`chi` exposed parameters, `fit()` range remap), Edit Parameter Interface, Object Merge, Match Size, Merge, Color Jitter, Render Settings (Arnold camera samples, manual mode). SOPs referenced from Part 1: terrain heightfield, field/road/side masks, `name`/group attributes.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — long, dense Solaris/USD production workflow requiring familiarity with LOPs concepts (component geometry, variants, primvars), Arnold shading networks, and VEX-driven instance randomization.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5 (references Solaris/LOPs and Component Geometry Variants workflow consistent with Houdini 19.5-era USD tooling; uses Arnold, not Karma).
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #lops #usd #scattering #instancing #vex #materials #shaders #arnold #procedural #environment #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Direct continuation of environment-creation-with-houdini---part-1.md (same terrain/fields project, same author) — cross-link explicitly. Also cross-link with any other cgside Solaris/LOPs or scattering/instancing tutorials once extracted from this batch.
