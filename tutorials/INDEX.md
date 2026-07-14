@@ -2544,9 +2544,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=WwwTwtlKm0A
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #solaris #lops #vdb #cops #vellum #vex #compositing #karma #procedural #tips #intermediate
+- **Summary:** Five tips: real Karma-rendered Component Builder thumbnails, preserving a point attribute through a VDB From Polygons/Attribute From Volume round-trip, a subdivide-before-transfer fix for QuadRemesher attribute loss, a quick COPs concentric-ramp vignette, and mixing pre/post-Vellum positions via a mask to selectively flatten wrinkles.
 - **File:** tutorials/houdini-tips-solaris-vdbs-cops-and-more.md
 
 
