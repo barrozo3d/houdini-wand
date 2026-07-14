@@ -300,4 +300,4 @@ Advanced/Expert — combines a non-obvious per-piece Extract Transform workaroun
 ---
 
 ## Related Tutorials
-No other indexed cgside tutorial currently covers Unreal/Houdini-Engine pipeline export — cross-link with any future Unreal-interop or Houdini Engine tutorials once extracted from this batch.
+Companion to houdini-to-unreal-hda-setup-and-workflow.md (same author, same Unreal pipeline domain — that video covers the live Houdini Engine HDA approach as an alternative/complement to this FBX-export approach, and explicitly references this video's FBX Z-up/unit-conversion settings).

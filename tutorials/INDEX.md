@@ -2524,9 +2524,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fgUIMtGLIrI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #vex #python #pipeline #unreal #houdini-engine #instancing #materials #procedural #advanced
+- **Summary:** Builds a live Houdini Engine HDA for Unreal, exposing noise/seed parameters plus Unreal_instance point-cloud outputs for static-mesh and Blueprint-light instancing, using unreal_ref/unreal_ref_class parameter tags so Unreal's asset picker filters correctly per slot type.
 - **File:** tutorials/houdini-to-unreal-hda-setup-and-workflow.md
 
 

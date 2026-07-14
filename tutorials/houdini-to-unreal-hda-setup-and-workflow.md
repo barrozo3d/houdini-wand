@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=fgUIMtGLIrI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [vex, python, pipeline, unreal, houdini-engine, instancing, materials, procedural, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-to-unreal-hda-setup-and-workflow/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini to Unreal: HDA Setup and Workflow
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-to-unreal-hda-setup-and-workflow <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -247,30 +243,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:55] tutorials/frames/houdini-to-unreal-hda-setup-and-workflow/frame_000.jpg
+- [4:30] tutorials/frames/houdini-to-unreal-hda-setup-and-workflow/frame_001.jpg
+- [6:40] tutorials/frames/houdini-to-unreal-hda-setup-and-workflow/frame_002.jpg
+- [10:05] tutorials/frames/houdini-to-unreal-hda-setup-and-workflow/frame_003.jpg
+- [15:30] tutorials/frames/houdini-to-unreal-hda-setup-and-workflow/frame_004.jpg
+- [16:40] tutorials/frames/houdini-to-unreal-hda-setup-and-workflow/frame_005.jpg
+- [18:50] tutorials/frames/houdini-to-unreal-hda-setup-and-workflow/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a **Houdini Digital Asset (HDA)** that runs live inside Unreal via the **Houdini Engine** plugin — no baking to FBX required — exposing noise/seed parameters for live procedural regeneration, using the `Unreal_instance` string attribute + point-cloud outputs to instance both **static meshes** and **Blueprint actors** (e.g. lights) directly from Houdini points, and tagging exposed asset-reference parameters with `unreal_ref`/`unreal_ref_class` so Unreal's picker UI only shows the correct asset type (Static Mesh, Material Instance, or Blueprint) per slot.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from an existing procedural lamp/branch generator (a two-seed noise-driven shape generator with imperfect but usable results), the whole network is wrapped in a **Subnet** and converted into an HDA via **Edit Parameter Interface**: relevant internal parameters (global seed, secondary seed, Mountain noise amplitude/element size/offset) are dragged out into user-facing folders (organized as "Simple" type folders, e.g. a "Global" folder for seeds) so they can be tweaked live from Unreal without reopening Houdini. Since the scene has repetitive geometry (e.g. lamp shade/bulb pieces), rather than exporting full duplicated geometry the network switches from **Copy to Points** to outputting just the **points**, with a wrangle setting a string `Unreal_instance` attribute (`s@Unreal_instance = chs("path_to_lamp")`) — if the referenced Unreal asset is already imported, its content-browser reference path is pasted directly into this exposed string parameter; otherwise it's left blank and filled in later once the asset exists in Unreal. That `path_to_lamp` string parameter itself is exposed via the parameter interface (organized under a new "Unreal" folder) and tagged, under the parameter's **Tags** section, with `unreal_ref = 1` and `unreal_ref_class = StaticMesh` — this makes Unreal's asset picker for that parameter show *only* Static Mesh assets rather than every asset type. A second point set is built the same way for **light fixtures**: merged in, peaked slightly along the normal (to move the light instance origin a bit outward, preserving normals), given its own exposed `path_to_light` string parameter tagged `unreal_ref = 1` / `unreal_ref_class = Blueprint` this time (since the light is a **Blueprint actor**, not a static mesh) — letting Unreal's picker for that slot show only Blueprints. The two point sets (geometry-instance points and light-instance points) are routed to **separate Output nodes** (Output 0 for the light-fixture points, a later Output for the main structure geometry) so Houdini Engine creates distinct instancers per output in Unreal. For materials: an **Attribute Create** sets a `primitive class`-style string (renamed to something like `main_structure_mat`) which is then exposed the same way as the mesh/light paths — a string parameter tagged `unreal_ref = 1` / `unreal_ref_class = MaterialInstance` (using Material *Instances*, not master materials, since instances are the swappable/parameterized asset type in Unreal) — plus the geometry already carries vertex color (from a "material color" attribute reading normals/position) that Unreal reads directly as vertex colors for masking in the shader. Before building the actual HDA, a note: the *procedural generator subnet itself* must be removed from inside the HDA before building it as a distributable asset, or the build will error (the generator's job is done — you don't want that costly regeneration logic baked into every runtime cook of a shipped asset). For any actual static mesh that will be exported and used as an `Unreal_instance` reference target, a `Shop_Material_Path` primitive attribute (default-named) must be set (via a String parameter node or similar) referencing the intended Unreal material path before FBX export (Z-up axis conversion + unit conversion enabled, as covered in a prior video) — this is what lets Unreal auto-assign the correct per-primitive material slot on import. Finally, **File → Digital Asset → New Asset** converts the subnet into a proper `.hda` file (embedded in the current Houdini project, no type-category prefix needed); all further parameter/tag edits to an already-built HDA must go through **Type Properties**, not Edit Parameter Interface directly on the instance. In Unreal, the HDA is imported via the Houdini Engine plugin (File → HDA Import), dragged into the level (it cooks/builds live), and the exposed parameters now show as an Unreal-native details panel: the static-mesh slot only accepts Static Meshes, the light slot only accepts Blueprints (a pre-built "petal light" Blueprint is assigned), and the material slot only accepts Material Instances — with the noise seed/amplitude/element-size parameters fully live-tweakable inside Unreal, regenerating the procedural shape in real time via Houdini Engine's cook.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Wrap the generator in a Subnet:** select the whole procedural lamp-generator network, convert to a **Subnet**, name it descriptively (e.g. `light_generator_demo`).
+2. **Expose core control parameters:** via **Edit Parameter Interface**, drag out the global seed, secondary seed, and Mountain noise's amplitude/element-size/offset parameters into new user-facing "Simple" folders (e.g. a "Global" folder) so they're tweakable without opening the subnet.
+3. **Switch repetitive geometry to points-only output:** instead of a **Copy to Points** node baking full duplicated geometry, output just the underlying **points** so Unreal can instance a single referenced mesh per point instead of embedding many copies.
+4. **Set the Unreal_instance attribute:** in a wrangle, `s@Unreal_instance = chs("path_to_lamp")` (or similar) reads a to-be-exposed string channel — paste the target Unreal asset's content-browser reference/relative path here once it exists, or leave blank if not yet imported.
+5. **Expose and tag the mesh-reference parameter:** expose `path_to_lamp` as a string parameter (organized under a new "Unreal" folder); in the parameter's **Tags** section add `unreal_ref = 1` and `unreal_ref_class = StaticMesh` so Unreal's asset picker for this slot only lists Static Mesh assets.
+6. **Build a second point set for lights:** merge in another set of points representing light-fixture locations; **Peak** slightly along the normal (preserving normals) to offset the light instance origin a bit outward from the surface.
+7. **Expose and tag the light-reference parameter:** give this point set its own exposed `path_to_light` string parameter tagged `unreal_ref = 1` / `unreal_ref_class = Blueprint` (since a light in this workflow is instanced as a **Blueprint actor**, not a static mesh) — Unreal's picker for this slot then only shows Blueprints.
+8. **Split outputs per instance type:** route the light-fixture points and the main-structure geometry to **separate Output nodes** (e.g. Output 0 for lights, a later output for structure) so Houdini Engine creates distinct per-type instancers in Unreal.
+9. **Material parameter exposure:** use **Attribute Create** to set a primitive string attribute (renamed to something like `main_structure_mat`), expose it as a string parameter the same way, tag `unreal_ref = 1` / `unreal_ref_class = MaterialInstance` (Material Instances, not master Materials, since instances are the swappable asset type) — geometry additionally carries vertex-color data (from a normals/position-based "material color" attribute) for Unreal to read as a native shader mask.
+10. **Remove the generator subnet before building:** critically, delete/remove the original procedural-generator subnetwork from inside the HDA before building it — leaving it in causes build errors and bakes unnecessary regeneration cost into the shipped asset.
+11. **Prep any exported static mesh for material auto-assignment:** for meshes that will be FBX-exported and referenced as `Unreal_instance` targets, set a `Shop_Material_Path` primitive attribute (default name) pointing at the intended Unreal material path before export; export via FBX with **Z-up axis conversion + unit conversion** enabled (covered in a prior video).
+12. **Create the Digital Asset:** **File → Digital Asset → New Asset**, name it (e.g. `lamp_gen_demo`), leave version/type-category defaults, save embedded in the current project — converts the subnet into a distributable `.hda` file.
+13. **Post-build parameter edits go through Type Properties:** once an HDA is built, further parameter/tag changes must be made via **Type Properties** on the node type, not Edit Parameter Interface directly on an instance.
+14. **Import and test in Unreal:** in Unreal, use the Houdini Engine plugin's **HDA Import**, locate the `.hda` file, drag it into the level (requires an active Houdini Engine session) — it cooks/builds live; assign the static mesh, Blueprint light, and material instance in the now Unreal-native, type-filtered details panel, then live-tweak the exposed seed/noise parameters to regenerate the procedural shape directly inside Unreal.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Subnet, Edit Parameter Interface (Simple folder type, per-parameter Tags: `unreal_ref`, `unreal_ref_class` with values `StaticMesh`/`Blueprint`/`MaterialInstance`), Attribute Wrangle (VEX: `s@Unreal_instance = chs(...)` string-channel assignment), Peak (normal-preserving offset), Merge, Output (multiple, split by instance type — lights vs. structure), Attribute Create (material-path string attribute), material-color attribute setup (normals/position-derived vertex color), Shop_Material_Path primitive attribute (for FBX-exported static meshes), ROP FBX (Z-up axis conversion, unit conversion), Digital Asset / New Asset (HDA creation, embedded in project), Type Properties (post-build parameter/tag editing). Unreal + Houdini Engine plugin: HDA Import, live cook/build on drag-in, type-filtered asset-picker details panel (Static Mesh / Blueprint / Material Instance per tagged parameter), Blueprint actor instancing (e.g. a pre-built "petal light" Blueprint).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — combines HDA parameter-interface authoring, Houdini Engine's Unreal-specific attribute/tag conventions (`Unreal_instance`, `unreal_ref`/`unreal_ref_class`), and FBX/material-path export prep; assumes familiarity with both Houdini HDA workflows and Unreal's Houdini Engine plugin.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (UI matches Houdini 20.5-era HDA/Houdini Engine toolset; references a prior video covering the FBX Z-up/unit-conversion export step in more detail).
 
 ### Tags
-[PENDING EXTRACTION]
+#vex #python #pipeline #unreal #houdini-engine #instancing #materials #procedural #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Direct companion to export-a-full-scene-from-houdini-to-unreal.md (same author, same Houdini-to-Unreal pipeline domain, explicitly references "the other Unreal video" for the FBX export settings) — cross-link explicitly.
