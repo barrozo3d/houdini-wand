@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=kdpeMWXIGrY
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [karma, materials, shaders, mtlx, procedural, texturing, tips, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/materialx-and-karma-procedural-networks/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # MaterialX and Karma | procedural networks
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py materialx-and-karma-procedural-networks <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -111,30 +107,51 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:45] tutorials/frames/materialx-and-karma-procedural-networks/frame_000.jpg
+- [1:50] tutorials/frames/materialx-and-karma-procedural-networks/frame_001.jpg
+- [3:00] tutorials/frames/materialx-and-karma-procedural-networks/frame_002.jpg
+- [4:00] tutorials/frames/materialx-and-karma-procedural-networks/frame_003.jpg
+- [5:50] tutorials/frames/materialx-and-karma-procedural-networks/frame_004.jpg
+- [7:20] tutorials/frames/materialx-and-karma-procedural-networks/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Four practical MaterialX/Karma shading-network tips, demonstrated on a procedurally-modeled pill blister pack: **solo-viewing any node** via a keyboard shortcut (X) for an instant flat-emission debug preview, correctly **re-centering repeated/tiled textures and patterns** with an Add node (since Multiply alone repeats from a corner, not the center), a **modulo + multiply tiling trick** for procedural shapes like MaterialX Line that don't expose a native repeat parameter, and **layering multiple normal/bump maps additively** via MaterialX Max before feeding a single combined result into the shader's normal input.
 
 ### Summary
-[PENDING EXTRACTION]
+**Debugging via solo/emission preview:** selecting any node in a MaterialX network and pressing **X** switches the viewport to a flat emission-shader preview of just that node's output — instant visual debugging without wiring a temporary output or switching contexts; pressing X again returns to the full shader. **Re-centering tiled textures:** a `MtlX Image` fed through **Texture Coordinates → Multiply** (e.g. 5x5 for a square texture) repeats the pattern, but the repeat is anchored to a corner, leaving the visible tile off-center; wiring an **Add** node after the multiply (offsetting just the X component by 0.5, or scaled/2 for arbitrary tile counts) shifts the repeat so it's centered in view instead. The blister pack's normal-map wrinkle intensity is also varied per-region using a geometry attribute Fit-ranged (raising the low value) and multiplied against the normal map's scale, so some parts read more wrinkled than others. **Procedural pattern construction (grid + line):** a simple diagonal grid pattern comes from a `MtlX Grid` rotated 45° via **Rotate 2D** (or Place 2D), with one channel extracted and inverted via a **Mix** node (foreground=0, background=1, rather than a dedicated Invert node, for no particular reason other than preference). A more complex pattern uses **MtlX Line** (a rounded-line primitive) sized/placed manually — but Line has no built-in repeat control, and naively feeding it through Multiply (e.g. 16x30) makes the pattern disappear entirely because Line only exists within a bounded coordinate range; the fix is the same **modulo + multiply** combo used for tiling any bounded procedural shape: multiply the coordinate space by the repeat count, then take the result **modulo 1** (via a Model/Modulo node) to fold it back into Line's valid 0-1 range, repeating the shape N times; an Add node offsetting by `scale/2` re-centers the tiling (rather than a "random" corner-anchored position) — the repeat count is simply the Multiply node's scale value (e.g. 60 for more repetitions, fewer for less). A second Line pattern oriented along the X axis uses the same modulo/multiply/add combo, but additionally needs a **Place 2D** node (pivot set to center, slight Y-axis scale) to avoid the pattern reading all the way to the shape's edges, which wasn't wanted. **Layering normal/bump maps:** two separate bump-driving patterns (the earlier line-based diamond/pill patterns) are combined via **MtlX Max** in additive mode, fed into the **height** input of a `MtlX Bump` node whose output connects to the shader's normal input; a second bump map (or a `MtlX Normal Map` node, for image-based normals) can be chained by connecting its output into the **normal input of the first/"master" bump node** rather than directly into the shader — stacking multiple bump/normal sources into one combined result. Author credits learning these tiling/offset tricks from watching Unreal Engine material tutorials, where similar Add/Subtract/Modulo-based UV manipulation is common practice.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Solo/debug a node:** select any MaterialX node and press **X** to preview it as a flat emission shader in the viewport; press X again to return to the full shading result — use this to debug noise/pattern nodes in isolation.
+2. **Basic texture tiling:** feed Texture Coordinates through a **Multiply** node (e.g. 5x5) to repeat a square texture; note the repeat anchors from a corner, leaving the visible portion off-center.
+3. **Re-center via Add:** wire an **Add** node after the Multiply, offsetting the X (and/or Y) component by 0.5 (or `scale/2` generally) to shift the repeated pattern so it's centered in the visible frame.
+4. **Attribute-driven normal intensity variation:** Fit-range a geometry attribute (raising its low value) and multiply it against the normal map's scale input so different regions of the surface show more or less bump/wrinkle intensity.
+5. **Rotated grid pattern:** build a `MtlX Grid`, rotate it 45° via **Rotate 2D** (or a Place 2D node), extract one channel, and invert it via a **Mix** node (foreground=0, background=1) as an ad-hoc alternative to a dedicated Invert node.
+6. **Diagnose Line's lack of native repeat:** `MtlX Line` (a rounded-line shape primitive) has no built-in tiling parameter; naively multiplying its input coordinates (e.g. 16x30) to force repetition makes the shape disappear entirely, since Line only renders within its bounded coordinate space.
+7. **Modulo + multiply tiling fix:** multiply the coordinate input by the desired repeat count, then apply **Modulo 1** (via a Model/Modulo node) to fold the scaled coordinates back into Line's valid range — successfully repeating the shape N times (repeat count = the Multiply node's scale value, e.g. 60 for more repeats).
+8. **Center the tiled Line pattern:** add an **Add** node offsetting by `scale/2` so the tiling reads from the center rather than an arbitrary corner-anchored position.
+9. **Avoid edge-clipping on a second Line pattern:** for a variant oriented along the X axis, insert a **Place 2D** node (pivot set to center, slight Y-axis scale) before the modulo/multiply/add chain to prevent the pattern from reading all the way out to the surface's edges.
+10. **Combine multiple bump/pattern layers:** feed two separate line/pattern-driven height sources into a **MtlX Max** node in additive mode, then connect that combined result into a `MtlX Bump` node's **height** input.
+11. **Chain multiple bump/normal sources:** connect the bump node's output to the shader's normal input as the "master" bump; to layer in a second bump map or an image-based `MtlX Normal Map`, connect its output into the **normal input of the master bump node** (not directly into the shader) so both sources combine into one final normal result.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+MaterialX/Karma nodes: MtlX Image, Texture Coordinates, Multiply, Add (center-offset re-tiling), Rotate 2D / Place 2D (pivot + scale controls), Mix (foreground/background invert trick), MtlX Grid, MtlX Line (bounded coordinate space, no native repeat), Model/Modulo (fold-into-range tiling), MtlX Max (additive height/pattern combination), MtlX Bump (height input, chained normal input for stacking), MtlX Normal Map (image-based normal alternative), Fit Range (attribute-driven scale variation), Solo/emission-preview shortcut (X key).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — each tip is a compact, reusable shading-network trick; assumes basic MaterialX/Karma node familiarity but no VEX.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (Karma/MaterialX workflow consistent with Houdini 20.5-era tools).
 
 ### Tags
-[PENDING EXTRACTION]
+#karma #materials #shaders #mtlx #procedural #texturing #tips #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with houdini-and-karma-tips-and-tricks.md (same author, overlapping MaterialX Round Edge/Mix vocabulary) and layered-textures-in-karma.md (shares the multi-layer texture-blending philosophy) once indexed together.

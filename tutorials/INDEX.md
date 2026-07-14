@@ -2424,9 +2424,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=kdpeMWXIGrY
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #karma #materials #shaders #mtlx #procedural #texturing #tips #intermediate
+- **Summary:** Four MaterialX/Karma tips on a pill blister pack: the X-key solo/emission debug preview, Add-node re-centering for tiled textures, a modulo+multiply trick for tiling bounded shapes like MtlX Line, and layering multiple bump/normal maps additively via MtlX Max before a shared Bump node.
 - **File:** tutorials/materialx-and-karma-procedural-networks.md
 
 
