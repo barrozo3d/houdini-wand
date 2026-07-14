@@ -1904,9 +1904,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=h6MN80ka4Vg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** #solaris #lops #usd #karma #materials #shaders #triplanar #lighting #fog #scattering #instancing #environment #advanced
+- **Summary:** Final part of the environment series: imports all named SOP parts into Solaris, lights with Karma Physical Sky plus a fake cloud-gobo shadow caster, shades everything with script-driven Triplanar Megascans materials and a light-linked water shader, scatters grass in LOPs, and renders the final 4K Karma XPU shot.
 - **File:** tutorials/environments-in-houdini-part-5---solaris-and-rendering-with-karma.md
 
 

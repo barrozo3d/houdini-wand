@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=h6MN80ka4Vg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [solaris, lops, usd, karma, materials, shaders, triplanar, lighting, fog, scattering, instancing, environment, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/environments-in-houdini-part-5---solaris-and-rendering-with-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Environments in Houdini | Part 5 - Solaris and rendering with Karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py environments-in-houdini-part-5---solaris-and-rendering-with-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -1015,30 +1011,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/environments-in-houdini-part-5---solaris-and-rendering-with-karma/frame_000.jpg
+- [10:00] tutorials/frames/environments-in-houdini-part-5---solaris-and-rendering-with-karma/frame_001.jpg
+- [15:20] tutorials/frames/environments-in-houdini-part-5---solaris-and-rendering-with-karma/frame_002.jpg
+- [24:00] tutorials/frames/environments-in-houdini-part-5---solaris-and-rendering-with-karma/frame_003.jpg
+- [34:00] tutorials/frames/environments-in-houdini-part-5---solaris-and-rendering-with-karma/frame_004.jpg
+- [41:00] tutorials/frames/environments-in-houdini-part-5---solaris-and-rendering-with-karma/frame_005.jpg
+- [56:00] tutorials/frames/environments-in-houdini-part-5---solaris-and-rendering-with-karma/frame_006.jpg
+- [74:00] tutorials/frames/environments-in-houdini-part-5---solaris-and-rendering-with-karma/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Final part of the environment series: bringing every SOP-built piece (terrain, bridge, vines, tree, rocks) into **Solaris** with per-part `name` attributes, lighting with **Karma Physical Sky**, building a fake "cloud gobo" shadow-caster, shading everything with **Triplanar Megascans materials** (via a reusable linking script) plus custom water/vine/leaf shaders, and finishing with a light-linked water reflection fix and grass scattering directly in LOPs.
 
 ### Summary
-[PENDING EXTRACTION]
+Before importing to Solaris, every SOP output gets an explicit `name` attribute (terrain, water, bridge arch, bridge stones, vines, leaves, terrain-back) so LOPs can address each part individually, plus a **grass mask** primvar (built from `N.y` fit-ranged and bind-exported) and a UV-based water mask — all cached via **File Cache** for a stable base. In Solaris, a Sub Import brings this in (packed primitives treated as Point Instancer for the leaf instances), a camera is added, and lighting starts from **Karma Physical Sky** (exposure ~2.5, sun altitude ~27°/azimuth ~70°, angular size ~5 for softer shadows, turbidity raised for a flatter sky, blur reduced to hide sky-dome seams). A hand-built **fog volume** (from Part 4) is loaded via Object Merge, assigned a **Karma Cloud material** (density tuned, bounds padded on X/Y since the default bound clipped the bridge/fog edges) with a Switch for quick on/off during iteration. Trees and rocks are instanced the same Component-Geometry-Variants + Point-Instancer pattern established in Part 3/4 (Object Merge → Bound proxy → Component Geometry Variants → Explore Variants → Point Instancer, reusing the SOP-side scatter/normal/randomization wrangles copy-pasted into the LOP network) — with a debugging note that "which Object Merge target is actually named what" is an easy source of silent instancer failures. A **cloud-gobo** trick creates fake interactive dappled shadows without a real cloud sim: a big Grid (~25x25) is Subdivided, driven by **Attribute Noise** (element size ~0.9, tuned offset/output-range for defined cloud-shaped blobs) then Blasted to keep only points above a mask threshold, transformed above and slightly behind the scene, and set to **Render Visibility: Primary only** (so it casts shadows via the physical sky but never appears directly in camera) — an **Opacity/Cutout material** (opacity ~0.9) softens the shadow darkness so it reads as atmospheric dappling rather than hard blob shadows. Terrain shading uses a **Karma Triplanar** node driven by a **custom node-linking script** (previously shared on the channel) that auto-wires a Megascans texture set's albedo/roughness/normal/displacement into matching Triplanar-parameter-linked nodes; grass and rock albedo are blended via a **primvar-read Geometry Property Value** node reading the earlier-exported `mask_grass` attribute, with separate Color Correct nodes per texture and a **remapped/masked displacement** (0.5-centered Mega scans height map, inverted-grass-mask-multiplied so grass areas don't get rock displacement). The small river/pond gets a lightweight water shader: a COPs-built 3D noise displacement texture converted to a normal map (via **Normal Map**/vector-to-normal), fed at low bump-amount (~0.1-0.3) into a low-reflectance, high-transmission water Standard-Surface-style shader — critically requiring a **dedicated Rectangle Light + Light Linker** restricted to only affect the water, since a naturally-placed key light would otherwise wash out/flatten the whole environment; without any nearby light the water loses almost all its reflection once trees are enabled and shadow it. Bridge stones reuse the Triplanar Megascans workflow (roughness+normal, no displacement) with **per-piece color variation** driven by the previously-saved `class` integer attribute (via Geometry Property Value → Random Float, separately randomizing shader gain and hue/U for a naturally varied stone-color look) plus Color Correct/saturation tuning. Rocks and vines/leaves get their own straightforward Triplanar/Atlas-texture Karma material builders (leaves and vine bark using subsurface/translucency inputs at ~0.4 weight with the involute flag for single-sided geometry, bark/rock at higher gain/exposure). Grass is scattered directly in Solaris (not SOPs) by duplicating the tree-instancing pattern: Object Merge terrain, combine the grass mask with an inverted river mask (so grass doesn't grow on water), Scatter (density-driven, ~80,000 points) with noise-based `pscale` and a per-point `seed` attribute (for later per-instance shader hue variation via a Random Float bound to the grass material's U-factor input) feeding 20 Megascans grass variants through the same Component-Geometry-Variants/`@geo_variant_index` pattern from Part 3. A late-discovered bug — a leftover **default preview material** silently overriding all instance material bindings — is found and disabled, unblocking material display on the leaf instances. The video ends with a full 4K Karma XPU render (denoised via image-output-filter NBD1) combining terrain, bridge, water, vines, tree, rocks, grass, fog, and cloud-gobo shadows.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Name every part before Solaris:** add explicit `name` attributes in SOPs to terrain (`terrain`), water/river (`water`), bridge arch (`bridge_arch`), bridge wall stones (`bridge_stones`), vines (`vines`), leaves (`leaves`/`lips`), and the background terrain plane (`terrain_back`) — this drives all later per-part material assignment and Solaris primitive-path targeting.
+2. **Grass/river masks:** build a `mask_grass` primvar from `N.y` (Vector to Float → Fit Range, source-mean raised ~0.89) exported via a Bind Export; separately build a river/water UV-based mask (inverted UVs, offset, scaled ~0.4) named for the water shader.
+3. **Cache and import:** **File Cache** the finished SOP scene (non-time-dependent, single frame) for stability; in Solaris, **Sub Import** the cache with packed primitives treated as **Point Instancer** (needed for the leaf instances to display), add a Camera.
+4. **Sky/sun lighting:** **Karma Physical Sky** with exposure ~2.5, sun altitude ~27°, azimuth ~70°, angular size ~5 (softer shadow edges), turbidity increased for a flatter sky look, and reduced sky blur to hide a visible dome-transition seam.
+5. **Fog volume + material:** Object Merge the Part-4 custom fog VDB, build a **Karma Cloud material** (density tuned, later increased to ~2 for a more atmospheric look), wrap in a Switch for quick disable during iteration; widen the fog's Bound padding (X/Y ~2) since the default bound was clipping fog around the bridge.
+6. **Tree/rock instancing in LOPs:** reuse the Component Geometry + Component Geometry Variants (`number` mode when only 1 variant) + Explore Variants + Point Instancer pattern from earlier parts; copy the SOP-side scatter/normal-randomization wrangles directly into the LOP network; watch for silent failures caused by Object-Merging the wrong named target (a debugging pitfall called out explicitly in the transcript).
+7. **Cloud-gobo fake shadow caster:** build a large **Grid** (~25x25), Subdivide, drive with **Attribute Noise** (element size ~0.9, tuned offset, boosted output range) to get defined blob shapes, **Blast** below a mask threshold (~0.4) to keep only the "cloud" points, Transform up (~3.5) and back over the scene; set **Render Geometry Settings → Render Visibility: Primary** only (invisible to camera rays but still casts shadows from the physical sky); add an **Opacity/Cutout material** (~0.9 opacity) to soften the resulting shadow darkness into a subtler dappled look.
+8. **Terrain shading (Triplanar + script):** use a **Karma Triplanar** node inside a Karma Material Builder, driven by a previously-shared custom **auto-linking script** that wires a whole Megascans texture set (albedo, roughness, normal, displacement) into parameter-linked Triplanar nodes automatically; blend a second (grass) albedo texture over the rock albedo using the `mask_grass` primvar (read via **Geometry Property Value**/USD primvar reader) as the mix factor; Color-Correct each texture independently (exposure, contrast, saturation); build displacement from the Megascans height map (Separate Color → Fit Range to -0.5..0.5) multiplied by the **inverted grass mask** so grass areas don't inherit rock displacement.
+9. **Water shader:** build a simple 3D noise texture in COPs, bake to a displacement-style texture, convert to a **Normal Map** (Vector to Normal) fed at a low bump amount (tuned down from ~0.3 to ~0.1) into a low-specular/high-transmission water material; add a dedicated **Rectangle Light** aimed only at the pond, restricted via a **Light Linker** to affect only the water geometry (otherwise it washes out the whole environment) — critical because introducing the trees (which shadow the pond) otherwise kills almost all reflection on the water surface without a nearby light.
+10. **Bridge stone shading with per-piece variation:** reuse the Triplanar Megascans workflow (roughness + normal, no displacement this time) for the bridge stones; read the previously-saved `class` integer attribute via **Geometry Property Value**, feed into two separate **Random Float** nodes — one driving shader **gain** (subtle per-stone brightness variation, tuned min ~1.5) and one driving hue/**U** rotation (min ~0.9, max ~1.5) — for naturally varied stone coloring without a manual per-stone paint pass; finish with Color Correct (saturation ~0.9, exposure tuned against scene darkness once trees/fog are enabled).
+11. **Tree, rock, and vine/leaf materials:** straightforward Karma Material Builders per asset — tree leaves (Megascans Atlas albedo/roughness/translucency, subsurface weight ~0.4, involute flag for single-sided geo, boosted exposure), tree bark (Megascans albedo/roughness/normal, higher exposure ~1.5), rocks (Triplanar Megascans rocky-mossy set, remapped height for displacement ~0.07, Color Correct exposure ~1.25), vine bark and vine leaves (reusing the tree-leaf Atlas texture, subsurface ~0.4, exposure boosted significantly ~3.2 for the vine leaves specifically, slight green hue shift).
+12. **Grass scattering directly in Solaris:** duplicate the tree-instancing LOP setup; Object Merge terrain, combine `mask_grass` with an **inverted river mask** (VEX multiply) so grass doesn't grow on water; per-point **seed** attribute via Attribute Noise for later shader hue randomization; Scatter with density-driven point count (~80,000) and noise-based `pscale`; instance 20 Megascans grass variants via the same `@geo_variant_index` Component-Geometry-Variants pattern.
+13. **Grass shader + per-instance hue variation:** Karma Material Builder with Megascans albedo/roughness/translucency (subsurface ~0.6, involute for single-sided grass blades); read the per-point `seed` primvar via Geometry Property Value → Random Float, feed as a **U-factor** shift on the albedo texture (range tuned ~0.9-1.25) so different grass patches read as slightly more yellow or more green.
+14. **Debugging a silent material-override bug:** instance leaves/materials appeared not to bind despite correct-looking Material Assign paths; root cause was a leftover **default preview material** (assigned early in the process) still overriding everything — disabling it immediately fixed material display across all instances; a wildcard-path Material Assign (`instances/*`) was also used to target instance sub-primitives correctly.
+15. **Final render:** Karma XPU, increased samples, tuned SSS limit, image-output-filter denoiser (NBD1-based) enabled, 4K resolution — combining terrain, bridge, water, vines, tree, rocks, grass, fog, and cloud-gobo shadows into the finished environment shot.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOPs: Name (multiple, per-part), Vector to Float, Fit Range, Bind Export (primvar creation), UV Texture, File Cache. LOPs: Sub Import (packed-primitive-as-Point-Instancer option), Camera, Karma Physical Sky (exposure, altitude/azimuth, angular size, turbidity, blur), Karma Render Settings (XPU), Material Library, Karma Material Builder, Karma Cloud material (density), Switch (fog/instance on-off toggles), Object Merge, Bound, Component Geometry, Component Geometry Variants (`number` mode / `@geo_variant_index`), Component Geometry Output, Explore Variants, Point Instancer, Render Geometry Settings (Render Visibility: Primary), Opacity/Cutout material, Karma Triplanar (custom auto-linking script for Megascans texture sets), Geometry Property Value / USD primvar reader, Separate Color, Color Correct, Random Float (gain/hue/U randomization from `class`/`seed` attributes), Normal Map (Vector to Normal), Rectangle Light, Light Linker, Scatter (density-driven), Attribute Noise (cloud-gobo shape, per-point seed), Blast (threshold-based cloud pruning), Grid, Subdivide, Transform, Material Assign (wildcard primitive paths, e.g. `instances/*`), Image Output Filters (NBD1 denoiser).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — a 74-minute full production pipeline covering LOPs instancing, custom Triplanar/Megascans shading automation, light-linked water shading, a hand-built cloud-gobo shadow trick, and debugging silent USD material-override bugs.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5 (Solaris/Karma XPU workflow consistent with Houdini 20.5; final render of the multi-part environment project).
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #lops #usd #karma #materials #shaders #triplanar #lighting #fog #scattering #instancing #environment #advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Final installment of the environment series — direct continuation of environments-in-houdini-part-4---vines-rocks-and-fog.md, environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md, environments-in-houdini-part-2---stone-bridge.md, and environments-in-houdini-part-1---heightfields.md (same author, same terrain/bridge/vegetation project across all 5 parts). Also shares the Component-Geometry-Variants instancing and Triplanar-materials vocabulary with environment-creation-with-solaris-in-houdini.md (a separate, earlier terrain/Solaris tutorial by the same author).

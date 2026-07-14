@@ -372,4 +372,4 @@ Advanced/Expert — combines VEX point-cloud queries (`pcopen`), a hand-authored
 ---
 
 ## Related Tutorials
-Direct continuation of environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md and environments-in-houdini-part-2---stone-bridge.md (same author, same bridge/terrain project — reuses the Part 2 cheap-edge-damage pattern and the Part 1 river/lake mask). Author announces the next part will move scattering systems and materials into Solaris; cross-link once ingested.
+Direct continuation of environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md and environments-in-houdini-part-2---stone-bridge.md (same author, same bridge/terrain project — reuses the Part 2 cheap-edge-damage pattern and the Part 1 river/lake mask). Followed by environments-in-houdini-part-5---solaris-and-rendering-with-karma.md, the finale which moves scattering and materials into Solaris.
