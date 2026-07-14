@@ -2954,9 +2954,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=nGKGXKw4_Zw
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5
+- **Tags:** #heightfield #terrain #procedural #scattering #vex #environment #intermediate
+- **Summary:** Builds a stylized terrain (back hills, curve-carved road, Voronoi-fractured field patches) with heightfield masking, then a VEX random-group assignment + for-loop/switch system to scatter different placeholder meshes per field patch group and roadside trees.
 - **File:** tutorials/environment-creation-with-houdini---part-1.md
 
 

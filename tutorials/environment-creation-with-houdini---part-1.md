@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=nGKGXKw4_Zw
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5"
+tags: [heightfield, terrain, procedural, scattering, vex, environment, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/environment-creation-with-houdini---part-1/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Environment Creation with Houdini - Part 1
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py environment-creation-with-houdini---part-1 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -118,30 +114,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/environment-creation-with-houdini---part-1/frame_000.jpg
+- [1:45] tutorials/frames/environment-creation-with-houdini---part-1/frame_001.jpg
+- [3:15] tutorials/frames/environment-creation-with-houdini---part-1/frame_002.jpg
+- [5:10] tutorials/frames/environment-creation-with-houdini---part-1/frame_003.jpg
+- [7:20] tutorials/frames/environment-creation-with-houdini---part-1/frame_004.jpg
+- [10:10] tutorials/frames/environment-creation-with-houdini---part-1/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a stylized terrain environment (back hills, foreground fields, a carved road, and initial scattering of trees/bushes) using Heightfields, curve-driven masking, Voronoi Fracture for field patches, and a for-loop-based multi-group scatter system.
 
 ### Summary
-[PENDING EXTRACTION]
+Starts with a base **Heightfield** (custom dimensions, initial noise, blurred since fine detail isn't needed yet), then divides the terrain into "back hills" vs. "front fields" using a hand-shaped curve: a centered line sized to the heightfield's width, point-jittered and displaced along Z only, then resampled with the "subdivision curves" smoothing option. That curve is poly-extruded into a mesh (mirrored) and object-merged back in as a **Heightfield Mask by Object** to separate terrain sections; a second Heightfield Noise (masked, then blurred at the transition) adds small mountains to just the back-hill region, refined with light **Erosion** and a low-frequency distortion noise (mostly tuned by adjusting the noise's seed/offset). A road is added the traditional way — hand-drawn curve, resampled, **Ray**-projected onto the terrain, and Swept into a mesh — then converted into a heightfield mask and carved into the terrain via **Heightfield Project** with a negative transform (tuning the combine method); the mask is saved to a new layer via Copy Layer, and a second "roadside" mask is derived by expanding the road mask and subtracting the original road mask (for future tree/bush scattering along the road edges), blurred slightly to soften the road/terrain transition. The heightfield is converted to a mesh, Booleaned against the back-hills shape, and the front region is subdivided into field "patches" via **Voronoi Fracture** (rear surfaces disabled) seeded by scattered points; the unshared edges of the resulting patches are grouped, converted to curves, fused, and swept into hedge/border geometry (careful to re-fuse the unshared-edges group to avoid doubled geometry), then re-projected onto the (no longer flat) terrain. Patches are packed (Assemble) and assigned to N random groups via a small VEX wrangle (credited to a Reddit user, "Cartof Leninmost Prime") that generates a controllable count of random group indices from a seed, visualized with Group by Attribute and converted to a `name` attribute (promoted point→primitive). A **For Loop** (by count) then iterates per field-group: unpacks geometry, combines with the (inverted) road mask as scatter density, uses a Metadata node to read the loop iteration for a Switch selecting between per-group Scatter nodes, and Copy-to-Points instances placeholder colored boxes (later real tree/bush assets) per patch group — the loop's `name` attribute class needed correcting from primitive to point partway through. The whole field result is combined back with the original terrain. Final scattering adds patch-border bushes (from the earlier polypatch/curve split, scattered with roadside points removed and instanced via Copy to Points) and roadside trees (a simple cylinder placed via Copy to Points onto scattered roadside points, oriented upright by setting the normal attribute and a final corrective rotation).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base terrain:** create a **Heightfield** with custom dimensions, apply initial noise, and Blur it (fine detail not needed at this stage).
+2. **Back-hills/front-fields divider curve:** build a centered Line sized to the heightfield's width (plus a small margin), position it ~10% from center at ~40% of the heightfield's depth (for the back-hills proportion); apply a **Point Jitter**, displace along Z only for hand-tuned shape, then Resample with "subdivision curves" to smooth it.
+3. **Mask mesh from curve:** Poly Extrude the shaped curve into a mesh, mirror it, then Object Merge it back in and use **Heightfield Mask by Object** to separate the terrain into distinct back/front sections.
+4. **Back-hills detail:** add a second **Heightfield Noise** masked to the back-hill section (tuned for small mountains), blur the mask at the transition edge, apply light **Erosion** (overall amount only), and a low-frequency distortion noise (mostly adjusted via seed/offset until visually satisfying).
+5. **Road path:** hand-draw a curve for the road, Resample to smooth, **Ray** it onto the terrain surface to conform, then **Sweep** into 3D road geometry.
+6. **Carve the road:** convert the road mesh into a heightfield mask, then use **Heightfield Project** with a negative transform and a tuned combine method to carve/indent the road into the terrain; save the mask via **Copy Layer** for reuse.
+7. **Roadside mask:** expand the road mask and subtract the original (un-expanded) road mask from it to isolate a roadside band for future scattering; save to a new layer and blur slightly to soften the harsh road/terrain transition.
+8. **Terrain to mesh + Boolean:** convert the finished heightfield to a polygon mesh, then Boolean it against the back-hills shape to cleanly separate front and back geometry.
+9. **Field patches via Voronoi Fracture:** scatter seed points across the front terrain area, run **Voronoi Fracture** (disable "create rear surfaces") to divide it into field-like patches.
+10. **Patch-border hedges:** group the unshared edges of the patches, convert to curves, **Fuse** the points (re-fuse the same unshared-edges group a second time to eliminate doubled geometry from the first fuse pass), build a mesh/sweep from the curves, then re-project the (now-flat) sweep mesh back onto the actual terrain surface.
+11. **Random group assignment via VEX:** Pack (Assemble) the Voronoi patches, then run a wrangle (community-credited technique) that generates a random group index per packed piece from a seed and a target group count; visualize with **Group by Attribute**, convert the group to a `name` attribute, and promote point→primitive so it can drive a For Loop.
+12. **For-loop multi-group scatter:** iterate (**For Loop**, by count) over the field groups — unpack geometry, combine with the inverted road mask as scatter density, read the loop iteration via a **Metadata** node to drive a **Switch** selecting the correct per-group Scatter node, then **Copy to Points** placeholder colored boxes onto each group's scattered points (note: the `name` attribute's class needed correcting from primitive to point mid-loop for the density/scatter step to work).
+13. **Combine and finish fields:** merge the for-loop's per-group scattered result back with the original terrain.
+14. **Border bushes:** split the earlier patch-border curves with **Poly Path** to remove unwanted back-facing segments, build a shape, scatter a few points (excluding roadside points), and Copy to Points placeholder boxes.
+15. **Roadside trees:** build a simple cylinder ("H-grid" style placement, Y-min anchored), scatter points along the roadside band, Copy to Points to instance the cylinder per point, orient upright by setting the point normal attribute, and apply a final corrective rotation so trees actually stand upright.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Nodes: Heightfield (dimensions, initial noise, Blur), Line, Point Jitter, Resample (subdivision curves), Poly Extrude, Mirror, Object Merge, Heightfield Mask by Object, Heightfield Noise (masked), Erosion (Heightfield), low-frequency distortion noise, Ray (project onto terrain), Sweep, Heightfield Project (negative transform, combine method), Copy Layer (Heightfield), Group (unshared edges), Convert Line, Fuse (applied twice to fix doubled geometry), Boolean, Voronoi Fracture (rear surfaces disabled, seed scatter), Assemble (pack), Attribute Wrangle (VEX — random group-index generation from seed + group count, community-credited "Cartof Leninmost Prime" technique), Group by Attribute, Name (group→attribute), Attribute Promote (point→primitive), For Loop (by count), Metadata (loop iteration/index), Switch (iteration-driven node selection), Scatter (multiple, per-group density from combined/inverted road mask), Copy to Points, Poly Path (curve splitting), Cylinder (H-grid placement, Y-min).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — heightfield/Voronoi/for-loop fundamentals are approachable, but the group-randomization VEX wrangle and for-loop metadata-driven switch selection require comfort with attribute classes and loop iteration.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; UI style is consistent with Houdini 19.5-era heightfield/Voronoi Fracture tools (pre-20 node icon set).
 
 ### Tags
-[PENDING EXTRACTION]
+#heightfield #terrain #procedural #scattering #vex #environment #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+First part of a multi-part series — author mentions a planned Part 2 covering Solaris shading/lighting/rendering of this same terrain; cross-link once ingested. Also cross-link with other cgside environment/scattering tutorials once extracted from this batch.
