@@ -2674,9 +2674,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=NHD3VbE2y00
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20
+- **Tags:** #solaris #materials #shaders #mtlx #karma #triplanar #uv #procedural #environment #intermediate
+- **Summary:** Textures UV-less procedural houses using Houdini 20's new Karma X-Style Triplanar (albedo/roughness/normal without UVs), attribute-driven MaterialX Color Correct/Random for per-plank and per-house variation, and Karma Room Map for parallax fake-interior windows.
 - **File:** tutorials/houdini-20-procedural-shading-features.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=NHD3VbE2y00
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20"
+tags: [solaris, materials, shaders, mtlx, karma, triplanar, uv, procedural, environment, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-20-procedural-shading-features/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 20 Procedural Shading Features
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-20-procedural-shading-features <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -65,30 +61,47 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/houdini-20-procedural-shading-features/frame_000.jpg
+- [0:55] tutorials/frames/houdini-20-procedural-shading-features/frame_001.jpg
+- [1:30] tutorials/frames/houdini-20-procedural-shading-features/frame_002.jpg
+- [2:10] tutorials/frames/houdini-20-procedural-shading-features/frame_003.jpg
+- [2:40] tutorials/frames/houdini-20-procedural-shading-features/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Texturing procedurally-generated UV-less houses using Houdini 20's new MaterialX/Karma shading nodes — **Karma X-Style Triplanar** for projection without UVs, **MaterialX Color Correct** driven by per-plank/per-house SOP attributes for variation, and the new **Room Map** nodes for a fake-interior parallax effect through windows — entirely avoiding external texturing tools like Substance Painter.
 
 ### Summary
-[PENDING EXTRACTION]
+A batch of procedurally generated houses (no UVs, would be painful to texture in Substance Painter) is shaded using new Houdini 20 MaterialX/Karma nodes. A per-plank random attribute created in SOPs is loaded and fed into **MaterialX Color Correct** nodes to vary gain/hue/saturation of the base wood texture per plank, with the effect range narrowed for subtlety. The wood texture itself comes from the new **Karma X-Style Triplanar** node — random rotation is disabled (to preserve the wood grain's real orientation) while size is still varied; the same Triplanar node is referenced again for the roughness map (data type switched to Raw) and for the normal map (mode switched to Normal, plugged directly into the shader's normal input — no separate Normal Map node needed, unlike traditional image-texture normal setups). A second per-house random attribute feeds a **MaterialX Random** node (seeded via NDC) to darken some houses via gain — usable to procedurally generate a new random value in-shader if no attribute is available, and Houdini 20 also adds a new **Ramp** node for shader-driven color remapping (mentioned but not used in this build). For fake window-interior depth (parallax), a `room_map_frame` SOP node (default settings) is used to author the necessary per-window attributes in SOPs, then in Solaris the **Karma Room Map** node reads those SOP-authored attributes (Room P, Tangent U, Tangent V, all Vector3) to project a cube-map interior image with a parallax-like depth illusion through the window glass — noted as randomizable in principle, but a single cube map was used here due to difficulty sourcing more. The result: a full medieval-village-style render achieved with comparatively little manual texturing effort.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Per-plank variation attribute:** in SOPs, create a randomized attribute per wood plank (or per house) to drive shader variation without needing hand-painted textures.
+2. **Color variation via MaterialX Color Correct:** load the SOP attribute into a **MaterialX Color Correct** node to alter gain/hue/saturation of the base wood albedo texture; narrow the effect's range for subtlety.
+3. **UV-less texturing via Triplanar:** use the new **Karma X-Style Triplanar** node to project the wood texture without any UVs; disable random rotation (to preserve the wood grain's real-world orientation) while still varying scale/size per instance.
+4. **Reuse the Triplanar for roughness:** reference the same Triplanar node again, feeding it as the **roughness** map, switching its data type to **Raw** (non-color-managed) for correct roughness values.
+5. **Reuse the Triplanar for normal:** reference the Triplanar again, switch its mode to **Normal**, and plug it directly into the shader's normal input slot — Houdini 20's Triplanar handles the normal-map conversion internally, eliminating the need for a separate Normal Map node.
+6. **Per-house random darkening:** feed a second per-house random SOP attribute into a **MaterialX Random** node (seeded via NDC, usable to generate a fresh random value directly in-shader when no existing attribute is available) to darken a subset of houses via gain, adding overall scene variation; note the new MaterialX **Ramp** node is also available for shader-driven color remapping (not used in this particular build).
+7. **Author Room Map attributes in SOPs:** add a `room_map_frame` SOP node (default settings) per window to generate the necessary parallax attributes procedurally.
+8. **Karma Room Map for fake interiors:** in Solaris, use the **Karma Room Map** node, feeding it the SOP-authored **Room P**, **Tangent U**, and **Tangent V** attributes (all set to Vector3 type) to project a cube-map interior image through each window with a parallax depth effect — a single cube map was reused across all windows due to difficulty sourcing more variety, though the technique supports randomization in principle.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Solaris/MaterialX nodes: MaterialX Color Correct (gain/hue/saturation, attribute-driven), Karma X-Style Triplanar (random rotation toggle, size/scale, data-type: Raw for roughness, mode: Normal for normal maps — used directly without a separate Normal Map node), MaterialX Random (NDC-seeded value generation), MaterialX Ramp (shader color remapping, mentioned not used), Karma Room Map (Room P / Tangent U / Tangent V Vector3 inputs) for parallax window interiors. SOPs: `room_map_frame` (default settings, authors Room Map attributes per window), per-plank/per-house random attribute generation (unspecified node, likely Attribute Randomize or similar).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — mostly UI-level shader-node assembly; no VEX required, but assumes familiarity with MaterialX/Karma shading concepts and Houdini 20's new node set.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20 (explicitly titled "Houdini 20 Procedural Shading Features" — Karma X-Style Triplanar, MaterialX Random/Ramp, and Room Map nodes are all new-to-20 features per the transcript).
 
 ### Tags
-[PENDING EXTRACTION]
+#solaris #materials #shaders #mtlx #karma #triplanar #uv #procedural #environment #intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Cross-link with custom-procedural-materials-with-houdini-and-karma.md and designer-like-materials-in-cops-houdini-205.md (same author, overlapping Triplanar/MaterialX shading vocabulary) once indexed together.
