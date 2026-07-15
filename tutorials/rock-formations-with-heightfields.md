@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rEn0ochILjU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.593"
+tags: [heightfields, terrain, triplanar, displacement, ambient-occlusion, texturing, rocks, environment]
+extraction_status: complete
 frames_dir: tutorials/frames/rock-formations-with-heightfields/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Rock formations with heightfields
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py rock-formations-with-heightfields <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -72,30 +68,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/rock-formations-with-heightfields/frame_000.jpg
+- [1:00] tutorials/frames/rock-formations-with-heightfields/frame_001.jpg
+- [1:40] tutorials/frames/rock-formations-with-heightfields/frame_002.jpg
+- [2:25] tutorials/frames/rock-formations-with-heightfields/frame_003.jpg
+- [3:20] tutorials/frames/rock-formations-with-heightfields/frame_004.jpg
+- [4:20] tutorials/frames/rock-formations-with-heightfields/frame_005.jpg
+- [5:20] tutorials/frames/rock-formations-with-heightfields/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build tall rock-spire/cliff formations from a Heightfield by layering multiple masked Heightfield Distort passes (each shaped by a different noise and mask-expand step), then convert to polygons, apply Triplanar displacement for fine detail, and finish with ambient occlusion plus a screen-color-sampled texture for quick shading.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a hand-drawn Heightfield mask, a Heightfield Layer mix (set to Maximum) blends two versions of the mask (one blurred) to build up the base silhouette. A Voronoi-based random-height pattern (via a random function seeded per point) adds per-point height variation, scaled and masked. Mask Expand grows/blocks out squarish base shapes, followed by blurring and mask-clearing between passes. A slope-layer mask is created for later use, then a "Shabby Shapes" Heightfield Noise combined with Distort by Layer produces the jagged, randomized silhouette characteristic of rock spires — repeated with additional smaller distortions and falloff-aware masking (more falloff on flatter areas) to add variation at the tops. A second Mask Expand pass with the "eye" channel creates bulky lower-body shapes, followed by more small distortion and heightfield-to-polygon conversion. After clipping/remeshing (since heightfield-derived geometry doesn't work well directly for texturing/displacement), a Triplanar setup with blurred normals drives fine surface displacement, followed by Ambient Occlusion calculation. Finally, color is quickly added via a Point VOP using Houdini's "sample screen colors" eyedropper feature to pull colors directly from a reference texture, brightened with a Quick Material.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Draw an initial **Heightfield mask** (any desired base shape).
+2. Use **Heightfield Layer** (mode: Maximum) to blend two versions of the mask — one slightly more blurred — layering detail at the bottom.
+3. Create a **random Voronoi/Baronoid height pattern**: use a Voronoi noise, take its "near" output through a `random()` function with a seed offset, then Fit Range and multiply by the current mask to vary point heights (min/max controls exposed).
+4. Use **Mask Expand** on the height layer to create squarish base shapes; blur afterward and clear the mask for the next pass.
+5. Create a **slope layer mask** for later use, clear, then apply a **Heightfield Noise** set to "Shabby Shapes" combined with **Distort by Layer** to create randomized jagged silhouettes.
+6. Blur the heightfield, apply another distortion pass, mask flat areas slightly more than non-flat areas (adding falloff), and use a further noise (with blur) to distort the tops specifically.
+7. Clear the mask, run another **Mask Expand** using the "eye" channel to create bulky lower-body shapes, apply a small additional distortion, then **Convert Heightfield** to polygons.
+8. **Clip** the extra parts and **Remesh** — heightfield-derived geometry at this stage doesn't work well directly for texturing/displacement without remeshing first.
+9. Apply **Subdivide**, then use **Triplanar** displacement (as covered in other tutorials by this author) with two textures blurred normals beforehand to avoid overly wild displacement results.
+10. **Ambient Occlusion** calculation for shading/masking use.
+11. Add color via a **Point VOP**: right-click to use "sample screen colors," dragging across a reference texture image to sample colors directly onto the geometry — a quick way to add believable variation without full texturing.
+12. Since the sampled colors can be too dark, finish with a **Quick Material** to normalize/brighten the output for a presentable render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Heightfield (draw mask), Heightfield Layer (Maximum blend), Voronoi/Baronoid noise + `random()` with seed, Fit Range, Heightfield Mask Expand (multiple passes, "eye" channel), Heightfield Blur, Heightfield Mask Clear, Heightfield Noise ("Shabby Shapes"), Heightfield Distort by Layer, Convert Heightfield (to polygons), Clip, Remesh, Subdivide, Triplanar (displacement, blurred normals), Ambient Occlusion, Point VOP with "sample screen colors" eyedropper, Quick Material.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (relies on the studio's established Triplanar-displacement workflow; the heightfield mask-layering sequence is approachable once the "distort → mask → blur → clear" rhythm is understood).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.593 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+heightfields, terrain, triplanar, displacement, ambient-occlusion, texturing, rocks, environment
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural tips | Heightfields and VDB](procedural-tips-heightfields-and-vdb.md) — companion heightfield-masking tips (bias vs. Mask Expand, Chippy Shapes erosion masking) directly applicable to this workflow.
+- [Houdini Heightfields and Cliffs](houdini-heightfields-and-cliffs.md) — related two-pass erosion + third-party texturing approach to heightfield cliffs from the same channel.
+- [VDB Procedural Cliffs](vdb-procedural-cliffs.md) — alternate VDB-based (rather than heightfield-based) approach to similar rock-spire silhouettes.

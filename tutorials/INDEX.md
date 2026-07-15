@@ -3174,9 +3174,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rEn0ochILjU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.593
+- **Tags:** heightfields, terrain, triplanar, displacement, ambient-occlusion, texturing, rocks, environment
+- **Summary:** Builds rock-spire formations by layering masked Heightfield Distort/Noise passes (Shabby Shapes, Mask Expand, falloff-aware masking), converts to polygons, applies Triplanar displacement and Ambient Occlusion, then quick-shades using Houdini's "sample screen colors" eyedropper.
 - **File:** tutorials/rock-formations-with-heightfields.md
 
 
