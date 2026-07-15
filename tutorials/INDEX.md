@@ -3024,9 +3024,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=RbiH315adq8
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.322
+- **Tags:** rbd, simulation, packed-primitives, karma, procedural-animation, food, torque, velocity
+- **Summary:** Fills a cheese-ball barrel with naturally swirling animation by giving each emitted RBD sphere a cross-product-derived velocity (position × up) before simulating, with staggered per-frame-seeded emission and a final Copy-to-Points pass onto the sim points for render-quality geometry.
 - **File:** tutorials/procedural-animation-with-rbd.md
 
 

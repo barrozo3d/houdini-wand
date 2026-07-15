@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=RbiH315adq8
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.322"
+tags: [rbd, simulation, packed-primitives, karma, procedural-animation, food, torque, velocity]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-animation-with-rbd/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Animation with RBD
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-animation-with-rbd <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -104,30 +100,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:25] tutorials/frames/procedural-animation-with-rbd/frame_000.jpg
+- [1:00] tutorials/frames/procedural-animation-with-rbd/frame_001.jpg
+- [1:40] tutorials/frames/procedural-animation-with-rbd/frame_002.jpg
+- [2:40] tutorials/frames/procedural-animation-with-rbd/frame_003.jpg
+- [3:30] tutorials/frames/procedural-animation-with-rbd/frame_004.jpg
+- [4:20] tutorials/frames/procedural-animation-with-rbd/frame_005.jpg
+- [5:20] tutorials/frames/procedural-animation-with-rbd/frame_006.jpg
+- [6:10] tutorials/frames/procedural-animation-with-rbd/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Fill a container (a cheese-ball barrel) with a naturally swirling, non-uniform animation by giving each emitted RBD sphere an initial **cross-product-derived velocity** (position × up vector) before simulating, rather than just dropping them in with default gravity fill.
 
 ### Summary
-[PENDING EXTRACTION]
+The barrel/lid are simulated first with RBD Configure (convex hull collision, packed fragments) and a randomized initial torque (high amplitude due to scene scale) so the lid pops and settles, with angular velocity damped down after frame 144 via the RBD Bullet Solver so the barrel comes to rest. For the fill: the barrel's cap/patch-group opening is transformed/scaled/given normals so it can be Picked along the timeline to reveal an emission opening. Points are scattered (14 points, seeded per-frame via `$F` so each frame's scatter differs), each given a velocity computed as the **cross product between point position and an up vector** — this is what produces the swirling motion instead of straight-down dropping. Spheres are copied to these points, fed an RBD Configure with sphere collision shape and the custom velocity attribute, then emitted every 4 frames before frame 120 via a wrangle setting "found overlap" so intersecting spawns are tolerated. The RBD simulation itself uses default settings; simulation points are extracted separately (keeping only the `orient` attribute) so a nicer, displaced-sphere final geometry can be instanced onto them via Copy to Points for the render-quality result. A custom node places a label on the barrel by blasting everything but the barrel body, time-shifting to frame 1, and using a "place label" tool, then Point-deforming it to follow the sim.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model the barrel (mix of procedural/direct modeling), import the low-poly proxy version, and slightly transform the lid so it doesn't intersect the barrel body at rest.
+2. **Barrel/lid RBD setup**: RBD Configure with collision shape set to Convex Hull, enable packed fragments; initialize a torque attribute and randomize it for the main barrel (high amplitude due to scene scale) and separately for the lid (value ~85, its own seed).
+3. In the **RBD Bullet Solver**, reduce angular velocity starting at frame 144 (multiply by ~0.8) so the barrel settles into a rest state after that frame.
+4. **Container opening**: blast the patch group created during modeling (the fill opening), transform/scale it up, add normals, then **Pick** it along the timeline to open a gap for emission.
+5. **Fill points**: scatter 14 points, using `$F` (current frame) as the global seed so every frame produces a different scatter result.
+6. **Velocity for swirl**: compute each point's velocity as the **cross product of its position and an up vector**, producing the characteristic swirling fill motion rather than straight-down gravity dropping.
+7. Copy a simplified sphere to these points, then **RBD Configure** with collision shape set to Sphere and the custom velocity attribute passed through so the RBD Bullet Solver can use it.
+8. **Staggered emission**: emit new spheres every 4 frames, and only before frame 120; in a wrangle set "found overlap" so initially-overlapping spawn points don't cause simulation errors.
+9. Run the RBD simulation with otherwise default settings; isolate just the **simulation points** (deleting everything but the `orient` attribute) so a nicer, displaced-sphere geometry can be instanced onto them for final render quality via **Copy to Points**.
+10. **Barrel label**: blast everything but the barrel body, Time Shift to frame 1 (the pre-sim rest pose) to place a custom "place label" node's output, then Point Deform it so the label follows the barrel's animation.
+11. Send the final result to Solaris and render with Karma.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+RBD Configure (Convex Hull / Sphere collision shapes, packed fragments), Attribute Adjust Vector (torque initialization/randomization), RBD Bullet Solver (angular velocity damping from a specific frame), Pick (timeline-driven opening), Scatter (`$F`-seeded per-frame), cross-product velocity wrangle (`position × up`), Copy to Points, Attribute Wrangle (staggered frame-based emission, "found overlap" flag), simulation-point isolation (keep only `orient`), Copy to Points (final displaced-sphere instancing), Time Shift, custom "place label" node, Point Deform.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the cross-product velocity trick is simple once known, but the multi-stage RBD setup — barrel settle, opening pick, staggered fill emission, and final re-instancing — requires careful sequencing).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.322 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+rbd, simulation, packed-primitives, karma, procedural-animation, food, torque, velocity
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Making Trash in Houdini](making-trash-in-houdini.md) — related RBD mid-sim technique (glue-to-rigid constraint switching) from the same channel.
+- [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — another example of using RBD as a controlled animation/compression tool rather than pure destructive simulation.
