@@ -3319,6 +3319,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/gestation-effect-in-houdini-scene-breakdown.md
 
+
+### Vellum Fundamentals - Week 5: Cell Splitting Part 1
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Q4R7AeCf-Os
+- **Author:** Tim van Helsdingen
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vellum-fundamentals---week-5-cell-splitting-part-1.md
+
 ---
 
 ## Tag Reference
