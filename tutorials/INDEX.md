@@ -3204,9 +3204,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=q-9cVBVMv2E
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.593
+- **Tags:** rbd, simulation, scatter, packed-primitives, procedural-modeling, environment, stone-wall
+- **Summary:** Uses an RBD Bullet solver as a compression tool — scattering low-poly proxy rocks then animating a Bound's scale down over time — so simulation naturally packs the stones intersection-free, before back-injecting the high-poly source geometry for final render.
 - **File:** tutorials/procedural-rock-wall-without-intersections.md
 
 

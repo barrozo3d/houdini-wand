@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=q-9cVBVMv2E
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.593"
+tags: [rbd, simulation, scatter, packed-primitives, procedural-modeling, environment, stone-wall]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-rock-wall-without-intersections/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Rock Wall without intersections
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-rock-wall-without-intersections <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -63,30 +59,50 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:00] tutorials/frames/procedural-rock-wall-without-intersections/frame_000.jpg
+- [1:40] tutorials/frames/procedural-rock-wall-without-intersections/frame_001.jpg
+- [2:25] tutorials/frames/procedural-rock-wall-without-intersections/frame_002.jpg
+- [2:55] tutorials/frames/procedural-rock-wall-without-intersections/frame_003.jpg
+- [3:30] tutorials/frames/procedural-rock-wall-without-intersections/frame_004.jpg
+- [3:55] tutorials/frames/procedural-rock-wall-without-intersections/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Use an RBD Bullet solver as a *compression tool* rather than a destructive simulation: scatter low-poly proxy stones with heavy relaxed-iteration overlap removal, then animate a bounding container's scale down over time so the solver naturally compresses the stones against each other and each other's collision shapes, eliminating intersections without manual placement.
 
 ### Summary
-[PENDING EXTRACTION]
+Individual rocks are modeled once in a loop, each generating both a high-poly render version and a very low-poly proxy for simulation. The low-poly proxies are copied to scattered points (using a Scatter node with many relaxation iterations to reduce initial overlap), then fed into an RBD Bullet Solver alongside a **Bound** node (all-sides collision box) whose Y-scale is animated from 1 down to ~0.4 over a number of frames. Playing the sim causes the stones to compress against each other and the shrinking bound, settling into a tightly packed, intersection-free arrangement resembling a real stacked-stone wall. Afterward the pieces are packed into single points, and the original high-poly geometry is back-injected onto the simulated low-poly transforms for the final render-ready result.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model a handful of individual rock variations in a loop, generating for each: a high-poly render version and a corresponding very-low-poly proxy geometry (via PolyReduce) for simulation.
+2. **Scatter** the low-poly proxies with a high point count and many **relaxation iterations** to spread them out with minimal initial overlap before simulation even begins.
+3. **Copy to Points**: distribute the low-poly rock variations onto the relaxed scatter points.
+4. Feed the copied geometry into an **RBD Bullet Solver**.
+5. Create a **Bound** node with "all sides" collision enabled to act as a compressing container, then animate its **Transform scale Y** from 1 down to about 0.4 across several frames — giving the solver time to settle properly.
+6. Enable the solver and play through the animated timeline: the stones compress against each other and against the shrinking bound, producing the desired wall-like packed shape with **no geometry intersections**.
+7. **Pack** the simulated result into packed primitives (single points per piece) so they can be treated as individual objects downstream.
+8. **Back-inject the high-poly geometry**: using the split branches created earlier (low-poly for sim, high-poly kept in a separate branch), swap the final low-poly simulated pieces for their corresponding high-poly source geometry, using the packed transforms to place them correctly.
+9. Result: a fully packed, intersection-free stone wall ready for texturing, achieved without the extensive ZBrush + manual Maya assembly process the author used previously for the same effect.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+PolyReduce (proxy geometry), Scatter (high relaxation iterations), Copy to Points, RBD Bullet Solver, Bound (all-sides collision), Transform (animated scale Y 1→0.4 over several frames), Pack, back-injection of high-poly geometry via packed-primitive transforms/split branches.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the core idea — using RBD + a shrinking bound as a "compression" tool — is simple, but the proxy/high-poly split and back-injection setup requires some organizational care).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.593 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+rbd, simulation, scatter, packed-primitives, procedural-modeling, environment, stone-wall
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Ruins randomized brick wall](ruins-randomized-brick-wall.md) — alternate, non-simulation-based procedural approach (Voronoi Fracture + jittering) to broken/randomized wall construction from the same channel.
+- [RBD rock surfaces with Houdini](rbd-rock-surfaces-with-houdini.md) — another RBD-fracture-based rock-surface technique from the same author.
