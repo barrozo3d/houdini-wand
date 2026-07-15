@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=N5DN6SwYFVs
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [python, file-references, project-management, automation, megascans, scripting]
+extraction_status: complete
 frames_dir: tutorials/frames/python-in-houdini-absolute-to-relative-paths/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Python in Houdini | Absolute to relative paths
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py python-in-houdini-absolute-to-relative-paths <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -83,30 +79,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/python-in-houdini-absolute-to-relative-paths/frame_000.jpg
+- [0:45] tutorials/frames/python-in-houdini-absolute-to-relative-paths/frame_001.jpg
+- [1:30] tutorials/frames/python-in-houdini-absolute-to-relative-paths/frame_002.jpg
+- [2:30] tutorials/frames/python-in-houdini-absolute-to-relative-paths/frame_003.jpg
+- [3:20] tutorials/frames/python-in-houdini-absolute-to-relative-paths/frame_004.jpg
+- [4:20] tutorials/frames/python-in-houdini-absolute-to-relative-paths/frame_005.jpg
+- [5:10] tutorials/frames/python-in-houdini-absolute-to-relative-paths/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A Python script that scans the scene's `hou.fileReferences()` for absolute (non-`$JOB`/non-`$HOME`-relative) 3D-model and texture dependencies, copies each file into an organized project subfolder (with regex-based Megascans variation-suffix stripping for de-duplication), and rewrites each node's parameter to the new project-relative path.
 
 ### Summary
-[PENDING EXTRACTION]
+Written as a workaround for Houdini's drag-and-drop "make relative" feature failing on certain model files, the script imports `os` and `hou`, grabs `$JOB`/`$HOME` absolute paths, and iterates `hou.fileReferences()` filtered to only 3D-model and texture parameters (since USD and similar references are typically already project-relative by default). For each reference it extracts the parameter, node, and file path, skips anything already relative to `$JOB`, and specifically handles `$HOME`-relative paths (which point outside the project structure) as a separate case. Textures are relocated into a `tex` project folder; geometries go to a `geo` folder — but since multiple Megascans variation assets share the same base naming convention, the script creates a **subfolder named after a regex-cleaned version of the asset name** (stripping trailing underscores/numbers so variations of one asset share a folder instead of colliding on duplicate filenames). It resolves `$HOME` to its absolute path for copy operations, creates the destination subfolder if needed, builds the full destination path (including filename/extension), checks for existing files before copying via the `shutil` module, and finally converts the destination back to a project-relative path and writes it into the original node's parameter.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Identify the problem: dragging models/textures into the project folder in the file-dependencies editor should auto-relativize paths via `$JOB`, but this failed for certain model files in the author's project (no fix found), motivating a custom script.
+2. Open the **Python Source Editor**; `import os, hou`; store `$JOB` and `$HOME` absolute paths as variables.
+3. Call `hou.fileReferences()` to get all scene dependencies, filtering to only **3D-model and texture** parameters (USD/other reference types are excluded since they're typically already relative by default).
+4. Iterate the filtered references, extracting the `hou.ParmTuple`/parameter, the owning node, and the node's file path into local variables.
+5. Skip any reference whose path is **already relative** to `$JOB` (nothing to do).
+6. Handle the **`$HOME`-relative case** separately, since Home points to the Documents folder — outside the project structure — and needs special resolution to an absolute path before copying.
+7. Extract just the filename + extension from the original path for reuse in the destination.
+8. Route destination folders by type: textures → project's `tex` folder; geometries → project's `geo` folder.
+9. **Megascans de-duplication fix**: since multiple asset variations share a naming convention, create a subfolder named after the asset's base name — using a **regex found online** to strip trailing underscores and numeric variation suffixes, so all variations of one asset land in a shared subfolder instead of causing "duplicate filename" collisions.
+10. Resolve `$HOME` to its absolute path (needed since copy operations require real paths, not variable expressions), create the asset subfolder if it doesn't already exist.
+11. Build the full destination path (folder + filename + extension), check whether the file already exists there, then copy the original file to the destination using the **`shutil`** module.
+12. Convert the final destination path back to a **project-relative** (`$JOB`-based) path string and set it on the original parameter — after running, the File Dependencies panel shows all textures/models as green (fully project-relative).
+13. Save the finished script to a custom **shelf tool** for repeated use across projects.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Python Source Editor, `hou.fileReferences()`, `hou` module (`hou.ParmTuple`, node/parameter access, `$JOB`/`$HOME` expansion), `os` module (path/filename parsing), `re` module (regex-based Megascans variation-suffix stripping), `shutil` module (file copy), File Dependencies editor (visual verification of relative-path status), custom shelf tool packaging.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (straightforward Python/os scripting, but requires understanding Houdini's `hou.fileReferences()` API and `$JOB`/`$HOME` path conventions).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified in transcript; frames too low-resolution to confirm from viewport UI.
 
 ### Tags
-[PENDING EXTRACTION]
+python, file-references, project-management, automation, megascans, scripting
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Python Multi Asset Loader in Houdini](python-multi-asset-loader-in-houdini.md) — companion Python-automation tutorial from the same channel using similar `hou`/`os` file-management patterns.
+- [Python in Houdini | Create a texture importer for Solaris](python-in-houdini-create-a-texture-importer-for-solaris.md) — related Python file-and-path-handling automation script from the same channel.

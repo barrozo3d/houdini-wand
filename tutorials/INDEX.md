@@ -2814,9 +2814,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=N5DN6SwYFVs
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** python, file-references, project-management, automation, megascans, scripting
+- **Summary:** Python script scans hou.fileReferences() for absolute model/texture paths, copies each into an organized project subfolder (with regex-based Megascans variation-suffix stripping to avoid filename collisions), and rewrites node parameters to $JOB-relative paths.
 - **File:** tutorials/python-in-houdini-absolute-to-relative-paths.md
 
 
