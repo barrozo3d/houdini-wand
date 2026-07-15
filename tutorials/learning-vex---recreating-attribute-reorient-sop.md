@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=TAWtLzrITOY
 author: cgside
 ingested: 2026-07-15
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vex, matrix, attribute-reorient, custom-function, uv-space, learning-vex, cross-product]
+extraction_status: complete
 frames_dir: tutorials/frames/learning-vex---recreating-attribute-reorient-sop/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Learning Vex - Recreating attribute reorient sop
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py learning-vex---recreating-attribute-reorient-sop <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -156,30 +152,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/learning-vex---recreating-attribute-reorient-sop/frame_000.jpg
+- [1:47] tutorials/frames/learning-vex---recreating-attribute-reorient-sop/frame_001.jpg
+- [2:36] tutorials/frames/learning-vex---recreating-attribute-reorient-sop/frame_002.jpg
+- [6:03] tutorials/frames/learning-vex---recreating-attribute-reorient-sop/frame_003.jpg
+- [7:28] tutorials/frames/learning-vex---recreating-attribute-reorient-sop/frame_004.jpg
+- [11:35] tutorials/frames/learning-vex---recreating-attribute-reorient-sop/frame_005.jpg
+- [12:05] tutorials/frames/learning-vex---recreating-attribute-reorient-sop/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Recreate the built-in **Attribute Reorient** SOP entirely from scratch in a single VEX wrangle — building a per-point local rotation matrix (from position, normal, and a neighbor point), computing that same matrix for both the "rest" (original 3D) and "deformed" (UV-space-unwrapped) versions of a mesh, and applying the **difference matrix** between the two to correctly re-orient any point/vector attribute (like a measured gradient) that was computed in one space but needs to remain meaningful after the geometry is moved into a different space (e.g. flattened to UV space for texturing).
 
 ### Summary
-[PENDING EXTRACTION]
+The motivating problem: measuring the **gradient of `P.y`** on a 3D mesh gives a vector attribute that correctly "flows" along the surface's Y-height direction — but if that mesh is then moved into UV space (via Attribute Swap, copying UV into position), the gradient vectors no longer make sense relative to the new flattened shape, since they were computed for the original orientation. The stock **Attribute Reorient** node fixes this automatically (also demonstrated fixing implicit/point normals that go stale after the same UV-space move), but the video's real goal is reconstructing that fix by hand as a VEX learning exercise. The core insight is that **every point can be given a local 3×3 rotation matrix** by building three orthonormal basis vectors: `u` = a normalized vector from the current point to a neighboring point (found via `neighbour(0, i@ptnum, 0)`), `v` = a normalized cross product between the surface normal and `u`, and then `u` is recomputed as `normalize(cross(v, n))` to guarantee true orthogonality against the normal (since the initial `u`-to-neighbor vector isn't guaranteed perpendicular to the normal) — assembling `u`, `v`, and `n` into a `matrix3` and visualizing it directly with the Marker/Axis vis-type confirms the three basis vectors align with the local surface directions. This matrix-building logic is then wrapped in a **custom VEX function** (`matrix3 calc_mtx(int input; vector pos, n; int ptnum)`) to avoid duplicating the code for both spaces — a "current point's real neighbor" version for the 3D mesh, and a UV-space version built by first `unwrap()`-ing the geometry in place (`geo = unwrap(0, "uv")`) to get a pseudo-geometry matching the UV layout, then manually setting the normal to a flat `{0,0,1}` (since the unwrapped mesh always faces +Z) rather than using the real surface normal. Both the "rest" matrix (3D world space) and the "UVn" matrix (UV/flattened space) are computed via the same function call, and the **difference matrix** is obtained by multiplying the inverse of the rest matrix by the UV-space matrix (`invert(rest_mtx) * uvn_mtx`) — this represents exactly the rotation needed to go from the original orientation to the new one. Applying that difference matrix directly to position causes garbled results because it's a 4×4 matrix carrying translation as well as rotation, so the matrix must first be explicitly translated by the current point's position (`translate(diff_mtx, @P)`) before being applied to `P`; the geometry then correctly lands at the UV position. Normals require a further fix: since normals are directional vectors (not positions), applying the full 4×4 difference matrix also incorrectly translates them, so the matrix is cast down to a **`matrix3`** (rotation-only, `matrix3(diff_mtx)`) before being applied to `N` — after which the previously-garbled normals display correctly. The same `matrix3`-cast difference matrix is then applied to the originally-measured gradient attribute, correctly re-orienting it to match the new UV-space geometry — reproducing the stock Attribute Reorient SOP's behavior with fully custom, from-scratch VEX. A late bug is caught and fixed live: an early version of the function accidentally referenced input `0` (hardcoded) instead of the `input` parameter, which silently broke the UV-space matrix calculation until corrected.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Set up a test mesh with **Split UV Seams** (get UV as a point attribute) and add **Normal** (explicit, since UV-space transforms will make implicit normals stale).
+2. **Measure** the gradient of `P.y` and visualize it as a marker/vector — this is the attribute that will need re-orienting later.
+3. Demonstrate the problem: **Attribute Swap** UV into position moves the mesh to UV space, but the previously-computed gradient (and implicit normals) no longer make sense; show the stock **Attribute Reorient** node fixing both by feeding it the pre-move geometry as a second input.
+4. In a single wrangle, build a **local rotation matrix per point**: `u = normalize(neighbor_position - P)` (via `neighbour(0, i@ptnum, 0)`), `v = normalize(cross(N, u))`, then re-derive `u = normalize(cross(v, N))` to guarantee orthogonality; assemble into a `matrix3` (columns/rows = u, v, n) and visualize with Marker/Axis to confirm correctness.
+5. Wrap this logic in a custom function `matrix3 calc_mtx(int input; vector pos, n; int ptnum)` — VEX functions can't take arbitrary geometry-input types directly, so the geometry input is passed as a **string** (`"0"` or `"1"`-style op-input syntax) rather than a numeric literal.
+6. Compute the **"rest" matrix** by calling the function against the original (world-space) geometry using the current point's real position, normal, and point number.
+7. Compute the **"UVn" matrix** for the flattened geometry: build a pseudo-geometry via `geo = unwrap(0, "uv")`, manually set its normal to `{0,0,1}` (since unwrapped geometry always faces +Z, not the real surface normal), then call the same function against it.
+8. Compute the **difference matrix**: `invert(rest_mtx) * uvn_mtx`.
+9. **Translate** the difference matrix by the current point's position (`translate(diff_mtx, @P)`) before applying it to `P` — applying the raw (untranslated) 4×4 matrix produces garbled geometry since the 4×4 form also carries translation.
+10. Move the geometry into UV space by setting `P` from the UV attribute, then apply the difference matrix (cast down to a rotation-only **`matrix3`**) to `N` — a bare 4×4 matrix would incorrectly translate the normal vectors, so casting to `matrix3` restricts the operation to rotation only.
+11. Apply the same `matrix3`-cast difference matrix to the originally-measured gradient attribute, correctly re-orienting it to the UV-space geometry, matching the stock Attribute Reorient SOP's result.
+12. Debug note: watch for accidentally hardcoding an input index (e.g. `0`) instead of using the function's `input` string parameter — this silently breaks the second matrix calculation.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Split UV Seams, Normal, Measure (gradient of `P.y`), Attribute Swap (UV→position), Attribute Reorient (stock reference node), point wrangle (`neighbour()`, `normalize()`, `cross()`, `matrix3` construction), Marker/Axis visualization, custom VEX function definition (`matrix3 calc_mtx(...)`, string-typed geometry-input parameter), `unwrap()` (UV pseudo-geometry), `invert()` (matrix inversion), `translate()` (4×4 matrix translation), `matrix3()` cast (rotation-only application to vectors/normals).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (building a from-scratch local-basis rotation matrix per point, wrapping it in a custom VEX function usable across two different geometry inputs, and correctly distinguishing 4×4 vs. 3×3 matrix application for positions vs. directional vectors are all non-trivial VEX/math concepts).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vex, matrix, attribute-reorient, custom-function, uv-space, learning-vex, cross-product
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vex Problem Solving in Houdini](vex-problem-solving-in-houdini.md) — shares this channel's from-scratch VEX-first problem-solving philosophy applied to a different node-recreation problem.
+- [Why you need to learn vex in Houdini #1](why-you-need-to-learn-vex-in-houdini-1.md) — shares the same "recreate it from scratch to really understand it" VEX-education philosophy.
+- [Tips and tricks in Houdini 21](tips-and-tricks-in-houdini-21.md) — shares the axis-extraction-from-matrix and look-at-based transform-matrix techniques used here.

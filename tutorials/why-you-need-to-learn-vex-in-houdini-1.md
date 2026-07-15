@@ -150,3 +150,4 @@ vex, surface-deform, cluster, minpos, flood-fill, croissant, spiral, vex-showcas
 - [Spiral Splash Tutorial in Houdini](spiral-splash-tutorial-in-houdini.md) — shares the from-scratch VEX quaternion/curve-parameter spiral-construction approach used here.
 - [Procedural tips and tricks in Houdini 20.5](procedural-tips-and-tricks-in-houdini-205.md) — shares the `sample_circle()`-based circular-group and Lab-Sort circular-ordering techniques used here for the spiral rest geometry.
 - [Vex Problem Solving in Houdini](vex-problem-solving-in-houdini.md) — shares this channel's from-scratch VEX-first problem-solving philosophy (Cluster-node-style seam detection, custom flood-fill logic).
+- [Learning Vex - Recreating attribute reorient sop](learning-vex---recreating-attribute-reorient-sop.md) — shares the same "recreate it from scratch to really understand it" VEX-education philosophy.

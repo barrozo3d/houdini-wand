@@ -3304,9 +3304,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=TAWtLzrITOY
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vex, matrix, attribute-reorient, custom-function, uv-space, learning-vex, cross-product
+- **Summary:** Recreates the stock Attribute Reorient SOP from scratch in VEX by building a per-point local rotation matrix (position/normal/neighbor), computing it for both 3D and UV-unwrapped space via a custom function, then applying the difference matrix (with correct 4x4-vs-matrix3 handling) to re-orient positions, normals, and a measured gradient attribute.
 - **File:** tutorials/learning-vex---recreating-attribute-reorient-sop.md
 
 

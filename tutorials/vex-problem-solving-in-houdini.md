@@ -93,3 +93,4 @@ vex, vdb, sdf, cluster, uvs, gradient, quaternion, vines, ivy-generator, procedu
 - [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — deeper, more robust version of the same gradient/quaternion-based UV-auto-orientation technique used here.
 - [Environments in Houdini Part 4 - Vines, Rocks and Fog](environments-in-houdini-part-4---vines-rocks-and-fog.md) — related vine-generation technique (`pcopen()`-based attachment mask) from the same channel.
 - [Why you need to learn vex in Houdini #1](why-you-need-to-learn-vex-in-houdini-1.md) — shares this channel's from-scratch VEX-first problem-solving philosophy, here building a nearpoint()/max()-carry flood-fill clustering algorithm.
+- [Learning Vex - Recreating attribute reorient sop](learning-vex---recreating-attribute-reorient-sop.md) — shares this channel's from-scratch VEX-recreation-of-stock-nodes philosophy, here rebuilding Attribute Reorient with a custom matrix function.

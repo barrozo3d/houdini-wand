@@ -181,3 +181,4 @@ vex, matrix, look-at, gradient, uv-flatten, pick-node, houdini-21, normal-map, f
 - [Procedural Tips and Tricks in Houdini 20.5](procedural-tips-and-tricks-in-houdini-205.md) — companion tips-and-tricks video from the same channel, sharing the Find Shortest Path and VDB-Topology-to-SDF techniques instead.
 - [Quality of Life Tips in Houdini](quality-of-life-tips-in-houdini.md) — shares the Poly Hinge and Connectivity/Enumerate reordering tips in the same "quick tips" spirit.
 - [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — shares the gradient-measurement-on-UV-attribute technique used here for the fork tine tapering, applied there to auto-orienting UV islands.
+- [Learning Vex - Recreating attribute reorient sop](learning-vex---recreating-attribute-reorient-sop.md) — shares the axis-extraction-from-matrix and look-at-based transform-matrix techniques used here.
