@@ -533,3 +533,4 @@ brick-wall, growth-solver, pcopen, matrix, pack-inject, edge-damage, procedural-
 - [Ruins - Randomized Brick Wall](ruins-randomized-brick-wall.md) — alternate, Voronoi-Fracture-based approach to a similar randomized brick-wall problem from the same channel.
 - [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — shares the RBD/Bullet-as-modeling-tool philosophy of building irregular wall shapes without manual sculpting.
 - [Roasting my Houdini Setups #1](roasting-my-houdini-setups-1.md) — shares the "avoid unnecessary for-loops, use pcopen()/pcfilter() growth-style solvers instead" philosophy demonstrated here.
+- [Scissor Lift rig in Houdini](scissor-lift-rig-in-houdini.md) — shares the from-scratch per-instance transform-matrix construction philosophy used here, applied there to propagating an IK chain's pose across repeating segments.

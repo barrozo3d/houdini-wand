@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=QPiEZM1o-ME
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0"
+tags: [rig-doctor, ik-chain, point-transform, matrix, kinefx, scissor-lift, procedural-rigging]
+extraction_status: complete
 frames_dir: tutorials/frames/scissor-lift-rig-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 13
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Scissor Lift rig in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py scissor-lift-rig-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -292,30 +288,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:45] tutorials/frames/scissor-lift-rig-in-houdini/frame_000.jpg
+- [2:10] tutorials/frames/scissor-lift-rig-in-houdini/frame_001.jpg
+- [3:40] tutorials/frames/scissor-lift-rig-in-houdini/frame_002.jpg
+- [5:20] tutorials/frames/scissor-lift-rig-in-houdini/frame_003.jpg
+- [6:40] tutorials/frames/scissor-lift-rig-in-houdini/frame_004.jpg
+- [7:40] tutorials/frames/scissor-lift-rig-in-houdini/frame_005.jpg
+- [9:10] tutorials/frames/scissor-lift-rig-in-houdini/frame_006.jpg
+- [10:50] tutorials/frames/scissor-lift-rig-in-houdini/frame_007.jpg
+- [13:00] tutorials/frames/scissor-lift-rig-in-houdini/frame_008.jpg
+- [15:00] tutorials/frames/scissor-lift-rig-in-houdini/frame_009.jpg
+- [16:30] tutorials/frames/scissor-lift-rig-in-houdini/frame_010.jpg
+- [19:10] tutorials/frames/scissor-lift-rig-in-houdini/frame_011.jpg
+- [20:50] tutorials/frames/scissor-lift-rig-in-houdini/frame_012.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Rig and model a scissor-lift mechanism from scratch: build a single 2-bone IK chain in KineFX's Rig Doctor, then **copy that one chain's world transforms to every other repeating scissor segment** via a from-scratch VEX point-transform read/write (`pointtransform()`/`setpointtransform()`) driven by a repeating index pattern — avoiding the need to build an IK chain per segment — followed by procedural cross-brace geometry generation (extend, sweep, offset-thickness) and a name-pattern-based Pack/Capture setup that skips manual per-piece binding.
 
 ### Summary
-[PENDING EXTRACTION]
+The rig starts from a centered 2-point Line (points enumerated with an `ID` attribute), deformed into a zigzag with a wrangle that offsets alternating points' X position (`(ptnum % 2) * amplitude`, zero-centered via `×2−1`) — a simple, loop-free way to build the classic scissor pattern. Points are grouped in threes via `pointcut` and an exploded view to visualize the pairing, then the primitive-0 curve is blasted away, sorted by Y, and fed into **Rig Doctor** (Initialize Transform) to set up the base rig skeleton and local transforms. Rather than building an IK chain for every scissor segment, a single **2-Bone IK Chain** is built once (root/mid/tip = points 0/1/2, matched by name) and animated/posed as a preview (time channel fit between two rotation-limit values). To propagate that one chain's motion to all other segments, the **distance between point 0 and point 2** of the animated chain is measured each frame (`length(pos(0,"P") - pos(0,"P",2))`) and stored as a detail attribute — this becomes the fixed spacing multiplier for the copy step. A **Rig Attribute Wrangle** (built by hand rather than the Rig Attribute VOP) then processes every point beyond the first three: using a repeating 0/1/2 pattern (`ptnum % 3`) as a "source point" index, it reads the **world transform** of the corresponding source point via `pointtransform()`, then modifies that matrix's Y-translation component by the earlier distance × a per-segment `index` attribute (built separately as `prim_num` promoted to points) — before writing the result back with `setpointtransform()` — reproducing the single animated chain's pose at every repeating segment position with correct spacing, all without a second IK setup. Geometry is then generated: Convert Line per segment, Poly Cut to separate each into independent curves, then an **extend wrangle** scales each curve outward from its pivot (`P -= pivot; P *= 2.0; P += pivot`) to lengthen the cross-brace arms past their rotation points. A Sweep (ribbon) with computed vertex/primitive IDs, Polypath (single-polygon), and a **remove-curves** wrangle (deletes closed primitives) turns the extended lines into flat ribbon geometry; since Poly Fill drops the earlier ID attribute, it's copied back in from a same-primitive-count reference via `op:input1'ID`-style indexing. A **Thicken** node (both directions) gives the ribbons volume, but pushes overlapping segments on top of each other — fixed by an offset wrangle that alternates thickness direction based on `(ID % 2)`, scaled by the thickness value ×2 (since Thicken already doubled it). A procedural **capture-region naming scheme** (`"point_" + ID/2 + "_" + (ID%2)`, built to skip every-third-point via the same `%3` logic) lets **Capture by Name** and **Bone Deform** bind all the flat cross-brace ribbons to the rig automatically, matched purely by string name rather than manual per-piece assignment.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a centered 2-point **Line**, enumerate points for an ID attribute, then deform into a zigzag via `(ptnum % 2) * amplitude` (zero-centered) — a loop-free way to generate the classic scissor pattern.
+2. Group points in threes via **Point Cut** and visualize with an Exploded View to confirm pairing; blast the primitive-0 curve, sort by Y, and feed into **Rig Doctor** (Initialize Transform) to build the base rig skeleton.
+3. Build a single **2-Bone IK Chain** (root/mid/tip = points 0/1/2, matched by name) and pose/animate it as a preview reference — this is the *only* IK chain built for the entire rig.
+4. Measure the **distance between the animated chain's point 0 and point 2** each frame (`length()`), store as a detail attribute — this becomes the fixed spacing multiplier used to propagate the pose.
+5. Build an `index` attribute (primitive number promoted to points) and a repeating `ptnum % 3` "source point" pattern to identify which of the 3 chain points each other point should copy from.
+6. In a hand-written **Rig Attribute Wrangle** (skipping points 0–2, the original chain): read the source point's **world transform** via `pointtransform()`, modify its Y-translation by `distance × index`, and write it back with `setpointtransform()` — propagating the single chain's animated pose to every repeating segment with correct spacing, no additional IK needed.
+7. Generate cross-brace geometry: **Convert Line** per segment, **Poly Cut** to fully separate curves, then an **extend wrangle** (`P -= pivot; P *= 2.0; P += pivot`) to lengthen each curve past its rotation pivot.
+8. **Sweep** (ribbon) the extended lines, **Polypath** (single polygon), and a **remove-curves** wrangle (deletes closed primitives) to get flat ribbon geometry; copy the earlier `ID` attribute back in via a same-count reference wrangle since Poly Fill drops it.
+9. **Thicken** (both directions) for ribbon volume; fix overlapping segments with an offset wrangle alternating direction via `(ID % 2)`, scaled by thickness ×2 to account for Thicken's own doubling.
+10. Build a procedural **capture-region name** per piece (e.g. `"point_" + ID/2 + "_" + (ID%2)`, using the same `%3`-based logic to skip the every-third source points), then use **Capture by Name** + **Bone Deform** to bind all cross-brace ribbons to the rig purely by string match — no manual per-piece capture assignment.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Line, Enumerate (ID attribute), zigzag point wrangle (`ptnum % 2`, zero-centered scale), Point Cut, Exploded View, Blast, Sort (by Y), Rig Doctor (Initialize Transform), 2-Bone IK Chain (root/mid/tip by name), `fit()` animation preview, `length()`/`pos()` distance-measurement wrangle (detail attribute), Rig Attribute Wrangle (`pointtransform()`, `setpointtransform()`, `ptnum % 3` source-index pattern, `index` attribute via primitive-number promotion), Convert Line, Poly Cut, extend wrangle (pivot-relative scale), Sweep (ribbon), Polypath, remove-curves wrangle (closed-primitive deletion), ID-attribute-copy wrangle (`op:input1` reference), Thicken (both directions), offset wrangle (`ID % 2` alternating direction), procedural capture-name wrangle (string concatenation), Capture by Name, Bone Deform.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the single-IK-chain-to-many-segments propagation via manual `pointtransform()`/`setpointtransform()` matrix manipulation, and the procedural string-based Capture-by-Name binding, are both sophisticated, non-obvious KineFX rigging techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+rig-doctor, ik-chain, point-transform, matrix, kinefx, scissor-lift, procedural-rigging
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Shoe Laces in Houdini VEX and Vellum](shoe-laces-in-houdini-vex-and-vellum.md) — shares procedural point-placement and matching-by-name/index tricks for repeating mechanical geometry.
+- [Procedural Helical Column in Houdini](procedural-helical-column-in-houdini.md) — shares the VEX-driven mechanical/architectural geometry-generation philosophy (Sweep, extend, thicken) used here.
+- [Think Procedural Think Houdini](think-procedural-think-houdini.md) — shares the from-scratch per-instance transform-matrix construction philosophy used here for propagating the IK chain's pose.

@@ -96,3 +96,4 @@ vellum, vex, vellum-string, python-states, intersection-analysis, orient-along-c
 ## Related Tutorials
 - [Interactive Tools with Houdini Python States - Draw Pts on Geo](interactive-tools-with-houdini-python-states-draw-pts-on-geo.md) — the from-scratch build video for the exact "Place Points on Geo" HDA used here to place the eyelet points.
 - [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares this channel's broader pattern of using Vellum (String/Cloth) as a modeling/de-intersection tool.
+- [Scissor Lift rig in Houdini](scissor-lift-rig-in-houdini.md) — shares procedural point-placement and matching-by-name/index tricks for repeating mechanical geometry.

@@ -1394,9 +1394,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=QPiEZM1o-ME
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0
+- **Tags:** rig-doctor, ik-chain, point-transform, matrix, kinefx, scissor-lift, procedural-rigging
+- **Summary:** Rigs a scissor-lift mechanism by building a single 2-Bone IK Chain once, then propagating its animated pose to every repeating segment via a from-scratch pointtransform()/setpointtransform() matrix read/write driven by a repeating index pattern, followed by procedural cross-brace geometry generation and name-pattern-based Capture/Bone Deform binding.
 - **File:** tutorials/scissor-lift-rig-in-houdini.md
 
 
