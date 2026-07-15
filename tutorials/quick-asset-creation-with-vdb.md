@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=j0s0HkBCaQQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.493"
+tags: [vdb, volumes, vex, noise, zbrush, displacement, solaris, rocks, environment]
+extraction_status: complete
 frames_dir: tutorials/frames/quick-asset-creation-with-vdb/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Quick asset creation with VDB
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py quick-asset-creation-with-vdb <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -67,30 +63,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/quick-asset-creation-with-vdb/frame_000.jpg
+- [0:40] tutorials/frames/quick-asset-creation-with-vdb/frame_001.jpg
+- [1:10] tutorials/frames/quick-asset-creation-with-vdb/frame_002.jpg
+- [1:40] tutorials/frames/quick-asset-creation-with-vdb/frame_003.jpg
+- [2:35] tutorials/frames/quick-asset-creation-with-vdb/frame_004.jpg
+- [3:20] tutorials/frames/quick-asset-creation-with-vdb/frame_005.jpg
+- [3:55] tutorials/frames/quick-asset-creation-with-vdb/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A leaner, quicker variant of the VDB rock-sculpting workflow: a grid is extruded and mountain-distorted, converted to VDB, and detailed with just two main noises (each distorted by a secondary noise), then the result is sent to ZBrush for retopology/UV work before final texturing and rendering in Solaris.
 
 ### Summary
-[PENDING EXTRACTION]
+Compared to the studio's more elaborate cliff tutorials, this one keeps the Volume VOP setup deliberately simple — two main noise layers, each distorted by a secondary noise — to produce a quick rock asset. Frequency is controlled with an intuitive Constant/Divide-by-Constant pair instead of raw exponents, and a Multiply Constant scales the overall displacement strength. The second main noise (Manhattan Cellular F2F1, complement-inverted) uses a Feed Range for mean/max control and a stretched Y-axis frequency for elongated shapes, with an X-Rot transform matrix available to rotate the noise pattern for creative effects. After the volume detail pass, the mesh is imported into ZBrush for Z-Remeshing and Auto-UVs, exported as a low-poly mesh plus a displacement map, then brought into Solaris with subdivision, material, lighting, camera, and a turntable animation for final render.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Base shape: Grid (with a few subdivisions) → Extrude → Mountain node for an interesting starting silhouette before VDB conversion.
+2. **VDB from Polygons**: convert the mesh, setting resolution and clip/band values for the volume.
+3. **Volume VOP**: create an Add Noise node that adds incoming density with a noise's output, remembering to connect incoming position to the noise's position input.
+4. Frequency control: drive the noise frequency with a **Constant node divided by another Constant** for a more intuitive "bigger constant = bigger/wider noise" control instead of raw exponent tweaking.
+5. Overall strength control: add a **Multiply Constant** after the noise to scale its contribution to the final displacement.
+6. Distortion layer: use a second, simpler noise (Turbulence or a similar "AA noise") to distort the main Unified Static noise's position input before it drives density — the standard "noise distorts noise" pattern.
+7. Second main noise layer: repeat the pattern for a second detail pass, but this time use a **Fit Range** node to control the mean/max values of the noise output, producing a different character of detail.
+8. Directional stretching: for the frequency of the second noise, stretch primarily the **Y axis** to create an elongated, columnar look; an **X-Rot transform matrix** node is available on the noise to rotate the pattern for other effects.
+9. Main noise choice: **Manhattan Cellular F2F1** with the **Complement** attribute enabled to invert the result, giving the characteristic blocky-cellular rock look.
+10. Convert the finished VDB back to polygons, then export to **ZBrush** for Z-Remeshing, Auto-UVs, and export of a low-poly mesh plus a baked displacement map.
+11. In Solaris: import the ZBrush-processed asset, add subdivision, assign a material, set up light/camera/render settings, and animate a simple turntable for the final presentation render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Grid, Extrude, Mountain, VDB from Polygons (resolution, clip/band), Volume VOP (Add Noise pattern: Unified Noise / Unified Static, position input wiring, Constant ÷ Constant for frequency, Multiply Constant for strength, Turbulence/AA noise as secondary distortion, Fit Range for mean/max shaping, Manhattan Cellular F2F1 with Complement inversion, X-Rot transform matrix for pattern rotation), Convert VDB to polygons; external ZBrush pass (Z-Remesh, Auto-UV, displacement map export); Solaris/LOPs (Subdivision, material, light, camera, turntable animation, render settings).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (same core "noise distorts noise" VDB pattern as the studio's other cliff tutorials, but presented at a faster pace with a lighter setup).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.493 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vdb, volumes, vex, noise, zbrush, displacement, solaris, rocks, environment
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [VDB Procedural Cliffs](vdb-procedural-cliffs.md) — more elaborate version of the same noise-distorts-noise VDB rock-sculpting technique, scaled up to a full cliff with Solaris fog and tree scattering.
+- [Rock formations with heightfields](rock-formations-with-heightfields.md) — alternate heightfield-based approach to quick rock asset creation from the same channel.

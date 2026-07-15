@@ -3264,9 +3264,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=j0s0HkBCaQQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.493
+- **Tags:** vdb, volumes, vex, noise, zbrush, displacement, solaris, rocks, environment
+- **Summary:** Quick rock-asset workflow: extrude/mountain a grid, convert to VDB, detail with two cascading noises (Manhattan Cellular F2F1 + complement, intuitive frequency via Constant÷Constant), then finish in ZBrush (Z-Remesh, Auto-UV, displacement bake) and render a turntable in Solaris.
 - **File:** tutorials/quick-asset-creation-with-vdb.md
 
 
