@@ -3294,9 +3294,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=k2fZVt9ezQo
 - **Author:** Rebelway
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.716
+- **Tags:** pop-network, flocking, karma-fog, ocean-spectrum, solaris, birds, rebelway, simulation
+- **Summary:** Two-part breakdown: a fast lake/mountain Solaris environment using an Ocean Spectrum as bump-only (never displaced) and a Karma Fog Box to drive HDRI illumination falloff, plus a from-scratch POP-network flocking system (Pop Attract follow + clustering, a custom Curl-Noise Pop VOP constrained to a horizontal plane, and Pop Interact separation/alignment) instead of a scripted boids solver.
 - **File:** tutorials/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial.md
 
 

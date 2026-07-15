@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=k2fZVt9ezQo
 author: Rebelway
 ingested: 2026-07-15
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.716"
+tags: [pop-network, flocking, karma-fog, ocean-spectrum, solaris, birds, rebelway, simulation]
+extraction_status: complete
 frames_dir: tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Bird Flocking Simulation And Rendering In Houdini | Pro Karma Tutorial
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -537,30 +533,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [3:05] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_000.jpg
+- [5:20] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_001.jpg
+- [8:04] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_002.jpg
+- [12:02] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_003.jpg
+- [13:03] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_004.jpg
+- [22:14] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_005.jpg
+- [26:00] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_006.jpg
+- [29:32] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_007.jpg
+- [33:00] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_008.jpg
+- [38:33] tutorials/frames/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A two-part production breakdown: Part 1 (Solaris/Karma) builds a lightweight lake-and-mountain environment with a Karma volumetric fog box driving the HDRI illumination for atmosphere, plus an efficient Ocean Spectrum-as-bump (never displaced) shader for a fast-rendering lake; Part 2 builds bird-flocking behavior entirely from stock POP nodes (Pop Attract, Pop Interact, a custom Pop VOP noise force) rather than a scripted boids solver, using a single "follow" point and clustered sub-goals to fake cohesive-but-organic group movement.
 
 ### Summary
-[PENDING EXTRACTION]
+The environment starts from a simple grid sculpted into sharp mountain silhouettes using layered Chebyshev Cellular and Spark Convolution noise, then a **Soft Transform** (created with a point selection pre-made so its pivot centers correctly) flattens the front foreground area into a usable "beach" zone before the noise ramps into peaks; a duplicated, scaled-up copy of the same mountain adds background depth. The lake surface itself is kept at minimal polygon resolution since all visual detail comes from a **Ocean Spectrum** file (resolution 13, Philips spectrum type, chop value lowered to prevent wave self-intersection/pinching, amplitude 0.5, wind speed 1) cached to a single frame and referenced by an **Ocean Surface** shader with **Through Displacement disabled** — the ocean's fine detail is used purely as a bump map (with Add Bump to Shader Displacement enabled for correct reflections) rather than true geometric displacement, keeping renders fast; the underlying shader is just a Principled Core node with zero diffuse, ~100% reflective, 0.05 roughness. Environment lighting comes from a free "Shudu Lake" HDRI (Polyhaven) plus a **Karma Fog Box** (a scalable VDB volume) whose density and shadow-density parameters are tuned separately — the fog is the key trick that sells realism, since it visibly reduces how much HDRI light reaches distant surfaces, creating natural atmospheric falloff without extra lighting rigs. Birds are rendered as camera-facing oriented cards (built from normal + velocity so silhouette width changes correctly as they turn) shaded with a simple black-silhouette material; final render settings use no diffuse GI or motion blur, Path Tracing sampling at 196 samples, 360 frames at ~5 min/frame. Part 2's flocking system starts from ~3000 scattered points on a plane plus a single animated "follow" point (driven by a simple `sin($F)` expression scaled up for range) that acts as the flock's shared target — visualized cheaply via a **VisRig** copied onto the point through a right-click "Edit Contents"-style visualizer trick. Inside a custom POP network (built from scratch rather than using the stock Pop Flock HDA, which has an unreliable/disconnected Velocity Force input when inspected), particles are birthed once on `$SIMFRAME==1` from the scattered source points with a near-zero initial velocity, then a **Pop Attract** (set to "Follow" mode) pulls all particles toward the single follow point, with **Force** and **Ambient Speed** as the two key tuning knobs — Ambient Speed acts as a general speed-matching factor that, cranked high, makes the whole flock track the follow point tightly, while low values let particles drift/break apart at the edges for a looser, organic feel. A custom **Pop VOP** wires a Curl Noise's output through a Vector-to-Float / Float-to-Vector split so only the X and Z components of the noise are added to the incoming force (zeroing Y) — this constrains the chaotic wander noise to a horizontal plane instead of also bobbing birds vertically, which looked wrong for this shot's composition. A second **Pop Attract** (mode set to Particles, with a Number of Clusters parameter) creates emergent sub-flocks: with clusters=1 all particles converge on one shared centroid; raising clusters to 2+ splits the group into independently-targeting sub-clusters that each aim for their own averaged center, and that node's **Reversal Distance** parameter pushes particles away from their cluster center once they get too close, producing hollow, swirling "murmuration" pockets rather than a solid ball. Finally a **Pop Interact** node adds separation/cohesion refinement between all particles via its Position Force (keep-apart strength), Velocity Force (velocity-averaging/alignment strength — the more "flying together" feeling), Core Radius, and Falloff Radius, all balanced against the earlier Follow and Cluster-Attract forces to land on a look that's cohesive but not robotically uniform. A final touch adds per-particle drag variance using a one-line VEX-in-parameter expression: `fit01(rand($PT_ID), 0, 1)` (fit the per-particle-ID-seeded random value into the drag parameter's range) so different birds decelerate at slightly different rates instead of uniformly.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Environment (Part 1):** sculpt mountain silhouettes on a grid using layered Chebyshev Cellular + Spark Convolution noise; use a pre-selected-point Soft Transform to flatten a foreground "beach" area before the peaks ramp up; duplicate/scale for background depth.
+2. Build a minimal-resolution lake plane; generate an **Ocean Spectrum** file (resolution 13, Philips type, lowered chop value to avoid pinching/self-intersection, amplitude 0.5, wind speed 1) and cache a single frame.
+3. Build an **Ocean Surface** shader referencing that cached spectrum with **Through Displacement disabled** (bump-only, not real displacement) and Add-Bump-to-Shader-Displacement enabled for correct reflections; base shader is a Principled Core with 0 diffuse, ~100% reflective, 0.05 roughness.
+4. Light the scene with a free Polyhaven HDRI ("Shudu Lake") plus a **Karma Fog Box** (scalable VDB) — tune density vs. shadow density separately to control how much HDRI light reaches distant geometry for atmospheric falloff.
+5. Shade and orient birds as camera-facing cards driven by normal + velocity (so apparent width changes correctly with turning), simple black silhouette material; render with no diffuse GI/motion blur, Path Tracing at 196 samples.
+6. **Flocking (Part 2):** scatter ~3000 points on a plane; build a single animated "follow" point using a scaled `sin($F)` expression; visualize it cheaply with a VisRig copied onto the point via Edit Contents.
+7. Build a custom **POP network** (not the stock Pop Flock HDA, whose Velocity Force input is unreliable): birth particles once at `$SIMFRAME==1` from the scattered points with near-zero initial velocity.
+8. Add a **Pop Attract** in "Follow" mode targeting the single follow point; tune **Force** and **Ambient Speed** — Ambient Speed controls how tightly the whole flock tracks vs. drifts/breaks apart at the edges.
+9. Build a custom **Pop VOP** noise force: Curl Noise → Vector to Float → Float to Vector, feeding only X/Z components (zeroing Y) into the existing force, constraining wander noise to a horizontal plane.
+10. Add a second **Pop Attract** (Particles mode, Number of Clusters ≥ 2) to split the flock into independently-targeting sub-clusters; use its **Reversal Distance** to push particles apart once too close, creating hollow murmuration-like pockets.
+11. Add a **Pop Interact** node to fine-tune separation (Position Force) and alignment/cohesion (Velocity Force, Core Radius, Falloff Radius) between all particles for a natural, non-uniform group look.
+12. Add per-particle drag variance via a VEX parameter expression (`fit01(rand($PT_ID), 0, 1)`-style) so birds decelerate at slightly different rates instead of identically.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Grid, layered noise (Chebyshev Cellular, Spark Convolution), Soft Transform (pre-selection pivot trick), Ocean Spectrum (resolution 13, Philips type, chop/amplitude/wind-speed tuning), Ocean Surface shader (Through Displacement off, Add Bump to Shader Displacement), Principled Core (reflective-only setup), Karma Fog Box (VDB density/shadow-density), Polyhaven HDRI, Path Tracing render settings, camera-facing bird card shading (normal+velocity orientation); POP network: Add (single follow point), `sin($F)` expression, VisRig visualizer copy trick, Pop Source (`$SIMFRAME==1` birth, initial velocity), Pop Attract (Follow mode: Force, Ambient Speed; Particles/cluster mode: Number of Clusters, Reversal Distance), Pop VOP (Curl Noise, Vector to Float, Float to Vector, force-add), Pop Interact (Position Force, Velocity Force, Core Radius, Falloff Radius), per-particle drag VEX expression (`rand($PT_ID)`, `fit01`).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced (the environment/shading half is approachable default-node work; the flocking half requires understanding several interacting POP force nodes and tuning them against each other for an organic result).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.716 (visible in viewport title bar: "Houdini FX Education Edition 19.5.716").
 
 ### Tags
-[PENDING EXTRACTION]
+pop-network, flocking, karma-fog, ocean-spectrum, solaris, birds, rebelway, simulation
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Quick CGI Integration with Houdini and Solaris](quick-cgi-integration-with-houdini-and-solaris.md) — shares the HDRI-driven environment lighting and Karma render-setup approach used here.
+- [Procedural Environments in Houdini | Patreon February '26 Free Lesson](procedural-environments-in-houdini-patreon-february-26-free-lesson.md) — shares a course-style breakdown format from a different channel, useful as a comparison of production-lighting/environment approaches.
