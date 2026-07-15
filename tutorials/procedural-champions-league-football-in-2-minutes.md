@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=kpWtT6tPvP0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.593"
+tags: [platonic-solids, for-each, vex, uvs, sweep, procedural-modeling, ray-project, sports]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-champions-league-football-in-2-minutes/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Champions League football in 2 minutes
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-champions-league-football-in-2-minutes <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -65,30 +61,51 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/procedural-champions-league-football-in-2-minutes/frame_000.jpg
+- [0:30] tutorials/frames/procedural-champions-league-football-in-2-minutes/frame_001.jpg
+- [0:55] tutorials/frames/procedural-champions-league-football-in-2-minutes/frame_002.jpg
+- [1:20] tutorials/frames/procedural-champions-league-football-in-2-minutes/frame_003.jpg
+- [1:50] tutorials/frames/procedural-champions-league-football-in-2-minutes/frame_004.jpg
+- [2:10] tutorials/frames/procedural-champions-league-football-in-2-minutes/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Recreate the Champions League football's distinctive star-panel pattern procedurally, starting from a Platonic solid base and using a for-each loop per named primitive to build each 5-pointed star patch, then Ray-projecting everything back onto a perfect sphere to keep the panels curved correctly.
 
 ### Summary
-[PENDING EXTRACTION]
+A Platonic solid preset provides the base panel layout; each primitive is named, subdivided, and Ray-projected onto a sphere for a spherical starting form. Inside a for-each loop over each named primitive, normals point inward, the shape is subdivided, and a target point is picked to recreate a 5-pointed star by picking along existing normals, subdividing, and scaling down. Normals are inverted and everything is Ray-projected onto the main shape again. A VEX-driven rotation (rotating each star patch around its own normal by an angle derived from a snippet) recreates the specific "jagged star" look seen on the real ball. Border edges are selected and Polyfilled, star springs are split by their initial ID with a Connectivity attribute for texturing/geo targeting, and the whole thing is Ray-projected again for a fully spherical result across all patches. A separate loop extrudes and bevels the patches for relief, generates UVs, and adds guide colors for Photoshop texturing. Stitches are created by extracting outer edges, converting to a curve, cleaning with Polypatch, cutting at each point, selecting every other segment, blasting, and Sweeping the remaining curves into stitch geometry.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start from one of Houdini's **Platonic solid** presets; create a name attribute per primitive, subdivide, and Ray-project the whole shape onto a perfect sphere.
+2. Run a **for-each loop over each named primitive**: inside, add normals pointing inward, subdivide, and select a target point to begin recreating a star shape.
+3. Build the star: pick geometry along the existing normals, subdivide, and scale down slightly to better match the reference design's proportions.
+4. Invert the normals of the star shape and Ray-project it along the main sphere shape.
+5. Recreate the "jagged star" look seen on the real ball by rotating each star patch **around its own normal** using a small VEX snippet, then re-project the result.
+6. Select the border edges of each star patch and **Polyfill** them; split the star "springs" (points) by the initial ID attribute created earlier, and run **Connectivity** so the resulting pieces can be targeted for texturing or further geometry operations.
+7. Ray-project everything again so the spherical shape extends correctly across all patches, not just the star centers.
+8. In a second loop over the patches: extrude the patches in and out slightly, then bevel the outer edge for a relief/embossed look.
+9. Generate UVs and add near-random guide colors to use as a visual reference layout when texturing in Photoshop.
+10. **Stitches**: extract the outer edges of the patches and convert them to a curve; clean the resulting shape with **Polypatch**; cut the curve at every point to create individual segments; select every other segment and blast the unwanted ones; finally **Sweep** the remaining curve segments to generate the raised stitch geometry seen between panels.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Platonic solid, Name attribute, Subdivide, Ray (project onto sphere, used repeatedly), For-Each loop (per named primitive), Normal, Pick (along normals), Group Range, Peak, VEX snippet (rotation around normal), Polyfill, Split (by initial ID), Connectivity, Extrude, Bevel, UV generation, near-random guide-color assignment, Polypatch, Cut, Blast (every-other selection), Sweep (stitch geometry).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced (Ray-projection chaining, per-primitive for-each loops, and the normal-rotation VEX trick assume solid procedural fundamentals, though the result is a compact ~2 minute breakdown).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.593 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+platonic-solids, for-each, vex, uvs, sweep, procedural-modeling, ray-project, sports
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Boat in Houdini](procedural-boat-in-houdini.md) — another compact procedural-modeling breakdown from the same channel using similar for-each/loop patterns.
+- [Groups, Patterns in Houdini](groups-patterns-in-houdini.md) — related group-selection patterns (including split-by-attribute and connectivity) used throughout this build.

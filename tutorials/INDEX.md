@@ -3144,9 +3144,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=kpWtT6tPvP0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.593
+- **Tags:** platonic-solids, for-each, vex, uvs, sweep, procedural-modeling, ray-project, sports
+- **Summary:** Recreates the Champions League ball's star-panel design from a Platonic solid, using a for-each loop per named primitive to build each star patch (VEX rotation around normal, Ray-projection onto a sphere), then adds relief bevels, UVs, and swept stitch geometry.
 - **File:** tutorials/procedural-champions-league-football-in-2-minutes.md
 
 
