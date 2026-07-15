@@ -107,3 +107,4 @@ rbd, simulation, scatter, packed-primitives, procedural-modeling, environment, s
 - [Ruins randomized brick wall](ruins-randomized-brick-wall.md) — alternate, non-simulation-based procedural approach (Voronoi Fracture + jittering) to broken/randomized wall construction from the same channel.
 - [RBD rock surfaces with Houdini](rbd-rock-surfaces-with-houdini.md) — another RBD-fracture-based rock-surface technique from the same author.
 - [Procedural Materials in Houdini 21 | Patreon December '25 - Free Lesson](procedural-materials-in-houdini-21-patreon-december-25---free-lesson.md) — shares the Connectivity/For-Each-per-piece pattern used here, applied there to a from-scratch cobblestone-chunking pipeline.
+- [Think Procedural Think Houdini](think-procedural-think-houdini.md) — shares the RBD/Bullet-as-modeling-tool philosophy of building irregular wall shapes without manual sculpting, using a pcopen()-based growth solver instead.

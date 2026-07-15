@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=TWQvmqhRX3M
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0"
+tags: [brick-wall, growth-solver, pcopen, matrix, pack-inject, edge-damage, procedural-modeling, sop-solver]
+extraction_status: complete
 frames_dir: tutorials/frames/think-procedural-think-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 16
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Think Procedural Think Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py think-procedural-think-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -476,30 +472,64 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:40] tutorials/frames/think-procedural-think-houdini/frame_000.jpg
+- [5:00] tutorials/frames/think-procedural-think-houdini/frame_001.jpg
+- [8:00] tutorials/frames/think-procedural-think-houdini/frame_002.jpg
+- [12:10] tutorials/frames/think-procedural-think-houdini/frame_003.jpg
+- [15:00] tutorials/frames/think-procedural-think-houdini/frame_004.jpg
+- [18:20] tutorials/frames/think-procedural-think-houdini/frame_005.jpg
+- [21:20] tutorials/frames/think-procedural-think-houdini/frame_006.jpg
+- [24:50] tutorials/frames/think-procedural-think-houdini/frame_007.jpg
+- [28:10] tutorials/frames/think-procedural-think-houdini/frame_008.jpg
+- [31:40] tutorials/frames/think-procedural-think-houdini/frame_009.jpg
+- [35:00] tutorials/frames/think-procedural-think-houdini/frame_010.jpg
+- [39:10] tutorials/frames/think-procedural-think-houdini/frame_011.jpg
+- [43:20] tutorials/frames/think-procedural-think-houdini/frame_012.jpg
+- [47:30] tutorials/frames/think-procedural-think-houdini/frame_013.jpg
+- [51:40] tutorials/frames/think-procedural-think-houdini/frame_014.jpg
+- [55:50] tutorials/frames/think-procedural-think-houdini/frame_015.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a full procedural brick wall from a single 2-point line using only default nodes and Attribute Adjust Float manipulations (no custom VEX for the base wall), a simplified point-cloud-based **growth solver** (`pcopen()`/`pcfilter()`, no actual DOP simulation) to create a randomized broken-wall silhouette, and a from-scratch **matrix-based transform** system (scale/rotate/translate built manually per-brick) to swap a handful of edge-damaged high-detail bricks back into thousands of instanced positions via Pack Inject.
 
 ### Summary
-[PENDING EXTRACTION]
+The wall starts from a single Line (2 points) copied 24 times, using **Attribute Adjust Float** (a relatively obscure but powerful node) driven by the primitive's `copy_name`/`copyname` attribute (remapped 0–1 via `end-primitives-1`) to manipulate `P.y` (overall wall height profile) and `P.x` (brick-course width profile, applied only to alternating "outer" points via a Sort-by-Y-and-reverse trick to distinguish even/odd points) using custom ramps — entirely without wrangles. A second Attribute Adjust Float randomizes each line's Y position (small range, seeded) for natural unevenness. **Resample by Length** (not fixed point count, ~0.2 = brick size) turns each 2-point line into a multi-point brick-course curve; a Group Expression selects each curve's end points (`ptnum == primpoints @ prim - 1` style), and a wrangle randomizes only the *middle* points' position along the curve using `random(ptnum + prim + seed)` (zero-centered, small amplitude) combined with `vertexcurveparm()` for curve-view sampling, then re-samples position via `primuv()`-based lookup — creating irregular brick-length variation without touching the fixed endpoints. Point-to-point Y-difference (`pos2.y - pos.y`) becomes each brick's extrude scale (fed to Poly Extrude's local-control "scale" input), and after converting to Line, a point-normal-vector-based Poly Extrude (with a per-primitive random scale, seeded) raises the bricks with individually randomized heights. For the broken/missing-brick silhouette, a rough Boolean-derived silhouette shape is Scattered with ~30,000 randomly-sorted points; a **simplified growth solver** (not a DOP network — just a point wrangle with `pcopen()`/`pcfilter()`) seeds two random mask=1 points, then iteratively reads each point's neighborhood via `pcopen(0, P, radius, maxpoints)` and does `mask = min(mask + pcfilter(handle, "mask"), 1.0)` to grow the selection outward each pass; a **noise-remapped growth rate** (`fit(noise, min_mask, 1.0, ...)`) makes the growth boundary irregular instead of a perfect circle. After Time-Shifting to a fixed frame (stopping the time dependency) and Blasting all points below a mask threshold, the surviving points are meshed via **VDB from Particles** (density/mini-radius/point-radius/voxel-size tuned) → VDB Reshape (close) → Smooth SDF → Volume VOP (layered static/turbulent noise via multiple Volume Noise nodes chained, each with its own frequency/repeat/range) to punch organic holes and add surface detail → Convert VDB to Polygons — producing the broken wall's silhouette shape. For brick-level detail variation, the wall's `class` attribute (per-brick ID) is **shuffled** using `random_ihash(class + seed)` and then re-ordered into a clean sequential index via `find(unique_vals, random_index)` (an array of all unique random values, indexed to recover 0,1,2,3...) — this "shuffle-then-reindex" trick lets a handful of random classes (e.g. 4) be selected for expensive per-brick processing (edge damage, remeshing) instead of processing all ~128 bricks, wrapped in a Compile Block for speed. Each selected brick gets a quick Remesh + Attribute Blur + noise-based Mountain (offset seeded by `class` × a large multiplier so each brick's noise pattern differs) → Boolean Intersect against itself for a chipped/damaged edge look, then Match Size (non-uniform scale) to normalize to unit-brick dimensions for later per-instance scaling. To place these processed variant bricks back at all ~128 original brick positions, a **from-scratch matrix workflow** is built: per original brick (packed by class), bounding-box min/max derive `scale.x/.y/.z` values, an identity matrix is scaled by those values then translated to the brick's centroid, producing a full 4×4 transform per point (read via `primintrinsic` matrix + point generation matching the class count) that Copy-to-Points can consume directly as a `transform` attribute alongside a **`fromPieces`-attribute** (random index 0–3) selecting which of the 4 processed brick variants to stamp at each position — giving perfect per-brick scale/position without needing per-piece manual placement. Final randomization adds a **step-oriented rotation** (a Set/Rotate/Translate — "srt" — matrix order) using `sampleDirectionUniform()` fed a quantized (`round()`+division by a step-size) U/V pair so each brick randomly faces one of a few fixed cardinal-like orientations (not fully random directions) via `qrotate()`-equivalent matrix rotation by 90°/180° increments, plus a small random Z-jitter and Y-axis-only rotation jitter (via Attribute Adjust Vector, direction-only) for natural-looking variation without breaking the brick's rectangular silhouette. A Skylight with shadows finishes the render setup.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build the base wall profile purely with **Attribute Adjust Float** nodes (no wrangles): copy a 2-point Line 24 times, promote `copy_name` to points, remap it 0–1 (`end-primitives-1`), and drive `P.y` (overall height silhouette) and `P.x` (brick-width profile, applied only to alternating/outer points via Sort-by-Y-and-reverse) with custom ramps.
+2. Add a second Attribute Adjust Float to randomize each line's Y position slightly (seeded) for natural unevenness, then **Resample by Length** (~0.2, brick-sized) each 2-point line into a multi-point brick-course curve.
+3. Randomize only the curve's *middle* points (endpoints excluded via a Group Expression) along the curve using `random(ptnum + prim + seed)` (zero-centered, small amplitude) combined with `vertexcurveparm()` curve-view and a `primuv()`-based position re-sample.
+4. Convert to Line, compute per-segment Y-difference (`pos2.y - pos.y`) as an extrude-scale attribute, feed to **Poly Extrude**'s local-control scale via point-normal-vector attribute, and randomize per-brick height with a seeded scale wrangle.
+5. Build the broken-wall silhouette with a **simplified growth solver** (not a DOP sim): Scatter ~30,000 randomly-sorted points on a rough Boolean base shape, seed two mask=1 points, then a point wrangle iteratively grows the mask via `pcopen()`/`pcfilter()` (`mask = min(mask + pcfilter(...), 1.0)`), with a noise-remapped growth rate (`fit()`) for an irregular (not circular) growth boundary.
+6. **Time Shift** to a fixed frame (stop time dependency), Blast all points below the mask threshold, then mesh the survivors with **VDB from Particles** → VDB Reshape (close) → Smooth SDF → **Volume VOP** (layered static + turbulent Volume Noise nodes for organic holes/detail) → Convert VDB to Polygons for the final broken-wall shape.
+7. **Shuffle and reindex** the wall's per-brick `class` attribute: `random_ihash(class + seed)` for a shuffled value, then `find(unique_vals_array, random_index)` to recover a clean sequential index — lets a small subset (e.g. 4) of bricks be selected for expensive detail work instead of processing all ~128.
+8. For each selected brick (wrapped in a **Compile Block**, multithreaded): Remesh, Attribute Blur, apply a class-seeded Mountain noise offset, Boolean Intersect against itself for chipped-edge damage, then Match Size (non-uniform) to normalize to unit-brick dimensions.
+9. Build a **from-scratch per-brick transform matrix**: pack original bricks by class, derive scale values from each brick's bounding-box min/max, scale an identity matrix by those values, translate to the brick's centroid — producing a full 4×4 transform per point usable directly by Copy-to-Points.
+10. Add a **`fromPieces`-style random-index attribute** (0–3) to select which of the processed brick variants gets stamped at each of the ~128 original positions via Copy-to-Points reading the manual transform attribute.
+11. Add **step-oriented random rotation**: quantize a U/V pair (`round()` + step-size division) fed into `sampleDirectionUniform()` so each brick randomly picks one of a few fixed orientations (not arbitrary), apply via matrix rotation (90°/180° increments) in Scale-Rotate-Translate order, plus small Z-position jitter and Y-axis-only rotation jitter (Attribute Adjust Vector, direction-only) for natural variation.
+12. Finish with a Skylight (shadows enabled) for a quick render/preview.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Line (2 points), Copy (24×, output copy name), Attribute Promote (copyname → point), Attribute Adjust Float (×3+: height profile, width profile via Sort+reverse, Y-position randomization), custom Ramps, Resample (by Length), Group Expression (endpoint selection via `primpoints`), point wrangle (`random()`, `vertexcurveparm()`, `primuv()`-based re-sample), Convert Line, Poly Extrude (point-normal-vector local control, per-brick random scale), Boolean (rough silhouette base), Scatter (~30,000 points, random sort), growth-solver point wrangle (`pcopen()`, `pcfilter()`, `min()`, noise-remapped `fit()` growth rate), Time Shift, Blast (mask-threshold), VDB from Particles, VDB Reshape, Smooth SDF, Volume VOP (layered static + turbulent Volume Noise), Convert VDB to Polygons, `random_ihash()` shuffle + `find()`-based reindexing, Compile Block (multithreaded per-brick detail loop), Remesh, Attribute Blur, class-seeded Mountain, Boolean Intersect (self, edge damage), Match Size (non-uniform), bounding-box-derived scale matrix construction, identity-matrix scale/translate, Point Generate, Copy to Points (manual transform + fromPieces-style random-index attribute), `sampleDirectionUniform()` with quantized U/V (step-size `round()`), matrix rotation (SRT order, 90°/180° increments), Attribute Adjust Vector (direction-only Y-axis jitter), Skylight (shadows).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines a from-scratch simplified growth solver using point-cloud functions instead of DOPs, a shuffle-and-reindex trick for selective expensive processing, and a fully hand-built per-instance transform-matrix pipeline for swapping detailed variants back onto thousands of positions).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0 (visible in viewport title bar, partially "Houdini ... Commercial 21.0...").
 
 ### Tags
-[PENDING EXTRACTION]
+brick-wall, growth-solver, pcopen, matrix, pack-inject, edge-damage, procedural-modeling, sop-solver
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Ruins - Randomized Brick Wall](ruins-randomized-brick-wall.md) — alternate, Voronoi-Fracture-based approach to a similar randomized brick-wall problem from the same channel.
+- [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — shares the RBD/Bullet-as-modeling-tool philosophy of building irregular wall shapes without manual sculpting.
+- [Roasting my Houdini Setups #1](roasting-my-houdini-setups-1.md) — shares the "avoid unnecessary for-loops, use pcopen()/pcfilter() growth-style solvers instead" philosophy demonstrated here.

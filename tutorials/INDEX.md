@@ -1554,9 +1554,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=TWQvmqhRX3M
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0
+- **Tags:** brick-wall, growth-solver, pcopen, matrix, pack-inject, edge-damage, procedural-modeling, sop-solver
+- **Summary:** Full step-by-step brick-wall build using default-node Attribute-Adjust-Float profiling, a simplified pcopen()/pcfilter()-based growth solver (no DOPs) for a broken-wall silhouette, a shuffle-and-reindex trick to selectively edge-damage only a handful of bricks, and a from-scratch per-instance transform-matrix system to place the detailed variants back onto thousands of positions via Copy-to-Points.
 - **File:** tutorials/think-procedural-think-houdini.md
 
 
