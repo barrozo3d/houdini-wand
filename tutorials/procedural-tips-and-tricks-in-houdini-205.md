@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=wgStaCuEglI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.309"
+tags: [vex, find-shortest-path, vdb, cops, lab-sort, seamless-noise, jewelry, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-tips-and-tricks-in-houdini-205/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural tips and tricks in Houdini 20.5
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-tips-and-tricks-in-houdini-205 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -94,30 +90,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/procedural-tips-and-tricks-in-houdini-205/frame_000.jpg
+- [1:15] tutorials/frames/procedural-tips-and-tricks-in-houdini-205/frame_001.jpg
+- [1:50] tutorials/frames/procedural-tips-and-tricks-in-houdini-205/frame_002.jpg
+- [2:30] tutorials/frames/procedural-tips-and-tricks-in-houdini-205/frame_003.jpg
+- [3:10] tutorials/frames/procedural-tips-and-tricks-in-houdini-205/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five procedural techniques for a stone-set ring: circular point-group selection via a `sample_circle()`-based VEX snippet feeding **Find Shortest Path** for stone-holder wire mesh generation, a **Lab Sort** node (not the regular Sort) for reliable circular point ordering before Skin, **VDB from Polygons with Topology to SDF** to properly shell an open (non-watertight) mesh, seamless COPs displacement noise via a UV-space Rasterize with position+alpha layers, and a Whirling-Noise-plus-Mountain-plus-Mesh-Sharpen combo for realistic stone facet cuts.
 
 ### Summary
-[PENDING EXTRACTION]
+Stone-holder wire mesh generation ("prong" shapes) needs groups of points arranged in a circular pattern around each stone; rather than manual selection (fragile if the stone shape changes), a VEX snippet (adapted from sample code by Animatrix) uses `sample_circle()` to generate points in a circular pattern, grouping the nearest points and adding a distance parameter to offset their position, with an extra Y-position parameter exposed in the main network for control. With these circular point groups as curves, the holder mesh is built by Resampling to 20 points, selecting the first 8 points of each curve, creating a per-point attribute via **modulo** against the point-count-per-curve to establish a connection pattern, then adding curves by attribute — but the default point sort order scrambles this, so a **Lab Sort** node (specifically the Labs version, not the standard Sort SOP) is used to sort points in a proper circular order before **Skin**ning the shape. Since the resulting mesh is open (not watertight), a plain VDB from Polygons isn't sufficient to volumize it; the fix is **VDB from Polygons with the conversion set to Topology to SDF**, which creates a proper shell VDB from open geometry, followed by smoothing and blending with the ring band. For seamless displacement noise on the VDB-derived mesh, a **Rasterize** node set to UVs outputs both a position layer and an alpha layer; the position layer feeds a 3D noise's position input (itself distorted slightly by another noise), and — critically — the resulting seams visible when previewed are fixed by using the alpha-channel mask to **extrapolate the plate boundaries**, producing a seamless tileable noise pattern. Finally, after trying several approaches for the stone-cut facet look, the best result came from a simple combination: a **Whirling Noise** distortion, a **Mountain** node, and a final **Mesh Sharpen** pass.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Circular group selection**: use a VEX snippet (adapted from Animatrix sample code) with `sample_circle()` to generate points in a circular pattern around each stone location; group the nearest points and add a distance offset to their position; expose an extra Y-position parameter in the main network for additional control.
+2. **Stone-holder mesh build**: Resample the resulting curves to 20 points; select the first 8 points of each curve; create a point attribute using **modulo** against the per-curve point count to establish which points should connect.
+3. **Add by attribute + circular sort**: connecting points by attribute directly produces a scrambled result due to default point sort order; fix by inserting a **Lab Sort** node (the Labs-specific sort, not the regular Sort SOP) configured to sort points in a circular pattern, which resolves the ordering correctly for this case.
+4. **Skin** the sorted curves into the final holder mesh shape.
+5. **Shell an open mesh with VDB**: since the holder mesh is open/non-watertight, a plain VDB from Polygons conversion isn't enough — set the conversion mode to **Topology to SDF** to properly generate a shell VDB, then smooth it and blend with the ring band geometry.
+6. **Seamless COPs noise**: set up a **Rasterize** node targeting UV space, outputting both a **position** layer and an **alpha** layer.
+7. Feed the rasterized position layer into a 3D noise's position input (optionally distorting that position layer further with a secondary noise) to drive displacement.
+8. **Fix visible tile seams**: connecting the raw noise directly to a preview material shows visible seams at UV tile boundaries; fix by using the saved alpha-channel mask to **extrapolate the plate boundaries**, producing a properly seamless noise pattern.
+9. **Stone facet cuts**: after experimenting with several approaches, the best-looking result came from a simple chain of **Whirling Noise** distortion → **Mountain** node → **Mesh Sharpen** — no exotic technique needed.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+VEX `sample_circle()` snippet (circular point generation, near-point grouping, distance offset), Find Shortest Path, Resample, Attribute Wrangle (modulo-based connection pattern), Add (by attribute), Lab Sort (Labs circular point sort — distinct from the standard Sort SOP), Skin, VDB from Polygons (Topology to SDF conversion mode for open/non-watertight meshes), VDB Smooth, VDB Combine (ring blend), Rasterize (UV-space, position + alpha layer outputs), 3D Noise (position-driven, secondary noise distortion), alpha-mask-based plate-boundary extrapolation (seamless tiling fix), Whirling Noise, Mountain, Mesh Sharpen (stone facet cuts).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced (the Lab Sort circular-ordering trick, Topology-to-SDF shelling, and seamless-Cops-noise techniques are all non-obvious but individually compact).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.309 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vex, find-shortest-path, vdb, cops, lab-sort, seamless-noise, jewelry, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [The Donut Tutorial in Cops - Houdini 20.5](the-donut-tutorial-in-cops-houdini-205.md) — related Copernicus/Cops procedural-texturing tutorial from the same channel, though without the seamless-tiling fix covered here.
+- [Procedural Rock Formations Part 2](procedural-rock-formations-part-2.md) — shares the Find Shortest Path technique used here for the stone-holder wire mesh, applied there to vines instead.

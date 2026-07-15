@@ -104,6 +104,7 @@ rbd, fracture, vdb, triplanar, shortest-path, vines, procedural-modeling, rocks,
 ---
 
 ## Related Tutorials
+- [Procedural tips and tricks in Houdini 20.5](procedural-tips-and-tricks-in-houdini-205.md) — shares the Find Shortest Path technique used here for vines, applied there to jewelry stone-holder wire meshes.
 - [Environments in Houdini Part 4 - Vines, Rocks and Fog](environments-in-houdini-part-4---vines-rocks-and-fog.md) — related vine-generation technique (`pcopen()`-based attachment mask) from the same channel, useful to compare against this Find Shortest Path approach.
 - [VDB Procedural Cliffs](vdb-procedural-cliffs.md) — shares the same VDB surface-breakup technique referenced as "nothing new" in this video.
 - [Rock formations with heightfields](rock-formations-with-heightfields.md) — alternate heightfield-based approach to similar rock formation goals.

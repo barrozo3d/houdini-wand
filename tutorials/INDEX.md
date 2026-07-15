@@ -2254,9 +2254,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=wgStaCuEglI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.309
+- **Tags:** vex, find-shortest-path, vdb, cops, lab-sort, seamless-noise, jewelry, procedural-modeling
+- **Summary:** Five ring-making tips: sample_circle()-based circular point groups feeding Find Shortest Path for stone-holder wires, a Lab Sort node for reliable circular ordering before Skin, VDB Topology-to-SDF for shelling an open mesh, seamless Cops displacement noise via alpha-masked Rasterize, and a Whirling-Noise+Mountain+Mesh-Sharpen stone-cut combo.
 - **File:** tutorials/procedural-tips-and-tricks-in-houdini-205.md
 
 
