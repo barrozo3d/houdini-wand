@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=fBhtlmCGrK4
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.435"
+tags: [vdb, volumes, vex, noise, solaris, karma, environment, cliffs, rocks, scattering, instancing]
+extraction_status: complete
 frames_dir: tutorials/frames/vdb-procedural-cliffs/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # VDB Procedural Cliffs
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vdb-procedural-cliffs <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -94,30 +90,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/vdb-procedural-cliffs/frame_000.jpg
+- [0:40] tutorials/frames/vdb-procedural-cliffs/frame_001.jpg
+- [1:05] tutorials/frames/vdb-procedural-cliffs/frame_002.jpg
+- [1:40] tutorials/frames/vdb-procedural-cliffs/frame_003.jpg
+- [2:55] tutorials/frames/vdb-procedural-cliffs/frame_004.jpg
+- [4:00] tutorials/frames/vdb-procedural-cliffs/frame_005.jpg
+- [4:50] tutorials/frames/vdb-procedural-cliffs/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Sculpt rock/cliff surface detail procedurally by layering multiple noises inside a VDB Volume VOP (each noise distorting the previous one's position input), then take the result into Solaris for triplanar shading, displacement, fog, and instanced tree scattering.
 
 ### Summary
-[PENDING EXTRACTION]
+A simple box is extruded and beveled, then hit with a Mountain node to break up the base silhouette before converting to VDB. Inside the Volume VOP, four cascading noise layers each displace the incoming density (or distort the position feeding the next noise): a base Unified Noise displacement distorted by a secondary noise, a Manhattan Cellular pattern with an increased range mean for contrast, a third generic distortion layer, and a final "cuts" layer made by stretching frequency along one axis and rotating in X to carve directional grooves. After converting back to polygons, a mask is built from the white component of the normal (fed through a ramp and Bind Export) to drive tree scattering. In Solaris, the mesh gets a triplanar-based rock material with displacement and auto-bump, plus layered fog volumes (exported as a VDB and re-imported), while trees are brought in via Component Geometry with geometry variants and instanced with orientation/scale driven by the same normal-based mask.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model a rough base shape: Box → Extrude → Bevel → Mountain (to distort the silhouette before volume conversion).
+2. Convert to VDB via **VDB from Polygons**, setting the attribute name to `density` (not the default `surface`) and choosing a working resolution (kept low during setup for speed, raised for the final pass).
+3. Inside the **Volume VOP**, repeat the same pattern for each detail layer: take incoming position → feed to a noise (Unified Noise, Manhattan Cellular, etc.) → distort that main noise's position input with a second, secondary noise → add the result to density → multiply by a constant to control displacement amount.
+4. Layer 1 (base shape): Unified Noise on position, distorted by a secondary noise via Fit Range, added to position, scaled with a Multiply Constant.
+5. Layer 2 (contrast detail): Manhattan Cellular pattern with an increased Fit Range mean for more contrast, again distorted by a secondary noise.
+6. Layer 3: a different noise type/frequency, values shaped with Fit Range, distorting the position similarly.
+7. Layer 4 (directional cuts): stretch the noise frequency heavily along one axis and rotate the pattern in X, using Unified Noise (chosen over Turbulence for its wider noise-type variety) to carve elongated grooves into the volume.
+8. Convert the finished VDB back to polygons, then build a **scattering mask**: take the white component of the point normal attribute, feed it through a Ramp, and store it with a **Bind Export** so it's available downstream as a real attribute.
+9. In Solaris: import the mesh, apply a rock material using **Triplanar** nodes, add displacement and auto-bump for extra surface detail, then layer fog volumes (built the same way as covered in the studio's "3D environment" tutorial) — export the fog as a VDB file and re-import it through a Volume node for Karma to render it.
+10. Tree scattering: bring trees in via **Component Geometry** with the Geometry Variant workflow shown in earlier videos, feed the assets into an Instancer, and inside it scale points and drive orientation/scale using the previously created normal-based mask/pattern attribute.
+11. Finish with a light, camera, and render settings; final result shows a tall rock spire wrapped in fog with instanced trees along its top edges.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Box, Extrude, Bevel, Mountain, VDB from Polygons (density attribute, resolution/clipping bands), Volume VOP (cascading noise-distorts-noise pattern: Unified Noise, Manhattan Cellular, Fit Range, Multiply Constant, Add), Convert VDB / Convert to Polygons, Bind Export (mask attribute from normal), Ramp, Solaris/LOPs Triplanar material (displacement, auto-bump), fog volume export/import (VDB file round-trip, Volume node), Component Geometry + Geometry Variant setup, Instancer (orientation/scale from mask pattern), Karma render settings.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (VDB volume noise stacking is approachable once the "noise distorts noise" pattern is understood, though the full Solaris/fog/instancing pipeline assumes familiarity with the studio's other environment tutorials).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.435 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vdb, volumes, vex, noise, solaris, karma, environment, cliffs, rocks, scattering, instancing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Quick asset creation with VDB](quick-asset-creation-with-vdb.md) — same noise-distorts-noise VDB technique applied to a smaller rock asset with ZBrush/displacement-map finishing instead of Solaris scattering.
+- [Environments in Houdini Part 1 - Heightfields](environments-in-houdini-part-1---heightfields.md) — related environment-building pipeline referenced as the source of the fog-layering technique reused here.
+- [Rock Formations with Heightfields](rock-formations-with-heightfields.md) — alternate heightfield-based approach to similar rock/cliff surface detail.

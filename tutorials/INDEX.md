@@ -3274,9 +3274,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fBhtlmCGrK4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.435
+- **Tags:** vdb, volumes, vex, noise, solaris, karma, environment, cliffs, rocks, scattering, instancing
+- **Summary:** Sculpts a rock/cliff spire by cascading multiple noises inside a VDB Volume VOP (each distorting the next), then shades and scatters it in Solaris with triplanar materials, fog volumes, and instanced trees driven by a normal-based mask.
 - **File:** tutorials/vdb-procedural-cliffs.md
 
 
