@@ -807,3 +807,4 @@ vex, vdb, vellum, xyzdist, quaternion, compile-block, upholstery, couch, curve-m
 - [Sushi Modeling and Rendering in Houdini](sushi-modeling-and-rendering-in-houdini.md) — shares the Vellum Shape Match / grain-growth style de-intersection approach applied here to closing gaps between inflated cushion pieces.
 - [Vellum Typography in Houdini](vellum-typography-in-houdini.md) — another Vellum-balloon-style inflation setup using Plasticity and Pin-to-Target constraints for a controlled puffy result.
 - [Spiral Splash Tutorial in Houdini](spiral-splash-tutorial-in-houdini.md) — shares the from-scratch VEX quaternion/curve-parameter math approach used here for the ramp-driven profile assembly.
+- [Gestation Effect in Houdini. Scene Breakdown.](gestation-effect-in-houdini-scene-breakdown.md) — shares the Vellum-Configure-Balloon-as-simulation-tool approach used here, applied there to an organic cell-division effect.

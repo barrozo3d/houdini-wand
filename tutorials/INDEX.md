@@ -3314,9 +3314,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=JiQyPj-rLII
 - **Author:** Pixel In The Frame
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vellum, voronoi-fracture, pyro, particle-trails, vdb-blend-shapes, cell-division, gestation, pixel-in-the-frame
+- **Summary:** Builds an organic cell-division "gestation" effect combining Vellum cell-splitting simulation with per-cell Voronoi-style identity, driving four cached sub-systems (core smoke/particle-trail Pyro sim, ray-projected connective wires, a noise-blended VDB outer shell, and an ambient atmosphere) shaded with Fresnel-driven transmission/subsurface materials.
 - **File:** tutorials/gestation-effect-in-houdini-scene-breakdown.md
 
 

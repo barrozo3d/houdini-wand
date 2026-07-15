@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=JiQyPj-rLII
 author: Pixel In The Frame
 ingested: 2026-07-15
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vellum, voronoi-fracture, pyro, particle-trails, vdb-blend-shapes, cell-division, gestation, pixel-in-the-frame]
+extraction_status: complete
 frames_dir: tutorials/frames/gestation-effect-in-houdini-scene-breakdown/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 9
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Gestation Effect in Houdini. Scene Breakdown.
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py gestation-effect-in-houdini-scene-breakdown <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -199,30 +195,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:29] tutorials/frames/gestation-effect-in-houdini-scene-breakdown/frame_000.jpg
+- [2:01] tutorials/frames/gestation-effect-in-houdini-scene-breakdown/frame_001.jpg
+- [2:39] tutorials/frames/gestation-effect-in-houdini-scene-breakdown/frame_002.jpg
+- [4:44] tutorials/frames/gestation-effect-in-houdini-scene-breakdown/frame_003.jpg
+- [5:48] tutorials/frames/gestation-effect-in-houdini-scene-breakdown/frame_004.jpg
+- [9:20] tutorials/frames/gestation-effect-in-houdini-scene-breakdown/frame_005.jpg
+- [11:16] tutorials/frames/gestation-effect-in-houdini-scene-breakdown/frame_006.jpg
+- [12:11] tutorials/frames/gestation-effect-in-houdini-scene-breakdown/frame_007.jpg
+- [14:06] tutorials/frames/gestation-effect-in-houdini-scene-breakdown/frame_008.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A multi-layered organic cell-division ("gestation") effect built by combining **Vellum cell-splitting simulation** (extending a known Vellum-cloth-cell-division technique from another tutorial) with **Voronoi Fracture**-driven per-cell identity, then building four independently-cached sub-systems — an inner-core smoke/particle system, connective "umbilical" wire lines between core and shell, an outer cell-shell VDB with blended noise levels, and an ambient volumetric atmosphere — all referencing a shared base geometry cache and lit/shaded with Fresnel-driven transmission/subsurface materials.
 
 ### Summary
-[PENDING EXTRACTION]
+The base simulation follows a known Vellum-based cell-splitting method (referencing Tim van Helsdingen's original tutorial on cell-splitting with the Vellum solver) using **Vellum Configure Balloon** for constraints and a pressure-group output, with rest-length values controlled live from a top network via a Vellum Constraint Properties node. Key deviations from the reference technique: Group/Split nodes separate "preserved" cells from "dividing" ones for more stable results, and a **cell ID primitive attribute** is added early so downstream systems can seed randomness and copy operations per-cell. After importing from DOPs, the Velocity attribute is preserved (scaled down) and used later as an initial velocity for smaller simulations, keeping cell-division motion feeling continuous. Random-per-cell coloring (via a Color node's "random from attribute" on the cell-ID primitive class) is used throughout for visual debugging. Following a **Boolean Union** (to eliminate self-intersection where cells touch) and normal recalculation, this reference geometry feeds every other sub-system in the network. The **inner core** starts from per-cell centroid points (extracted in a for-each loop keyed by cell ID), which get an incrementing "life" attribute, p-scale, and parent-ID, are copy-to-points'd with spheres, and receive a **Point Velocity** node's central-difference-approximated velocity. A **for-loop-based noise displacement** uses Flow Noise (absolute-valued to avoid negative numbers, fed through Fit Range/Clamp) driven by time (scaled via a multiply-constant node for animation speed) to organically deform the point cloud before it's converted to a density VDB via **Point VDB source** — feeding a **Pyro Solver** (temperature and flame fields disabled since unused, high dissipation to keep smoke tight, disturbance+turbulence driven by the density field, small viscosity) that's cached as a 16-bit-float VDB. This core-smoke result splits into two further branches: one clamps to high-density regions only and is rendered as smoke trapped inside the cell geometry; the other scatters points inside the clamped density, runs a **POP Network** (Volume-based particle birth, velocity read from the pyro sim, Pop Kill removing zero-speed particles, per-ID velocity recalculation) into a **particle-trail** pass (sub-stepped, scale-along-length, p-scale driven by a "weeds" attribute) that's converted to a VDB from particles. A second parallel branch prunes low-density regions, converts to SDF, resamples, scatters points using density as p-scale, and rebuilds a smoothed SDF volume — unioned with the first branch's SDF (float-onto-first-input) so a later **level-set noise offset** (via VDB Activate to expand voxels, Closest Point computation, then deactivating unneeded voxels afterward to keep only the surface shell) can add organic surface detail before converting to a final polygon mesh with cached velocity transfer. A near-identical **secondary Pyro sim** (lower dissipation, otherwise similar settings) drives a ring of smaller particles around the core, both Pyro solves colliding against an inverted-sign VDB-from-Polygons collision volume of the cell geometry (so particles collide from the *inside*) generated with Field Interior checked. The **connective "umbilical" wires** between core and outer shell take the earlier core spheres and outer cell geometry as inputs: cell ID is promoted point→primitive for later for-each iteration, then inside the loop, normals are calculated on the center sphere, a few points are scattered on its surface (using a spare-input detail attribute for the iteration/seed expression), each point is ray-projected onto the outer surface along its normal, and a polyline is built between the pairs — duplicated up to 4× per line with slight positional offsets, resampled for resolution, and displaced with Flow-Noise-driven Attribute VOP (ramp-controlled) before a final smoothing pass. A curve-view-based **grow-forward-then-backward animation** drives the connector reveal, finished with Poly Wire (shell) and Clean SOP (removing degenerate primitives). The **outer cell shell** itself is built via Poly Extrude → SDF conversion → smoothing/separation → VDB Analysis (closest point) → unplugged volumes → more smoothing → layered Flow Noise (one absolute-valued for a second detail level) → voxel activation/blast cleanup, with an animated **VDB Blend Shapes** node mixing between two SDF states over time for a subtle surface transition; a final VDB Analysis pass computes curvature and transfers it to a point attribute (via Attribute from Volume) for later shading use. The overall **atmosphere** is a simple box converted to a constant VDB with the cell-cluster volume subtracted out, giving ambient volumetric density around (not inside) the organism. Lighting uses a Dome Light with a studio HDRI plus a strong top light and a weak three-quarter fill; both inner and outer cell surfaces use Fresnel-driven opacity, with the connective wires on a Transmission shader, the cell body on combined Transmission + Subsurface (opacity ~0.6), small particles on a Sublayer shader, and the body's smoke layer intentionally absorbing some light to help ground the core.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build the base cell-division simulation using **Vellum Configure Balloon** (constraints, pressure-group output) following an existing cell-splitting-with-Vellum reference technique, with rest-length controlled live via Vellum Constraint Properties.
+2. Deviate from the reference by separating preserved vs. dividing cells with Group/Split nodes for stability, and adding a **cell ID primitive attribute** early for later seed/copy operations; preserve and scale down the DOP-imported Velocity attribute for reuse as initial velocity downstream.
+3. Run a **Boolean Union** on the simulated cells (removing self-intersection overlap) and recompute normals — this becomes the shared reference geometry for every downstream sub-system.
+4. **Inner core:** extract per-cell centroid points in a for-each loop (keyed by cell ID), build an incrementing "life" attribute, p-scale, and parent-ID, copy spheres to points, transfer velocity via Point Velocity (central-difference), and displace with a for-loop Flow-Noise pass (absolute-valued, Fit Range/Clamp, time-driven for animation).
+5. Convert the displaced point cloud to a density VDB (Point VDB source) and simulate with a **Pyro Solver** (temperature/flame disabled, high dissipation, disturbance+turbulence, small viscosity); cache as 16-bit-float VDB.
+6. Split the core-smoke result: one branch clamps to high-density-only for in-cell rendered smoke; the other scatters points, runs a **POP Network** (volume-birth, pyro-sourced velocity, Pop Kill on zero-speed, per-ID velocity recalc) into a particle-trail pass converted to a VDB.
+7. In a parallel branch, prune/convert/resample to SDF, scatter points using density as p-scale, rebuild a smoothed SDF, union with the first branch's SDF, then use **VDB Activate** (voxel expansion) + Closest Point to apply a level-set noise offset for organic surface detail, deactivating unneeded voxels afterward, and convert to final polygons with cached velocity transfer.
+8. Run a **secondary Pyro sim** (lower dissipation) for a ring of smaller particles around the core; both Pyro sims collide against an **inverted-sign VDB collision volume** (Field Interior checked) so particles collide from inside the cell geometry.
+9. **Connective wires:** promote cell ID point→primitive, then per cell-ID for-each iteration: calculate normals on the center sphere, scatter a few surface points (seeded via a spare-input detail-attribute expression), ray-project each point onto the outer cell surface, and build polylines between the pairs.
+10. Duplicate each polyline up to 4× with slight offsets, resample for resolution, displace with a Flow-Noise Attribute VOP (ramp-controlled), smooth, then drive a **curve-view-based grow-forward/backward animation** and finish with Poly Wire + Clean SOP.
+11. **Outer shell:** Poly Extrude → SDF conversion → smoothing/separation → VDB Analysis (closest point) → layered Flow Noise (two detail levels) → voxel activation/blast cleanup → animated **VDB Blend Shapes** (time-driven mix parameter between two SDF states) → resample/convert to polygons/smooth; add a final VDB Analysis curvature pass transferred to a point attribute for shading.
+12. Build the **atmosphere** as a constant-VDB box with the cell-cluster volume subtracted; light with a Dome Light (studio HDRI) + strong top light + weak 3/4 fill; shade cell surfaces with Fresnel-driven opacity (Transmission for wires, Transmission+Subsurface for the cell body at ~0.6 opacity, Sublayer for small particles).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Vellum Configure Balloon, Vellum Constraint Properties, Group/Split (preserved vs. dividing cells), cell-ID primitive attribute, Boolean (Union), Normal, For-Each loop (keyed by cell ID), Point Velocity (central difference), Flow Noise (`abs()`, Fit Range, Clamp, time-driven), Point VDB source, Pyro Solver (temperature/flame disabled, dissipation, disturbance/turbulence, viscosity), 16-bit-float VDB caching, POP Network (Volume birth, Pop Kill, per-ID velocity recalc), particle trail (sub-steps, scale-along-length, p-scale from custom attribute), VDB from Particles, VDB Activate (voxel expansion), Closest Point (VDB Analysis), VDB Blend Shapes (animated mix), VDB from Polygons (inverted-sign, Field Interior collision), Ray (normal-projection), Poly Extrude, Attribute VOP (Flow Noise, ramp-controlled displacement), Poly Wire, Clean SOP, Attribute from Volume (curvature transfer), Fresnel-driven opacity shading, Transmission/Subsurface/Sublayer shaders, Dome Light + studio HDRI.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines Vellum cell-division simulation, multi-branch Pyro/particle systems, VDB level-set noise/blend-shape techniques, and a from-scratch connective-wire generation system into a single cohesive organic effect).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, voronoi-fracture, pyro, particle-trails, vdb-blend-shapes, cell-division, gestation, pixel-in-the-frame
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vellum Fundamentals - Week 5: Cell Splitting Part 1](vellum-fundamentals---week-5-cell-splitting-part-1.md) — the referenced original tutorial on Vellum-based cell-splitting that this effect builds and extends upon.
+- [Vellum Fundamentals - Week 5: Cell Splitting Part 2](vellum-fundamentals---week-5-cell-splitting-part-2.md) — continuation of the referenced cell-splitting technique.
+- [Procedural Modeling with VEX, VDB and Vellum](procedural-modeling-with-vex-vdb-and-vellum.md) — shares the Vellum-Configure-Balloon-as-modeling/simulation-tool approach used here.
