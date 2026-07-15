@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=G7SnVk4Jj8U
 author: Tim van Helsdingen
 ingested: 2026-07-15
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vellum, voronoi-fracture, multisolver, sop-solver, rest-attribute, triplanar, cell-division, vellum-fundamentals, tim-van-helsdingen]
+extraction_status: complete
 frames_dir: tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 14
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Vellum Fundamentals - Week 5: Cell Splitting Part 2
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vellum-fundamentals---week-5-cell-splitting-part-2 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -502,30 +498,63 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [2:16] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_000.jpg
+- [3:52] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_001.jpg
+- [4:57] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_002.jpg
+- [6:51] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_003.jpg
+- [10:00] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_004.jpg
+- [12:04] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_005.jpg
+- [16:39] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_006.jpg
+- [19:08] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_007.jpg
+- [20:39] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_008.jpg
+- [24:03] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_009.jpg
+- [36:01] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_010.jpg
+- [38:44] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_011.jpg
+- [48:31] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_012.jpg
+- [53:41] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-2/frame_013.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+The direct continuation of Part 1: build a full **Vellum cell-splitting/division effect** by (1) prototyping a single split-and-inflate cycle in plain SOPs using **Voronoi Fracture** + Remesh + Peak (fake inflation offset), (2) wiring that prototype into a Multi-Solver-driven dual SOP-Solver pair (one for geometry, one for constraint geometry) so a fractured piece can swap in mid-simulation on the same timestep as its matching new constraints, (3) driving *when* each piece splits with a per-primitive **age attribute + per-class random threshold** (rather than splitting everything simultaneously), and (4) finishing with rest-position caching for stable triplanar texturing and an optional instancing pass (via the author's paid Path Sequencer HDA) to scatter/time-offset the cached splitting-cell animation onto arbitrary target geometry.
 
 ### Summary
-[PENDING EXTRACTION]
+Work begins outside the DOP network to prototype the actual "split" operation cheaply: a sphere is Scattered with 2 points and run through **Voronoi Fracture**, seeded by `$F` so the fracture direction changes if re-evaluated; an Exploded View confirms it cleanly separates into two convex halves. Since a Voronoi-fractured half is hollow on the cut face, a **Remesh** (smaller target size for extra resolution) is needed before Vellum constraints can meaningfully inflate it as a soft "cell" — inflating via increased Rest Length otherwise causes the flat interior faces to interpenetrate, which is fixed cheaply with a **Peak** node (equivalent to `P += N * amount`, buildable by hand in a wrangle) that pushes the surface out along its normal before/after inflation, plus a light Smooth pass for a rounder result (over-smoothing was found to break the shape, so it's kept subtle). Nesting this split operation is demonstrated directly in SOPs first: a **Connectivity** node (primitive class) lets a For-Each loop iterate per connected piece and re-run the same Voronoi-Fracture-and-remesh logic on each existing piece independently, proving the technique composes recursively before any DOP work begins. Moving into the DOP network, the existing Multi-Solver (Vellum Solver → SOP Solver on Geometry → SOP Solver on Constraint Geometry, evaluated left-to-right, primary solver index 0) is where the real complexity lives: **two parallel SOP Solvers** are built — one processing the live simulated geometry, one processing the live constraint geometry — and inside each, a duplicate copy of the prototype fracture setup is built off to the side (built from a Vellum Configure Balloon → Vellum Pack, producing matching split-geometry and split-constraint outputs) so that, at the moment a piece should divide, a **Switch** node (keyed initially on a hardcoded `$F` threshold, later on a per-primitive computed condition) swaps the *live simulated* piece for its *freshly-fractured* replacement — critically, both the geometry-stream Switch and the constraint-stream Switch must fire on exactly the same condition/frame or Vellum will immediately break (the same lesson from Part 1, now applied to live re-fracturing instead of simple deletion). A modulo-based frame expression (`$F % 30 == 1`, wrapped in a second frame-delay Switch to skip the very first frames) is used to test periodic splitting before real per-piece logic is added. To actually inflate the newly-split pieces, the constraint network's pressure group is explicitly named ("pressure") on both the original and prototype fracture setups, then a **Vellum Constraint Properties** node (Particle Forces category, running over the pressure group) sets **Rest Length** directly (a fixed absolute value, producing uniform inflation regardless of original size) as an alternative to **Rest Length Scale** (a multiplier on the existing rest length, which instead makes bigger fragments inflate proportionally bigger) — the choice between the two depends on whether uniform or size-proportional growth is desired. Post-fracture pieces initially render with broken shading because their normals are stale from before the remesh; recomputing **Normal** inside the solver (after the fracture swap, not before) fixes this. To avoid every piece splitting in perfect lockstep, a primitive **age attribute** (`f@age += $TimeInc/substeps`, matching Part 1's substep-normalized pattern) combines with a **per-class random value** (`random(@class + $F)`, critically re-seeded by frame so the random doesn't stay frozen once computed) fit into a controllable range, compared against the accumulating age to produce a boolean **"my_split"** attribute — pieces only swap to their fractured replacement when `age >= random_threshold` AND the random roll clears a secondary probability gate (e.g. `rand > 0.3`), giving organic, staggered division timing instead of a synchronized pulse; `age` (and `my_split`) reset to 0 immediately after a piece divides so newly-created children start their own independent countdown. Because **Switch VOP/Switch-If nodes referencing live attribute values cannot run inside a Compile Block**, the age/random-threshold logic is deliberately isolated in its own wrangle/Switch pair outside the compiled fracture-prototype network, and the resulting `my_split`/`age` attributes are explicitly **transferred from the geometry stream onto the constraint stream** (via Object Merge + Attribute Copy) so both SOP Solvers can independently but consistently decide whether to fire the swap that frame. Once the full splitting behavior works, the simulation is capped to stop after a fixed frame (`$F < 250` gating the Solver's Enable toggle) and cached out via a **File Cache**/DOP I/O importing both the Vellum object's regular geometry and constraint-geometry data streams. For downstream rendering, a **rest attribute** is written at the moment of each fracture (capturing the "at-creation" position) so later **Triplanar/MaterialX texturing** can reference a stable per-piece UV-like coordinate space instead of the constantly-changing live position — demonstrated by feeding the rest position into a Primvar Reader inside a Triplanar node's projection input. A lightweight **proxy geometry** (a simple sphere Ray-projected to match the actual cached shape's silhouette) is cached separately to keep viewport/instancing preview fast, alongside a stripped-down "render geo" cache (attribute-deleted down to just position + rest) for the final heavy geometry. Finally, the cached cell-splitting animation is instanced onto arbitrary target geometry (e.g. scattered points from a Points-from-Volume on a target shape) using the author's paid **Path Sequencer** HDA toolset (TVH Initialize Attributes → TVH Geo Sequence pointed at the cached geo file → TVH Scale Instances → TVH Time Instances for a randomized start-offset per point) — imported into Solaris via a SOP Import with the **Packed Primitive Point Instance** primitive-definition setting (preserving per-point geometry-sequence instancing) and lit/shaded with a quick Principled Shader or a full Triplanar-based Material Library setup referencing the cached rest attribute.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Prototype the split-and-inflate cycle in plain SOPs: Scatter 2 points on a sphere, **Voronoi Fracture** (seed via `$F` for variation), Exploded View to confirm clean separation into convex halves.
+2. **Remesh** each half (smaller target size for resolution) since the flat interior cut-face has no useful geometry for inflation; apply Vellum constraints and increase Rest Length to inflate — fix resulting self-intersection with a **Peak** (normal-offset push) plus a subtle Smooth pass (over-smoothing breaks the shape).
+3. Prove the technique composes recursively: use **Connectivity** (primitive class) + a For-Each loop in plain SOPs to re-run the same fracture-and-remesh logic on each already-split piece independently.
+4. In the DOP network's existing **Multi Solver** (Vellum Solver → SOP Solver on Geometry → SOP Solver on Constraint Geometry), build **two parallel duplicate fracture-prototype networks** (Vellum Configure Balloon → Vellum Pack, producing matching split-geometry/split-constraint outputs) inside each SOP Solver.
+5. Add a **Switch** (initially keyed on a hardcoded `$F` threshold, wrapped in a second frame-delay Switch to skip early frames) in both the geometry SOP Solver and the constraint SOP Solver, swapping the live simulated piece for its freshly-fractured replacement **on the identical condition/frame** in both streams simultaneously — mismatched timing between the two streams breaks Vellum immediately.
+6. Test periodic splitting with a modulo frame expression (`$F % 30 == 1`) before building real per-piece split logic.
+7. Name the constraint network's pressure group explicitly ("pressure") on both the original and prototype fracture setups; use **Vellum Constraint Properties** (Particle Forces, run over the pressure group) with either a fixed **Rest Length** (uniform inflation) or a **Rest Length Scale** multiplier (size-proportional inflation) depending on the desired look.
+8. Recompute **Normal** inside the solver *after* the fracture swap (not before) to fix broken shading on freshly-split pieces whose normals are stale from pre-remesh geometry.
+9. Build organic staggered-split timing: accumulate a primitive **age attribute** (`f@age += $TimeInc/substeps`), compute a per-class, per-frame-reseeded random threshold (`random(@class + $F)`, fit into a usable range), and set a boolean **`my_split`** attribute when age crosses the threshold *and* a secondary probability gate passes (e.g. `rand > 0.3`) — reset both `age` and `my_split` to 0 immediately after a piece divides.
+10. Keep the age/random/Switch logic **outside the Compile Block** (Switch-If nodes with live attribute conditions can't compile), and explicitly **transfer `my_split`/`age` from the geometry stream to the constraint stream** (Object Merge + Attribute Copy) so both SOP Solvers agree on the same frame's split decision.
+11. Cap the simulation duration (`$F < 250` gating the solver's Enable toggle) and cache both the Vellum object's geometry and constraint-geometry streams via File Cache/DOP I/O.
+12. Write a **rest attribute** at fracture time (capturing the "at-creation" position) for stable Triplanar/MaterialX texturing independent of the ever-changing live position; cache a lightweight **proxy geometry** (Ray-projected sphere) for fast preview alongside a stripped-down "render geo" cache.
+13. (Optional) Instance the cached cell-splitting animation onto arbitrary target geometry using the paid **Path Sequencer** HDA toolset (Initialize Attributes → Geo Sequence → Scale Instances → Time Instances for randomized start offsets), imported into Solaris via SOP Import with **Packed Primitive Point Instance** enabled.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Scatter, Voronoi Fracture (`$F`-seeded), Exploded View, Remesh, Peak (normal-offset inflation fix), Smooth, Connectivity (primitive class), For-Each loop, Multi Solver (Vellum Solver + dual SOP Solver chain), SOP Solver (Geometry stream, Constraint Geometry stream), Vellum Configure Balloon, Vellum Pack, Switch (frame-threshold and frame-delay variants), pressure-group naming, Vellum Constraint Properties (Particle Forces: Rest Length vs. Rest Length Scale), Normal (post-fracture recompute), age-accumulation wrangle (`$TimeInc`/substeps), per-class/per-frame random wrangle (`random(@class + $F)`, fit range), boolean `my_split` attribute wrangle, Object Merge + Attribute Copy (cross-stream attribute sync), Compile Block (exclusion of Switch-If logic), solver Enable toggle (`$F < 250`), File Cache / DOP I/O (geometry + constraint-geometry streams), rest attribute (fracture-time position capture), Ray (proxy-geometry projection), Attribute Delete (render-geo stripping), Triplanar/MaterialX (Primvar Reader on rest position), Path Sequencer HDA (Initialize Attributes, Geo Sequence, Scale Instances, Time Instances), Solaris SOP Import (Packed Primitive Point Instance).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (correctly synchronizing dual SOP-Solver streams for live re-fracturing, isolating Compile-Block-incompatible Switch logic, and building organic per-piece split timing via age/random thresholds are all non-trivial, tightly-coupled Vellum/DOP techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, voronoi-fracture, multisolver, sop-solver, rest-attribute, triplanar, cell-division, vellum-fundamentals, tim-van-helsdingen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vellum Fundamentals - Week 5: Cell Splitting Part 1](vellum-fundamentals---week-5-cell-splitting-part-1.md) — the foundational video this one directly continues, covering the core geometry/constraint synchronized-removal technique this splitting effect depends on.
+- [Gestation Effect in Houdini. Scene Breakdown.](gestation-effect-in-houdini-scene-breakdown.md) — builds an organic effect on top of this exact cell-splitting technique, explicitly referencing this two-part series as its base method.
+- [Procedural Modeling with VEX, VDB and Vellum](procedural-modeling-with-vex-vdb-and-vellum.md) — shares the Vellum-Configure-Balloon-as-simulation-tool approach used here.

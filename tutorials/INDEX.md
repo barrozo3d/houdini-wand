@@ -3334,9 +3334,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=G7SnVk4Jj8U
 - **Author:** Tim van Helsdingen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vellum, voronoi-fracture, multisolver, sop-solver, rest-attribute, triplanar, cell-division, vellum-fundamentals, tim-van-helsdingen
+- **Summary:** Completes the cell-splitting effect: prototypes a Voronoi-Fracture-and-remesh split cycle in SOPs, wires it into dual synchronized SOP Solvers under a Multi Solver so fractured pieces swap in mid-sim on the same timestep as new constraints, drives per-piece split timing with an age + per-class random threshold, and finishes with rest-attribute caching for stable triplanar texturing plus optional Path Sequencer instancing.
 - **File:** tutorials/vellum-fundamentals---week-5-cell-splitting-part-2.md
 
 ---
