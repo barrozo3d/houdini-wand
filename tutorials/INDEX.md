@@ -1594,9 +1594,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=DV0ABu_-yvc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0.359
+- **Tags:** rest-attribute, clip-by-attribute, uvdist, pack-inject, rbd, cops, sushi, tips-and-tricks
+- **Summary:** Covers a rest-attribute-driven random Clip trick for seed-controlled per-primitive splitting, a uvdist()-based edge-bleed-free texture-resurrection technique for a Cops salmon pattern, and an RBD pack-transform/Pack Inject workflow for swapping low-poly simulated avocado pieces with high-poly geometry.
 - **File:** tutorials/tips-and-tricks-to-level-up-your-houdini-skills.md
 
 

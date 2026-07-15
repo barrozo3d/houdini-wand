@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=DV0ABu_-yvc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0.359"
+tags: [rest-attribute, clip-by-attribute, uvdist, pack-inject, rbd, cops, sushi, tips-and-tricks]
+extraction_status: complete
 frames_dir: tutorials/frames/tips-and-tricks-to-level-up-your-houdini-skills/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Tips and Tricks to level up your Houdini Skills
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py tips-and-tricks-to-level-up-your-houdini-skills <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -137,30 +133,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/tips-and-tricks-to-level-up-your-houdini-skills/frame_000.jpg
+- [2:10] tutorials/frames/tips-and-tricks-to-level-up-your-houdini-skills/frame_001.jpg
+- [3:20] tutorials/frames/tips-and-tricks-to-level-up-your-houdini-skills/frame_002.jpg
+- [5:00] tutorials/frames/tips-and-tricks-to-level-up-your-houdini-skills/frame_003.jpg
+- [6:40] tutorials/frames/tips-and-tricks-to-level-up-your-houdini-skills/frame_004.jpg
+- [8:00] tutorials/frames/tips-and-tricks-to-level-up-your-houdini-skills/frame_005.jpg
+- [9:30] tutorials/frames/tips-and-tricks-to-level-up-your-houdini-skills/frame_006.jpg
+- [10:50] tutorials/frames/tips-and-tricks-to-level-up-your-houdini-skills/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Grab-bag of production tips spanning random-orientation-controlled Clip cuts, a UV-distance-based texture-resurrection trick (avoiding Restore Geometry's edge-bleed problem) for a salmon-pattern texture, and an RBD-to-high-poly-swap workflow using rest attributes and Pack Inject for a sushi/avocado scene.
 
 ### Summary
-[PENDING EXTRACTION]
+The first tip splits primitives in half at random orientations using rest-space cutting: after isolating target primitives, a per-primitive random-direction vector is built with `sampleDirectionUniform()` seeded by primitive number plus a random offset (giving a repeatable, seed-controllable "each 90 degrees" random rotation), then a **rest attribute** is created by getting each primitive's bounding-box center, storing the current position as rest, and subtracting the center to move every primitive to the world origin — applying the earlier random-orientation normal as a rotation on that centered rest position means primitives are now split cleanly by **Clip using the rest attribute** (rather than live position), so the cut always happens through the world-center regardless of where each primitive actually sits in the scene, with full seed control over both the cut angle and result. The second tip covers a "resurrected" salmon-pattern texture built in Cops for a sushi piece: instead of using the default **Restore Geometry** node (which introduces problematic edge bleed at UV boundaries), the tutorial resurrects the geometry's original 3D position using **`uvdist()`** together with `primuv()` to sample from the source UVs — since this samples via UV distance rather than direct restoration, it naturally provides some expansion/padding along seam edges, eliminating the edge-bleed artifacts that Restore Geometry produces (even setting Restore Geometry's padding to a very low value still shows minor issues that the `uvdist()` approach avoids). The pattern itself is built by extracting an X-axis mask via **relative point bounding box**, using that mask to rotate the restored 3D position around the Y axis (creating a pattern that gets progressively more rotated moving along X), then feeding that rotated position into a `sin()`-based scene builder (`abs()`'d and scaled by pi for correct repetition count) with noise distortion blended in for the salmon striations, followed by a Worley/cellular-noise-blended albedo and a separate normal-map pass from the black-and-white version. The third tip covers replacing low-poly RBD-simulated avocado pieces with high-poly geometry post-simulation: since RBD requires **packed objects**, the pieces are packed/instanced at the Copy-to-Points stage (capturing the pre-sim transform), RBD computes and caches that pack transform through simulation, then afterward the original high-poly pieces (Pick, Subdivide, Mesh Sharpen) are re-packed using a `name` attribute (promoted from primitive to point) and swapped in via **Pack Inject**, which replaces the low-poly simulated geometry with the high-poly version while reusing the exact same simulated transforms — critically requiring the packed geometry's intrinsic transform attributes (a proper 4×4 pack transform with translation/rotation/scale, visible when inspecting the primitive intrinsics) to be present for Pack Inject to work correctly.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Rest-space random Clip:** isolate target primitives, generate a per-primitive random-direction vector via `sampleDirectionUniform()` seeded by primitive number + a random offset for repeatable, seed-controllable rotation increments (e.g. every 90°).
+2. Build a **rest attribute**: get each primitive's bounding-box center, save the current position as `rest`, then subtract the center from `rest` to move every primitive to the world origin.
+3. Apply the random-orientation vector as a rotation on the centered rest position, then feed that `rest` attribute (not live position) into **Clip** — the cut always passes through world-center for each primitive regardless of its actual scene position, with full seed control.
+4. **Salmon-pattern texture (Cops):** instead of Restore Geometry (which causes edge bleed at UV seams), resurrect the original 3D position using **`uvdist()`** combined with `primuv()` sampling from the source UVs — this naturally provides seam padding/expansion and avoids the bleed artifacts.
+5. Build an X-axis mask via **relative point bounding box**, use it to rotate the restored 3D position around Y (progressive rotation along X) before feeding it into the pattern generator.
+6. Generate the pattern with `sin()` (`abs()`'d, scaled by pi for repetition count) on the rotated position, blend in noise distortion for the salmon-striation look, then layer a Worley/cellular noise for the final albedo and a separate black-and-white pass for the normal map.
+7. **RBD-to-high-poly swap:** pack/instance the low-poly pieces at the Copy-to-Points stage (so RBD has valid packed objects and captures the pre-sim transform).
+8. Run the RBD simulation and cache the resulting pack transforms as usual.
+9. Prepare the original high-poly geometry (Pick, Subdivide, Mesh Sharpen), promote a matching `name` attribute from primitive to point, and re-pack it.
+10. Use **Pack Inject** (matched by the `name` attribute) to swap the low-poly simulated geometry for the high-poly version while reusing the exact simulated transforms — requires the packed geometry's intrinsic 4×4 pack-transform attributes (translation/rotation/scale) to be present and correct.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Primitive isolation + `sampleDirectionUniform()` (seeded random direction), rest-attribute wrangle (bounding-box-center-relative position), Clip (rest-attribute-driven cut), Cops: `uvdist()` + `primuv()` (UV-distance-based geometry resurrection, edge-bleed-free alternative to Restore Geometry), relative point bounding box (X mask), Y-axis rotation of restored position, `sin()`/`abs()` pattern wrangle, Worley/cellular noise blend, black-and-white normal-map pass, Copy to Points (pack/instance for RBD), RBD packed-object simulation + pack-transform caching, Pick, Subdivide, Mesh Sharpen, `name` attribute promotion (primitive→point), Pack Inject (transform-preserving high/low-poly swap).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the rest-attribute Clip trick, the uvdist()-based edge-bleed-free texture resurrection, and the RBD pack-transform/Pack-Inject swap workflow are all non-obvious, production-grade techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0.359 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+rest-attribute, clip-by-attribute, uvdist, pack-inject, rbd, cops, sushi, tips-and-tricks
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Sushi Modeling and Rendering in Houdini](sushi-modeling-and-rendering-in-houdini.md) — the full build video for this same sushi/avocado scene, covering Vellum Shape Match grain-growth and the Transform Pieces low/high-poly swap in more depth.
+- [Wood Barrel Texturing in Cops](wood-barrel-texturing-in-cops.md) — shares the exact same uvdist()-based attribute-resurrection wrangle technique, applied there to wood-grain texturing.
+- [Roasting my Houdini Setups #1](roasting-my-houdini-setups-1.md) — companion "lessons learned / better workflows" tips video from the same channel, focused on avoiding unnecessary for-loops.
