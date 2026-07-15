@@ -144,3 +144,4 @@ uvs, solaris, opacity-to-mesh, make-transform, rest-position, time-dependency, k
 ## Related Tutorials
 - [Optimizing Baked Trees with Instancing in Houdini](optimizing-baked-trees-with-instancing-in-houdini.md) — shares the same author's Opacity-to-Mesh HDA/workflow referenced here for foliage conversion.
 - [Interactive Tools with Houdini Python States - Draw Pts on Geo](interactive-tools-with-houdini-python-states-draw-pts-on-geo.md) — related point-placement + copy-to-geometry tool-building technique, relevant to the unfinished texture-projector tool mentioned here.
+- [Volume rays in Cops for Houdini 21](volume-rays-in-cops-for-houdini-21.md) — shares an efficiency-focused HDA update (xyzdist()+Attribute Interpolate replacing a manual transform-matrix pipeline) in a similar performance-tips spirit.

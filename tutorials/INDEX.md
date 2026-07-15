@@ -1474,9 +1474,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=nCS6sy53_aw
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0.622
+- **Tags:** cops, hda, god-rays, luma-key, compositing, matrix-color-transform, tool-development, houdini-21
+- **Summary:** Demos a custom Cops "Volume Rays" HDA that luma-keys the brightest image areas and streaks them into animatable god-ray/light-shaft effects with flicker/glow controls and auto RGB/mono/multi-channel detection, plus a cheaper xyzdist()+Attribute-Interpolate replacement for a companion Matrix Color Transform tool's per-point transform-matrix pipeline.
 - **File:** tutorials/volume-rays-in-cops-for-houdini-21.md
 
 

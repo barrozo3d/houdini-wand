@@ -176,3 +176,4 @@ hda, python-states, cops, texture-projection, uv-less, tool-development, product
 - [Quick CG integration with Houdini and Karma](quick-cg-integration-with-houdini-and-karma.md) — uses this exact Texture Projection tool to add an Houdini logo decal onto a bottle for a CGI-integration render.
 - [Shoe Laces in Houdini VEX and Vellum](shoe-laces-in-houdini-vex-and-vellum.md) — shares the same Python-States-driven custom viewport-interaction HDA approach for artist-friendly placement tools.
 - [Interactive tools with Houdini Python States - draw pts on geo](interactive-tools-with-houdini-python-states-draw-pts-on-geo.md) — companion Python States tool-development tutorial covering the underlying interaction pattern used by tools like this one.
+- [Volume rays in Cops for Houdini 21](volume-rays-in-cops-for-houdini-21.md) — another custom Cops-backed HDA tool demo from the same channel.
