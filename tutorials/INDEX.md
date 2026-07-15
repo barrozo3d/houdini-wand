@@ -3299,6 +3299,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial.md
 
+
+### Learning Vex - Recreating attribute reorient sop
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=TAWtLzrITOY
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/learning-vex---recreating-attribute-reorient-sop.md
+
 ---
 
 ## Tag Reference
