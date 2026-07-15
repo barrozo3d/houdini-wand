@@ -1444,9 +1444,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ITq2EBJ5nIw
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0.303
+- **Tags:** rbd, glue-constraints, voronoi-fracture, convex-hull-collision, karma-xpu, mardini, barrel, animation
+- **Summary:** Breaks down a glass barrel rolling down stairs and shattering: custom-normal thick-wall modeling to avoid extrude self-intersection, an object-attached Glue-constraint-strength trigger wrangle for precise mid-sim breaking, simplified box/Voronoi collision proxies, and Transform Pieces to swap full-detail geometry back onto the simulated fracture pieces.
 - **File:** tutorials/rbd-procedural-animations-in-houdini-mardini-2026.md
 
 

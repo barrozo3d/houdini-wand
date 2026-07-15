@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ITq2EBJ5nIw
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0.303"
+tags: [rbd, glue-constraints, voronoi-fracture, convex-hull-collision, karma-xpu, mardini, barrel, animation]
+extraction_status: complete
 frames_dir: tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 12
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # RBD Procedural Animations in Houdini | Mardini 2026
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py rbd-procedural-animations-in-houdini-mardini-2026 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -281,30 +277,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:55] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_000.jpg
+- [2:10] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_001.jpg
+- [3:40] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_002.jpg
+- [5:30] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_003.jpg
+- [7:00] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_004.jpg
+- [8:20] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_005.jpg
+- [9:50] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_006.jpg
+- [11:20] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_007.jpg
+- [13:00] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_008.jpg
+- [14:30] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_009.jpg
+- [16:10] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_010.jpg
+- [17:40] tutorials/frames/rbd-procedural-animations-in-houdini-mardini-2026/frame_011.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Breakdown of a Mardini "day collab" animation: a glass barrel that rolls down stairs and shatters, built with custom-normal-based thick-wall modeling (avoiding poly-extrude self-intersection), a **glue-constraint-strength animation trick** (attaching internal constraints to the object itself, not the relationship, so a wrangle can lower strength over time to trigger a mid-simulation break), simplified convex-hull-style collision proxies for cheap/stable RBD, and separate small pre-baked animations (marble filling, camera-noise path) composited together at render time.
 
 ### Summary
-[PENDING EXTRACTION]
+The barrel's thick glass wall is built by first computing a mask via **distance-along-geometry** (bottom to top, normalized), converting it to Mono for equalized normals, then blending point normals (blurred) with the mask-driven Mono normals via a channel ramp along Y — this custom-normal approach avoids the visible self-intersection artifacts that a naive Poly Extrude produces at the barrel's curved profile. After Subdividing for extra resolution, the geometry is prepped for RBD: a duplicate "name" attribute is saved (since the fracture node will overwrite the real one), a rest-position attribute (`press_shade`) is stored for later shading reference, then an **RBD Material Fracture** pre-fractures the geometry (chosen over dynamic/runtime fracturing due to time constraints) — since this can cause interior-face shading issues during the connected (unbroken) frames, an **RBD Connected Faces** node removes interior faces between still-joined pieces so shading looks correct before the break happens. A separate, simplified **Voronoi-Fracture-based collision mesh** is built (real concave collision would be too expensive/error-prone) — critically, the Voronoi Fracture overwrites the important `name` attribute needed to only break the pre-fractured pattern at the right seams, so it must be copied back from the earlier RBD Material Fracture output. The core simulation trick: instead of using a Sub Solver (the previous approach) to control when the glue breaks, the RBD Material Fracture's constraint network is set to a **Glue relationship attached directly to the object** (not left on the relationship geometry, which can't be wrangled) — this lets a simple wrangle **lower the glue strength on a specific frame** (e.g. frame 26–27) to trigger the break exactly when wanted, rather than relying on impact-force thresholds. Collision geometry for the stairs/walls is built from a Grid: promoted edge groups feed two Poly Extrudes (front + down) to form step profiles, split via Unique Points, extruded again for thickness — and rather than a second Voronoi Fracture (which gave worse results for this shape), each stair gets a simple bounding **box** as its convex collision proxy (via Unique Points per stair), which is cheap, stable, and sufficient since visual accuracy doesn't matter for an invisible collider. In the DOP network: the barrel loads as the active RBD object with initial X/negative-X-biased velocity, a Glue relationship (strength 1) attached to the object itself (not the relationship) so the later strength-lowering wrangle can reach it, merged with the box-based stair colliders (static) and the walls (static); a separate marble-fill effect is achieved by splitting the barrel interior, clipping/polyfilling, Point-from-Volume scattering with random p-scale/orientation, then a **short 3-frame RBD sim** (packed spheres, p-scale animated 1→1 to force initial separation, barrel as a static collision object) purely to resolve initial sphere-sphere intersections cheaply before caching the result as a static pose. After baking the main sim, a random per-piece `class` (from the RBD's internally-generated random-signed values) is Enumerated into a clean sequential index for later color variation, then a **Transform Pieces** node deforms the original (non-fractured, full-detail) barrel geometry to match each simulated piece's final position/rotation via the shared `name` attribute — avoiding having to render the lower-detail fracture-native geometry directly, and an **RBD Disconnected Faces** pass removes interior faces exposed by the break for correct refraction shading. Shading (in Cops) reuses fractal-noise/directional-warp/color-ramp techniques for the stone stairs and walls, with an **ambient-occlusion-driven interaction mask** (baking AO between the wall and stairs, sharing one UV tile) used to blend a mossy/dirty look specifically where the two surfaces meet. A separately-animated camera follows a curve path with CG-Wiki-style **noise-based positional jitter** (referenced as a known technique with its own tutorial) for a handheld feel, rendered in **Karma XPU** with a Polyhaven dome light.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build the barrel's thick glass wall using a **distance-along-geometry mask** (bottom→top, normalized) to blend blurred point normals with mask-driven Mono-converted normals (via a Y-axis channel ramp) — avoids the self-intersection a naive Poly Extrude thickness would cause on the curved profile.
+2. Subdivide for extra resolution; save a duplicate `name` attribute (the fracture step will overwrite the real one) and a rest-position attribute (`press_shade`) for later shading reference.
+3. Run **RBD Material Fracture** (pre-fracture, chosen over dynamic fracture for time) on the barrel, then **RBD Connected Faces** to remove interior faces between still-joined pieces so shading looks correct before the break triggers.
+4. Build a simplified **Voronoi-Fracture collision mesh** (cheaper/more stable than real concave collision), then copy the original `name` attribute back onto it (Voronoi Fracture overwrites it) so breaking only happens at the correct pre-fractured seams.
+5. **Glue-strength-over-time trigger:** set the RBD Material Fracture's constraint to a Glue relationship attached directly to the **object itself** (not left on the relationship geometry, which isn't wranglable), then use a simple wrangle to lower the glue strength on a specific frame (e.g. 26–27) to trigger the break precisely, instead of relying on impact-force thresholds via a Sub Solver.
+6. Build stair/wall collision geometry from a Grid: promoted edge groups feed two Poly Extrudes (front + down) for the step profile, Unique Points to split, extrude for thickness; use a simple bounding **box per stair** (via Unique Points) as the convex collision proxy instead of a second, worse-performing Voronoi Fracture.
+7. In the DOP network: load the barrel as active RBD (initial biased velocity), attach a Glue relationship (strength 1) to the object, merge with the static box-collider stairs and walls, run a default Rigid Body Solver + Ground Plane + Gravity.
+8. **Marble-fill sub-effect:** split/clip/polyfill the barrel interior, Point-from-Volume scatter with random p-scale/orient, then run a short 3-frame RBD sim (p-scale animated 1→1 to force initial separation, barrel as static collider) purely to resolve initial sphere-sphere overlap before caching as a static pose.
+9. After baking, Enumerate the RBD's random per-piece `class` values into a clean sequential index; use **Transform Pieces** to deform the original full-detail (non-fractured) barrel geometry to match each simulated piece's final transform via the shared `name` attribute, and run **RBD Disconnected Faces** to remove interior faces exposed by the break for correct refraction shading.
+10. Shade stairs/walls in Cops with fractal-noise/directional-warp/color-ramp techniques, adding an **ambient-occlusion-baked interaction mask** (shared UV tile between wall and stairs) to blend a mossy/dirty look specifically at their contact zone.
+11. Animate the camera along a curve path with CG-Wiki-style noise-based positional jitter for a handheld feel; render everything in **Karma XPU** with a Polyhaven dome light.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Distance-along-geometry mask wrangle, Mono conversion (equalized normals), channel-ramp normal blend, Subdivide, `name`/`press_shade` attribute preservation wrangles, RBD Material Fracture, RBD Connected Faces, Voronoi Fracture (collision-simplification use) + name-attribute restoration, Glue relationship (object-attached, not relationship-attached), frame-triggered glue-strength wrangle, Grid + promoted edge groups + Poly Extrude ×2 (stair profile), Unique Points (split + per-stair box collider), DOP Network: RBD Packed Object (active, initial velocity), Glue relationship, static box/wall colliders, Rigid Body Solver, Ground Plane, Gravity, Point from Volume (marble scatter), short 3-frame separation-only RBD pass (animated p-scale 1→1), Enumerate (class reindexing), Transform Pieces (full-detail geometry deformation via `name` match), RBD Disconnected Faces, Cops fractal-noise/directional-warp/color-ramp shading, ambient-occlusion bake (shared-UV-tile interaction mask), CG-Wiki noise-driven camera path, Karma XPU, Polyhaven Dome Light.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the object-attached glue-strength-over-time trigger, the Voronoi-collision name-attribute restoration trick, and the Transform-Pieces full-detail-geometry swap are all non-obvious, production-grade RBD techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0.303 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+rbd, glue-constraints, voronoi-fracture, convex-hull-collision, karma-xpu, mardini, barrel, animation
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Food in Houdini | Mardini 2026](procedural-food-in-houdini-mardini-2026.md) — companion Mardini 2026 breakdown from the same channel, covering French-toast/fruit RBD and FLIP simulation instead of a barrel break.
+- [RBD Rock Surfaces with Houdini](rbd-rock-surfaces-with-houdini.md) — shares the RBD-Material-Fracture-as-modeling-tool philosophy used here.
+- [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — shares the RBD/Bullet-as-modeling-tool approach to building irregular shapes without manual sculpting.

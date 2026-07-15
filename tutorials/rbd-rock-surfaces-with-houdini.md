@@ -124,3 +124,4 @@ rbd, material-fracture, vdb, vex, packed-primitives, triplanar, karma, environme
 - [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — another example of using RBD as a modeling tool (compression via a shrinking Bound) rather than pure simulation.
 - [VDB Procedural Cliffs](vdb-procedural-cliffs.md) — shares the layered-noise-in-Volume-VOP detailing technique used here for the rock surface.
 - [Houdini Beginner Tutorial - Creating a Perfume Bottle](houdini-beginner-tutorial-creating-a-perfume-bottle.md) — shares this author's use of RBD Material Fracture as a shape-generation tool rather than a destruction sim.
+- [RBD Procedural Animations in Houdini | Mardini 2026](rbd-procedural-animations-in-houdini-mardini-2026.md) — shares the RBD-Material-Fracture-as-modeling-tool philosophy used here, applied there to a barrel-breaking animation.
