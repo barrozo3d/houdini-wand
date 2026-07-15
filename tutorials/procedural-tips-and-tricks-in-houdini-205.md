@@ -136,3 +136,4 @@ vex, find-shortest-path, vdb, cops, lab-sort, seamless-noise, jewelry, procedura
 ## Related Tutorials
 - [The Donut Tutorial in Cops - Houdini 20.5](the-donut-tutorial-in-cops-houdini-205.md) — related Copernicus/Cops procedural-texturing tutorial from the same channel, though without the seamless-tiling fix covered here.
 - [Procedural Rock Formations Part 2](procedural-rock-formations-part-2.md) — shares the Find Shortest Path technique used here for the stone-holder wire mesh, applied there to vines instead.
+- [Tips and tricks in Houdini 21](tips-and-tricks-in-houdini-21.md) — companion tips-and-tricks video from the same channel, covering matrix-axis-extraction, UV-gradient tine tapering, and the new Pick node instead.

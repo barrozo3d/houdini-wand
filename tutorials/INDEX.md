@@ -1644,9 +1644,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=gv_gXOSjCN0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0.300
+- **Tags:** vex, matrix, look-at, gradient, uv-flatten, pick-node, houdini-21, normal-map, fork
+- **Summary:** Grab-bag of H21 tips: axis-extraction-from-matrix via multiplication, jitter-free animated-origin via a frozen Time Shift, UV-gradient-driven fork-tine tapering with perfect topology, and the new Pick node's hash-attribute input (fed a UV-derived curve view) for per-shell ribbon manipulation on baked geometry.
 - **File:** tutorials/tips-and-tricks-in-houdini-21.md
 
 

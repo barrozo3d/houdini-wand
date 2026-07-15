@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=gv_gXOSjCN0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0.300"
+tags: [vex, matrix, look-at, gradient, uv-flatten, pick-node, houdini-21, normal-map, fork]
+extraction_status: complete
 frames_dir: tutorials/frames/tips-and-tricks-in-houdini-21/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Tips and tricks in Houdini 21
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py tips-and-tricks-in-houdini-21 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -133,30 +129,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:05] tutorials/frames/tips-and-tricks-in-houdini-21/frame_000.jpg
+- [1:45] tutorials/frames/tips-and-tricks-in-houdini-21/frame_001.jpg
+- [3:25] tutorials/frames/tips-and-tricks-in-houdini-21/frame_002.jpg
+- [5:00] tutorials/frames/tips-and-tricks-in-houdini-21/frame_003.jpg
+- [7:00] tutorials/frames/tips-and-tricks-in-houdini-21/frame_004.jpg
+- [8:10] tutorials/frames/tips-and-tricks-in-houdini-21/frame_005.jpg
+- [10:30] tutorials/frames/tips-and-tricks-in-houdini-21/frame_006.jpg
+- [11:40] tutorials/frames/tips-and-tricks-in-houdini-21/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Grab-bag of Houdini 21 production tips: extracting a stable axis vector from a transform matrix via multiplication, using a frozen (time-shifted) bounding-box center instead of a per-frame Match Size to avoid animation jitter, a UV-gradient-based scale-tip technique for procedurally tapering fork tines with perfect topology, and the new Houdini 21 **Pick node**'s hash-attribute input for precise per-shell UV manipulation without breaking connectivity.
 
 ### Summary
-[PENDING EXTRACTION]
+For a book-lamp animation rig, band deformation is applied to curve-oriented normals (via Oriented-Along-Curve), but since the normals themselves don't follow the resulting bend, the fix is computing a **look-at-based transform matrix** from the curve attributes first (so the transform bends correctly with the geometry), then extracting any needed axis vector by multiplying a unit axis vector (e.g. `{0,0,1}` for Z) by that transform matrix — a general technique for "extracting an axis from a matrix" usable for any downstream per-point transform logic. Separately, animating an object's origin correctly (rather than jittering every frame) is solved by placing a **Time Shift** locked to the animation's end frame before a wrangle that reads the bounding-box center of that frozen frame and subtracts it from the live geometry's position — this avoids the jitter that comes from Match Size recalculating a new bounding-box center every single frame. For a procedurally-modeled fork, scaling only the tine tips (without breaking topology) is done by first selecting each tine's middle points, then UV Flattening the geometry to get flowing UVs, and measuring the **gradient of the UV attribute** (X component) to get a per-point outward-pointing direction vector via a cross product between that gradient and the negative Y axis; a **PrimRO**-style ID (with the tine's middle points deleted from the sequence, e.g. 0,1,2,3,4,5) tracks which points belong to which tine, a sign flip alternates the direction between primitives, and unshared/boundary points get the same sign treatment so the effect stays inward-pointing correctly on non-boundary points; the resulting outward vector, combined with a relative-point-bounding-box Z mask, drives a scale multiplier that tapers the tine tips while preserving perfect subdivision-ready topology. Finally, for manipulating arbitrary "baked" (history-less) geometry along a single ribbon-like axis across multiple separate pieces at once, the tutorial builds a **u-attribute-based curve view**: enumerate points for a later index, select the art (silhouette/boundary) edges, UV Flatten with rectify to get flowing UVs, split the UV seams and promote to a point attribute, derive a curve-parameter-like `u` from `uv.x` (optionally reshaped with a Ramp), select target polygons by measuring area and comparing to a per-detail minimum-area tolerance (identifying which faces to manipulate), then feed that `u` attribute into the new Houdini 21 **Pick node**'s hash-attribute input (constrained to just the selected polygon group) — letting the Pick tool manipulate geometry along a meaningful per-shell coordinate instead of world space, and finishing with a Fuse using "match attribute by index" (snap distance disabled) to stitch the manipulated pieces back together cleanly. A bonus quick tip: fake engraved/embossed reliefs (e.g. for coins) using normal-map baking — remesh the imprinting geometry, project a planographic UV along Z, add normals, then render a World-Space Normal pass from the high-poly "imprint" geometry onto the low-poly coin base and plug that baked normal map into a material's normal channel for a convincing fake-relief look without extra geometry.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Extracting an axis from a matrix:** after computing a look-at-based transform matrix from curve-oriented attributes (so the transform bends correctly with a bent/banded shape), multiply a unit axis vector (e.g. Z = `{0,0,1}`) by that transform matrix to recover any needed direction vector for later per-point logic.
+2. **Jitter-free animated origin:** place a **Time Shift** locked to the animation's final frame before a wrangle, read that frozen frame's bounding-box center, and subtract it from the live geometry's position — avoids the per-frame bounding-box recalculation jitter that a live Match Size would introduce.
+3. **Procedural fork tine tapering:** select each tine's middle points, then **UV Flatten** the geometry to get flowing UVs usable as a coordinate system.
+4. Measure the **gradient of the UV attribute** (X component) to get a per-point outward direction, then cross-product that gradient with the negative Y axis to get the actual outward-pointing vector per tine.
+5. Track which points belong to which tine via a modified PrimRO-style ID (middle points deleted from the sequence), alternate the direction sign between primitives/tines, and apply the same sign logic on unshared/boundary points so the outward direction stays consistent.
+6. Combine the outward vector with a relative-point-bounding-box Z mask to drive a scale multiplier that tapers just the tine tips while preserving clean, subdivision-ready topology.
+7. **Ribbon-relative Pick-node manipulation on baked geometry:** Enumerate points, select art/boundary edges, UV Flatten with rectify for flowing UVs, split UV seams and promote to a point attribute, derive `u` from `uv.x` (optionally reshaped via Ramp).
+8. Select target polygons via area measurement compared against a per-detail minimum-area tolerance (to isolate a specific set of faces to manipulate).
+9. Feed the derived `u` attribute into the new Houdini 21 **Pick node**'s hash-attribute input, constrained to the selected polygon group, so manipulation follows a meaningful per-shell coordinate instead of world space.
+10. Fuse the manipulated pieces back together using "match attribute by index" with snap distance disabled (rather than distance-based fusing) for a clean stitch.
+11. **Bonus — fake relief via normal-map baking:** Remesh the high-poly "imprint" geometry, project planographic UVs along Z, add normals; render a World-Space Normal pass from the high-poly onto the low-poly base geometry and plug the resulting baked map into a material's normal channel for a convincing fake-relief look (e.g. embossed coins).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Oriented Along Curve, look-at-based matrix construction + axis-extraction-by-multiplication, Time Shift (frozen-frame bounding-box center), Match Size (contrasted with the Time Shift fix), UV Flatten (×2, one with rectify), gradient measurement on UV attribute, cross product (gradient × negative Y), PrimRO-style ID tracking, sign-flip wrangle, relative point bounding box (Z mask), scale-multiplier wrangle, Enumerate, art/boundary edge Group, UV seam split + promote to point, Ramp (u-reshaping), area measurement + per-detail minimum-area Group Expression, Pick node (Houdini 21, hash-attribute input), Fuse (match attribute by index, snap distance disabled), Remesh, planographic UV projection (Z axis), Normal (World-Space Normal bake pass).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the UV-gradient tine-scaling technique and the Pick-node hash-attribute ribbon-manipulation workflow are both non-obvious, multi-step production solutions; the matrix-axis-extraction and Time-Shift tricks are more approachable one-liners).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0.300 (visible in the viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vex, matrix, look-at, gradient, uv-flatten, pick-node, houdini-21, normal-map, fork
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Tips and Tricks in Houdini 20.5](procedural-tips-and-tricks-in-houdini-205.md) — companion tips-and-tricks video from the same channel, sharing the Find Shortest Path and VDB-Topology-to-SDF techniques instead.
+- [Quality of Life Tips in Houdini](quality-of-life-tips-in-houdini.md) — shares the Poly Hinge and Connectivity/Enumerate reordering tips in the same "quick tips" spirit.
+- [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — shares the gradient-measurement-on-UV-attribute technique used here for the fork tine tapering, applied there to auto-orienting UV islands.
