@@ -308,3 +308,4 @@ vellum, shape-match, quad-remesh, materialx, karma, subsurface, food, connectivi
 - [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares this channel's broader pattern of using Vellum (Shape Match/Cloth) as a modeling/de-intersection tool.
 - [Procedural Grapes and how to avoid intersections](procedural-grapes-and-how-to-avoid-intersections.md) — same core idea (animated scale-growth inside a Vellum sim to resolve intersections) applied to a different food asset.
 - [How to not Bake Brownies in Houdini](how-to-not-bake-brownies-in-houdini.md) — related food-modeling techniques (near-point clustering, VDB) from the same channel.
+- [Procedural Modeling with VEX, VDB and Vellum](procedural-modeling-with-vex-vdb-and-vellum.md) — shares the Vellum-balloon-as-modeling-tool approach and a from-scratch VEX self-intersection gap-closing function for the couch cushions.

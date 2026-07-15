@@ -134,3 +134,4 @@ vellum, curvature, remesh, materialx, karma, typography, wrinkles, animated-mask
 ## Related Tutorials
 - [Vellum Balloon Text in Houdini](vellum-balloon-text-in-houdini.md) — earlier, simpler balloon-typography video from the same channel using extreme stiffness values instead of a curvature-driven animated mask for wrinkle control.
 - [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares the broader pattern of using Vellum constraints/masks for stylized deformation rather than realistic simulation.
+- [Procedural Modeling with VEX, VDB and Vellum](procedural-modeling-with-vex-vdb-and-vellum.md) — another Vellum-Configure-Balloon inflation setup using Plasticity and Pin-to-Target constraints for a controlled puffy result.

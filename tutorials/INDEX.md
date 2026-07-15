@@ -1944,9 +1944,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=8RIneeMCbAg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vex, vdb, vellum, xyzdist, quaternion, compile-block, upholstery, couch, curve-manipulation
+- **Summary:** Models a tufted circular couch from scratch: a rotating VEX ramp assembles a variable-width base profile, per-panel VDB smoothing (compile-blocked for-each) rounds the shell while keeping seams sharp, Vellum Configure Balloon inflates it into cushions with Plasticity locking the shape, and a from-scratch VEX self-intersection function closes inter-cushion gaps before adding swept sine-wave stitching detail.
 - **File:** tutorials/procedural-modeling-with-vex-vdb-and-vellum.md
 
 

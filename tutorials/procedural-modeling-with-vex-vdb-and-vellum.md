@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=8RIneeMCbAg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vex, vdb, vellum, xyzdist, quaternion, compile-block, upholstery, couch, curve-manipulation]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 11
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Modeling with VEX, VDB and Vellum
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-modeling-with-vex-vdb-and-vellum <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -756,30 +752,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [3:40] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_000.jpg
+- [9:10] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_001.jpg
+- [12:19] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_002.jpg
+- [14:57] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_003.jpg
+- [18:03] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_004.jpg
+- [20:57] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_005.jpg
+- [23:56] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_006.jpg
+- [27:22] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_007.jpg
+- [33:00] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_008.jpg
+- [36:40] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_009.jpg
+- [40:07] tutorials/frames/procedural-modeling-with-vex-vdb-and-vellum/frame_010.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Model a tufted circular couch/ottoman entirely from a hand-written VEX pipeline: a rotating, wrap-around ramp assembles a variable-width base profile from a 12-point circle, VDB cascading-noise softens the resulting extruded/beveled shell while preserving sharp seam edges, a Vellum balloon simulation inflates it into pillow-like cushions, and a from-scratch VEX self-intersection ("intersect") function closes the gaps between cushions before adding swept, sine-wave-displaced stitching detail.
 
 ### Summary
-[PENDING EXTRACTION]
+The couch starts from a 12-point circle converted to a single-primitive line, then re-assembled point-by-point with a VEX point wrangle that offsets each point's position via `prim()`-sampled curve data — creating a variable spacing ("ramp going around") so some sections of the couch profile are naturally smaller than others. The core VEX exercise walks through building this from primitives: sampling `xyzdist()`/`prim()` position and UV data from an input curve, applying a rotation via a `chf` slider with `%1` wraparound, then deriving a curve-parameter attribute (`vertexcurveparm()`, falling back to point number when vertices aren't available on point-only geometry) to drive a mirrored (`abs(u*2-1)`), sign-flipped (multiplied by `sign(P.z)`), power-function-remapped (`pow(u, upow)`) falloff that pulls points together at specific spots to fake a scalloped couch-cushion silhouette. This ramp-driven point cloud is turned into geometry (Add → Polygons by group, Convert Line, frame-ID attribute via primitive number, Resample to a fine circle, then `minpos()`-snapped back to a perfect circle to keep the falloff attribute while adding resolution). The shape is Poly-Extruded/Poly-Bevel'd, split into independent per-primitive pieces via Vertex Split (using the primitive-ID attribute), separately Poly-Extruded and Clipped into panel sections, boolean-unioned just to get a clean edge-angle group selection (since edge selection differs on separated vs. connected geometry), then chamfered/bevelled with Group Transfer to carry that selection back. A for-each loop (keyed on the earlier primitive-ID attribute) runs VDB operations per panel: an edge-angle mask ("shell mask") feeds VDB From Polygons and a masked VDB Smooth SDF (alpha = the mask, ~10 iterations) that rounds the panel interior while keeping the outer seam sharp, followed by a second unmasked single-iteration VDB Smooth SDF pass to clean texture artifacts, then VDB Convert to Polygons and a Remesh — wrapped in a Compile Block (multithreaded, no single-thread flag) for speed. The resulting clean remeshed shell is inflated with a Vellum Configure Balloon + Vellum Solver (no gravity, ground-plane collision, pressure/rest-length/damping-ratio tuning, Pin-to-Target constraint with a softness of ~10 so it can expand without flying apart, Plasticity enabled on stretch constraints with threshold 0.5/rate 5 to hold the inflated shape, and increased Rest Scale on the cloth so there's extra geometry available for wrinkling) — a Time Shift locks a representative simulated frame (e.g. frame 25) and Velocity Damping is increased for a calmer, non-animated pose. To close the remaining gaps between the separately-inflated cushion pieces, the tutorial builds a from-scratch VEX self-intersection ("intersect") function: normals are computed, geometry is exploded slightly (Point VOP-style explode by a small amount) so the intersect ray doesn't self-hit at zero distance, positions are saved to a rest attribute, then a wrangle uses `intersect()` (fed the current geometry against itself, current position offset slightly along the normal via `P + N*epsilon`, and an outgoing `hitpos`/`hituv`) to build a mask of points whose ray actually hit something (`primhit != -1`), which is then used with `attribvalue()`-based interpolation and Attribute Blur to smoothly pull the mask-selected points toward their hit position, closing the gap. Finally, an Intersection Analysis node extracts the seam curve as intersection segments, which is unified with Polypath, relaxed (Attribute Blur, no pin borders, ~100 iterations), Resampled/oriented (Orient Along Curve for banking-stable normals), and swept with a small tube profile after a VEX displacement wrangle adds sine-wave-based stitching detail along the curve (`sin(curvy * reps) * amp`, clamped positive with `abs()`), giving the couch its final piped seam and puckered-tuft look, finished with a Poly Bevel on the outer frame edges.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a 12-point circle, Convert to Line, then reassemble the points with a `prim()`/`xyzlist()`-based point wrangle that offsets position from the primitive's sampled curve position — the classic "offset via `prim()` and reassemble with `xyzdist()`" pattern for procedural curve manipulation.
+2. Add a rotation slider (`chf` angle, wrapped with `%1` so it loops smoothly) driving a `vertexcurveparm()`-derived U attribute (falling back to `ptnum`-based U on point-only geometry where vertices aren't available).
+3. Mirror the U falloff with `abs(u*2-1)`, then flip its sign per-side using `sign(P.z)` so the pull-together effect works symmetrically on both halves of the couch profile.
+4. Shape the falloff with a `pow(u, upow)` power function (values like multiplier 0.034, power 0.31) to control where the profile narrows vs. widens — a progressive effect instead of abrupt scaling.
+5. Rebuild geometry from the ordered points (Add → Polygons by group, Convert Line), tag each primitive with a `frame_id` (int, primitive number) attribute for later per-section iteration, then Resample finer and `minpos()`-snap back to a perfect reference circle to add resolution while preserving the falloff attribute.
+6. Poly Extrude/Poly Bevel the ring into a couch-panel shell, Vertex Split by the primitive-ID attribute to separate panels, Poly Extrude+Clip each into individual sections, and use a temporary Boolean Union just to get a clean max-edge-angle selection (since separated geometry selects differently than connected geometry) before Group-Transferring that selection back for bevelling.
+7. Run VDB operations per panel inside a for-each loop keyed on the primitive-ID attribute (wrapped in a multithreaded Compile Block): build an edge-angle "shell mask" group → VDB From Polygons (with the mask passed as an alpha attribute) → masked VDB Smooth SDF (~10 iterations, alpha = mask, keeps the sharp outer seam while rounding the interior) → unmasked single-iteration VDB Smooth SDF cleanup → VDB Convert to Polygons → Remesh.
+8. Inflate the remeshed shell with Vellum Configure Balloon + Vellum Solver: disable gravity, add a ground-plane collider, tune pressure/rest-length/damping ratio, add a Vellum Constraint (Pin to Target, softness ~10) so it can expand without flying apart, enable Plasticity on the stretch constraints (threshold 0.5, rate 5) to lock in the inflated shape, and increase the cloth's Rest Scale for extra wrinkle geometry; Time Shift to a representative frame (e.g. 25) and increase Velocity Damping for a calm still pose.
+9. Close inter-cushion gaps with a from-scratch VEX self-intersection function: compute/normalize normals, explode the geometry slightly to avoid zero-distance self-hits, save a rest-position attribute, then use `intersect()` (current geometry vs. itself, ray origin offset slightly along the normal) to find hit points (mask = `primhit != -1`), and pull the masked points toward their `hitpos` with Attribute Blur smoothing to close the visible seam gap.
+10. Extract the final seam with Intersection Analysis (output intersection segments), unify with Polypath, relax with Attribute Blur (no pin borders, ~100 iterations), Resample and Orient Along Curve (for stable banking normals) — then displace along the normal with a VEX sine-wave wrangle (`sin(curvy * reps) * amp`, `abs()`-clamped positive) to create repeating puckered stitching, and Sweep with a small round-tube profile for the final piped seam geometry.
+11. Finish with Poly Bevel on the outer frame edges (flat-edge-ignoring, ~5 subdivisions, 64 initial subdivisions for roundness) and merge everything into the final couch output.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Circle (12 divisions, ZX plane), Convert Line, point wrangle (`prim()`, `xyzdist()`-style position offset), `chf` rotation slider with `%1` wraparound, `vertexcurveparm()` / point-number-based U fallback, `abs()` mirroring, `sign(P.z)` flip, `pow(u, upow)` falloff shaping, Add (Polygons by group), frame-ID attribute (int, primitive number), Resample, `minpos()` circle-snap wrangle, Poly Extrude, Poly Bevel, Vertex Split (by primitive ID), Clip, Boolean Union (selection-only trick), Group (max edge angle), Group Transfer, For-Each Named Primitive (keyed on frame-ID) wrapped in a multithreaded Compile Block, VDB From Polygons (with alpha/mask attribute), VDB Smooth SDF (masked + unmasked passes), VDB Convert to Polygons, Remesh, Vellum Configure Balloon, Vellum Solver (no gravity, ground collider, pressure/rest-length/damping tuning), Vellum Constraint (Pin to Target, softness), Plasticity (stretch constraints, threshold/rate), Rest Scale, Time Shift, Velocity Damping, VEX self-intersection wrangle (`intersect()`, `primhit`, `hitpos`, `hituv`, normal-offset peak), Attribute Blur, Intersection Analysis (output intersection segments), Polypath, Orient Along Curve, VEX sine-displacement wrangle (`sin()`, `abs()`, curve-view/reps/amp), Sweep (round tube), Poly Bevel (flat-edge-ignoring, high subdivision count for roundness).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines hand-written VEX curve-manipulation math, per-section VDB compile-block workflows, Vellum balloon simulation tuning, and a from-scratch VEX self-intersection/gap-closing function).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vex, vdb, vellum, xyzdist, quaternion, compile-block, upholstery, couch, curve-manipulation
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Sushi Modeling and Rendering in Houdini](sushi-modeling-and-rendering-in-houdini.md) — shares the Vellum Shape Match / grain-growth style de-intersection approach applied here to closing gaps between inflated cushion pieces.
+- [Vellum Typography in Houdini](vellum-typography-in-houdini.md) — another Vellum-balloon-style inflation setup using Plasticity and Pin-to-Target constraints for a controlled puffy result.
+- [Spiral Splash Tutorial in Houdini](spiral-splash-tutorial-in-houdini.md) — shares the from-scratch VEX quaternion/curve-parameter math approach used here for the ramp-driven profile assembly.
