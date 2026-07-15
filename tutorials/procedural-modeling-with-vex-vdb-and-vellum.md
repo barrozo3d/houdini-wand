@@ -808,3 +808,4 @@ vex, vdb, vellum, xyzdist, quaternion, compile-block, upholstery, couch, curve-m
 - [Vellum Typography in Houdini](vellum-typography-in-houdini.md) — another Vellum-balloon-style inflation setup using Plasticity and Pin-to-Target constraints for a controlled puffy result.
 - [Spiral Splash Tutorial in Houdini](spiral-splash-tutorial-in-houdini.md) — shares the from-scratch VEX quaternion/curve-parameter math approach used here for the ramp-driven profile assembly.
 - [Gestation Effect in Houdini. Scene Breakdown.](gestation-effect-in-houdini-scene-breakdown.md) — shares the Vellum-Configure-Balloon-as-simulation-tool approach used here, applied there to an organic cell-division effect.
+- [Vellum Fundamentals - Week 5: Cell Splitting Part 1](vellum-fundamentals---week-5-cell-splitting-part-1.md) — shares the Vellum-Configure-Balloon-based simulation approach used here, focused there on safely removing points/constraints from a live sim.

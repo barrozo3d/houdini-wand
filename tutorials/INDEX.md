@@ -3324,9 +3324,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Q4R7AeCf-Os
 - **Author:** Tim van Helsdingen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vellum, sop-solver, multisolver, dop-network, cell-splitting, vellum-fundamentals, tim-van-helsdingen
+- **Summary:** Foundational technique for safely removing points/primitives from a live Vellum simulation without it imploding — geometry and constraints must be modified in the exact same timestep via a dual-input SOP Solver (or a Multi Solver chaining a Vellum Solver + SOP Solvers), using a shared incrementing age attribute to drive synchronized deletion.
 - **File:** tutorials/vellum-fundamentals---week-5-cell-splitting-part-1.md
 
 

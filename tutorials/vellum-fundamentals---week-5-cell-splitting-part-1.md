@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Q4R7AeCf-Os
 author: Tim van Helsdingen
 ingested: 2026-07-15
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vellum, sop-solver, multisolver, dop-network, cell-splitting, vellum-fundamentals, tim-van-helsdingen]
+extraction_status: complete
 frames_dir: tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 9
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Vellum Fundamentals - Week 5: Cell Splitting Part 1
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vellum-fundamentals---week-5-cell-splitting-part-1 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -472,30 +468,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [7:04] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/frame_000.jpg
+- [9:21] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/frame_001.jpg
+- [12:24] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/frame_002.jpg
+- [16:05] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/frame_003.jpg
+- [17:14] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/frame_004.jpg
+- [18:04] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/frame_005.jpg
+- [20:07] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/frame_006.jpg
+- [23:41] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/frame_007.jpg
+- [26:47] tutorials/frames/vellum-fundamentals---week-5-cell-splitting-part-1/frame_008.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Foundational technique (part 1 of 2) for safely adding/removing points from a running **Vellum** simulation without it imploding — the key rule being that Vellum's geometry and constraints must be modified **in the exact same timestep**, achieved via a **SOP Solver** that processes both the geometry and constraint-geometry streams together (or via a Multi Solver iterating a Vellum Solver and a SOP Solver in sequence) rather than touching either one alone.
 
 ### Summary
-[PENDING EXTRACTION]
+The video opens by demonstrating exactly why removing points/primitives from a live Vellum sim breaks it: a basic Vellum Configure Balloon setup (built inside a DOP network, sourcing geometry and constraints from the first and second inputs via backtick-quoted `opinputpath` expressions, merged with a ground plane and gravity) produces a normal soft-body ball; but deleting a group of points at a fixed frame (via a Switch keyed on `$F`) causes a violent, exploding crash — because Vellum's internal constraints reference specific points/primitives by index, and once the geometry no longer matches the constraint network's expectations, everything falls apart. A second, near-identical crash is demonstrated when repeatedly instancing spheres onto scattered points (via a Vellum Source with `$F % 10 == 1` gating) and then deleting an entire connected sphere (grouped via **Connectivity** on primitives, colored per-class with a Primitive Random-from-Attribute) at a fixed frame — even deleting a *whole* disconnected piece (not a partial point range) still crashes the sim, confirming that any geometry/constraint mismatch is fatal regardless of how "clean" the deletion looks. The fix is introduced via a basic proof-of-concept first: a **SOP Solver** dropped directly into a SOP network (outside of DOPs) demonstrates that any SOP-level operation (an Attribute VOP adding noise to position) can run every frame on evolving geometry, same as inside a DOP context's SOP Solver — establishing the mental model that SOP Solvers are just "run these SOP nodes every frame" regardless of which network they live in. Back in the DOP-based Vellum sim, the trick is applying the SOP Solver to **both geometry and constraint geometry simultaneously**: the SOP Solver node supports multiple inputs/outputs, so feeding it both streams (instead of just "Geometry") lets a single Compile Block-wrapped network process both together. Inside that shared solver, a wrangle stamps an incrementing **`age`** attribute onto the geometry points (`f@age += $TimeInc`, where TimeInc is the per-substep time delta, i.e. effectively frame-rate-normalized time), which is then **transferred onto the constraint primitives** (via Attribute Copy/Transfer) so both streams carry matching age values. A second wrangle reads that primitive-level age back onto points (via `prim(0, "age", @primnum)` assigned to a local variable) and deletes points whose age exceeds a threshold (`removepoint(0, @ptnum)`), with a matching removal pass on primitives (`removeprim(0, @primnum, 1)`) run on both the geometry and constraint streams to avoid leaving orphaned/empty primitives behind — once both deletions happen inside the same SOP-Solver pass (same timestep), the simulation no longer crashes and pieces cleanly disappear once their age threshold is crossed. A subtlety is noted: since `TimeInc` scales with substep count, increasing simulation substeps makes age accumulate faster than expected unless explicitly divided by a substep-count channel to normalize the increment rate. Finally, the video previews a more robust alternative to a single dual-stream SOP Solver: a **Multi Solver** node, which lets you chain multiple independent solvers (e.g. a Vellum Solver followed by a SOP Solver, or several SOP Solvers) as sequential iterations on the same object — useful because not every SOP node is compatible with a Compile Block (e.g. attribute-driven Switch nodes can't compile), so splitting the geometry-processing and constraint-processing into two separate SOP Solvers chained via a Multi Solver is a more flexible, production-safe structure than cramming everything into one dual-input solver.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a baseline Vellum Configure Balloon setup in a DOP network (geometry + constraints sourced via backtick `opinputpath` expressions from inputs 0/1), merged with a ground plane and gravity, to establish a normal working simulation.
+2. Demonstrate the crash: delete a group of points (via a `$F`-keyed Switch) at a fixed frame mid-simulation — Vellum's constraint network can no longer match the modified geometry and the sim explodes.
+3. Demonstrate the same failure with whole-piece deletion: instance spheres via Vellum Source (gated by `$F % 10 == 1`), group by **Connectivity** (primitive class), color-code with Primitive Random-from-Attribute, then delete an entire class at a fixed frame — still crashes, confirming the rule applies regardless of deletion granularity.
+4. Establish the SOP Solver mental model outside of DOPs first: drop a SOP Solver directly in a SOP network, feed it an Attribute VOP adding noise to position, and confirm it evolves the geometry frame-by-frame identically to a DOP-context SOP Solver.
+5. **Fix the crash**: configure a single SOP Solver to process **both geometry and constraint-geometry inputs together** (multiple inputs/outputs supported) rather than touching only one stream — wrap the internal network in a Compile Block for multithreading where possible.
+6. Inside the shared solver, stamp an incrementing `age` point attribute (`f@age += $TimeInc`) on the geometry, then **transfer that age onto the constraint primitives** (Attribute Copy/Transfer) so both streams stay synchronized.
+7. Read the primitive-level age back onto points (`prim(0,"age",@primnum)`) and delete points above an age threshold (`removepoint(0,@ptnum)`) on **both** the geometry and constraint streams, in the same solver pass/timestep.
+8. Also run a primitive-level removal pass (`removeprim(0,@primnum,1)`) on both streams to clean up any resulting empty primitives left over from the point deletion.
+9. Normalize the age-increment rate against substep count (divide `$TimeInc` by a substep channel) so increasing simulation substeps doesn't cause age to accumulate faster than intended.
+10. For more complex/production setups, prefer a **Multi Solver** (chaining a Vellum Solver + one or more SOP Solvers as sequential iterations) over a single dual-stream SOP Solver — this avoids Compile Block incompatibilities with certain nodes (e.g. attribute-driven Switches) by splitting geometry and constraint processing into separate, independently-structured solvers.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Vellum Configure Balloon, DOP Network (backtick `opinputpath` sourcing), Ground Plane, Gravity, Switch (`$F`-keyed group deletion), Vellum Source (`$F % 10` gated instancing), Connectivity (primitive class), Primitive Random-from-Attribute (color visualization), SOP Solver (single-network and DOP-context versions, multi-input/output configuration), Attribute VOP (position-noise proof-of-concept), Compile Block, wrangle (`f@age += $TimeInc`, `prim()`, `removepoint()`, `removeprim()`), Attribute Copy/Transfer (age sync between geometry and constraints), substep-normalized time-increment channel, Multi Solver (Vellum Solver + SOP Solver chaining).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (understanding why Vellum's geometry/constraint coupling breaks on naive deletion, and correctly structuring a dual-stream SOP Solver or Multi Solver to modify both in lockstep, requires solid prior Vellum/DOP experience).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, sop-solver, multisolver, dop-network, cell-splitting, vellum-fundamentals, tim-van-helsdingen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vellum Fundamentals - Week 5: Cell Splitting Part 2](vellum-fundamentals---week-5-cell-splitting-part-2.md) — direct continuation building the actual cell-splitting/subdivision effect on top of this video's geometry/constraint-removal foundation.
+- [Gestation Effect in Houdini. Scene Breakdown.](gestation-effect-in-houdini-scene-breakdown.md) — builds an organic effect on top of this exact cell-splitting technique, explicitly referencing this tutorial as its base method.
+- [Procedural Modeling with VEX, VDB and Vellum](procedural-modeling-with-vex-vdb-and-vellum.md) — shares the Vellum-Configure-Balloon-as-simulation-tool approach used here.
