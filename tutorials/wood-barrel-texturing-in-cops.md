@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=O6T5eVYJHsA
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.319"
+tags: [cops, copernicus, uvdist, texture-paint, rasterize, karma, wood, rust, texturing]
+extraction_status: complete
 frames_dir: tutorials/frames/wood-barrel-texturing-in-cops/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 17
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Wood Barrel Texturing in COPS
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py wood-barrel-texturing-in-cops <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -319,30 +315,67 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/wood-barrel-texturing-in-cops/frame_000.jpg
+- [2:10] tutorials/frames/wood-barrel-texturing-in-cops/frame_001.jpg
+- [4:10] tutorials/frames/wood-barrel-texturing-in-cops/frame_002.jpg
+- [6:40] tutorials/frames/wood-barrel-texturing-in-cops/frame_003.jpg
+- [9:10] tutorials/frames/wood-barrel-texturing-in-cops/frame_004.jpg
+- [10:50] tutorials/frames/wood-barrel-texturing-in-cops/frame_005.jpg
+- [12:30] tutorials/frames/wood-barrel-texturing-in-cops/frame_006.jpg
+- [14:10] tutorials/frames/wood-barrel-texturing-in-cops/frame_007.jpg
+- [15:50] tutorials/frames/wood-barrel-texturing-in-cops/frame_008.jpg
+- [17:30] tutorials/frames/wood-barrel-texturing-in-cops/frame_009.jpg
+- [20:00] tutorials/frames/wood-barrel-texturing-in-cops/frame_010.jpg
+- [22:30] tutorials/frames/wood-barrel-texturing-in-cops/frame_011.jpg
+- [25:50] tutorials/frames/wood-barrel-texturing-in-cops/frame_012.jpg
+- [27:30] tutorials/frames/wood-barrel-texturing-in-cops/frame_013.jpg
+- [31:40] tutorials/frames/wood-barrel-texturing-in-cops/frame_014.jpg
+- [34:10] tutorials/frames/wood-barrel-texturing-in-cops/frame_015.jpg
+- [35:50] tutorials/frames/wood-barrel-texturing-in-cops/frame_016.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Texture a wine/rum barrel with scrambled, non-continuous UVs entirely in **Cops** by avoiding the typical "Restore Attributes" workflow (which causes edge-bleeding artifacts) in favor of a hand-written **`uvdist()`**-based sampling wrangle that reads any SOP attribute directly by UV position with a controllable padding distance, then layering wood texture variation, a hand-painted logo (via Texture Paint stamped in Screen mode), procedural rust (Fractal Noise-masked, curvature-driven, UV-distorted), and metal-hoop materials — all composited with Blend/Layer nodes before feeding Karma's base color, roughness, normal, and metalness inputs.
 
 ### Summary
-[PENDING EXTRACTION]
+Back in SOPs, a **Measure Curvature** (Labs) convexity attribute is multiplied and heavily blurred (8 iterations) to create a soft rust-origin mask around edges, then file-cached to avoid Houdini's node re-evaluation overhead. In Cops, rather than the standard "Restore Geometry"-to-UV-space workflow (known to cause edge-bleeding artifacts, as documented by others in the community), a custom **wrangle-based attribute-resurrection** approach is used: a UV attribute is built manually from the relative bounding box (Z component zeroed) to place the mesh in texture space, then a second wrangle uses **`uvdist()`** (chosen over `xyzdist()` "just to be different") with a controllable **padding** channel parameter to sample any SOP attribute — barrel piece ID, top/bottom group mask, primitive ID, position, and convexity — directly by UV proximity, each individually Rasterized into its own Cops layer. A sample wood texture (color-corrected via HSV Adjust for a redder, more saturated look) is sampled using the UV attribute through a **UV Transform** (scale ~5, randomized offset, seed) for tiling control, verified live via a Preview Material assigned to the geometry. Two additional HSV-adjust layers, each masked by a **Random Mono** keyed to the primitive-ID attribute (different seeds), introduce per-plank color variation (one brightening/saturating, one darkening) blended together for a non-uniform wood look. The barrel's branded text ("RUM") is built from a **Font** node (custom bold font) — but since the scrambled UV space prevents direct texture-space placement, it's instead **hand-painted onto the 3D geometry** using **Texture Paint** (4K resolution, Stamp mode, alpha image set via `op:` syntax to the rendered logo, blend mode switched from Screen — chosen because Space mode introduced soft-edge bleeding even with soft-edge reduced) directly in the viewport (front view, mouse rather than tablet to avoid unwanted opacity variation from pressure sensitivity). This painted output is imported back into Cops via **Geometry to Layer**, restored using the same UV-distance technique, and Blended (Overlay, reduced opacity ~0.7) into the base color as a masked layer using its own alpha as the mask. Roughness comes from a duplicated wood-texture sample remapped for contrast, combined with an Item Normal-derived bump (small scale ~0.1) and a second, Megascans-sourced roughness texture (via a separate UV Transform) blended (Overlay) for additional surface-scratch detail. A cheap "hoop"/metal-band material reuses the wood texture converted to a single dark-red constant color for base color, blended with the barrel's overall texture, while procedural rust is built from the convexity attribute (Remapped), a position-driven **3D Fractal Noise** (to break the uniform edge-hugging rust pattern), multiplied into the mask, and further distorted with a second UV-centered Fractal Noise fed through a **Distort** node (direction from the first noise, tuned scale/amplitude) so the rust "bleeds" organically from edges rather than sitting in a hard uniform band — contrast-adjusted via Remap. Metalness is derived by inverting/complementing the distorted rust mask, remapped and multiplied to concentrate metalness only in non-rusted areas, and roughness on rusted regions is separately blended down (Max mode against the base roughness texture) to reduce unwanted specular highlights on rust. Final resolution is pushed to 4K (with intermediate 2K checks to avoid crashes/slow recompute during the session), and seeds on the UV Transform nodes can be varied for quick texture-variation exploration.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **SOP prep**: after Soften Normals, Subdivide (2), run **Measure Curvature** (Labs, convexity output), multiply (~5) and heavily blur (8 iterations) to create a soft edge/rust-origin mask; grow the mask further with an Attribute Adjust Float (multiply ~3); File Cache the result as "barrel_cache" (single frame) to avoid repeated recompute.
+2. **Cops import + UV-space placement**: Sub Import the cached geometry; build a UV attribute manually via the **relative bounding box** (Z component zeroed, assigned to `uv.x`/`uv.y`) instead of using the standard Restore-Geometry-to-UV workflow (avoids known edge-bleeding artifacts).
+3. **Custom attribute sampling wrangle**: using **`uvdist()`** (input 1, the mesh's UV attribute, `u_prim`/`uvw` outputs) with a **padding** channel-float parameter to control sample distance, then sample and assign any needed SOP attribute (`vector uvs = ...`) at that UV position.
+4. **Rasterize each attribute into its own Cops layer**: barrel piece ID (mono), top/bottom group mask, another ID (integer, primitive ID), position (vector), and convexity (float) — each rasterized separately via repeated copy-paste of the sampling wrangle pattern.
+5. **Wood base texture**: import a sample wood image, color-correct via **HSV Adjust** (redder hue shift, increased saturation and value ~1.3), sample it with **Texture Sample** using the built UV attribute run through a **UV Transform** (scale ~5, randomized offset, tunable seed) for tiling control; verify live via a **Preview Material** on the geometry base color.
+6. **Per-plank color variation**: two additional HSV Adjust layers, each masked by a **Random Mono** keyed to the primitive-ID layer (different seeds, e.g. 51 and 47) — one increasing saturation/value, one decreasing value — blended together for non-uniform wood coloring.
+7. **Logo/branding**: build text via **Font** (custom bold typeface, size ~0.5), Null it out; since scrambled UVs prevent direct texture-space placement, **hand-paint it onto the 3D geometry** using **Texture Paint** (4K, Stamp mode, alpha image via `op:` reference to the rendered logo image, blend mode Screen instead of Space to avoid soft-edge bleeding), painting in the front viewport with the mouse (avoiding tablet-pressure opacity artifacts).
+8. Import the painted result back into Cops via **Geometry to Layer**, restore it using the same UV-distance sampling technique, and **Blend** (Overlay, opacity ~0.7) it into the base color using its own value as the alpha mask.
+9. **Roughness/bump**: duplicate the wood texture sample (Mono), Remap for contrast/brightness; add **Item Normal** bump (scale ~0.1) from the roughness texture; blend in a second Megascans roughness texture (separate UV Transform, similar settings) via Overlay for additional scratch-like detail.
+10. **Hoop/metal-band material**: reuse the wood texture converted to a single dark-red **Constant** color for base color, blended with the barrel's overall texture; use an **X-Style** tiling repeat node (scale ~13, random rotation, fall-off/weight-exponent tuning, random seed) for a metal-tile-like texture pattern, color-corrected for a redder/darker metallic tone.
+11. **Procedural rust**: **Remap** the convexity attribute for contrast; build a position-driven **3D Fractal Noise** to break up the otherwise-uniform edge-hugging rust pattern, multiplying it into the convexity-derived mask.
+12. **Rust distortion**: build a second, UV-centered Fractal Noise (RGB signature, zero-centroid offset, tuned scale/amplitude) fed into a **Distort** node using the first noise's direction — makes rust visually "bleed" from edges organically; **Remap** afterward to contrast the effect (values compressed toward ~0.6).
+13. **Metalness**: invert/**Complement** the distorted rust mask, Remap (white level ~0.4–0.8) and multiply so metalness is concentrated only in non-rusted regions; connect to the shader's metalness input.
+14. **Roughness cleanup on rust**: Blend (Max mode) the base wood roughness texture with the rust mask so rusted areas don't retain unwanted high specular/shine.
+15. Push final Cops resolution to **4K** (checking at 2K intermediate steps to manage recompute time/crash risk), and vary UV Transform seeds for quick per-render texture variation exploration.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Measure Curvature (Labs, convexity), Attribute Blur, Attribute Adjust Float (mask growth), File Cache; Cops: Sub Import, relative-bounding-box UV-attribute wrangle, `uvdist()`-based attribute-sampling wrangle (padding-controlled), Rasterize (per-attribute layers: barrel ID, group mask, primitive ID, position, convexity), Texture Sample, HSV Adjust (×3+, base + 2 color-variation layers), Random Mono (primitive-ID-keyed masks), UV Transform (scale/offset/seed), Preview Material, Font (SOPs), Texture Paint (Stamp mode, `op:` alpha reference, Screen blend), Geometry to Layer, Blend (Overlay, Max modes), Item Normal (bump), X-Style (tiling repeat with fall-off/rotation), Constant (color), Remap (×several, contrast/metalness tuning), Fractal Noise 3D (position-driven, RGB signature), Distort (noise-direction-driven), Complement/Invert (metalness derivation), Multiply nodes (mask combination).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the `uvdist()`-based attribute-resurrection technique for scrambled/non-continuous UVs, plus the hand-painted logo workaround and multi-layer procedural rust, are all substantial production-level Cops techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.319 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+cops, copernicus, uvdist, texture-paint, rasterize, karma, wood, rust, texturing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [The Donut Tutorial in Cops - Houdini 20.5](the-donut-tutorial-in-cops-houdini-205.md) — related Cops procedural-texturing tutorial from the same channel, using similar Rasterize/Blend layering techniques.
+- [Tiling Patterns with COPS and SOPS](tiling-patterns-with-cops-and-sops.md) — shares the same Cops-based texturing workflow and stamp/rasterize approach applied to a different material.

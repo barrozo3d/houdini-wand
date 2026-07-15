@@ -2074,9 +2074,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=O6T5eVYJHsA
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.319
+- **Tags:** cops, copernicus, uvdist, texture-paint, rasterize, karma, wood, rust, texturing
+- **Summary:** Textures a "RUM" barrel with scrambled UVs entirely in Cops using a custom uvdist()-based attribute-sampling wrangle (avoiding Restore-Geometry edge bleeding), layering wood variation, a hand-painted Texture Paint logo, and procedural Fractal-Noise-distorted rust driving base color, roughness, normal, and metalness.
 - **File:** tutorials/wood-barrel-texturing-in-cops.md
 
 
