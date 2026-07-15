@@ -2214,9 +2214,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ag7I-FK4TF0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.319
+- **Tags:** vdb, volume-vop, vex, for-each-loop, bend, sweep, bones, organic-modeling, procedural-modeling
+- **Summary:** Sculpts a "ribs" asset via a four-layer cascading VDB noise stack (Worley cellular ridges distorted by 45°-rotated turbulence, complement-inverted detail layer), planarizes sides with a box-masked VDB Combine subtraction, then builds bone segments via a compiled for-each loop with per-iteration seeded randomization of division count and bend angle.
 - **File:** tutorials/vdb-procedural-modeling-in-houdini.md
 
 

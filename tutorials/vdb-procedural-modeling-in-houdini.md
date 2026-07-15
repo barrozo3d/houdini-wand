@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ag7I-FK4TF0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.319"
+tags: [vdb, volume-vop, vex, for-each-loop, bend, sweep, bones, organic-modeling, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/vdb-procedural-modeling-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 13
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # VDB Procedural Modeling in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vdb-procedural-modeling-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -258,30 +254,65 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_000.jpg
+- [2:10] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_001.jpg
+- [5:00] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_002.jpg
+- [7:30] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_003.jpg
+- [10:50] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_004.jpg
+- [15:50] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_005.jpg
+- [20:50] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_006.jpg
+- [24:10] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_007.jpg
+- [26:40] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_008.jpg
+- [30:50] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_009.jpg
+- [34:10] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_010.jpg
+- [36:40] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_011.jpg
+- [39:10] tutorials/frames/vdb-procedural-modeling-in-houdini/frame_012.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Model an organic "ribs" asset by sculpting a swept base shape through four cascading VDB volume noises (overall break-up, cellular Worley ridges distorted by diagonal turbulence, fine detail, and a final complement-inverted layer), planarizing the sides with a box-masked VDB Combine subtraction, then building individual bone/vertebra segments via a randomized-division Circle → Bevel → Extrude → Bend chain distributed along the original curve inside a **for-each loop with per-iteration seeded randomization** exposed through the interface.
 
 ### Summary
-[PENDING EXTRACTION]
+A centered Line (7 points) is swept with a Labs Simple Shapes quad cross-section (unequal top/base sizing, rounded corners) to form the base rib shape, given end caps, subdivided, lightly Mountain-distorted (low amplitude, zero-centered), and normal-blurred to soften intersection corners. Converting to a VDB (SDF, smoothed), the core of the video builds a **four-layer cascading noise stack in a Volume VOP**: layer 1 is an overall AA-noise break-up (position-driven, Fit-Ranged, roughness reduced) added via a Switch-controlled Add for easy on/off toggling per layer; layer 2 uses a Worley Cellular F1 noise (expanded, small multiplier) distorted by a **Turbulence noise set to sparse convolution** (to allow both positive/negative distortion) with its noise-sample position additionally rotated via a **Transform Matrix at 45°** for a diagonal ridge direction; layer 3 duplicates/adapts the same pattern at a different frequency for finer overall deformation, saved to a shelf/recipe for reuse across projects; layer 4 uses a Cellular F1 noise with **Complement** enabled (inverting the result) and tight Fit-Range clamping plus Fractal distortion for additional surface break-up. All four layers are enabled together and the resolution increased from a fast low-res preview (~0.05) to the final resolution (~0.0015, ~30s cook) for the finished detailed rib surface. Since a real rib should have relatively flat/planar sides rather than fully organic curvature, a **Box** (mirrored, subdivided, lightly Mountain-distorted for a natural edge) is VDB-from-Polygons'd and **VDB Combine**d (Subtract/Difference mode) against the noise-detailed rib VDB to flatten the sides — a second pass adds side-specific noise back in via a **Fog VDB mask** built from the same box (Volume Sample to read the mask at each position, multiplied through a Feed Range, with a Transform to fix flat-mask areas and eliminate a visible seam by tuning transform/feed-range values) so the flattened sides still carry believable surface detail rather than looking perfectly smooth. The finished rib surface is cached via **File Cache**. For the bone/vertebra segments, the original curve is Object-Merged back, translated/scaled slightly, then a per-segment shape is built from a **Circle** (divisions randomized later), **Bevel** on points (distance + divisions), **random p-scale** (Scale by Attribute) for organic size variance, **Extrude**, primitive-0 splice + **Mirror** (Z axis, weld), **Insert** (patch-group extrude), a second Extrude (output front), and a **Bend** (angle tuned via the Enter+B viewport hotkey workflow) — then another Bevel/Extrude pass for edge detail (texture-driven detail deferred to a follow-up video). This bone shape is Match-Sized to the curve, UV-unwrapped (deferred/skipped for now), and Copy-to-Points'd along the curve with an initial normal (X-axis) and up (Y-axis) attribute, then **randomized orientation** (Rotate around the normal direction, "from attribute," random) and an extra **Point Jitter** layer of randomization plus a randomized p-scale. All of this is wrapped in a **For-Each (points) loop with Fetch Feedback**, exposing **seed** parameters on the interface for the Circle's division count (via `fit()` + `random()` seeded per-iteration using the loop's detail iteration attribute) and for the Bend angle range (similarly seeded) — so each bone segment gets independently randomized geometry and bend, and the whole loop is **compiled** (Multi-Thread Compile) for performance since per-point Copy-to-Points operations benefit significantly from compilation. The finished bone chain is merged with the noise-detailed rib mesh for the final combined result, with texturing/shading left for a follow-up video.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base rib shape**: centered Line (7 points, scaled from center via copy/paste-negative-half-length expression) → Sweep with a **Labs Simple Shapes** quad cross-section (unequal top/base sizing, rounded corners, 4 divisions) using Cross Section surface type → add Normal, Subdivide (×2), end caps.
+2. **Initial deformation**: light **Mountain** (low amplitude ~0.3, zero-centered, element size ~0.27) to break up uniformity, followed by point-normal **Attribute Blur** to soften potential self-intersections at corners; another Subdivide for smoothness.
+3. **VDB conversion**: VDB from Polygons (SDF, low working resolution ~0.05 for interactive speed) → VDB Smooth SDF (default iterations) → Volume VOP for the noise stack, previewed via Convert VDB to Polygons.
+4. **Noise layer 1 (overall break-up)**: AA/Unified Noise on position → Constant + Multiply Constant (repetition control) → Fit Range (value shaping) → another Multiply Constant (overall strength) → Switch (per-layer on/off toggle) → Add to density; roughness reduced (~0.35), Fit Range expanded (~-0.15) and scaled down (~0.1) for a subtle overall break-up.
+5. **Noise layer 2 (cellular ridges)**: Worley/Cellular **F1** noise type (repetition ~80, expanded ~0.3, small multiplier ~0.075), distorted by a **Turbulence noise set to sparse convolution** (allows positive/negative distortion, amplitude ~0.27, frequency ~0.21) whose sample position is additionally passed through a **Transform Matrix rotated 45°** for a diagonal ridge orientation.
+6. **Noise layer 3 (fine detail)**: duplicate/adapt the layer-2 setup at a different frequency (~0.6) for finer overall deformation, offset differently for variation — save this reusable pattern to a shelf tool/recipe for future projects.
+7. **Noise layer 4 (extra break-up)**: Cellular **F1** noise with **Complement** enabled (inverts result), tight Fit Range (min ~-1, small max) plus a **Fractal** distortion (Standard type, ~1.56) layered on top.
+8. Enable all four noise layers together at low preview resolution to check the combined look, then raise the VDB resolution to the final value (~0.0015) for the detailed production surface (accepting a longer ~30s cook time).
+9. **Planarize the sides**: build a mirrored, subdivided, lightly Mountain-distorted **Box** matching the rib's flat-side silhouette; VDB from Polygons it, then **VDB Combine** (Subtract/Difference mode) against the noise-detailed rib VDB to flatten the sides realistically — tuning the box's inward offset (~0.3) until the silhouette matches.
+10. **Re-add side detail via masked noise**: build a **Fog VDB** mask from the same box geometry, use **Volume Sample** to read that mask at each position inside a second Volume VOP (reusing the earlier noise setup), multiply through a Feed Range, and apply a **Transform** (scale) to fix flat-mask dead zones and eliminate a visible seam artifact (tuned via trial and error — transform scale ~0.9, feed-range reduction ~0.25 resolved it in this session).
+11. Increase resolution to final (~0.0015) again, verify the clean, seamless result, then **File Cache** the finished rib surface.
+12. **Bone/vertebra segment build**: Object Merge the original curve, Transform (slight translate/scale) → Circle (5 divisions initially, later randomized) → Bevel (points, distance + 3 divisions) → random p-scale (Fit between ~0.8–1) → Scale by Attribute → Extrude (~0.3, 7 divisions) → Splice primitive 0 → Mirror (Z, weld) → Insert (patch group, ~0.13) → second Extrude (output front) → **Bend** (angle tuned via Enter+B viewport shortcut).
+13. Copy the same Bevel/Extrude pattern for a secondary edge-detail pass (final surface detail deferred to texturing in a follow-up video); Match Size to align the bone segment to the curve; skip UV unwrap for now.
+14. **Copy to Points setup**: initial `normal` (X-axis) and `up` (Y-axis) attributes on the curve points; randomize orientation via Rotate — "direction only," rotate-from-attribute, random around the normal vector; layer in a **Point Jitter** (axis-restricted) for additional positional randomization plus a randomized p-scale (Fit between ~0.3–0.5).
+15. **For-Each (points) loop with Fetch Feedback**: expose a **seed** integer parameter on the interface for the Circle's division count, computed via `fit()` + `random()` seeded using the loop's detail **iteration** attribute (paste-relative-reference for a procedural per-iteration seed offset — e.g. between 3 and 5 divisions); repeat the same pattern for a second seed parameter controlling the Bend angle range (e.g. -30 to 35).
+16. **Compile the loop** (Multi-Thread Compile) since per-point Copy-to-Points operations benefit significantly from compilation — verify no complaints/errors.
+17. Merge the finished, randomized bone chain with the noise-detailed rib mesh for the final combined result — texturing/shading explicitly deferred to a follow-up video.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Line, Labs Simple Shapes (quad, rounded corners), Sweep (Cross Section), Normal, Subdivide, Mountain, Attribute Blur, VDB from Polygons (SDF), VDB Smooth SDF, Volume VOP (4-layer cascading noise stack: AA/Unified Noise, Worley/Cellular F1, Turbulence sparse-convolution distortion, Transform Matrix 45° rotation, Complement inversion, Fractal distortion, Fit Range, Constant/Multiply Constant, Switch per-layer toggle), Convert VDB to Polygons, Box (mirrored, planarizing mask), VDB Combine (Subtract/Difference), Fog VDB, Volume Sample (masked re-noising), Transform (seam-fix scaling), File Cache, Object Merge, Circle, Bevel, Attribute Randomize (p-scale), Scale by Attribute, Extrude, Splice, Mirror, Insert, Bend (viewport Enter+B), Match Size, Copy to Points (normal/up attributes, Rotate-from-attribute randomization, Point Jitter), For-Each loop (points, Fetch Feedback, Multi-Thread Compile), interface seed parameters (`fit()`+`random()` seeded via detail `iteration` attribute, paste-relative-reference).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the four-layer cascading VDB noise stack, masked box-subtraction planarization, and the compiled for-each loop with per-iteration seeded randomization are all substantial production techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.319 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vdb, volume-vop, vex, for-each-loop, bend, sweep, bones, organic-modeling, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [VDB Procedural Cliffs](vdb-procedural-cliffs.md) — shares the same cascading-noise-in-Volume-VOP technique applied to rock cliffs instead of organic bones.
+- [Procedural and Organic Modeling in Houdini](procedural-and-organic-modeling-in-houdini.md) — related VDB volume-noise organic-modeling technique with masked density variation from the same channel.
