@@ -3084,9 +3084,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pTQGJM0k9b0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.310
+- **Tags:** hard-surface, boolean, vex, procedural-modeling, uvs, attribute-blend, tapering
+- **Summary:** Five hard-surface tips on a Y-branch pipe fitting: UV-boundary-based non-disruptive alpha removal, Curveu-driven tapering via Point-mix, Boolean-seam-masked Attribute Blur for ridge smoothing, primitive-bound corner rounding, and normal-blended inset extrusion via Attribute Combine.
 - **File:** tutorials/procedural-hard-surface-modeling-tips.md
 
 

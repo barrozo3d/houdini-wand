@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=pTQGJM0k9b0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.310"
+tags: [hard-surface, boolean, vex, procedural-modeling, uvs, attribute-blend, tapering]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-hard-surface-modeling-tips/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Hard Surface Modeling Tips
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-hard-surface-modeling-tips <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -84,30 +80,46 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:12] tutorials/frames/procedural-hard-surface-modeling-tips/frame_000.jpg
+- [0:35] tutorials/frames/procedural-hard-surface-modeling-tips/frame_001.jpg
+- [0:55] tutorials/frames/procedural-hard-surface-modeling-tips/frame_002.jpg
+- [1:20] tutorials/frames/procedural-hard-surface-modeling-tips/frame_003.jpg
+- [1:50] tutorials/frames/procedural-hard-surface-modeling-tips/frame_004.jpg
+- [2:20] tutorials/frames/procedural-hard-surface-modeling-tips/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five hard-surface modeling problem-solving tips applied to a Y-branch pipe fitting: non-disruptive alpha removal via UV boundary extraction, curve.u-driven tapering with Point-mix, Boolean seam-masked Attribute Blur, primitive-bound-based corner rounding, and normal-blended attribute-combine insets.
 
 ### Summary
-[PENDING EXTRACTION]
+To remove a tube's end alpha non-destructively, the sweep's UVs are computed, the UV boundary extracted, expanded, and promoted to primitives, then the inverted group is blasted away. A Curveu attribute (saved earlier) drives a tapering effect via a Point VOP mixing the current geometry with a Peaked version, using Fit Range to shape the transition, with the effect suppressed on the opposite branch by overriding Curveu there. Boolean-created ridge transitions are smoothed by extracting the Boolean's seam group, promoting to points, creating and blurring a mask attribute, then using it as the Attribute Blur's weight input. For corner rounding, a saved group is promoted to primitives and expanded, extruded, then a Bound node isolates just primitive 0 so the top-left corner alone can be beveled before extending and Boolean-ing it into the main shape. Finally, an inset-extrusion look is built via Attribute Blend: curve normals are transferred to the geometry (renamed N2, reversed on the smaller shape), a second reversed-inward normal is calculated, and the two are blended with Attribute Combine (or a VEX/VOP lerp) before extruding the inner edges along the blended normals.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Non-disruptive alpha removal**: compute UVs on the Sweep node, extract the UV boundary attribute's edge group, expand the selection, promote to primitives, invert the group, then Blast (or Split) to remove the unwanted end alpha cleanly.
+2. **Tapering via Curveu**: using a previously saved Curveu attribute, mix the current geometry with a Peaked version in a Point VOP/wrangle, using the Curveu value as the blend factor; shape the transition with Fit Range; override Curveu to a constant on the opposite branch to suppress the effect there.
+3. **Removing Boolean ridge transitions**: extract the seams group produced by the Boolean, promote it to points, create a mask attribute from it and blur it, then feed that blurred mask as the **weight** input of an Attribute Blur to smooth the ridge without affecting the rest of the geometry.
+4. **Rounding a corner**: promote a previously saved group to primitives and expand it, extrude that part, then use a **Bound** node and keep only primitive 0 so a single top-left corner can be isolated, beveled, extended, and Boolean-ed back into the main shape.
+5. **Inset-extrusion via normal blending**: transfer curve normals (with tangents) onto the geometry, rename/swap them to `N2`, reverse them on the smaller inner shape; calculate a second set of normals pointing inward by reversing them; blend the two normal sets with **Attribute Combine** (VEX or VOP `lerp` also works); finally extrude the inner edges along the blended normal to produce a smooth inset look.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Sweep (UV computation), Group (UV boundary, expand, promote to primitives), Blast/Split, Point VOP (Curveu-driven Peak mix, Fit Range), Boolean (seam group extraction), Attribute Promote, Attribute Blur (weight-driven by mask), Bound (single-primitive isolation), Bevel, Extrude, Boolean (corner integration), Attribute Transfer (curve normals + tangents), attribute rename/swap (N → N2), Attribute Combine (normal blending, VEX or VOP lerp), Extrude (inset along blended normal).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced (each tip solves a specific, non-obvious hard-surface modeling problem; assumes comfort with groups, Booleans, and attribute-level VEX/VOP work).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.310 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+hard-surface, boolean, vex, procedural-modeling, uvs, attribute-blend, tapering
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Hard Surface Techniques in Houdini](hard-surface-techniques-in-houdini.md) — related hard-surface problem-solving techniques (UV-as-position flattening, VEX orient-to-point) from the same channel.
+- [Direct vs Procedural in Houdini](direct-vs-procedural-in-houdini.md) — shares similar sign/modulo and group-based selection tricks for hard-surface work.
