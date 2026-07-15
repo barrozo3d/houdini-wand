@@ -2774,9 +2774,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Kc_6yws1AH8
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.569
+- **Tags:** extrude, uvs, material-fracture, vex, for-each-loop, displacement, architecture, procedural-modeling
+- **Summary:** Three tips on a cathedral tower: ramp-controlled Point-Normal extrude tapering, topology-preserving horizontal tiling via UV-flattened Lots of Division, and bounding-box-percentage VEX group expressions for selective end-piece breaking, plus a power-function dome with seam-flattened UVs for displacement.
 - **File:** tutorials/procedural-modeling-tips-in-houdini-2.md
 
 

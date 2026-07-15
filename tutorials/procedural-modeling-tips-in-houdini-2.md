@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Kc_6yws1AH8
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.569"
+tags: [extrude, uvs, material-fracture, vex, for-each-loop, displacement, architecture, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-modeling-tips-in-houdini-2/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Modeling tips in houdini #2
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-modeling-tips-in-houdini-2 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -73,30 +69,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/procedural-modeling-tips-in-houdini-2/frame_000.jpg
+- [0:45] tutorials/frames/procedural-modeling-tips-in-houdini-2/frame_001.jpg
+- [1:15] tutorials/frames/procedural-modeling-tips-in-houdini-2/frame_002.jpg
+- [1:50] tutorials/frames/procedural-modeling-tips-in-houdini-2/frame_003.jpg
+- [2:25] tutorials/frames/procedural-modeling-tips-in-houdini-2/frame_004.jpg
+- [2:55] tutorials/frames/procedural-modeling-tips-in-houdini-2/frame_005.jpg
+- [3:40] tutorials/frames/procedural-modeling-tips-in-houdini-2/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Three architectural modeling tips applied to a cathedral tower: ramp-controlled extrusion tapering via point-normal mode, topology-preserving horizontal tiling via UV-flattened Divide, and end-piece selection via a bounding-box-percentage VEX group expression — plus a power-function dome silhouette with seam-aware UV flattening for displacement.
 
 ### Summary
-[PENDING EXTRACTION]
+A tapering extrusion effect is achieved by manipulating point normals with a ramp based on curve-view position, then setting Extrude to **Point Normal** mode with "use existing normals" enabled — the ramp shape directly controls the taper profile. For horizontal tile rows on a cylinder that must respect the original topology, UV Flatten unwraps the cylinder and maps UV back to position, strips the vertical subdivisions (keeping only horizontal), and uses **Lots of Division** (the ideal node for this since it respects incoming topology) to create horizontal tiles before re-adding vertical subdivisions to deform the tiled sheet back into the cylindrical shape. To selectively break some tiles at the shape's ends after a Material Fracture, packed pieces are assembled and a **group expression VEX snippet** tests whether a point's X position exceeds `bbox_mean + bbox_size_x * percentage` to select end pieces procedurally, with the percentage value tunable to include more or fewer pieces. Separately, a domed roof shape is built inside a **Fetch Feedback for-loop** with extrusions per iteration, using a simple **power function** for the spherical falloff profile; UV seams are placed across each level and islands flattened into rectangles for a consistent tiling pattern, then a Point VOP imports displacement textures, mixes them via a Composite node set to Overlay, and applies the result along normals via Displace Along Normals.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Tapering extrusion**: start with a shape whose normals point inward; use VEX/point-normal manipulation with a **ramp keyed to curve-view (curveu) position** to shape the taper; set Extrude to **Point Normal mode** with "use existing normals" enabled; adjust the ramp shape to dial in the desired taper profile.
+2. **Topology-preserving horizontal tiles**: start with a tube, create UVs via **UV Flatten**, then flatten the cylinder by mapping the UV attribute onto position.
+3. Strip vertical subdivisions (keeping only what's needed for horizontal tiling), then use **Lots of Division** — the ideal node for this since it respects the incoming topology instead of arbitrary re-tessellation — to generate horizontal, randomly-sized tiles.
+4. Add back the vertical subdivisions and deform the flattened tile sheet back into the original cylindrical shape, preserving the tile pattern.
+5. **Selective end-piece breaking**: after a Material Fracture, assemble the pieces (packed); select the end pieces via a **group expression** using a VEX snippet testing whether a point's X position is greater than `bounding_box_mean + bounding_box_size_x * percentage` — tune the percentage to select more or fewer pieces from the ends.
+6. **Domed roof profile**: build inside a **for-loop set to Fetch Feedback** (required for chained modeling operations like this), starting from a tube and extruding inward each iteration.
+7. Shape the spherical falloff using a simple **power function** applied to the loop's scale/position values — tune the exponent for the desired dome curvature.
+8. **UV consistency for displacement**: create seams across each dome level and flatten each island into a rectangular shape, ensuring a consistent, non-distorted tiling pattern across the whole dome.
+9. In a **Point VOP**, import displacement textures, mix multiple textures using a **Composite node set to Overlay**, and apply the result via **Displace Along Normals** using the imported displacement as the input.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Attribute Wrangle/VOP (ramp keyed to curveu, point-normal manipulation), Extrude (Point Normal mode, "use existing normals"), UV Flatten, position-from-UV mapping, Lots of Division (topology-respecting horizontal tiling), Material Fracture, Pack, group expression VEX (`@P.x > bbox_mean + bbox_size_x*percentage`), For-Each loop (Fetch Feedback mode), power function (dome falloff), UV seam creation + island flattening (rectangular islands for tiling), Point VOP (displacement texture import, Composite node set to Overlay, Displace Along Normals).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (each tip is a compact, reusable technique; the group-expression VEX and Fetch-Feedback loop assume some VEX/loop fluency).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.569 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+extrude, uvs, material-fracture, vex, for-each-loop, displacement, architecture, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Modeling | First steps with Houdini](procedural-modeling-first-steps-with-houdini.md) — same cathedral-tower project this set of tips is applied to.
+- [Procedural Bricks with Houdini](procedural-bricks-with-houdini.md) — companion brick-pattern tutorial on the same tower model.
+- [Groups, Patterns in Houdini](groups-patterns-in-houdini.md) — related group-selection VEX patterns including bounding-box-percentage expressions.
