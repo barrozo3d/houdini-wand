@@ -2104,9 +2104,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=05uuRimyHfY
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.302
+- **Tags:** cops, copernicus, sops, for-each-loop, stamp-point, uv-by-id, tiling, stone, texturing
+- **Summary:** Builds a seamlessly-tiling stone pattern combining a Cops-stamped fan/scale SDF tile (with edge-matched ID offsetting) and a SOPs-built circular stone cluster (randomized-rotation for-each loop) plus a matching hexagonal border pattern, all textured via UV-by-ID and ID-driven color variation.
 - **File:** tutorials/tiling-patterns-with-cops-and-sops.md
 
 

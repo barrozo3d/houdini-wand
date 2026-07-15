@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=05uuRimyHfY
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.302"
+tags: [cops, copernicus, sops, for-each-loop, stamp-point, uv-by-id, tiling, stone, texturing]
+extraction_status: complete
 frames_dir: tutorials/frames/tiling-patterns-with-cops-and-sops/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 11
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Tiling Patterns with COPS and SOPS
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py tiling-patterns-with-cops-and-sops <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -37,30 +33,60 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_000.jpg
+- [1:00] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_001.jpg
+- [2:30] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_002.jpg
+- [4:20] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_003.jpg
+- [5:50] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_004.jpg
+- [8:00] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_005.jpg
+- [10:00] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_006.jpg
+- [11:40] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_007.jpg
+- [13:00] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_008.jpg
+- [14:20] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_009.jpg
+- [15:40] tutorials/frames/tiling-patterns-with-cops-and-sops/frame_010.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a seamlessly-tiling stone/cobblestone pattern by combining **Cops (Copernicus)** — for a fan/scale-shaped SDF tile stamped at grid points with a carefully offset ID attribute so opposite tile edges always match — with **SOPs** for a separate circular-fan stone cluster (built via a randomized-rotation for-each loop, since UV-ramp-based attempts weren't good enough) and its own COPs-built hexagonal border/outline pattern, all layered together with ID-driven UV-by-ID texturing and color variation.
 
 ### Summary
-[PENDING EXTRACTION]
+The base fan/scale shape is built as an SDF circle in Cops, transformed/mirrored/inverted and multiplied to form the repeating tile motif. To instance it correctly, a **Grid of points** (scaled from center, rows/columns tied to grid size minus one) gets **row and column ID attributes** (credited to "Fenis" for this part) used to carve an X-style point pattern by filtering/removing specific points. A **sprite-rotation attribute** is derived from a per-point pattern ID (alternating on odd/even rows and columns, identified by eye from a reference image) so each point gets a 90°-stepped rotation (0/-90/etc.) matching the visual reference. Critically, since tiling the pattern would otherwise produce mismatched IDs at the seams, a wrangle **counts rows and offsets the ID attribute** so the left/right and top/bottom edge IDs match their opposite counterparts — making the pattern for the Cops SDF-stamp step tile perfectly (this attribute, named exactly "id", is what the Cops network reads for shape variation/color). This SOPs-generated point/ID setup was ultimately not fed directly into the Cops network for the final pattern (recreated instead), but forms the reusable point/rotation/ID foundation reused later for both the fan pattern and a circular stone cluster. The circular stone cluster (since UV-ramp + UV-sample approaches gave insufficient results) is built entirely in SOPs: a **For-Each Count** loop creates a Circle per iteration with divisions driven by the Meta Import iteration attribute (increasing per ring), Normals-out, Peak (scaled by `0.25 * iteration`), Fuse, slight Extrude, and a **randomized rotation** (`f1` noise keyed to the iteration attribute) specifically to break up an otherwise obvious repeating radial pattern. A primitive ID attribute is added before Subdividing (preserved through the operation) so **Group from Attribute Boundary** can isolate individual stone tiles for Blast-based insets; a "stones" attribute (with a separate ID for the center piece and back piece) is created for later targeting in both UVs and color. This SOPs geometry is Rasterized by position (fit to bounding box, scaled up slightly to better align edge stones), carrying the "stones" and primitive-ID attributes as layers; the **UV by ID** HDA (fed the prim-ID layer) generates UVs, offset per-ID as a random seed, then an Image Sample pulls in a stone texture, with a **Random Mono** (from ID) feeding an HSV Adjust (decreased value, increased saturation) for per-stone tint variation, plus a Compare-node-based darkening pass between stones for contrast. Finally, an **outline/border stone pattern** is built in Cops-plus-SOPs: a Circle converted to line, Clip on left/bottom, Resampled, transformed down/mirrored to guarantee **equal point counts on every side** (critical — resampling after combining would break point matching across the merged/fused shape), then Copy to Points reusing the earlier sprite-rotation attribute (converted to radians, since VOP rotation needs radians vs. the stored degrees) with Normal/Up set and Orient Along Curve for tangent-following stone orientation; a Box Clip matches this border pattern to the main tile grid, and the same stamp-point/image-sample/HSV/darkening pipeline is applied for consistent texturing. The finished network also generates albedo, displacement, and a scattering-density attribute (for later grass instancing between stones in Solaris) plus roughness.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base fan/scale SDF tile (Cops)**: build a Circle SDF shape ensuring it doesn't repeat awkwardly; Transform, Mirror, Invert, and Multiply to construct the final tile motif.
+2. **Instancing points**: build a **Grid** of points scaled from the center (rows/columns tied to grid dimensions minus one); create **row** and **column ID** attributes (credit: Fenis) and use them to filter/remove points into an X-style pattern.
+3. **Sprite rotation pattern**: derive a per-point pattern ID that alternates on odd/even rows and odd/even columns (identified by eye from a reference image), then assign 90°-stepped rotation values (e.g. ID==0 → -90°, etc.) to a **sprite rotation** attribute.
+4. **Tiling ID fix**: in a wrangle, count rows and **offset the ID attribute** so matching edges on opposite sides of the tile share the same ID (left↔right, top↔bottom) — required for the Cops network's SDF-stamp/shape-variation step to tile seamlessly; the attribute must be named exactly `id` for Cops to read it.
+5. **Circular stone cluster (SOPs, since UV-ramp attempts weren't good enough)**: run a **For-Each Count** loop, creating a Circle per iteration with divisions driven by the **Meta Import iteration** detail attribute (more divisions per outer ring); add outward Normals, Peak (`0.25 * iteration`), Fuse, slight Extrude.
+6. **Randomize rotation per ring** using an `f1`-style noise function keyed to the iteration attribute — without this, the repeating radial pattern is visually obvious; with it, the repetition blends in.
+7. Add a **primitive ID** attribute before Subdividing (preserved through the operation), then use **Group from Attribute Boundary** on that ID to isolate individual stone tiles, Blast-ing selected tiles to create inset gaps; create a **"stones"** attribute (with distinct IDs for center vs. back pieces) for later targeting.
+8. **Rasterize by position** (fit to bounding box, scaled up slightly for better edge alignment) carrying the "stones" and prim-ID attributes as image layers.
+9. **UV by ID HDA**: feed the prim-ID layer to generate UVs, then offset per-ID as a random seed to vary texture placement per stone.
+10. **Texture and color**: Image Sample a stone texture using those UVs; derive a **Random Mono** from the ID attribute feeding an **HSV Adjust** (decreased value, increased saturation) for per-stone tinting; use a Compare node on the "stones" attribute (inverted) to darken the background/gaps between stones.
+11. **Outline/border stone pattern**: Circle → Convert Line → Clip (left and bottom) → Resample → Transform down and Mirror, specifically **before** combining, so every side has an **equal point count** — critical, since resampling after merging/fusing would break point correspondence across the combined shape.
+12. **Copy to Points** along this border curve, reusing the earlier sprite-rotation attribute (converted to **radians**, since VOP rotation nodes expect radians while the stored attribute is in degrees) with Normal/Up set; **Orient Along Curve** so stones follow the border's tangent direction; Fuse, delete unneeded attributes, keep the "up" attribute for instancing orientation.
+13. **Box Clip** the border pattern to match the main tile grid's boundary; Rasterize and Stamp Point (default shape) for near-perfect edge tiling; apply the same image-sample/HSV/darkening texturing pipeline as the main pattern.
+14. Round out the shading network with albedo, displacement, and a **scattering-density attribute** (for later grass instancing between stones in Solaris) plus a roughness map; bring the finished textures into Solaris for final scatter/render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Cops: SDF Circle shape, Transform, Mirror, Invert, Multiply, Stamp Point, Rasterize (position, layers); SOPs: Grid (center-scaled), row/column ID wrangles, sprite-rotation pattern wrangle, tiling ID-offset wrangle, For-Each Count loop (Meta Import iteration attribute), Circle (per-iteration divisions), Normal, Peak, Fuse, Extrude, `f1`-noise rotation randomization, primitive ID attribute, Subdivide, Group from Attribute Boundary, Blast (insets), "stones" attribute, Rasterize (position, bounding-box fit), UV by ID (custom HDA), Image Sample, Random Mono (from ID), HSV Adjust, Compare node (darkening mask), Convert Line, Clip, Resample, Transform, Mirror (equal-point-count border construction), Copy to Points (radians-converted sprite rotation, Normal/Up), Orient Along Curve, Box Clip (pattern matching), roughness/displacement/scattering-density attribute authoring.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines Cops SDF tiling with edge-matched IDs, a compiled SOPs for-each stone-cluster build, and a separate equal-point-count border pattern — a substantial multi-context production pipeline).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.302 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+cops, copernicus, sops, for-each-loop, stamp-point, uv-by-id, tiling, stone, texturing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [The Donut Tutorial in Cops - Houdini 20.5](the-donut-tutorial-in-cops-houdini-205.md) — related Cops procedural-texturing tutorial with a similar seamless-tiling focus from the same channel.
+- [Wood Barrel Texturing in COPs](wood-barrel-texturing-in-cops.md) — shares the same Cops-based procedural texturing workflow applied to a different material.
