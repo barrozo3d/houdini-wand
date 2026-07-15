@@ -1844,9 +1844,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=kxg05cfgdQI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** camera-matching, depth-map, onnx, machine-learning, cops, solaris, karma-xpu, cgi-integration, texture-projection
+- **Summary:** Integrates a CG bottle into a real back-plate via EXIF-corrected camera matching, an ONNX machine-learning depth map reassembled from tiled RGB channels in Cops, camera-relative NDC-based ground-card displacement, and Karma XPU rendering with an HDRI dome light aligned to the photographed lighting.
 - **File:** tutorials/quick-cg-integration-with-houdini-and-karma.md
 
 

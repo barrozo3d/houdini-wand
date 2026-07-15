@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=kxg05cfgdQI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [camera-matching, depth-map, onnx, machine-learning, cops, solaris, karma-xpu, cgi-integration, texture-projection]
+extraction_status: complete
 frames_dir: tutorials/frames/quick-cg-integration-with-houdini-and-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Quick CG integration with Houdini and Karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py quick-cg-integration-with-houdini-and-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -246,30 +242,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:45] tutorials/frames/quick-cg-integration-with-houdini-and-karma/frame_000.jpg
+- [3:15] tutorials/frames/quick-cg-integration-with-houdini-and-karma/frame_001.jpg
+- [7:00] tutorials/frames/quick-cg-integration-with-houdini-and-karma/frame_002.jpg
+- [10:30] tutorials/frames/quick-cg-integration-with-houdini-and-karma/frame_003.jpg
+- [15:00] tutorials/frames/quick-cg-integration-with-houdini-and-karma/frame_004.jpg
+- [17:40] tutorials/frames/quick-cg-integration-with-houdini-and-karma/frame_005.jpg
+- [21:00] tutorials/frames/quick-cg-integration-with-houdini-and-karma/frame_006.jpg
+- [25:00] tutorials/frames/quick-cg-integration-with-houdini-and-karma/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Integrate a CG bottle into a real photographed back-plate by camera-matching against EXIF data, generating a machine-learning depth map (Onyx/ONNX in Cops) to displace a camera-facing card for a parallax-correct environment, then compositing the object with Karma XPU in Solaris using an HDRI-aligned dome and depth-displaced ground geometry.
 
 ### Summary
-[PENDING EXTRACTION]
+The pipeline starts with a real back-plate photo (from Polyhaven) plus its RAW original (used only to read EXIF: camera model, focal length, crop factor) for accurate camera matching — a reference box of assumed real-world dimensions is placed and aligned to vanishing points in the image, using an assumed human-height camera position and a corrected focal length (`nativeFocalLength × cropFactor`) for a much better alignment than guessing. A depth map is then generated with a **machine-learning ONNX model** (loaded in Cops, ~800MB "large" variant) that outputs a tiled 384×128 RGB image (three depth tiles stacked vertically — foreground/red, midground/green, background/blue) requiring a Contact Sheet node to reassemble into one usable depth image, matched in resolution to a Resize-matched copy of the back-plate. A subdivided grid (aligned to the same Z-axis/UV orientation as the back-plate) is displaced using the depth map: first a naive attempt (`P += N * depth`) fails because the plane's normals aren't aligned to the camera; the working approach instead aligns the plane to the camera via `fromNDC()` with the camera path (offsetting X/Y by 0.5 and Z via `alignz()`), then displaces along Z using the depth map sampled at NDC coordinates (inverted) — producing a camera-relative displaced "world card" that roughly matches the photographed geometry's depth, letting inserted 3D objects (like the bottle) receive correct shadows/contact and interact believably with the environment. For the actual asset, the bottle (previously logo-projected using the channel's custom Texture Projection tool) is Match-Sized to real-world scale (0.3m), snapped onto the depth-displaced card with Transform "sit" (Alt shortcut), rotated to face correctly, then brought into Solaris/LOPs alongside the imported camera (background image removed via Camera Edit so the viewport shows the true render) and an HDRI dome light (rotated to align its light direction with the photographed scene's actual lighting), rendered in **Karma XPU**. Materials are built with simple color-correction/mix networks (loaded label image, alpha-composited over a gray or colored background) and basic metalness/roughness values for the bottle cap and other quick props, finished with a small render at increased samples and a denoiser.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Download an HDRI back-plate (with its RAW original for EXIF data) from Polyhaven; create a camera in Houdini, load the back-plate as the background image, and set the correct image aspect ratio from its resolution.
+2. Add a reference object of assumed real-world size (a box) to the scene, positioned at an assumed human-eye camera height, and align it to the back-plate's vanishing points for camera matching.
+3. Correct the camera's focal length using the RAW's EXIF data: `nativeFocalLength × cropFactor` (e.g. 32mm × 1.5 crop factor ≈ 48mm) for a much closer real-world match than an assumed default.
+4. Generate a depth map via a **machine-learning ONNX model** loaded in a Cop network (fed the back-plate as RGB) — output comes as a tiled 384×128 image with 3 stacked depth tiles (foreground/red, midground/green, background/blue channels); reassemble with a **Contact Sheet** node into one coherent depth image.
+5. Build a subdivided grid aligned to the back-plate's orientation/UVs, and displace it using the depth map — align the plane to the camera first via `fromNDC()` (camera path, offsetting X/Y by 0.5, aligning Z via `alignz()`) since naive normal-based displacement fails without correct camera-relative orientation; then displace along Z using inverted NDC-sampled depth values.
+6. Bring in the previously texture-projected CG asset (the bottle, logo-decaled with the channel's custom Texture Projection tool), Match-Size it to a real-world scale (e.g. 0.3m), and snap it onto the depth-displaced card using Transform "sit" (Alt shortcut) with correct rotation.
+7. Move everything into Solaris/LOPs: import the geometry and camera, remove the camera's background image via Camera Edit (so render view shows the actual composited result, not the reference photo).
+8. Add a Material Library with a Dome Light loading the environment HDRI (rendered viewport-only, set to XPU), rotate the dome to align its lighting direction with the real photographed lighting.
+9. Assign quick materials (gray/metal presets, an alpha-composited label image over a colored background for the bottle) and render in **Karma XPU**, enabling the Render Product/Rendervar imports needed for shadow passes to display correctly; increase samples and add a denoiser for the final render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Camera (matched focal length via EXIF crop-factor correction), reference Box (real-world scale assumption), Cop network: RGB import, ONNX-based ML depth-model node, Resize (384 output), Contact Sheet (tile reassembly), Grid (subdivided, UV-aligned), VEX wrangle (`fromNDC()`, `alignz()`, camera-relative Z-displacement, inverted NDC depth sampling), Match Size, Transform "sit" snap, Solaris/LOPs: Camera import, Camera Edit (background-image removal), Material Library, Dome Light (HDRI, XPU-only render), Karma XPU, Render Product/Rendervar (for shadow-pass imports), basic Color Correct / Mix / metalness-roughness materials.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines photographic camera-matching math, an ML-based depth-estimation Cops workflow with manual tile reassembly, and camera-relative NDC displacement math for a "world card" — all non-obvious, multi-domain techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+camera-matching, depth-map, onnx, machine-learning, cops, solaris, karma-xpu, cgi-integration, texture-projection
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Texture Projection Tool for Houdini 20.5](texture-projection-tool-for-houdini-205.md) — the tool used here to logo-decal the bottle before this CGI-integration render.
+- [Quick CGI Integration with Houdini and Solaris](quick-cgi-integration-with-houdini-and-solaris.md) — companion CGI-integration tutorial from the same channel using an HDRI dome + AOV compositing approach instead of an ML depth map.

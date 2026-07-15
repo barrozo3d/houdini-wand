@@ -181,5 +181,5 @@ solaris, karma, cops, aov, uv-projection, background-plate, physical-sky, cgi-in
 ---
 
 ## Related Tutorials
-- [Quick CG Integration with Houdini and Karma](quick-cg-integration-with-houdini-and-karma.md) — likely companion/earlier CGI-integration tutorial from the same channel.
+- [Quick CG Integration with Houdini and Karma](quick-cg-integration-with-houdini-and-karma.md) — companion/earlier CGI-integration tutorial from the same channel using an ONNX ML depth map for ground-card displacement instead of AOV compositing.
 - [Materialx and Karma Procedural Networks](materialx-and-karma-procedural-networks.md) — shares the Material Exposition-based manual UV coordinate trick used here for the headlights.
