@@ -2764,9 +2764,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=iSIXaa3rknU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.598
+- **Tags:** vdb, triplanar, boolean, displacement, megascans, environment, rocks, composite
+- **Summary:** Builds a cliff by Boolean-merging mountain-distorted sphereized boxes along a curve profile, VDB-smoothing, then drives displacement/color through a Point VOP mixing two Megascans textures via a Composite node and selectively reconstructing position (keeping Y undisplaced) for clean tops.
 - **File:** tutorials/quick-rock-cliff-setup-in-houdini.md
 
 

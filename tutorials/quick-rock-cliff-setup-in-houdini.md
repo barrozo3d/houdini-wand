@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=iSIXaa3rknU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.598"
+tags: [vdb, triplanar, boolean, displacement, megascans, environment, rocks, composite]
+extraction_status: complete
 frames_dir: tutorials/frames/quick-rock-cliff-setup-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Quick Rock Cliff Setup in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py quick-rock-cliff-setup-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -79,30 +75,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/quick-rock-cliff-setup-in-houdini/frame_000.jpg
+- [1:00] tutorials/frames/quick-rock-cliff-setup-in-houdini/frame_001.jpg
+- [1:40] tutorials/frames/quick-rock-cliff-setup-in-houdini/frame_002.jpg
+- [2:30] tutorials/frames/quick-rock-cliff-setup-in-houdini/frame_003.jpg
+- [3:40] tutorials/frames/quick-rock-cliff-setup-in-houdini/frame_004.jpg
+- [4:40] tutorials/frames/quick-rock-cliff-setup-in-houdini/frame_005.jpg
+- [5:40] tutorials/frames/quick-rock-cliff-setup-in-houdini/frame_006.jpg
+- [6:30] tutorials/frames/quick-rock-cliff-setup-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a rock cliff face by copying mountain-distorted, sphereized boxes along a hand-drawn ground-profile curve, Boolean-merging them into a single mass, VDB-smoothing the result, then driving both displacement and color entirely through a **Point VOP compositing two Megascans displacement/color texture pairs** (mixed with a Composite node) instead of a single texture.
 
 ### Summary
-[PENDING EXTRACTION]
+A curve is drawn to define the cliff's ground silhouette; it's extruded upward, with the back seam and middle seam grouped for later use, then extruded again and pierced open on one side (one side of the branch). Boxes (scaled in Y) are copied onto resampled/point-heated points along two edge loops (with randomized p-scale and orientation, reused from an earlier shared script), matched, normal-blurred, and Mountain-distorted, then run through a Sphereify preset to round out the shapes; two separate copy passes use slightly different Fit-function amplitude/offset values on the noise for variation. The pieces are Boolean-merged, small parts deleted, fused, and Remeshed for regular topology, then converted to VDB and back (Convert VDB) to smooth the surface. After clipping the back/bottom (unneeded polygons) and deleting small parts again, a Subdivide precedes Triplanar — but here Triplanar is used purely for **color**, not displacement: two different Megascans textures (one grass, one rock) are sampled for color, later used for displacement in the Point VOP. Normals are blurred beforehand to keep displacement well-behaved. In the **Point VOP**, the first texture's color goes straight to Cd; the second is imported as a separate point attribute and also assigned to Cd, then the two are **mixed via a Composite node set to Darken** (Overlay/Lighten also suggested as alternatives depending on input textures) — Megascans textures are remapped between -0.5 and 0.5 before use since raw values aren't centered for displacement. The mixed result finally displaces the geometry, but selectively: the **Y component keeps the original position** (undisplaced) while X/Z take the displaced position, assigned back as the new point position, so the top of the cliff isn't affected by displacement while the front face gets full detail.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Draw a ground-profile **curve**, Extrude it upward, output the texture-back seam and group the middle seam for the next steps.
+2. Extrude the volume again to build the branch shape, piercing one side open.
+3. Extract two edge loops, resample and remove the curves (keep points), add a **Point Heater** with randomized p-scale/orientation (reused script from earlier videos).
+4. **Copy boxes** (scaled in Y) to these points in a loop, varying the Fit-function amplitude/offset of the driving noise slightly between passes for variety.
+5. **Match Size**, blur normals, apply **Mountain** distortion, then a **Sphereify** preset to round the boxes into organic rock-like lumps.
+6. Merge all copied shapes, **Boolean** them together into a single mass.
+7. **Delete small parts**, **Fuse**, and **Remesh** for regular, clean topology.
+8. Convert to **VDB from Polygons** then back (**Convert VDB**) to smooth the surface further.
+9. **Clip** the back and bottom (unneeded extra polygons), delete small parts again, and **Subdivide** before texturing.
+10. Apply **Triplanar** for **color only** (not displacement): sample one Megascans grass texture and one Megascans rock texture for their respective color outputs, remapping both textures between **-0.5 and 0.5** since raw Megascans textures aren't centered for displacement use.
+11. In a **Point VOP**: assign the first texture's color to `Cd`; import the second texture as a separate point attribute, also assigning it to `Cd`; mix the two Cd values with a **Composite node set to Darken** (try Overlay/Lighten depending on your specific input textures).
+12. **Displace** using the mixed result, but selectively reconstruct the final position: keep the **original Y** (undisplaced, so tops stay clean) while taking the **displaced X and Z**, then assign this composite vector as the new point position.
+13. Reduce polycount and delete any extra parts for the final optimized cliff asset.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Curve, Extrude (back-seam + middle-seam groups), Resample, Point Heater (randomized p-scale/orientation), Copy to Points (looped with varying Fit-function noise amplitude/offset), Match Size, Attribute Blur (normals), Mountain, Sphereify preset, Boolean, Delete Small Parts, Fuse, Remesh, VDB from Polygons + Convert VDB (smoothing round-trip), Clip, Subdivide, Triplanar (color-only sampling, two Megascans textures), Fit Range (-0.5/0.5 remap), Point VOP (Cd assignment, Composite node — Darken/Overlay/Lighten mix, selective Y-preserving position reconstruction).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the selective-axis displacement trick and dual-texture Composite mixing are the standout non-obvious techniques; overall pipeline reuses established studio patterns).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.598 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vdb, triplanar, boolean, displacement, megascans, environment, rocks, composite
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [RBD rock surfaces with Houdini](rbd-rock-surfaces-with-houdini.md) — alternate rock-cliff generation approach (RBD Material Fracture) from the same channel, targeting a similar visual result.
+- [Houdini Heightfields and Cliffs](houdini-heightfields-and-cliffs.md) — related two-pass texturing approach for cliffs using third-party materials instead of the Composite-mixed dual-texture method here.
