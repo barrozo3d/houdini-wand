@@ -2714,9 +2714,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Qs5Sk6QPGcM
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.598
+- **Tags:** sweep, vex, fuse, weaving, procedural-modeling, orient-along-curve, wicker
+- **Summary:** Models a woven basket from curves and Sweeps: modulo-alternated normal-flip creates the over-under weave wave pattern for rows/columns, and a Fuse node set to "closest target point" bridges a circle and transformed grid into the base's radial spoke pattern.
 - **File:** tutorials/procedural-wicker-basket-in-houdini.md
 
 
