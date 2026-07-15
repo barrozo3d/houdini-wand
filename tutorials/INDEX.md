@@ -1614,9 +1614,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=SwtUCds8UCY
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0
+- **Tags:** packed-primitives, transform-attribute, uv-flatten, primitive-sort, tunnel, level-environment, houdini-21, patreon-course
+- **Summary:** Free-lesson excerpt from a paid course modeling a game-level tunnel by flattening a Tube's cross-section via group-boundary detection, then recovering a broken primitive/point sort order (from earlier Boolean-style operations) by combining a UV-flow sort key with a relative-bounding-box Z key into one monotonic sort value.
 - **File:** tutorials/procedural-environment-assets-in-houdini-21.md
 
 

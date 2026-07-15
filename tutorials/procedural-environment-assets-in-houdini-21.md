@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=SwtUCds8UCY
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0"
+tags: [packed-primitives, transform-attribute, uv-flatten, primitive-sort, tunnel, level-environment, houdini-21, patreon-course]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-environment-assets-in-houdini-21/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 9
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural environment assets in Houdini 21
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-environment-assets-in-houdini-21 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -208,30 +204,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:32] tutorials/frames/procedural-environment-assets-in-houdini-21/frame_000.jpg
+- [1:36] tutorials/frames/procedural-environment-assets-in-houdini-21/frame_001.jpg
+- [3:10] tutorials/frames/procedural-environment-assets-in-houdini-21/frame_002.jpg
+- [5:30] tutorials/frames/procedural-environment-assets-in-houdini-21/frame_003.jpg
+- [8:00] tutorials/frames/procedural-environment-assets-in-houdini-21/frame_004.jpg
+- [10:00] tutorials/frames/procedural-environment-assets-in-houdini-21/frame_005.jpg
+- [13:00] tutorials/frames/procedural-environment-assets-in-houdini-21/frame_006.jpg
+- [15:50] tutorials/frames/procedural-environment-assets-in-houdini-21/frame_007.jpg
+- [19:00] tutorials/frames/procedural-environment-assets-in-houdini-21/frame_008.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+First free lesson of a paid Patreon course: model a game-level tunnel shape by carving/flattening a Tube's cross-section with group-boundary-derived flattening, then re-derive a broken primitive/point sort order (caused by earlier Boolean-style operations) using combined UV-space and relative-bounding-box sort keys — a reusable technique for regaining spatial ordering on procedurally-modified grid-like geometry.
 
 ### Summary
-[PENDING EXTRACTION]
+The tunnel starts from a Tube (Z axis, 8 rows, 50 columns) that gets grid-expression-based groups removed/flattened to create an open, prick-shaped cross-section: `P.y < threshold` group expressions isolate a "bottom" strip, a second lower threshold isolates the part to Blast away, and a Group-From-Match-With-Boundary (points, matched against the bottom group) plus a "not bottom" variant, Group-Combined together, produces the two boundary edges where the tube needs to be flattened flat. Those boundary point groups are then split into left/right halves using `sign(P.x)` remapped from {-1,1} to {0,1} (via `(sign+1)*0.5`, rounded), building `boundary_0`/`boundary_1` point groups; each side's flatten value is read from a single representative point's X position (`expandpointgroup()` → first element), and a `select()`-based (ternary-style) wrangle sets `P.x` to the left or right reference X depending on which side of center each point falls on — flattening the tube's side walls into flat planes. A Peak (small inward offset) on the boundary groups avoids the sharp crease that an unpinned Attribute Blur alone would otherwise smooth away entirely (pinning the border creates an unwanted indentation, not pinning smooths the whole shape). After UV Flatten (used purely to set up a later rest-position/sort reference, not for texturing) and cleanup, the tutorial discovers that all the boolean-like flatten/blast operations have **destroyed the original primitive/point ordering** (needed later for row/column-based transforms) — e.g. primitive 0 is followed by 30, then who-knows-what — so a from-scratch re-sort is built: since the UV flow already goes in a meaningful direction, a **Sort by Attribute** using `vertex(0).uv.x` as a primitive-level sort key gets one axis mostly right, but is insufficient alone since the geometry is flat along Z relative to the UV flow. To combine both axes into one sortable value, the tutorial computes `rows` (from a stored channel value used earlier for the Tube) and `cols` (`nprimitives / rows`), builds a Z-axis value via **relative point bounding box**, then combines `round(uv.y) * cols` (or the reversed `1.0 − uv.y`, depending on the desired sort direction) with `round((1.0−z)) * cols * rows` into one **combined sort key** that respects both the UV-flow direction and the Z position — after fixing a sign/direction bug (needing to reverse the initial assumption), this produces a fully-monotonic sort value that correctly orders primitives 0→34, 35→69, 70→... in row-major order. Once sorted, a **row ID** (`prim_num % cols`) and **column ID** (`prim_num / cols`, floored) are derived per-primitive for use in upcoming per-row/per-column random transform steps (covered in the paid continuation of the course).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build the tunnel base from a **Tube** (Z axis, 8 rows, 50 columns).
+2. Use **Group Expression** on `P.y < threshold` (two thresholds) to isolate a "bottom" strip and a lower "to-blast" strip; Blast the lower strip away to open up the tube's cross-section.
+3. Build boundary edge groups with **Group From Match With Boundary** (points, matched against the bottom group) plus its inverse ("not bottom"), then **Group Combine** them into one boundary group marking where the tube needs to flatten.
+4. Split the boundary group into left/right halves via `(sign(P.x) + 1.0) * 0.5` rounded to an integer, producing `boundary_0`/`boundary_1` point groups; grab each side's flatten-target X value from a single representative point (`expandpointgroup()` → first element).
+5. Use a `select()`/ternary-style wrangle to set `P.x` to the appropriate left/right reference value depending on which side of center each point is on — flattening the tube's sides into flat planes.
+6. Apply a small inward **Peak** on the boundary groups (rather than an unpinned Attribute Blur, which oversmooths, or a pinned one, which creates an unwanted crease indentation) to soften the new sharp edge cleanly.
+7. Run **UV Flatten** (purely as groundwork for a later sort/rest reference, not for texturing) and clean up the geometry.
+8. Recognize that prior flatten/blast operations have **broken the original primitive/point sort order** (needed for later per-row/per-column transforms) — verify by inspecting primitive numbers, which now jump non-sequentially.
+9. Attempt **Sort by Attribute** using `vertex(0).uv.x` as a primitive-level key — gets one axis right but is insufficient alone since the geometry doesn't vary meaningfully along that axis relative to Z.
+10. Combine two axes into one sort key: derive `rows`/`cols` (`cols = nprimitives / rows`), build a Z-position value via **relative point bounding box**, and combine `round(uv.y) * cols` with `round(1.0 − z) * cols * rows` (fixing a direction/sign bug along the way) into a single monotonic **combined sort value**.
+11. **Sort primitives** by that combined value to fully restore row-major ordering (0→34, 35→69, 70→...), then derive per-primitive **row ID** (`prim_num % cols`) and **column ID** (`floor(prim_num / cols)`) attributes for the next (paid) course steps involving per-row/per-column random transforms.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Tube (Z axis, rows/columns), Group Expression (`P.y` threshold ×2), Blast, Group From Match With Boundary (×2) + Group Combine, point wrangle (`sign(P.x)` remap to 0/1, `expandpointgroup()`, `select()`/ternary flatten), Peak (small inward offset on boundary groups), UV Flatten, Sort (by Attribute — `vertex(0).uv.x`), relative point bounding box (Z-axis value), combined sort-key wrangle (`round()`, `uv.y`, Z-value, rows/cols math), Sort (final combined-key primitive sort), row-ID/column-ID wrangles (`%`, `floor()`, `/`).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the combined UV-flow + relative-bounding-box sort-key derivation to recover a broken primitive order is a sophisticated, non-obvious technique, though each individual step is simple math).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0 (visible in viewport title bar: "Houdini India Limited Commercial 21.0...").
 
 ### Tags
-[PENDING EXTRACTION]
+packed-primitives, transform-attribute, uv-flatten, primitive-sort, tunnel, level-environment, houdini-21, patreon-course
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Buildings in Houdini | Tips and Tricks](procedural-buildings-in-houdini-tips-and-tricks.md) — shares the Labs-Sort/intrinsic-curve-UV based point-ordering approach used here for restoring geometry sort order.
+- [Tips and tricks in Houdini 21](tips-and-tricks-in-houdini-21.md) — companion Houdini 21 tutorial from the same channel covering matrix/UV-gradient/Pick-node techniques.
+- [Procedural Materials in Houdini 21 | Patreon December '25 - Free Lesson](procedural-materials-in-houdini-21-patreon-december-25---free-lesson.md) — another free-lesson excerpt from the same Patreon course series, covering a Cops/SOPs tiling pattern instead.
