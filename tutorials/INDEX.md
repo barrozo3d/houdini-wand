@@ -3134,9 +3134,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=9bq2Zx5zcIk
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.593
+- **Tags:** vellum, vex, quaternion, branching, procedural-modeling, simulation, food, intersections
+- **Summary:** Grows a grape stem/branch hierarchy with quaternion-based 90°-offset orientation and sample_direction() cone-scattered twigs, then places tiny berries at branch tips and animates their p-scale growth inside a high-stiffness Vellum cloth sim to naturally resolve intersections instead of manual placement.
 - **File:** tutorials/procedural-grapes-and-how-to-avoid-intersections.md
 
 
