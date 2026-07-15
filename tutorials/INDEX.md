@@ -1514,9 +1514,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rvDsbo3slXc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0.303
+- **Tags:** for-loop-optimization, capture-by-proximity, labs-file-cache, rig-doctor, wedge, retrospective, best-practices
+- **Summary:** Retrospective replacing old for-loops with loop-free VEX alternatives: a vertex-neighbor-count edge-selection trick, fuse-by-ID before Polypath, a rest-space UV-layout separation for Capture by Proximity, Labs File Cache's wedge feature for animated variation baking, and a critical reminder that Fuse always needs a snap distance even when matching by attribute.
 - **File:** tutorials/roasting-my-houdini-setups-1.md
 
 

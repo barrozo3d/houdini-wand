@@ -85,3 +85,4 @@ uvs, python, hda, matrices, oriented-bounding-box, vex, dihedral, procedural-uvs
 - [Houdini Tips - Procedural UVs, Channel Packing and More](houdini-tips---procedural-uvs-channel-packing-and-more.md) — related UV-space manipulation techniques from the same channel.
 - [Procedural UVs - UV Layout Node in Depth](procedural-uvs---uv-layout-node-in-depth.md) — companion UV-tooling video covering island packing/distribution, a natural next step after auto-orienting islands with this HDA.
 - [Tips and tricks in Houdini 21](tips-and-tricks-in-houdini-21.md) — shares the gradient-measurement-on-UV-attribute technique used here, applied there to tapering procedural fork tines instead of orienting UV islands.
+- [Roasting my Houdini Setups #1](roasting-my-houdini-setups-1.md) — reuses this exact HDA as part of a rest-space UV-layout trick for loop-free Capture by Proximity.

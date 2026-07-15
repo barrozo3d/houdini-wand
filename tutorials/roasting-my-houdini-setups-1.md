@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rvDsbo3slXc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0.303"
+tags: [for-loop-optimization, capture-by-proximity, labs-file-cache, rig-doctor, wedge, retrospective, best-practices]
+extraction_status: complete
 frames_dir: tutorials/frames/roasting-my-houdini-setups-1/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 14
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Roasting my Houdini Setups #1
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py roasting-my-houdini-setups-1 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -105,30 +101,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:25] tutorials/frames/roasting-my-houdini-setups-1/frame_000.jpg
+- [0:55] tutorials/frames/roasting-my-houdini-setups-1/frame_001.jpg
+- [1:40] tutorials/frames/roasting-my-houdini-setups-1/frame_002.jpg
+- [2:45] tutorials/frames/roasting-my-houdini-setups-1/frame_003.jpg
+- [3:40] tutorials/frames/roasting-my-houdini-setups-1/frame_004.jpg
+- [4:20] tutorials/frames/roasting-my-houdini-setups-1/frame_005.jpg
+- [5:00] tutorials/frames/roasting-my-houdini-setups-1/frame_006.jpg
+- [5:50] tutorials/frames/roasting-my-houdini-setups-1/frame_007.jpg
+- [7:00] tutorials/frames/roasting-my-houdini-setups-1/frame_008.jpg
+- [7:50] tutorials/frames/roasting-my-houdini-setups-1/frame_009.jpg
+- [9:20] tutorials/frames/roasting-my-houdini-setups-1/frame_010.jpg
+- [10:20] tutorials/frames/roasting-my-houdini-setups-1/frame_011.jpg
+- [11:20] tutorials/frames/roasting-my-houdini-setups-1/frame_012.jpg
+- [12:10] tutorials/frames/roasting-my-houdini-setups-1/frame_013.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A retrospective "what I'd do differently today" review of old Patreon/YouTube setups, focused entirely on **replacing unnecessary for-loops with VEX-native alternatives**: vertex-neighbor-count-based group cleanup instead of a looped edge-group builder, fuse-by-point-ID instead of a looped weld-per-piece step, a rest-space UV-layout trick to make Capture by Proximity work without separating geometry in a loop, Labs File Cache's built-in **wedge** feature instead of manually re-time-shifting animated variations in a for-loop, and a critical reminder that `fuse` should always use a **snap distance** even when matching by attribute, since omitting it can silently tank performance from ~120fps to ~40fps.
 
 ### Summary
-[PENDING EXTRACTION]
+The first old setup builds a rig from a sphere: originally, extracting a clean "every-other-vertex" edge group required a for-loop iterating over per-section IDs, because promoting a raw group-by-range selection to edges also picked up unwanted collapsed-to-a-point selections at the poles. The improved approach: select all vertices with a **neighbor count less than 5** (isolating vertices away from the pole extremities), then in a second pass find each vertex's own vertex-number within that subgroup and keep only every other one (`vertexnumber % 2`) — producing the same clean edge group with zero loops. The second setup needs rigging pieces both individually-separated (for Capture) and reconnected via horizontal bridge sections (for Rig Doctor); originally a for-loop fused points per-piece and Polypath'd them together — the fix: **promote the per-piece class/prim-ID attribute to points** and Fuse using **match-attribute-by-ID** so points aren't fused across different IDs, letting Polypath run once globally without a loop. The third (hardest) case is **Capture by Proximity**, which requires each piece to be spatially separated to avoid neighboring pieces bleeding into each other's captures — originally done in a for-loop, isolating each piece individually. The loop-free fix: build a **rest-space UV layout** — UV Flatten the geometry, run the channel's own "Orient UVs Up" HDA to align island orientation, then **UV Layout** (fixed scale) to physically spread all islands apart in UV space; promoting those UVs to a point attribute and swapping them into the position attribute (via a wrangle or Attribute Swap) gives a fully separated "rest" version of the geometry with guaranteed inter-piece spacing for Capture by Proximity to work correctly without ever looping — and because everything is procedural, all downstream attributes (rig curves, etc.) built from the same geometry automatically inherit this rest-position UV data. The fourth case covers **animated geometry variation** (a jellyfish): originally a for-loop applied per-copy Time Offsets/speed changes to create variation before Copy-to-Points, which the presenter "wasn't very proud of." The fix: **Labs File Cache**'s built-in **wedge** feature (wedge count + a per-wedge `seed` attribute fed to Time Shift for a random offset frame and Time Blend for random speed) bakes all variations to disk in one pass, loaded back with "all wedges" merge mode and a `copy_num` attribute (renamed from the file cache's `file_id_x`) for Copy-to-Points — reported at ~120fps for the file-cache approach vs. ~40fps for the old for-loop, with Copy-to-Points itself adding further overhead regardless of method (a separate, expected cost). The final and hardest case involves **animated particle-trail meshing without a for-loop**: originally, each animated trail curve needed a stable "up" vector for Sweep, built per-curve inside a loop via a CG-Wiki-style technique (Group Expression selects each curve's first point, Group Expand floods that selection along the curve, saves a "step" attribute, then Fuse-and-average creates a smooth guide curve, Orient Along Curve derives stable banking normals from it). Removing the loop requires per-curve **class-ID offsetting**: promote each curve's primitive-ID to a point attribute (`ptnum_x`), multiply the CG-Wiki "step" attribute by that ID times a large constant so each curve's step values land in a non-overlapping numeric range, then **Fuse by that combined step attribute across all curves at once** (no loop needed) — but critically, Fuse must use a **snap distance** even when matching by attribute, since Fuse-by-attribute-only still computes distances internally; skipping the snap-distance constraint dropped performance from ~120fps to ~40fps in testing, while adding it back (even at a workable but not perfectly tuned value) restored near-full performance — "always use a snap distance, even when matching by attribute."
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Loop-free alternating-edge group:** select vertices with a neighbor count under 5 (excludes pole extremities), then within that subgroup keep only every-other vertex-number (`vertexnumber % 2`), avoiding the pole-collapse artifact a naive group-by-range-then-promote-to-edges approach produces.
+2. **Loop-free per-piece fuse + Polypath:** promote each piece's class/primitive-ID to a point attribute, then Fuse using match-attribute-by-ID so fusing never crosses piece boundaries — Polypath can then run once globally instead of inside a for-loop.
+3. **Rest-space separation for Capture by Proximity (no loop):** UV Flatten the geometry, run "Orient UVs Up" (the channel's own HDA) to align island orientation, then UV Layout (fixed scale) to physically separate all islands apart in UV space.
+4. Promote the resulting UVs to a point attribute and swap them into position (rest attribute) — this separated rest-space geometry lets **Capture by Proximity** work correctly for all pieces at once without ever isolating pieces in a loop; downstream rig/curve geometry built proceduraly from the same source inherits this rest data automatically.
+5. **Loop-free animated-variation baking:** instead of a for-loop applying per-copy Time Offset/speed changes, use **Labs File Cache**'s wedge feature — set a wedge count and feed a per-wedge `seed` attribute to a Time Shift (random offset frame) and Time Blend (random speed) to bake all variations to disk in one pass.
+6. Load the cached wedges back with "all wedges" merge mode; rename the cache's `file_id_x` attribute to `copy_num` for direct use in Copy-to-Points — measured ~120fps vs. ~40fps for the old per-copy for-loop approach (Copy-to-Points itself still costs some overhead regardless of the upstream method).
+7. **Loop-free animated-trail stabilizing:** build the CG-Wiki-style stable guide-curve technique once per class instead of in a loop, by promoting each curve's primitive ID to a point attribute and multiplying the "step" attribute by that ID times a large constant, giving each curve's step values a distinct non-overlapping numeric range.
+8. **Fuse by the combined (ID-offset) step attribute across all curves simultaneously** — no for-loop needed since the offsetting guarantees no cross-curve collisions.
+9. Always add a **snap distance** to Fuse operations, even when matching by attribute — Fuse still performs internal distance checks, and omitting the snap distance measurably degraded performance (~120fps → ~40fps) in this exact case; adding it back restored near-original speed.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Vertex-neighbor-count wrangle (`neighbourcount() < 5`), `vertexnumber % 2` alternating-vertex wrangle, Group Promote (edges), Attribute Promote (class/ID → point), Fuse (match attribute by ID, snap distance), Polypath, UV Flatten, custom "Orient UVs Up" HDA, UV Layout (fixed scale), UV-to-position Attribute Swap (rest-space build), Capture by Proximity, Labs File Cache (wedge count, wedge feature), Time Shift (random seed offset), Time Blend (random speed), `file_id_x` → `copy_num` rename, Copy to Points, Group Expression (first-point selection), Group Expand (flood-fill along curve), Fuse + Average (guide-curve smoothing, CG-Wiki technique), Orient Along Curve (banking normals), primitive-ID-offset "step" attribute wrangle (`step + ID * large_constant`), Sweep.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (each "fix" replaces a for-loop with a non-obvious, purpose-built VEX/attribute technique — especially the rest-space UV-layout separation trick and the ID-offset step-attribute fuse for animated trails).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0.303 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+for-loop-optimization, capture-by-proximity, labs-file-cache, rig-doctor, wedge, retrospective, best-practices
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Tips and Tricks to level up your Houdini Skills](tips-and-tricks-to-level-up-your-houdini-skills.md) — companion "lessons learned / better workflows" tips video from the same channel, focused on rest-attribute Clip tricks and RBD Pack Inject swaps.
+- [Think Procedural Think Houdini](think-procedural-think-houdini.md) — shares the "avoid unnecessary for-loops, use pcopen()/pcfilter() growth-style solvers instead" philosophy demonstrated here.
+- [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — the "Orient UVs Up" HDA referenced and reused here for building the rest-space UV layout.
