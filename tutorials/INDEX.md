@@ -2614,9 +2614,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Mxg-zhwdNlE
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.301
+- **Tags:** python, hotkeys, karma, materialx, triplanar, workflow, automation, hou-module
+- **Summary:** Three shortcuts: a shelf-tool hotkey toggling auto-update mode, rebinding the Toggle Comments hotkey for incompatible keyboard layouts, and a Python script that queries a shelf tool's own source to reconstruct hou.vopNetUtils/vopUtils arguments for scripted Karma Material Builder creation.
 - **File:** tutorials/time-saving-tips-in-houdini.md
 
 

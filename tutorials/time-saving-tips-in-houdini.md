@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Mxg-zhwdNlE
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.301"
+tags: [python, hotkeys, karma, materialx, triplanar, workflow, automation, hou-module]
+extraction_status: complete
 frames_dir: tutorials/frames/time-saving-tips-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Time saving tips in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py time-saving-tips-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -74,30 +70,48 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/time-saving-tips-in-houdini/frame_000.jpg
+- [0:40] tutorials/frames/time-saving-tips-in-houdini/frame_001.jpg
+- [1:15] tutorials/frames/time-saving-tips-in-houdini/frame_002.jpg
+- [1:40] tutorials/frames/time-saving-tips-in-houdini/frame_003.jpg
+- [2:10] tutorials/frames/time-saving-tips-in-houdini/frame_004.jpg
+- [2:40] tutorials/frames/time-saving-tips-in-houdini/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Three quality-of-life shortcuts: a shelf-tool hotkey toggling auto-update mode on/off, a remapped hotkey for toggling VEX/Python comments that works across keyboard layouts, and a Python script that queries a shelf tool's own source code to reconstruct the exact `hou.vopNetUtils`/`hou.vopUtils` arguments needed for scripted Karma Material Builder creation.
 
 ### Summary
-[PENDING EXTRACTION]
+Manual/auto-update mode is normally menu-driven, but binding a small shelf-tool script to a global hotkey (the author uses Ctrl+.) makes toggling it a one-key action — handy for complex scenes or quickly inspecting simple setups without full cook overhead. Separately, Houdini's default "toggle comments in VEX/Python" hotkey combination doesn't work on some keyboard layouts (including the author's and standard US layouts); the fix is to open the Hotkey Editor, search for "comment," find **Toggle Comments**, and rebind it to a working key combination — after which both single-line and multi-line comment toggling work as expected. The most involved tip automates **Karma Material Builder creation via Python**: since a Karma Material Builder subnet needs several specific internal nodes pre-populated (which normal `createNode()` doesn't set up), the author finds and adapts code online to **query the shelf tool's own source script** by name, then executes it to see the actual code Houdini uses internally — revealing the correct function is under `hou.vopNetUtils`/`hou.vopUtils`, requiring specific arguments (network editor as viewer, and how to place the resulting material) that had to be reverse-engineered from the shelf script since running it directly failed with a missing-argument error. This scripted approach avoids manually rebuilding all the internal nodes and connections a Karma Material Builder subnet requires. As a bonus for Patreon supporters, the author has a Triplanar material importer tool that builds a full triplanar network and wires connections automatically from a folder of texture files.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Auto-update toggle**: create a shelf tool containing a small script (found online) that toggles Houdini's manual/auto-update mode; assign it a global hotkey (author uses **Ctrl + .**) via the Hotkey Editor.
+2. **Fixing comment-toggle hotkey on incompatible keyboards**: open the **Hotkey Editor**, search for "comment," locate **Toggle Comments**, and assign a new key combination that actually works with the user's keyboard layout (the default doesn't work on the author's language layout or standard US layouts) — afterward both single-line and multi-line comment toggling function correctly in VEX/Python editors.
+3. **Scripted Karma Material Builder creation**: find code online that queries the **script of a shelf tool** by name (passing the correct internal name, e.g. the VOP Karma Material subnet's shelf tool identifier).
+4. Execute the queried code to retrieve the actual Python snippet Houdini's shelf tool runs internally — this reveals it comes from `vopUtils.py` and specifically uses **`hou.vopNetUtils`/`hou.vopUtils`** functions rather than a plain `createNode()` call.
+5. Running the extracted code directly fails due to **missing keyword arguments**; dig through Houdini's docs to find the required arguments — specifically the **network editor as the viewer** and how the resulting material subnet should be **placed** — and rebuild them manually.
+6. With the correct arguments reconstructed, the script successfully creates a fully-populated Karma Material Builder subnet (with all its internal default nodes) via pure Python, avoiding the need to hand-build the subnet's internals or mask/wire it manually.
+7. (Mentioned, not built in this video) A Patreon-exclusive **Triplanar material importer** tool: point it at a folder of textures and it auto-generates all the necessary Triplanar nodes, connections, and expression linking.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Shelf Tool (custom Python scripts bound to hotkeys), Hotkey Editor (global hotkey assignment, "Toggle Comments" rebinding), Python `hou` module (querying a shelf tool's script via its internal name, `hou.vopNetUtils`/`hou.vopUtils` functions for Karma Material Builder subnet creation, network-editor-as-viewer + placement arguments), Karma Material Builder (VOP subnet), Triplanar (mentioned Patreon tool).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the auto-update and hotkey tips are trivial; the scripted Material Builder creation requires digging through `hou` internals and shelf-tool source code).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.301 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+python, hotkeys, karma, materialx, triplanar, workflow, automation, hou-module
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Python in Houdini | Create a texture importer for Solaris](python-in-houdini-create-a-texture-importer-for-solaris.md) — related Python-automation-for-shading tutorial from the same channel.
+- [Quality of Life Tips in Houdini](quality-of-life-tips-in-houdini.md) — companion workflow-shortcuts video from the same channel.
