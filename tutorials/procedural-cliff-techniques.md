@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=YLrE1Zww_uc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.588"
+tags: [vdb, voronoi-fracture, compile-block, triplanar, karma, materialx, solaris, concavity, curvature, scattering, environment, rocks]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-cliff-techniques/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 11
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Cliff Techniques
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-cliff-techniques <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -157,30 +153,61 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:25] tutorials/frames/procedural-cliff-techniques/frame_000.jpg
+- [1:05] tutorials/frames/procedural-cliff-techniques/frame_001.jpg
+- [1:50] tutorials/frames/procedural-cliff-techniques/frame_002.jpg
+- [2:45] tutorials/frames/procedural-cliff-techniques/frame_003.jpg
+- [3:40] tutorials/frames/procedural-cliff-techniques/frame_004.jpg
+- [5:00] tutorials/frames/procedural-cliff-techniques/frame_005.jpg
+- [6:20] tutorials/frames/procedural-cliff-techniques/frame_006.jpg
+- [8:00] tutorials/frames/procedural-cliff-techniques/frame_007.jpg
+- [9:30] tutorials/frames/procedural-cliff-techniques/frame_008.jpg
+- [11:00] tutorials/frames/procedural-cliff-techniques/frame_009.jpg
+- [13:00] tutorials/frames/procedural-cliff-techniques/frame_010.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full modeling-to-shading cliff pipeline: voxelize a rough boulder shape via VDB, cut it into named pieces with a jittered Voronoi Fracture guided by a resampled/jittered line, detail each piece in a per-named-primitive for-loop (circle-based silhouette wrap + sweep + random extrusion), re-combine and re-VDB for edge damage, then shade in Karma with concavity/convexity-driven color mixing and scatter trees using slope/curvature masks.
 
 ### Summary
-[PENDING EXTRACTION]
+A box gets low-subdivision tubes copied on and merged for a rough boulder base, then remeshed to a grid-like voxelized look via Blur/Peak/Mountain and Boolean-intersected for surface damage, before VDB conversion. Cuts across the cliff are placed by laying a line along it, resampling to 5 segments, jittering interior points (not endpoints), copying grids at each point (offset by the Metaimport node's seed), then running a **Boolean Fracture** to divide the cliff into named pieces with jitter, followed by Exploded View to pull the pieces apart. A **for-loop over each named primitive** rebuilds detail per piece: a Circle with X-axis normals scaled to fit and ray-projected onto the piece's silhouette, resampled low and picked/sweep'd, then subdivided, with a randomized Z-scale attribute driving random per-piece extrusion, plus a Mountain-based Boolean cut for a chipped look. Small floating parts are cleaned via Connectivity + area measurement inside a **Compile Block** (faster than Delete Small Parts, which isn't compilable), followed by a small randomized X/Z transform per piece. The recombined mesh gets meshSharpen'd, converted to VDB again, and given a Volume Warp using shape-cellular noise distorted by 3D turbulence (sparse convolution) for a stretched look, plus a separate VDB Combine pass (from a bigger-resolution/blurred/mountain-distorted VDB) for additional edge damage. Small floating debris is deleted via Connectivity + area, then slope/curvature/concavity/complexity attributes are calculated and the mesh is cached and named. Shading uses Karma X-style **Triplanar** for roughness/albedo/displacement/normal, with **concavity** and **convexity** masks each driving a Color Correct mix between two color-corrected texture variants (more saturated/exposed in concave/convex areas respectively), plus normal mapping to compensate for the lack of auto-bump in Karma/Karma XPU. Trees (pre-made in SpeedTree) are brought in via Component Geometry with geometry variants, scattered on the slope-masked cliff surface (using an attribute-noise p-scale and a slope-based Attribute Remap to keep trees off steep areas), with orientation randomized around Y via VEX and a jitter attribute driving leaf shader color correction (gain/exposure).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model the rough base: Box → copy low-subdivision tubes on top → merge → Remesh to a grid-like voxelization → Blur, Peak, Mountain → Boolean intersect for surface damage → sharpen slightly → **VDB from Polygons** → Convert to VDB.
+2. **Cut placement**: lay a line along the cliff, Resample to 5 segments, jitter the interior points (blast the endpoints out of the jitter selection), Copy grids to points offset by the **Metaimport node's seed** for variation.
+3. **Boolean Fracture**: divide the cliff into named pieces using the jittered grid cuts, visible via the `name` attribute; Exploded View pulls pieces apart for clarity.
+4. **Per-piece detail loop**: for-each named primitive — create a Circle with normals along X (the "out" direction), scale to fit the piece and Ray-project onto its silhouette; Resample to low resolution, Pick and delete points, then **Sweep**.
+5. Subdivide, randomize a Z-scale attribute via Attribute Randomize, and use it to drive **random per-piece extrusion amounts** locally; subdivide again and Boolean out from the initial shape using a Mountain-distorted cutter for a chipped-surface look.
+6. **Cleanup inside a Compile Block**: run Connectivity, measure area, and blast small floating parts — done inside a compiled loop since "Delete Small Parts" isn't compilable and would be slower per-iteration.
+7. Apply a small **randomized Transform** (X/Z axes) per piece via `fit()` + `random()`.
+8. Recombine all pieces, **Mesh Sharpen** for extra crispness, convert to VDB again, and apply **Volume Warp**: Shape Cellular noise distorted by 3D Turbulence set to sparse convolution, frequency-tuned for a stretched look, fed through Fit Range and multiplied into density.
+9. **VDB Combine** edge damage: build a second, higher-resolution VDB (Convert VDB → Blur → VDB from Polygons again for more subdivisions → Mountain → Convert to VDB), then combine it with the main volume for additional edge-chip detail; convert back to polygons and scale up slightly.
+10. Final cleanup: delete small floating debris (Connectivity + area), calculate **slope**, **curvature** (concavity/complexity), cache to disk, and name the object for Solaris import.
+11. **Shading in Solaris/Karma**: import the cliff, use the Karma X-style **Triplanar** node for roughness/albedo/displacement/normal; build a main **Color Correction** pass that desaturates, adjusts gamma/exposure, then mixes between two differently color-corrected texture copies using the **concavity** mask (more saturated variant along concave areas) and again using a **convexity** procedural mask (more exposed variant along convex areas).
+12. Add **normal mapping** on top of Triplanar displacement to compensate for the lack of auto-bump in Karma/Karma XPU; remap displacement between -0.5/0.5 before connecting.
+13. **Tree scattering**: import pre-made SpeedTree trees via **Component Geometry** with the Geometry Variant Index setup (4 variants) and an Instancer; unpack the low-poly cliff, delete unneeded attributes, create a small-scale p-scale via Attribute Noise, remap it based on slope (to avoid trees appearing on steep faces), then Scatter on the slope-masked surface.
+14. Randomize tree rotation around Y with a small VEX snippet, and add a Jitter attribute (natural-would-randomize 0–1) fed into the leaf material's **U** channel (remapped/clamped) to drive per-tree color correction/gain variation on the leaves.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Box, Tube (copy), Remesh, Blur, Peak, Mountain, Boolean (intersect + fracture), VDB from Polygons, Convert VDB, Line, Resample, Jitter, Copy to Points (Metaimport seed offset), Boolean Fracture (named pieces), Exploded View, For-Each loop (per-named-primitive), Circle (X-axis normals), Ray (project onto piece silhouette), Pick, Sweep, Attribute Randomize (Z-scale), Local extrude, Connectivity + area measurement inside Compile Block, Transform (`fit()`+`random()`), Mesh Sharpen, Volume Warp (Shape Cellular + 3D Turbulence sparse convolution), VDB Combine (secondary higher-res damage pass), slope/curvature/concavity/complexity calculation, Karma X-style Triplanar (roughness/albedo/displacement/normal), Color Correction (concavity + convexity masked mixing), normal mapping, Component Geometry (Geometry Variant Index, Instancer), Attribute Noise (p-scale), Attribute Remap (slope-based), Scatter, VEX (Y-axis rotation randomization), Jitter attribute driving leaf shader U/gain.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (full pipeline spanning VDB modeling, compiled per-piece loops, Karma triplanar shading with procedural masks, and Solaris tree instancing).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.588 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vdb, voronoi-fracture, compile-block, triplanar, karma, materialx, solaris, concavity, curvature, scattering, environment, rocks
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [VDB Procedural Cliffs](vdb-procedural-cliffs.md) — earlier, simpler version of the same VDB-cliff-plus-Solaris-scattering pipeline.
+- [Rock formations with heightfields](rock-formations-with-heightfields.md) — alternate heightfield-based approach to similar cliff/rock-formation goals with Triplanar shading.
+- [Environments in Houdini Part 5 - Solaris and Rendering with Karma](environments-in-houdini-part-5---solaris-and-rendering-with-karma.md) — related Karma/Solaris finishing techniques for environment scenes from the same channel.

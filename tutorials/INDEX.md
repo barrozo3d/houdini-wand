@@ -3054,9 +3054,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=YLrE1Zww_uc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.588
+- **Tags:** vdb, voronoi-fracture, compile-block, triplanar, karma, materialx, solaris, concavity, curvature, scattering, environment, rocks
+- **Summary:** Full cliff pipeline: VDB-voxelized boulder cut into named pieces via jittered Boolean Fracture, per-piece detail via a for-loop (circle-wrap silhouette + sweep + random extrusion) inside a Compile Block, VDB Combine edge damage, then Karma Triplanar shading with concavity/convexity-masked color mixing and slope-scattered SpeedTree instancing.
 - **File:** tutorials/procedural-cliff-techniques.md
 
 
