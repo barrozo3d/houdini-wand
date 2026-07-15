@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=XFOiCiljWh8
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.550"
+tags: [flow-maps, cops, rbd, materialx, karma, vex, solaris, product-viz, liquid, umbrella]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-tips-flow-maps-rbd-emit-and-more/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Tips: Flow Maps, RBD Emit and more
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-tips-flow-maps-rbd-emit-and-more <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -91,30 +87,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/procedural-tips-flow-maps-rbd-emit-and-more/frame_000.jpg
+- [0:55] tutorials/frames/procedural-tips-flow-maps-rbd-emit-and-more/frame_001.jpg
+- [1:30] tutorials/frames/procedural-tips-flow-maps-rbd-emit-and-more/frame_002.jpg
+- [2:10] tutorials/frames/procedural-tips-flow-maps-rbd-emit-and-more/frame_003.jpg
+- [2:50] tutorials/frames/procedural-tips-flow-maps-rbd-emit-and-more/frame_004.jpg
+- [3:30] tutorials/frames/procedural-tips-flow-maps-rbd-emit-and-more/frame_005.jpg
+- [4:05] tutorials/frames/procedural-tips-flow-maps-rbd-emit-and-more/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five product-viz tips for a cocktail-glass shot: extracting an "inside" liquid selection from a revolved profile, driving MaterialX Flow Map with a COPs-generated vertex-color noise pattern for swirling liquid, using polar-projected UVs + a Point VOP Stripes node for a circular umbrella pattern, saving a pre-transform position attribute to fix Triplanar orientation after Solaris transforms, and using RBD as a simple staggered ice-cube emitter.
 
 ### Summary
-[PENDING EXTRACTION]
+A glass profile is revolved, with an inside-liquid point range saved and promoted to primitives so the liquid geometry can be extracted from the same revolved mesh. MaterialX's Flow Map (set to vertex-color mode, since the viewport-shader FlowMap-visualize node has a known bug) drives liquid swirl using a custom VOP COPs generator: two noises, one distorting the position of the other using the generator's own x/y position inputs, fed through a Ramp with blue-tinted output at the edges — imported into the diffuse texture via `op:` syntax. FlowMap's "point" option adds a controllable pattern noise; a Time Shift can freeze the animated flow at a chosen render frame. For the umbrella, polar-projected UVs (promoted to point since a Point VOP is used) feed a Stripes node distorted by turbulence noise (width/count adjustable), then displace points along color from a second Point VOP. A saved pre-Solaris-transform position attribute plus a 90°-Z Rotate3D fixes Triplanar texture orientation that would otherwise break once the umbrella is rotated/transformed inside Solaris (replaceable by the Material's exposition node for the position input). Ice cubes: extract the liquid's top patch, extrude for collision geometry, distort a simple cube, and emit via RBD Solver with RBD Configure (packed frames, box collision), random initial rotation, and a wrangle that emits geometry every 5th frame before frame 72 — then cache a resting frame for a static hero shot.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Liquid selection**: on a revolved glass profile, save a resampled/sorted point range as an "inside" group, then promote it to primitives after generating the glass geometry so the liquid mesh can be extracted from that same group.
+2. **Flow Map liquid swirl**: note the FlowMap-visualize node's viewport-shader bug — use **vertex color** mode instead; set FlowMap mode to color; build a custom **VOP COPs generator** with a noise distorted by a second noise fed from the generator's own x/y position inputs, output through a Ramp with blue accents at the edges.
+3. Import the COPs generator into the diffuse texture slot via **copy/paste + `op:` syntax** referencing the COPs network path.
+4. Use FlowMap's **point** option to add a secondary pattern noise on top of the flow; use a **Time Shift** to freeze the animation at the desired render frame instead of leaving it animated.
+5. **Umbrella pattern**: polar-project UVs onto the umbrella, promote to point (needed for the following Point VOP), then use a **Stripes** node distorted by a turbulence noise (adjustable stripe count/width) inside the VOP.
+6. In a second Point VOP, **displace points** using the color output from the first Stripes VOP for physical ribbing detail.
+7. **Fixing Triplanar orientation after Solaris transforms**: save out a pre-transform position attribute in SOPs before the umbrella is rotated/transformed in Solaris; feed that saved position, offset by a **Rotate3D set to 90° on Z**, into the Triplanar node so texture orientation stays correct regardless of the object's in-context transform — can alternatively be replaced by wiring the Material's `exposition` node directly into the position input.
+8. **Ice cubes**: extract the top patch from the liquid geometry, extrude it to create simple collision geometry; build a slightly distorted cube as the ice-cube source shape.
+9. Emit the cubes via **RBD Solver**, using **RBD Configure** to enable packed frames and set the collision geometry to a box; set an initial random rotation.
+10. In a wrangle, emit new geometry **every 5th frame, and only before frame 72**, creating a naturally staggered ice fill rather than dumping all cubes at once.
+11. Cache out a single resting frame once the simulation settles, for use as the final static hero-shot render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Revolve, Resample, Sort, Group Range (inside-liquid group), Attribute Promote, MaterialX Flow Map (vertex-color mode, point noise option), custom VOP COPs generator (noise distorting noise via x/y position inputs, Ramp with edge color), `op:` texture-path syntax, Time Shift, Polar Project (UVs), Point VOP (Stripes node, Turbulent Noise distortion, color-driven point displacement), saved pre-transform position attribute + Rotate3D (90° Z) for Triplanar orientation fix, Material `exposition` node (alternative position source), RBD Solver, RBD Configure (packed frames, box collision), Attribute Wrangle (frame-modulo emission logic, `frame % 5` before frame 72), cache/resting-frame export.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines MaterialX Flow Map internals, custom COPs VOP generators, Solaris-transform-aware Triplanar fixes, and RBD emission scripting).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.550 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+flow-maps, cops, rbd, materialx, karma, vex, solaris, product-viz, liquid, umbrella
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Fries with MtlX and Karma XPU](procedural-fries-with-mtlx-and-karma-xpu.md) — related MaterialX/Karma product-viz shading techniques from the same channel.
+- [Procedural Pizza in COPs](procedural-pizza-in-cops.md) — shares the COPs-generator-for-texturing approach used here for the liquid diffuse map.

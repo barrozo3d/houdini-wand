@@ -3094,9 +3094,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=XFOiCiljWh8
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.550
+- **Tags:** flow-maps, cops, rbd, materialx, karma, vex, solaris, product-viz, liquid, umbrella
+- **Summary:** Five cocktail-glass product-viz tips: MaterialX Flow Map liquid swirl driven by a custom COPs noise-distorting-noise generator, polar-UV umbrella striping via Point VOP, a pre-transform-position fix for Triplanar orientation after Solaris transforms, and staggered RBD ice-cube emission.
 - **File:** tutorials/procedural-tips-flow-maps-rbd-emit-and-more.md
 
 
