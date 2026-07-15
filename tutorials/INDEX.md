@@ -2244,9 +2244,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=8iK3GD3yeCE
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.170
+- **Tags:** cops, curvature, vex, dot-product, uv-gradient, weathering, decay, procedural-textures, karma
+- **Summary:** Generates a simulation-free water/dirt streak mask by combining curvature with dot-product up/down-facing masks, then fixes streak orientation on rotated UV islands by measuring the gradient of a top-to-bottom mask in UV space, scattering oriented points and stamping SDF streaks in Cops.
 - **File:** tutorials/procedural-leaking-texture-in-houdini-205.md
 
 

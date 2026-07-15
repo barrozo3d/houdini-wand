@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=8iK3GD3yeCE
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.170"
+tags: [cops, curvature, vex, dot-product, uv-gradient, weathering, decay, procedural-textures, karma]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-leaking-texture-in-houdini-205/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 9
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Leaking Texture in Houdini 20.5
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-leaking-texture-in-houdini-205 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -113,30 +109,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/procedural-leaking-texture-in-houdini-205/frame_000.jpg
+- [1:40] tutorials/frames/procedural-leaking-texture-in-houdini-205/frame_001.jpg
+- [3:20] tutorials/frames/procedural-leaking-texture-in-houdini-205/frame_002.jpg
+- [4:20] tutorials/frames/procedural-leaking-texture-in-houdini-205/frame_003.jpg
+- [5:40] tutorials/frames/procedural-leaking-texture-in-houdini-205/frame_004.jpg
+- [7:00] tutorials/frames/procedural-leaking-texture-in-houdini-205/frame_005.jpg
+- [8:00] tutorials/frames/procedural-leaking-texture-in-houdini-205/frame_006.jpg
+- [9:10] tutorials/frames/procedural-leaking-texture-in-houdini-205/frame_007.jpg
+- [9:50] tutorials/frames/procedural-leaking-texture-in-houdini-205/frame_008.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Generate a procedural water/dirt-streak "leaking" mask (no simulation needed) by combining curvature (convexity/concavity) with dot-product-based up/down-facing directional masks to find where streaks should originate, then scatter oriented points there and stamp SDF streak shapes in **Cops** — with orientation corrected per-face via a UV-space gradient measurement so streaks always point "down" even on UV islands that are rotated or upside-down.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from simple box geometry with window cutouts, Subdivide adds enough resolution for **Measure Curvature** (Labs) to compute convexity and concavity attributes at SOP level (unavailable at shading level, hence the need for real geometry resolution). Leaks shouldn't originate everywhere — only where water/dirt would naturally collect, e.g. not at the bottom of windows or at the very top — so two directional masks are built from the **dot product between the surface normal and a Y-axis up vector** (one isolating up-facing faces, one down-facing), then mixed together with the convexity/concavity attributes to produce a combined "leak origin" mask. Separately, two vertex-level (not point-level) top/bottom masks are built the same dot-product way for later multiplicative cleanup, kept sharp specifically because they operate on vertices. The trickiest problem solved here is **streak orientation on arbitrarily-rotated UV islands**: naively using the relative point-bounding-box Y (a simple top-to-bottom 0→1 gradient) works fine on aligned faces, but breaks on any face whose UVs have been rotated/flipped (simulated in the video by manually rotating one face's UVs 180°) — the gradient no longer points down in UV space for that face. The fix, suggested by "swalch" on the CGWiki Discord, is to **measure the gradient of that same top-to-bottom mask** (after mapping it into UV space via split-UV-seams + promote-to-point + UV-to-position assignment): the gradient vector naturally points in the correct "down" direction on each face regardless of how its UVs are rotated, and this gradient becomes the true up/orientation reference for the streaks. Points are scattered on the combined leak-origin mask, given a randomized p-scale (for varied streak sizes) and a normal attribute derived from the measured gradient (with up set along Z) for orientation, then everything moves into **Cops**: points are imported and Rasterized (remapped to the -1 to 1 Cops coordinate space), a simple Line-based SDF shape (converted to mono) is Transformed and used with **Stamp Point** to draw the actual streak marks at each scattered point, correctly oriented thanks to the gradient-derived normal attribute. The earlier vertex-level top/bottom masks are combined via Maximum and multiplied over the stamped result to remove unwanted streaks near those edges; a final Streak Blur (inverted) and preview complete the simplified base look — acknowledged as uniform/basic but easily extendable with map loading, randomization, and color.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build sample geometry: Box → window-cutout Extrudes → point Normals → **Subdivide** (needed resolution for curvature measurement, since curvature nodes don't exist at shading level).
+2. Run **Measure Curvature** (Labs) to get convexity and concavity attributes.
+3. Build two directional masks via **dot product between the surface normal and a Y-axis up vector**: one for up-facing faces, one for down-facing faces.
+4. **Mix** the directional masks with the convexity/concavity attributes to produce the combined leak-origin mask, conceptually marking where streaks should start (avoiding window bottoms, top edges, etc.).
+5. Build two additional **vertex-level** (sharper, since vertex-scoped) top/bottom masks using the same dot-product approach, for later cleanup multiplication.
+6. Create a randomized **p-scale** attribute at the point level for varied streak sizes when later scattering.
+7. **UV unwrap** the geometry; to simulate a real-world UV-orientation problem, manually select a subset of primitives, recolor them, and rotate their UVs upside-down.
+8. Build a naive top-to-bottom mask via **relative point bounding box** (0 at bottom, 1 at top) — works for aligned faces but fails (doesn't run white-to-black correctly) on the manually-rotated face.
+9. **Fix via UV-space gradient** (credit: swalch, CGWiki Discord): split UV seams, promote UVs to a point attribute, assign UV to position (temporarily), then **measure the gradient** of the earlier top-to-bottom mask in that UV-mapped space — the gradient vector correctly points "down" per-face regardless of UV rotation, providing a reliable orientation reference.
+10. **Scatter points** on the combined leak-origin mask; assign a normal attribute derived from the measured gradient (with up set along Z) so each point is properly oriented for streak stamping.
+11. Move into **Cops**: import the scattered points, **Rasterize** with the coordinate space remapped from -1 to 1 (Cops' native space); build a streak shape from a **Line** converted to a mono SDF, transformed as needed, then use **Stamp Point** to draw a streak at each scattered point — orientation correctly follows the gradient-derived normal, even on the deliberately-rotated test face.
+12. Combine the earlier vertex-level top/bottom masks via **Maximum**, multiply over the stamped streak result to remove unwanted streaks near those edges.
+13. Apply a **Streak Blur** (inverted) for a final soft pass, then preview — result is intentionally simplified/uniform but easily extendable with texture maps, randomization, and color variation.
+14. Demonstrated applied to a more complex building facade with windows, correctly streaking down from tops and around window openings.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Box, Extrude (window cutouts), Normal, Subdivide, Measure Curvature (Labs, convexity/concavity), dot-product wrangle (normal · Y-axis up vector, up/down-facing masks), Mix/Blend (combining directional masks with convexity/concavity), vertex-level dot-product masks (top/bottom, sharp), Attribute Randomize (p-scale), UV Unwrap, manual UV rotation (test case), relative point-bounding-box gradient (naive top-bottom mask), Split UV seams, Attribute Promote (UV to point), UV-to-position assignment, Measure (gradient of mask), Scatter, normal-from-gradient attribute (up along Z), Cops: Rasterize (points, -1 to 1 remap), Line + Convert to Mono (SDF streak shape), Transform, Stamp Point, Maximum (vertex mask combine), Multiply (cleanup masking), Streak Blur (inverted).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the UV-space-gradient orientation-correction technique is a genuinely non-obvious solve for a real production problem).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.170 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+cops, curvature, vex, dot-product, uv-gradient, weathering, decay, procedural-textures, karma
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [The Donut Tutorial in Cops - Houdini 20.5](the-donut-tutorial-in-cops-houdini-205.md) — related Copernicus/Cops procedural-texturing tutorial using similar Stamp Point/Rasterize techniques from the same channel.
+- [Procedural Buildings in Houdini Tips and Tricks](procedural-buildings-in-houdini-tips-and-tricks.md) — likely companion building-weathering tutorial applying this leak-mask technique in a full production context.
