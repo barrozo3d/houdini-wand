@@ -168,3 +168,4 @@ vertex-selection, skin, wrinkle-deformer, cops, tile-pattern, height-blend, arch
 - [Procedural House Generator](procedural-house-generator.md) — another full building-generation system with overlapping window/wall techniques.
 - [Procedural Boat in Houdini](procedural-boat-in-houdini.md) — shares the Skin-with-second-input bridging technique and vertex-based edge-selection tricks used here.
 - [Procedural Problem Solving in Houdini](procedural-problem-solving-in-houdini.md) — shares the boundary-group separation and Sort-based alternation-fix approach used here for edge/vertex selection.
+- [Procedural Duct Tape in Houdini](procedural-duct-tape-in-houdini.md) — shares the corrected (rest/deform input order) Wrinkle Deformer workflow with a custom surface normal used here, applied there to a spiraled tape wrap.

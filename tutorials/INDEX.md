@@ -1584,9 +1584,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=D6449n2Pvcc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0.359
+- **Tags:** wrinkle-deformer, uv-flatten, area-scale-factor, xyzdist, object-merge, tape, procedural-modeling
+- **Summary:** Wraps duct tape around a bent pipe by flattening the tape into UV space (with an area-based scale-factor correction) to run a non-simulated Wrinkle Deformer for cheap cloth-like folds, then transfers the wrinkled displacement back onto the original curved 3D geometry via primuv()-based position sampling plus a separately-captured normal-scaled Y-displacement.
 - **File:** tutorials/procedural-duct-tape-in-houdini.md
 
 

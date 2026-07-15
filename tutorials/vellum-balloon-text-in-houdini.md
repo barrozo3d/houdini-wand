@@ -199,3 +199,4 @@ vellum, vdb, typography, karma, materialx, simulation, balloon, text-effects
 ## Related Tutorials
 - [Vellum Typography in Houdini](vellum-typography-in-houdini.md) — likely companion/alternate typography-effect video using Vellum from the same channel.
 - [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares the studio's broader pattern of using Vellum for stylized deformation rather than realistic simulation.
+- [Procedural Duct Tape in Houdini](procedural-duct-tape-in-houdini.md) — shares the Wrinkle-Deformer-for-fake-cloth-wrinkles approach used here, applied there to a spiraled tape wrap instead of inflated text.

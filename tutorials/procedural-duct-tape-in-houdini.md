@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=D6449n2Pvcc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0.359"
+tags: [wrinkle-deformer, uv-flatten, area-scale-factor, xyzdist, object-merge, tape, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-duct-tape-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Duct Tape in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-duct-tape-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -317,30 +313,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:00] tutorials/frames/procedural-duct-tape-in-houdini/frame_000.jpg
+- [2:10] tutorials/frames/procedural-duct-tape-in-houdini/frame_001.jpg
+- [3:15] tutorials/frames/procedural-duct-tape-in-houdini/frame_002.jpg
+- [4:45] tutorials/frames/procedural-duct-tape-in-houdini/frame_003.jpg
+- [6:10] tutorials/frames/procedural-duct-tape-in-houdini/frame_004.jpg
+- [8:00] tutorials/frames/procedural-duct-tape-in-houdini/frame_005.jpg
+- [10:10] tutorials/frames/procedural-duct-tape-in-houdini/frame_006.jpg
+- [12:00] tutorials/frames/procedural-duct-tape-in-houdini/frame_007.jpg
+- [14:10] tutorials/frames/procedural-duct-tape-in-houdini/frame_008.jpg
+- [15:40] tutorials/frames/procedural-duct-tape-in-houdini/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Wrap a spiral of duct tape around a bent pipe using a UV-space detour (moving the tape's position into flattened UV space before adding wrinkle noise) plus an area-based scale-factor correction to keep displacement proportional regardless of the UV-flatten's size distortion, then use the **Wrinkle Deformer** as a non-simulated substitute for cloth-wrapping realism, and finally read the deformation back onto the original 3D geometry via `xyzdist()`/`primuv()` position sampling.
 
 ### Summary
-[PENDING EXTRACTION]
+The base pipe is modeled with a bent tube (Poly Hinge targeting primitive 0, moved/rotated via bounding-box-relative position and mirrored for the other end). The tape itself starts as a Spiral (explicit radius scale matched to the tube, ~4.5 turns, slightly overlapped) Match-Sized onto the left side of the pipe, then Swept into a ribbon (rolled -90°, width ~0.115) with computed UVs. Rather than leave the tape UVs stretched, a **UV Flatten** (preserve seams/island boundaries) straightens them, then the tape is **moved into UV space** (`P = {uv.x, 0, uv.y}` or similar) so wrinkle-style noise can be added on a flat, undistorted proxy rather than the curved 3D ribbon. Since flattening changes the tape's apparent scale, a **scale-factor correction** is computed by measuring total area before and after the UV-space move (`sqrt(area_target / area_source)`) and applying that as a uniform multiplier — ensuring the resulting wrinkle displacement is proportionally correct once mapped back to 3D. With the flat proxy prepared (subdivided ~3× for enough resolution), the actual wrinkle effect uses the **Wrinkle Deformer** (not a solver) fed a rest/null pair — one null is the "deform" target (offset with random noise, small element size) and the other is the pure "rest" input — the deformer is set to Cloth-preset behavior (increased constraint iterations, rest-scale, smooth iterations) to produce convincing wrinkle folds cheaply, without any actual cloth simulation. After tuning the deformer's look, the resulting flat, wrinkled displacement needs to be transferred back onto the original curved tape/pipe geometry: an **`xyzlist()`/`primuv()`**-based wrangle reads position from the deformed flat geometry using each 3D point's original UV coordinates (`primuv()` on the source geometry) to sample the corresponding deformed position — but since this only captures X/Z, the Y-axis wrinkle displacement must be captured separately as a saved displacement attribute (`current position − pre-deform position`) and re-applied along the original geometry's normal (scaled by the displacement's Y component) to recreate the 3D wrinkle bumps on the actual curved tape shape.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model the base pipe with a Tube, Poly Hinge (targeting primitive 0, sorted by Y), bounding-box-relative bend/offset, mirrored for the opposite end.
+2. Build the tape as a Spiral (matched radius scale to the tube, ~4.5 turns, slight overlap for no visible gaps) Match-Sized onto one side of the pipe.
+3. **Sweep** the spiral into a ribbon (rolled -90°, width ~0.115, computed UVs) to create the actual tape strip geometry.
+4. **UV Flatten** (preserve seams + island boundaries) to straighten the tape's UVs, then **move the tape into UV space** (position derived from UV coordinates) as a flat proxy for wrinkle work.
+5. Compute a **scale-factor correction**: measure total area before and after the UV-space move, take `sqrt(area_target / area_source)`, and apply as a uniform position multiplier so subsequent displacement stays proportionally correct.
+6. Subdivide the flat proxy (~3×) for enough resolution, then set up two null inputs: a "rest" (undeformed) copy and a "deform" copy with an offset/noise-driven Mountain-style distortion for the wrinkle source.
+7. Apply the **Wrinkle Deformer** (Cloth preset behavior: increased constraint iterations, rest scale, smooth iterations) between the rest and distorted nulls to generate realistic wrinkle folds without an actual cloth simulation.
+8. Transfer the flat wrinkled result back onto the original curved 3D tape: use an `xyzlist()`/`primuv()`-based wrangle to sample position from the deformed flat geometry via each 3D point's original UV coordinates.
+9. Separately capture the **Y-axis wrinkle displacement** (`current position − pre-deform position`) as its own attribute, then re-apply it along the original geometry's normal (scaled by the Y component) to reconstruct the 3D wrinkle bumps on the actual curved tape.
+10. Finish with a quick three-point-lighting material preview (metalness ~1) for visualization.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Tube, Poly Hinge (procedural target primitive/position/direction), Spiral (explicit radius/turns), Match Size, Sweep (ribbon, roll, computed UVs), UV Flatten (preserve seams/island boundaries), UV-to-position wrangle, area Measure (×2, before/after) + `sqrt()` scale-factor wrangle, Subdivide, Mountain (distortion source), Wrinkle Deformer (Cloth preset, constraint iterations, rest scale, smooth iterations), `xyzlist()`/`primuv()` position-sampling wrangle, Y-displacement-capture wrangle + normal-scaled re-application, Object Merge (quick shelf-tool version), three-point lighting material preview.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the UV-space detour with area-based scale-factor correction, combined with the Wrinkle-Deformer-as-cloth-substitute and the xyzlist()/primuv() round-trip to restore 3D wrinkle detail, is a sophisticated multi-step production technique).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0.359 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+wrinkle-deformer, uv-flatten, area-scale-factor, xyzdist, object-merge, tape, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Quick object merge with Python in Houdini](quick-object-merge-with-python-in-houdini.md) — the Python shelf-tool used here to quickly create the Object Merge node for the rest/deform reference geometry.
+- [Vellum Balloon Text in Houdini](vellum-balloon-text-in-houdini.md) — shares the Wrinkle-Deformer-for-fake-cloth-wrinkles approach used here, applied there to inflated text.
+- [Procedural Favela in Houdini | Tips and Tricks](procedural-favela-in-houdini-tips-and-tricks.md) — shares the corrected (rest/deform input order) Wrinkle Deformer workflow with a custom surface normal, applied there to a roof tarp and trash bag.
