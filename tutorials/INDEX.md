@@ -3124,9 +3124,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=6GV1b8Ed_JI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.752
+- **Tags:** rbd, fracture, vdb, triplanar, shortest-path, vines, procedural-modeling, rocks, environment, texturing
+- **Summary:** Builds layered rock formations from fractured boulder shapes arranged via a radial edge-to-center mask driving scale, adds VDB surface breakup and Triplanar slope/curvature texture blending, then generates simple vines using Find Shortest Path between bottom and random upper points.
 - **File:** tutorials/procedural-rock-formations-part-2.md
 
 

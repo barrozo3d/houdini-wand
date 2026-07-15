@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=6GV1b8Ed_JI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.752"
+tags: [rbd, fracture, vdb, triplanar, shortest-path, vines, procedural-modeling, rocks, environment, texturing]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-rock-formations-part-2/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Rock Formations  Part 2
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-rock-formations-part-2 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -60,30 +56,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/procedural-rock-formations-part-2/frame_000.jpg
+- [0:35] tutorials/frames/procedural-rock-formations-part-2/frame_001.jpg
+- [1:05] tutorials/frames/procedural-rock-formations-part-2/frame_002.jpg
+- [1:30] tutorials/frames/procedural-rock-formations-part-2/frame_003.jpg
+- [2:00] tutorials/frames/procedural-rock-formations-part-2/frame_004.jpg
+- [2:30] tutorials/frames/procedural-rock-formations-part-2/frame_005.jpg
+- [2:55] tutorials/frames/procedural-rock-formations-part-2/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build layered rock formations from fractured/transformed boulder shapes, arranged using a radial normal-based mask (edge-to-center) to control per-piece scale, then add VDB surface breakup, Triplanar texture blending, and finish with a Find Shortest Path-based vine generator along the surface.
 
 ### Summary
-[PENDING EXTRACTION]
+A cube is fractured and transformed into "boulder" shapes, given edge damage, and centered as reusable assets. These are copied onto scattered points over a circular patch, where a **radial mask (normalized distance from edge to center)** drives the Y-scale (longer shapes toward the center) via Remap, plus randomized overall scale/normal jitter — producing a natural mounded arrangement. VDB volume noise breaks up the merged surface (standard technique from the series), followed by a **compiled Remesh loop** for speed. Triplanar textures drive both displacement and quick color blending via multiple Color Mix nodes keyed to procedural slope/curvature maps, with a Quick Material for preview. Finally, **Find Shortest Path** creates simple vines: a start-point group is built at the bottom of a Y-axis mask, random end points are chosen higher up, and the shortest path between them is swept with UVs and a quick material for a rough but effective vine effect.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Base assets: fracture a cube, transform pieces into boulder-like shapes, apply edge damage in a loop, and place assets at the center for reuse as copy-to-points sources.
+2. Build the radial mask: on a circular patch, create a natural-log/point-based mask that goes from the edges to the center of the patch.
+3. **Remap** the mask values and assign the result to the **scale Y attribute**, producing longer shapes concentrated at the center.
+4. Randomize overall scale and normals, scatter points on the patch, then **Copy to Points** — the earlier mask + scale attribute creates a natural flow effect from center to edges across the copied boulders.
+5. Apply **VDB volume noise** to break up the merged surface (same technique used throughout this tutorial series).
+6. **Remesh inside a compiled loop** for faster iteration on the broken-up surface.
+7. Apply **Triplanar textures** for displacement, plus separate procedural texturing.
+8. In a Point VOP, displace the geometry and export texture attributes (e.g. grass texture) using generated procedural maps: **slope** and **curvature**, which drive multiple **Color Mix** nodes to blend between different textures.
+9. Assign a **Quick Material** for preview purposes.
+10. **Vines**: create a start-point group at the bottom by masking along the Y axis and keeping only the lower part; create random end points higher up; run **Find Shortest Path** from the start point to all end points.
+11. **Sweep** the resulting shortest-path curves, add UVs, and apply a quick material — described as "not the most convincing vines, but it'll do the trick."
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Fracture (cube), Transform (boulder shaping), edge-damage loop, radial mask (natural log/point-distance based), Remap (mask → scale Y), randomized scale/normal jitter, Scatter, Copy to Points, VDB volume noise (surface breakup), compiled Remesh loop, Triplanar (displacement + color), Point VOP (slope/curvature procedural maps, Color Mix blending), Quick Material, Find Shortest Path (start/end point groups, Y-axis masking), Sweep (vine geometry), UVs.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (builds directly on earlier videos in the same series; the Find Shortest Path vine trick is a nice standalone technique).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.752 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+rbd, fracture, vdb, triplanar, shortest-path, vines, procedural-modeling, rocks, environment, texturing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Environments in Houdini Part 4 - Vines, Rocks and Fog](environments-in-houdini-part-4---vines-rocks-and-fog.md) — related vine-generation technique (`pcopen()`-based attachment mask) from the same channel, useful to compare against this Find Shortest Path approach.
+- [VDB Procedural Cliffs](vdb-procedural-cliffs.md) — shares the same VDB surface-breakup technique referenced as "nothing new" in this video.
+- [Rock formations with heightfields](rock-formations-with-heightfields.md) — alternate heightfield-based approach to similar rock formation goals.
