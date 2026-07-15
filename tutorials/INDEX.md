@@ -2884,9 +2884,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=zZBkR8rk-_s
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.403
+- **Tags:** python, solaris, materialx, hou-module, automation, texturing, scripting
+- **Summary:** From-scratch Python script that batch-imports naming-convention texture files into a Solaris Material Library, auto-building a MaterialX Standard Surface network with correctly wired UVs, shader connections, and per-texture color-space tags parsed from filenames.
 - **File:** tutorials/python-in-houdini-create-a-texture-importer-for-solaris.md
 
 

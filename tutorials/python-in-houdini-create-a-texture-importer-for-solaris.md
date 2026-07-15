@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=zZBkR8rk-_s
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.403"
+tags: [python, solaris, materialx, hou-module, automation, texturing, scripting]
+extraction_status: complete
 frames_dir: tutorials/frames/python-in-houdini-create-a-texture-importer-for-solaris/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Python in Houdini  | Create a texture importer for Solaris
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py python-in-houdini-create-a-texture-importer-for-solaris <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -96,30 +92,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/python-in-houdini-create-a-texture-importer-for-solaris/frame_000.jpg
+- [0:55] tutorials/frames/python-in-houdini-create-a-texture-importer-for-solaris/frame_001.jpg
+- [1:30] tutorials/frames/python-in-houdini-create-a-texture-importer-for-solaris/frame_002.jpg
+- [2:10] tutorials/frames/python-in-houdini-create-a-texture-importer-for-solaris/frame_003.jpg
+- [2:55] tutorials/frames/python-in-houdini-create-a-texture-importer-for-solaris/frame_004.jpg
+- [3:30] tutorials/frames/python-in-houdini-create-a-texture-importer-for-solaris/frame_005.jpg
+- [4:20] tutorials/frames/python-in-houdini-create-a-texture-importer-for-solaris/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A from-scratch Python script that batch-imports a folder of naming-convention-based texture files (object/channel/colorspace encoded in the filename) into a Solaris Material Library, auto-creating a MaterialX Standard Surface network with correctly wired and color-space-tagged texture nodes.
 
 ### Summary
-[PENDING EXTRACTION]
+Working inside a Material Library node (the script's starting reference/context), the script imports `hou` and `os`, defines a list of Substance-Painter-style channel names, and prompts the user via `hou.ui.readInput()` for the object's base name (e.g. "wood", "cloth") baked into filenames, followed by a folder-picker for the texture directory. It grabs the currently selected node (the material library) as the creation context, creates a MaterialX Standard Surface subnet via `createNode()`, and a Texture Coordinate node set to Vector2/UV. It then iterates the texture folder, filtering files whose name matches both the base name and a known channel name, creates a `mtlximage`/USD texture node per match, sets its file path, lays out the network, and — using the color-space token embedded in the filename — sets the correct color space per texture (checked via the parameter interface's menu tab for valid tokens). Finally it wires UVs into every texture node and connects base-color texture RGB output to the shader's base-color input (with index-based wiring for roughness/normal since MaterialX Standard Surface's normal input index had to be counted manually, e.g. index 40).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Set up a **Material Library** node in Solaris as the reference context for node creation.
+2. `import hou, os`; define a list of expected channel names following a Substance Painter-style convention (base color, roughness, height, opacity, displacement, etc.).
+3. Prompt for the object base name via `hou.ui.readInput()` with OK/Cancel buttons; the call returns a tuple of (button index pressed, entered string) — proceed only if not cancelled and the string isn't empty.
+4. Store the current `hou.hipFile.path()`-derived project path for later use; open a second folder-picker dialog for the texture directory.
+5. Store the currently selected node (the material library) in a variable to use as the node-creation context.
+6. Create a **MaterialX Standard Surface** subnet via `context.createNode(...)`, renaming it as needed; create a **Texture Coordinate** node and set its type to Vector2/UV (needed since some texture setups require explicit UVs).
+7. Iterate the texture folder's files; for each expected channel, check whether a file matches both the base name and that channel name — filtering out non-matching files (verified by printing the filtered result showing only the 3 relevant textures for a given asset).
+8. For each match, create a **USD Texture** node (or MaterialX Image node), store the channel index for later wiring, build the full file path (folder + filename), and set it on the texture node's file parameter.
+9. Lay out the nodes inside the Material Library for readability; check the file name is being set correctly on each created node.
+10. Parse the **color space token** also embedded in the filename and set it on the texture node — the correct parameter token is found by inspecting the parameter interface's **menu tab**.
+11. Wire connections: UV output → each texture node's UV input; if the channel is base color, connect its RGB output to the shader's base-color input; repeat similarly for roughness and normal, manually counting the MaterialX Standard Surface's input index for the normal input (found to be index 40).
+12. Save the finished script as a **shelf tool** to execute anytime, or bind it to a custom **radial menu** entry for quick access.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+`hou` Python module (`hou.ui.readInput()`, `hou.ui.selectFile()`, `hou.node()`/`createNode()`, `hou.selectedNodes()`), `os` module (folder iteration, filename parsing), Material Library (LOPs), MaterialX Standard Surface subnet, Texture Coordinate node (Vector2/UV), USD/MaterialX Image texture nodes (file path + color space parameters), manual input-index wiring for shader connections, Python Source Editor, custom shelf tool / radial menu integration.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (assumes basic Python familiarity; the main challenge is discovering the right `hou` API calls and MaterialX node parameter/input names).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.403 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+python, solaris, materialx, hou-module, automation, texturing, scripting
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Python Multi Asset Loader in Houdini](python-multi-asset-loader-in-houdini.md) — companion Python-automation tutorial from the same channel using similar `hou`/`os` file-iteration patterns.
+- [Python in Houdini | Absolute to relative paths](python-in-houdini-absolute-to-relative-paths.md) — related Python file-management automation script from the same channel.
