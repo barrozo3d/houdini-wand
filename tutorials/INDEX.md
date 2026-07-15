@@ -2314,9 +2314,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=T7CoIJg8Dx4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.734
+- **Tags:** uvs, kinefx, vellum, xyzdist, vex, scatter, sprinkles, cupcake, food
+- **Summary:** Five cupcake tips: UV components used as masks and reliable ring-sort keys, an xyzdist()-driven KineFX falloff spiral-icing rig, a per-frame Vellum "attach" constraint to stop icing sliding, a dot-product slope mask for sprinkle placement, and a two-node random-rotation recipe.
 - **File:** tutorials/procedural-workflow-vex-kinefx-uvs-and-more.md
 
 
