@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=L3Rvvv6pZ_8
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.398"
+tags: [beginner, boolean, revolve, groups, architecture, gothic, polywire, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-modeling-first-steps-with-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Modeling  | First steps with Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-modeling-first-steps-with-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -186,30 +182,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_000.jpg
+- [1:35] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_001.jpg
+- [3:30] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_002.jpg
+- [4:50] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_003.jpg
+- [7:10] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_004.jpg
+- [8:10] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_005.jpg
+- [10:10] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_006.jpg
+- [13:10] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_007.jpg
+- [14:20] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_008.jpg
+- [16:30] tutorials/frames/procedural-modeling-first-steps-with-houdini/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A beginner's first-steps walkthrough building a Gothic cathedral window/arch from scratch: the classic pointed-arch profile via two offset-Boolean'd circles, Revolve to loft the arch into a solid frame, then a long chain of group-based panel/tracery extrusions, Boolean cutouts, and finally hand-picked edge-loop selections converted to curves and Polywired into stone mullions.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a subdivided circle clipped in Y, two copies are Boolean-subtracted (one offset in X) using Curve nodes to select portions of each circle (playing with "keep outside/inside" toggles) to produce the classic pointed Gothic arch profile. The profile is transformed back to origin, clipped, resampled for smoothness, and Revolved into a solid frame; points are fused (important for later steps) and the mesh is clipped again to remove the back half. Middle faces are selected procedurally via Group by Range using primitive-count math (`4 of 14`, offset by 5) rather than hardcoded indices, then deleted to leave the frame shell. A second Boolean pass (scaled-down copy of the original shape) carves the recessed window panels, using "output back" and B-seams groups to extrude the intersection edges back for a beveled inner reveal. Panels are further divided by duplicating the arch around Y using `360/7` (matching the original Revolve's column count) for radial repetition, then various group-by-range + bounding-region selections carve side/back faces and extrude them into the tracery framework. Finally, individual stone mullions/panes are hand-selected in the viewport using Ctrl+Shift+A (edge loop select) and Tab-created groups, then run through **Dissolve** (non-selected → curves) and **Polywire** to generate the rounded stone bars, finishing with a subdivision pass. The author notes the remaining shapes (rosette window, etc.) use the same beveling/curve/merge techniques repeated at a faster pace due to video length.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build the Gothic arch profile: Circle (subdivided) → Clip (Y-axis) → duplicate and Boolean-subtract two copies (one X-offset) using Curve nodes to select portions of each circle, toggling "keep outside"/"keep inside" to dial in the exact pointed-arch shape.
+2. Transform the profile back to the origin, Clip fully, Resample for a smoother output, then **Revolve** around the shape to create the solid loft.
+3. **Fuse** the points (important groundwork for later steps — "merge vertices" equivalent) and Clip again in -Z to remove the unneeded back half.
+4. Select the middle faces procedurally: enable primitive-number display, use a **Group by Range** with a formula like "4 of 14" and an offset, rather than hardcoding indices — accounting for any Fuse-related topology quirks.
+5. Delete the non-selected group to leave just the frame shell, then build a second shape (transformed back to origin, scaled down) to Boolean out the recessed window panels.
+6. Group the bottom edges via Bounding Regions and **Extrude** them to the grid (global mode, using a distance attribute); a second Extrude along Z (with "output back" disabled where a polygon needs to be deleted later) creates depth, then Boolean the two shapes together — fixing any offset with an intermediate Transform.
+7. Output the **AB-seams** group from the Boolean (the edges where the two shapes intersected) and extrude it back with scale-to-zero on Z for a flat-capped reveal edge, plus a small Bevel (0.005) with extra subdivisions to avoid normal artifacts.
+8. Repeat the bottom-edge-group extrude technique (using Bounding Regions again since "keep by normals" didn't behave as expected) to extend the frame downward in -Y.
+9. **Radial repetition**: divide 360 by the column count used in the original Revolve (7, in this case) to duplicate the left/right panel shapes around the arch, negating the angle for the mirrored side; fuse points since the duplicated shapes aren't merged by default.
+10. Carve the outside/back faces using Group by Range (Union mode) plus Keep-by-Normals selections, extrude bottom edges down again, and merge the resulting panel geometry back into the main frame.
+11. Build the back panel similarly: select the back face via Keep-by-Normals on Z, reverse polygons, extrude bottom edges down, subdivide, and merge (using a saved copy-of-transform so paneling designs align on the back too).
+12. **Stone mullions/tracery**: manually select edge loops in the viewport (click an edge, then **Ctrl+Shift+A** for edge-loop select), Tab-create a group directly in the viewport, then use **Dissolve** (dissolve non-selected, output curves) and **Polywire** to generate rounded stone bars; remove unused points and add subdivisions for a clean result.
+13. Author notes the remaining decorative shapes (flower rosette, etc.) reuse the same bevel/curve/merge/copy-to-points techniques shown earlier, applied repeatedly at a faster pace to keep the video manageable.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Circle, Clip, Boolean (two-pass: profile carving + panel recessing), Curve (selection on circles), Transform, Resample, Revolve, Fuse, Group by Range (primitive-count formulas, Union mode), Delete (by group), Bounding Regions selection, Extrude (grid/global mode, distance attribute, output-back toggling), AB-seams group extraction, Bevel, Keep by Normals, radial-duplication math (`360/columns`), Merge, viewport edge-loop selection (Ctrl+Shift+A) + Tab-created groups, Dissolve (non-selected → curves), Polywire, Subdivide, Copy to Points.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner-to-Intermediate (explicitly framed as the author's own early Houdini learning process; techniques are foundational but the overall Gothic-arch build is fairly involved).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.398 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, boolean, revolve, groups, architecture, gothic, polywire, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Modeling tips for beginners](procedural-modeling-tips-for-beginners.md) — companion beginner-tips video from the same early period of the channel.
+- [Groups, Patterns in Houdini](groups-patterns-in-houdini.md) — deeper dive into the group-selection patterns (Group by Range, Bounding Regions, Keep by Normals) used extensively throughout this build.

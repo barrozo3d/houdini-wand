@@ -2974,9 +2974,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=L3Rvvv6pZ_8
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.398
+- **Tags:** beginner, boolean, revolve, groups, architecture, gothic, polywire, procedural-modeling
+- **Summary:** Beginner walkthrough building a Gothic cathedral arch: pointed-arch profile from two Boolean'd circles, Revolve to loft the frame, group-based panel/tracery extrusions and Boolean recessing, and hand-picked viewport edge-loops converted via Dissolve+Polywire into stone mullions.
 - **File:** tutorials/procedural-modeling-first-steps-with-houdini.md
 
 
