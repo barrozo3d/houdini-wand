@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rhRaQa-a8q4
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [beginner, procedural-modeling, groups, extrusion, ramp, copy-to-points, polyframe, group-by-range, vex]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-modeling-tips-for-beginners/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Modeling tips for beginners
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-modeling-tips-for-beginners <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -76,30 +72,46 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/procedural-modeling-tips-for-beginners/frame_000.jpg
+- [1:35] tutorials/frames/procedural-modeling-tips-for-beginners/frame_001.jpg
+- [2:20] tutorials/frames/procedural-modeling-tips-for-beginners/frame_002.jpg
+- [3:25] tutorials/frames/procedural-modeling-tips-for-beginners/frame_003.jpg
+- [3:45] tutorials/frames/procedural-modeling-tips-for-beginners/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A grab-bag of five beginner-level procedural modeling tips: blending overlapping shapes with Smooth, shaping an extrusion profile with a ramp, outputting procedural groups from Extrude for later reuse, orienting copied geometry along a shape with Polyframe, and selecting corner points procedurally with Group by Range linked to Resample.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from circles scattered on a grid and covered with a boolean-unioned grid, sharp transitions between the shapes are blended away with a high-value Smooth node. A tapering/profile extrusion is shaped using the built-in ramp under the Extrude node's Thickness parameter (values can exceed 1 to overshoot the boundary). Extrude's "Output Geometry and Groups" option is used to procedurally tag a "side" group of faces so a second downstream Extrude can target only that group. A repeating-pattern lamp design uses Polyframe (set to Normal, tangent named, "first edge" style) to correctly orient copied objects along a resampled/corner-deleted point set via Copy to Points. Finally, corner points of a shape are selected procedurally with Group by Range by copying the Resample node's segment-count parameter with paste-relative-reference, so the corner selection stays correct even if the point count changes later.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Blending shapes**: distribute circles on a grid, cover empty space with a grid, Boolean union the two, select all un-shared edges to get the border, convert the edge group to a curve, then blend the resulting sharp transitions using a **Smooth node with a high value** (credit: Octop, r/Houdini).
+2. **Shaping an extrusion profile**: in the Extrude node, scroll to the Thickness parameter and edit its ramp — add points and change value/position along the extrusion length; values can go above 1 to overshoot the boundary intentionally.
+3. **Procedural group output**: while extruding a circle, enable the "side" group under Output Geometry and Groups so the resulting side faces/primitives are grouped automatically; load that group into a second downstream Extrude to affect only those polygons.
+4. **Oriented copy-to-points pattern**: build a circle (8 sides) as the distribution source, Resample it to the desired point count, run it through **Polyframe** (this is the key node — bring it in early), then Resample again to strip geometry down to points only, delete the corner points (keep only side points), and Copy to Points to distribute objects with correct orientation along the shape.
+5. **Polyframe orientation trick**: set Polyframe to output **Normal** with the tangent name set, and use the **"first edge"** style dropdown option — this is what makes the copied geometry orient correctly along the host shape instead of defaulting to world orientation.
+6. **Procedural corner selection**: use Group by Range with Group Type set to Points; instead of hardcoding the segment count, **copy the Re-sample node's segment parameter and paste-relative-reference it** into the range node's field, so changing the point count elsewhere in the graph keeps the corner selection valid automatically.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Circle (grid-scattered), Grid, Boolean (union), Group (unshared edges), Convert Line, Smooth (high value), Extrude (Thickness ramp parameter, Output Geometry and Groups → side group), Resample, Polyframe (Normal output, tangent name, "first edge" style), Delete (corner points), Copy to Points, Group by Range (points, paste-relative-reference to Resample's segment parameter).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner (explicitly framed as tips for those new to Houdini's procedural workflow).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified in transcript or frames.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, procedural-modeling, groups, extrusion, ramp, copy-to-points, polyframe, group-by-range, vex
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Modeling Tips in Houdini #2](procedural-modeling-tips-in-houdini-2.md) — direct follow-up video in the same beginner-tips series, covering extrusion shaping, tiling, and dome displacement.
+- [Direct and Procedural Modeling in Houdini](direct-and-procedural-modeling-in-houdini.md) — related beginner-friendly VEX/procedural tips from the same channel.

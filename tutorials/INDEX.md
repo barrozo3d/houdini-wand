@@ -3284,9 +3284,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rhRaQa-a8q4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** beginner, procedural-modeling, groups, extrusion, ramp, copy-to-points, polyframe, group-by-range, vex
+- **Summary:** Five beginner procedural-modeling tips: blending shapes with Smooth, shaping an extrusion with a ramp, outputting procedural groups from Extrude, orienting copied geometry with Polyframe, and selecting corners procedurally by linking Group by Range to Resample's segment count.
 - **File:** tutorials/procedural-modeling-tips-for-beginners.md
 
 ---
