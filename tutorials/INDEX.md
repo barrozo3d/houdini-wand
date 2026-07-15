@@ -1494,9 +1494,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=eqXFo0pxdXc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21
+- **Tags:** uvs, python, hda, matrices, oriented-bounding-box, vex, dihedral, procedural-uvs
+- **Summary:** Breaks down a parameter-free HDA that auto-orients scrambled UV islands upright using a Python-computed oriented bounding box per island, with VEX fallback checks for square, flat, and topology-based cases where the OBB alone gives the wrong orientation.
 - **File:** tutorials/orient-uvs-like-a-pro-in-houdini-21.md
 
 

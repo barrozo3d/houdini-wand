@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=eqXFo0pxdXc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21"
+tags: [uvs, python, hda, matrices, oriented-bounding-box, vex, dihedral, procedural-uvs]
+extraction_status: complete
 frames_dir: tutorials/frames/orient-uvs-like-a-pro-in-houdini-21/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Orient UVS like a PRO in Houdini 21
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py orient-uvs-like-a-pro-in-houdini-21 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -37,30 +33,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:00] tutorials/frames/orient-uvs-like-a-pro-in-houdini-21/frame_000.jpg
+- [4:20] tutorials/frames/orient-uvs-like-a-pro-in-houdini-21/frame_001.jpg
+- [7:00] tutorials/frames/orient-uvs-like-a-pro-in-houdini-21/frame_002.jpg
+- [10:00] tutorials/frames/orient-uvs-like-a-pro-in-houdini-21/frame_003.jpg
+- [12:30] tutorials/frames/orient-uvs-like-a-pro-in-houdini-21/frame_004.jpg
+- [15:00] tutorials/frames/orient-uvs-like-a-pro-in-houdini-21/frame_005.jpg
+- [18:20] tutorials/frames/orient-uvs-like-a-pro-in-houdini-21/frame_006.jpg
+- [21:40] tutorials/frames/orient-uvs-like-a-pro-in-houdini-21/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A no-parameter HDA that automatically re-orients scrambled/rotated UV islands upright, using a per-island oriented bounding box computed in Python (`hou.hmath`-style `orientedBoundingRect`) combined with several VEX-based fallback checks (square-ratio, flat/no-gradient, topology-based) to handle cases where the bounding box alone gives the wrong result.
 
 ### Summary
-[PENDING EXTRACTION]
+Building on an earlier, simpler "Orient UVs Up" tool that failed on many real-world meshes, this HDA reliably auto-orients any set of UV islands right-side-up regardless of scramble. It works by giving every island a unique ID (via UV-seam split + boundary group + connectivity, since plain UV connectivity can merge overlapping islands), computing a `position.y` gradient in UV space per island to know "which way is up," calculating each island's oriented bounding box via a Python node using Houdini's `orientedBoundingRect()` function, and rotating the UVs by the inverse of that box's orientation around the pivot. Several checks are layered on top — an "is-square" ratio check, a topology-based bounding-box alternative (near-point + make-transform), and a flatness check — because bounding boxes alone fail on nearly-square or flat islands with no meaningful UV gradient.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Give every UV island a unique ID: split the geometry on UV seams, group the split boundaries, run **Connectivity** using that boundary group — necessary because plain UV-space connectivity merges islands that happen to overlap in UV space.
+2. Fix mirrored/reversed islands: unwrap the geometry in place, compute each island's centroid and prim normal on the *unwrapped* UV geometry, then use a dihedral rotation (vector-to-vector rotate) to flip any island whose normal faces the wrong way so all islands face consistently positive Z in UV space.
+3. Determine "up" direction per island: promote the island ID to points, measure the **gradient of `position.y` in UV space** (not world space) per island — this produces a vector in UV space pointing toward wherever the mesh's actual "up" direction is on that island.
+4. Isolate a single island for the demo/debug loop (Blast by island ID) and promote a `max` island-count detail attribute to drive a for-loop over every island.
+5. Build a per-island oriented bounding box via a **Python node**: swap the UVs into the position attribute (texture → P) so the geometry lives in UV space, then call Houdini's `orientedBoundingRect()` function (fed a list of point positions gathered manually since Python SOPs don't auto-iterate) to get an oriented center, a 2x2 orientation matrix, and a size — converted to a 3x3/4x4 matrix (`hou.Matrix3`) and stored as point attributes (`rot`, `square` flag for near-square ratios).
+6. Rotate the UVs in place using the inverted oriented-bounding-box matrix, subtracting the pivot first and re-adding it after so islands rotate around their own center rather than translating.
+7. Add a topology-based fallback matrix: for each island, find a bounding-box center point and a near point, build a second orientation matrix via **Make Transform** from that pair plus the up-vector — used instead of the OBB matrix when the OBB check fails (e.g., near-square islands).
+8. Add axis-correction logic: since the OBB Y-axis doesn't necessarily match the UV-space "up" gradient measured in step 3, iterate over the 3 candidate axes of the rotation matrix in a small loop, dot-product each against the measured gradient direction, and rebuild the matrix using whichever axis best aligns — so the final Y-axis of the matrix always points toward the mesh's real "up."
+9. Add a flatness fallback: for islands with (near) zero `position.y` gradient (i.e., fully flat mesh sections with no meaningful "up" direction), measure the gradient vector length, store an `is_flat` attribute, and switch to the topology-based matrix instead of the (meaningless) OBB-derived one for those islands.
+10. Chain switches ("switch by ratio" for square islands, "switch by length" for flat islands) to pick the correct final rotation matrix per island, then rotate the UVs, wrap the whole per-island computation in a for-loop (Python doesn't auto-iterate over points/primitives like VEX wrangles do), fuse with a small snap distance, restore the original class/island attribute match, and delete all temporary attributes/groups since this is a clean, parameter-free HDA.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Split (by UV seams), Group (boundary), Connectivity, Attribute Swap (texture ↔ position), Attribute Promote (vertex→point, point→detail max), dihedral/vector-rotate wrangle for normal-flip correction, gradient measurement in UV space (`position.y`), Blast (isolate island for debug), custom **Python SOP** using `orientedBoundingRect()` (2D oriented bounding box function returning center/orientation-matrix/size), `hou.Matrix3`/`hou.Matrix4` construction, point creation + attribute setting from Python (`geo.createPoint()`, `point.setPosition()`, `point.setAttribValue()`), Make Transform (topology-based fallback matrix from near-point + up vector), axis-alignment for-loop (dot product per candidate matrix axis vs. measured gradient), Switch nodes (by square ratio, by flatness/length), For-Each loop (per-island iteration since Python SOPs run once per cook, not per element), Fuse (small snap distance), Attribute Delete (cleanup for HDA packaging).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines VEX, a custom Python SOP calling Houdini's geometric utility functions, and multiple matrix-based fallback/correction passes).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21 (title and UI).
 
 ### Tags
-[PENDING EXTRACTION]
+uvs, python, hda, matrices, oriented-bounding-box, vex, dihedral, procedural-uvs
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini Tips - Procedural UVs, Channel Packing and More](houdini-tips---procedural-uvs-channel-packing-and-more.md) — related UV-space manipulation techniques from the same channel.
+- [Procedural UVs - UV Layout Node in Depth](procedural-uvs---uv-layout-node-in-depth.md) — companion UV-tooling video covering island packing/distribution, a natural next step after auto-orienting islands with this HDA.

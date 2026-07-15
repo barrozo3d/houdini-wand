@@ -424,4 +424,5 @@ Intermediate — the plugin-driven tree/vine workflow is approachable via UI par
 ---
 
 ## Related Tutorials
-Direct continuation of environments-in-houdini-part-2---stone-bridge.md (same author, same bridge project — fixes a bug introduced there and adds vegetation). Author announces the next part will cover vines refinement, rocks, and fog for this same scene; cross-link once ingested (see environments-in-houdini-part-4---vines-rocks-and-fog.md).
+- [Optimizing Baked Trees with Instancing in Houdini](optimizing-baked-trees-with-instancing-in-houdini.md) — shares this author's Opacity-to-Mesh HDA workflow for converting foliage plugin assets to real geometry.
+- Direct continuation of environments-in-houdini-part-2---stone-bridge.md (same author, same bridge project — fixes a bug introduced there and adds vegetation). Author announces the next part will cover vines refinement, rocks, and fog for this same scene; cross-link once ingested (see environments-in-houdini-part-4---vines-rocks-and-fog.md).
