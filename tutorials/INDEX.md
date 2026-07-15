@@ -2694,9 +2694,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rvmDcbSMXh8
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.598
+- **Tags:** vex, uvs, divide, for-each-loop, compile-block, roof, architecture, procedural-modeling, dihedral
+- **Summary:** Full pyramid-roof tile system: hand-derived VEX cross-product orientation per face, area/bounding-box math to size tile grids correctly per face, margin/room reservation via bounding regions, and a compiled per-piece for-loop using Clip nodes (instead of slow Boolean) for scalable tile cutting.
 - **File:** tutorials/procedural-roof-tiles-in-houdini.md
 
 

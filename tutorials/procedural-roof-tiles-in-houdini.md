@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rvmDcbSMXh8
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.598"
+tags: [vex, uvs, divide, for-each-loop, compile-block, roof, architecture, procedural-modeling, dihedral]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-roof-tiles-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 11
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Roof Tiles in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-roof-tiles-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -289,30 +285,60 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/procedural-roof-tiles-in-houdini/frame_000.jpg
+- [4:10] tutorials/frames/procedural-roof-tiles-in-houdini/frame_001.jpg
+- [8:00] tutorials/frames/procedural-roof-tiles-in-houdini/frame_002.jpg
+- [12:30] tutorials/frames/procedural-roof-tiles-in-houdini/frame_003.jpg
+- [17:30] tutorials/frames/procedural-roof-tiles-in-houdini/frame_004.jpg
+- [21:40] tutorials/frames/procedural-roof-tiles-in-houdini/frame_005.jpg
+- [25:50] tutorials/frames/procedural-roof-tiles-in-houdini/frame_006.jpg
+- [29:10] tutorials/frames/procedural-roof-tiles-in-houdini/frame_007.jpg
+- [32:30] tutorials/frames/procedural-roof-tiles-in-houdini/frame_008.jpg
+- [35:50] tutorials/frames/procedural-roof-tiles-in-houdini/frame_009.jpg
+- [37:30] tutorials/frames/procedural-roof-tiles-in-houdini/frame_010.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full step-by-step build of a procedural pyramid-roof tile system: hand-derived VEX cross-product orientation per roof face (out/side/normal basis vectors), area/bounding-box math to compute each face's real-world width and height for correctly-scaled tile grids, and a compiled per-piece for-loop using Clip nodes (instead of slow Boolean) to cut individual tiles cleanly along each face's true edges.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a grid with alternating-triangle connectivity, the center points are raised and the roof pyramid's rough shape is formed, then unneeded middle edges are removed. Since copying flat tile grids directly onto the sloped roof faces gives wrong orientation, the video derives correct per-face orientation from scratch in VEX rather than relying on default aperture vectors: an "out" vector is built by normalizing the point position minus the flattened (Y=0) centroid-projected point, a "side" vector is the cross product of "out" and up, and the final normal is the cross product of "out" and "side" — giving each triangle face a consistent local basis regardless of the original grid orientation. To size the tile grid correctly per face, Measure computes each face's Area, then a wrangle branches on whether the face's normal is closer to the Z or X axis (`abs(N.x) < 0.001`) to decide which bounding-box axis represents "width," deriving "height" from the classic triangle-area formula (`2 * area / width`). These width/height values are passed into a for-each loop (with Fetch Feedback to reference the first iteration's point) that sets the corresponding grid's Width/Height parameters, plus a generated string ID per primitive (`itoa(primnum)`) and per-face row/column density attributes computed by multiplying the size components by a user-set density multiplier. A margin/room system reserves buffer space at the roof edges (via bounding-region point groups plus a Transform centered on the object, to correctly select even corner points) so tiles don't overhang past the roof silhouette — with an adjustable "group expand" amount trading overhang room for tighter tile fit. Actual tile geometry is copied to points via centroid extraction and normal transfer with a 90° rotation and a computed "up" attribute, then cut per-piece using a **compiled for-each loop over each primitive ID** (using a Blast + Meta Import iteration index to isolate one piece at a time) with **Clip nodes** — driven by direction attributes derived from Oriented-Along-Curve on cut curves — rather than a Boolean, since Boolean was too slow for this many per-piece cuts; a Switch based on a "reverse" detail flag per iteration corrects normal-direction inconsistencies found only on one particular piece. The compiled loop's warnings are noted as safe to ignore. The author's finished project files (a paid Roman Bridge asset course and a paid Church Ruins course) are mentioned as the source material this roof system feeds into.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Base pyramid shape: Grid with **Alternating Triangles** connectivity for a natural triangulated roof base; raise the center point(s) via Transform/bounding-regions selection, then remove unneeded middle edges via Blast.
+2. Add vertex normals (set to 0 initially since the copy source will be grids used to instance tiles); extract centroid, promote/transfer normal to primitive via **Attribute Promote** (transfer attributes → normal).
+3. **Custom orientation VEX** (rather than relying on default aperture): compute `out` as the normalized vector from the flattened (Y=0) centroid-referenced point to the current position; compute `side` as the cross product of `out` and world-up; compute the final `N` as the cross product of `out` and `side` — giving each triangle a consistent, correctly-oriented local frame regardless of source topology.
+4. **Measure Area** per primitive; in a wrangle, branch using `abs(N.x) < 0.001` (or similar axis check) to decide whether a face's bounding-box X or Z size represents its "width" (since roof faces on different sides of the pyramid are oriented along different world axes), then derive "height" via `height = 2 * area / width`.
+5. Create a string ID attribute per primitive using `itoa(primnum)` for later per-piece targeting.
+6. Density attributes: multiply the width/height components by a user-controlled density value to compute the number of rows/columns needed, stored as two named float attributes.
+7. **For-each loop** (by primitive, Fetch Feedback mode where needed): reference point 0 of the first loop iteration to pull the width/height attributes onto the tile grid's Width/Height parameters via copy/paste-relative-reference, so the grid auto-adjusts per-face without hardcoding.
+8. **Divide** the sized grid to subdivide it cleanly (respecting the initial topology so the tile count stays procedural), clean any inner polygons produced.
+9. Extract the centroid of divided-cell groups and blast the center points to treat them differently (a separate detail pass); extract the middle edge and resample it to the target tile-per-row count for the ridge-cap row, giving it a distinct ID.
+10. **Margin/room system**: use bounding-region point groups (with an object-centered Transform so corner points are also correctly selected) to reserve edge buffer space, so tiles don't overhang the roof silhouette; use **Group Expand** to control how much room is left — more room needed for larger tile counts.
+11. Copy the actual tile profile geometry onto the sized/positioned points via **Path Deform**, transferring the original geometry's normals; orient copied tiles with a Polyframe/normal-based up attribute plus randomized normals/scale, then **Copy to Points** using a "piece" ID attribute.
+12. **Per-piece cutting via compiled loop**: since a straight Boolean approach was too slow for this many individual tile cuts, isolate one piece at a time inside a **Compile Block** using Blast driven by a Meta Import iteration-index detail attribute, then cut each piece cleanly using **Clip nodes** whose direction is derived from **Orient Along Curve** run on the cut curves (rather than Boolean geometry intersection).
+13. Fix inconsistent normal direction found on one specific piece using a **Switch** driven by a per-iteration "reverse" detail flag (`detail(-1, "iteration", 0) == 1`), so only that piece gets its clip direction flipped.
+14. Compile the loop (ignoring benign compile warnings) for fast, scalable per-tile cutting across the whole roof.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Grid (Alternating Triangles), Transform (center-point raise, bounding-region selection), Blast, Attribute Promote (vertex→primitive normal transfer), Attribute Wrangle (custom `out`/`side`/`N` cross-product orientation basis), Measure (Area), width/height branch wrangle (`abs(N.x)` axis check, `2*area/width` formula), `itoa()` string ID, density-attribute multiplication, For-Each loop (Fetch Feedback, point-0 parameter reference via paste-relative-reference), Divide (topology-respecting subdivision), centroid extraction + Blast (center-tile isolation), Resample (ridge-cap row), Group (bounding regions, object-centered Transform for corner selection), Group Expand (margin control), Path Deform, Polyframe/normal-based orientation, Attribute Randomize (normals/scale), Copy to Points (piece ID), Compile Block, Meta Import (iteration index), Blast (per-piece isolation), Clip (direction-driven cutting), Orient Along Curve (clip-direction derivation), Switch (per-iteration reverse-normal fix via detail attribute).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (hand-derived VEX orientation math, area/bounding-box-based sizing formulas, and a compiled per-piece Clip-based cutting loop are all non-trivial techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.598 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vex, uvs, divide, for-each-loop, compile-block, roof, architecture, procedural-modeling, dihedral
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural House Generator](procedural-house-generator.md) — reuses this exact roof-tile system (manual UV-space flattening, Divide-based tile grid, Path Deform) as part of a larger house-generation pipeline.
+- [Procedural Tips #3 VEX Shading and Loops](procedural-tips-3-vex-shading-and-loops.md) — offers a simpler VEX shortcut (bbox_max-based normal derivation) for the same roof-tile orientation problem tackled here from scratch.
