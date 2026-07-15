@@ -3289,6 +3289,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Five beginner procedural-modeling tips: blending shapes with Smooth, shaping an extrusion with a ramp, outputting procedural groups from Extrude, orienting copied geometry with Polyframe, and selecting corners procedurally by linking Group by Range to Resample's segment count.
 - **File:** tutorials/procedural-modeling-tips-for-beginners.md
 
+
+### Bird Flocking Simulation And Rendering In Houdini | Pro Karma Tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=k2fZVt9ezQo
+- **Author:** Rebelway
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial.md
+
 ---
 
 ## Tag Reference
