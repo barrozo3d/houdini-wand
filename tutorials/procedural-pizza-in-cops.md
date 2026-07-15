@@ -176,3 +176,4 @@ cops, materialx, procedural-texturing, stamping, leaf-generation, uv, rasterize,
 - [The Donut Tutorial in Cops (Houdini 20.5)](the-donut-tutorial-in-cops-houdini-205.md) — shares the layered Cops texturing/drip-mask and stamping approach applied there to a torus/donut instead of a pizza.
 - [Wood Barrel Texturing in Cops](wood-barrel-texturing-in-cops.md) — another SOPs-to-Cops resurrection pipeline building procedural surface detail for a food/product asset.
 - [Tiling Patterns with Cops and SOPs](tiling-patterns-with-cops-and-sops.md) — shares the Cops SDF-stamped tiling and SOPs-circular-cluster for-each approach used for the leaf/cloth stamping here.
+- [Procedural Graffiti in Houdini and COPS #mardini](procedural-graffiti-in-houdini-and-cops-mardini.md) — shares the SDF Shape/Tile Pattern stamping and layered Cops texturing techniques used here, applied there to graffiti lettering.

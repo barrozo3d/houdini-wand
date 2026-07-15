@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=suiPD-s1I9U
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0"
+tags: [packed-primitives, planar-inflate, cops, openCL, sdf-shape, negative-id, drips, graffiti, mardini]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 14
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Graffiti in Houdini and COPS #mardini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-graffiti-in-houdini-and-cops-mardini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -37,30 +33,67 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_000.jpg
+- [2:00] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_001.jpg
+- [4:00] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_002.jpg
+- [6:40] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_003.jpg
+- [10:00] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_004.jpg
+- [15:00] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_005.jpg
+- [20:00] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_006.jpg
+- [26:40] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_007.jpg
+- [33:20] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_008.jpg
+- [40:00] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_009.jpg
+- [48:20] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_010.jpg
+- [56:40] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_011.jpg
+- [65:00] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_012.jpg
+- [71:40] tutorials/frames/procedural-graffiti-in-houdini-and-cops-mardini/frame_013.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Turn a bold font's text into inflated, bubble-lettered graffiti (SOPs) using packed-primitive random transforms and Planar Inflate, then push it into **Cops** to fake 3D shading with a resurrected-position specular pass — including a from-scratch **OpenCL negative-ID trick** to cleanly separate background from foreground, and a **feedback-loop OpenCL kernel** that fakes a directional drop-shadow by iteratively offsetting/maxing pixels instead of simulating one.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a bold **Font** node (text set to "CUPS" for the demo), the letters are Resampled and simplified with Subdivision curves to lose sharp corners and get a rounder graffiti look. Since each letter is a single primitive, per-letter random transforms are applied entirely in VEX rather than a for-loop: a random scale (`fit()`-remapped `random(prim_num + seed)`) is applied relative to each letter's own **bounding-box centroid** (subtract centroid, scale, add back) instead of the whole object's center, and each letter gets a unique `ID` (= prim number) for later masking. To manipulate letters as rigid bodies, the geometry is **packed** (promoting the ID to a name attribute first, since packing needs a point-per-primitive), then a **Mountain** node adds bulge/displacement, and a second wrangle randomizes orientation: a `sampleDirectionCone()` around the Z axis (with a controllable angle threshold) picks a random target direction per letter, and `dihedral()` builds the rotation matrix from the initial Z orientation to that random direction, applied to each packed primitive's transform (read/write via `getpackedtransform()`/`setpackedtransform()`). After **unpacking**, an exploded view spreads letters apart procedurally: a `class` int attribute (from the earlier ID) drives a per-class centroid subtraction from the overall centroid, scaled by a channel float multiplier, to push each letter outward from the word's center. The letters are then merged into one shape and run through **Planar Inflate** (Houdini 20.5+) — target edge length reduced for more subdivisions, output back-face enabled — to puff up the flat text into a rounded, inflated "bubble letter" volume; boundary edges are grouped for a **UV Flatten** (manual layout disabled, boundary group fed in) to get seam-aware flowing UVs across the inflated shape. A from-scratch fake specular highlight is prototyped in SOPs (a single-point "sun" transformed to a light-source position, direction computed via subtraction/normalize, then `reflect()` between that sun direction and the surface normal, dotted against a constant "front" vector) purely to explain the math — the actual specular pass is redone properly in **Cops** to avoid the shading artifacts a SOPs-rasterized version would show. Before moving to Cops, the letters' ID attribute is offset by +1 (`ID += 1`) since Cops' background pixel would otherwise share an ID of 0 with the first letter, causing ambiguous masking; normals are added and the geometry is exported. In Cops, position is rasterized with a **frontal (Z-axis) projection** using a reference-box scale fit (~1.8) to avoid clipping, alongside UV, normal, and ID rasterizations — a Wrangle recomputes the specular pass per-pixel with proper **padding** via `uvdist()` (a UV-distance-based position/normal resurrection, giving clean edge padding unlike Restore Geometry) so the reflect/dot math produces a crisp result without seam artifacts. To remove the background cleanly (since Cops has no way to "unset" the intrinsic ID-0-is-background convention), an **OpenCL** snippet sets any pixel with `source == 0` (background) to **-1**, letting the background be reliably distinguished from the first real letter (ID 0) downstream. The specular highlight is blended over the base random-color-per-ID layer in Overlay mode, then a second, tighter/sharper specular pass is built by remapping/tightening the mask, blurring, and using an **HSV Adjust** driven by that tighter mask for a crisp highlight on top of the broader Overlay-blended one. A top-to-bottom color gradient is added by building a **UV map by ID** (each letter gets its own local UV space), extracting the green channel (top-to-bottom ramp), multiplying by the alpha mask, and blending in via HSV Adjust for a subtle "darker at the bottom" shading cue. Interior surface detail uses an **SDF Shape** (wave/ellipse compound) fed into **Tile Pattern** (random position jitter, random rotation ±180°, random scale ~0.61±0.5, seed-controlled) to scatter random blob shapes across each letter, then **Distort** (UV-space Fractal 3D noise) breaks up the tiled regularity, followed by an HSV Adjust masked-blend to fold the detail subtly into the base color. The background uses two layered **Fractal 3D noises**: a low-amplitude, high-contrast one converted Mono→RGB and tinted green/dark for a base texture, and a second "wispy" one built from a UV map distorted by another Fractal 3D noise, remapped through a **Ramp** (Y-axis, inverted) to fade top-to-bottom, blended with the base via multiply and finished with an HSV Adjust. The cartoon-style **black outline** is built via **Edge Detect by Normal** (using the previously rasterized normal channel) — thickness/blur/tolerance tuned, then **dilated** (radius ~20) to thicken, **Equalized** to normalize contrast, converted **Mono to SDF**, adjusted (blur ~0.25) to smooth the polygon-ish look from dilation, then **SDF to Mono** (iso-offset ~0.5) for the crisp final outline, blended in via HSV Adjust. The **fake drop-shadow** is the most novel trick: rather than simulate anything, a custom **OpenCL** kernel binds a writable source layer and a destination, offsets UV coordinates by a channel-float `offset` parameter (applied to both X and Y), samples the source texture at that offset position, and writes `max(source, sample)` back to the destination — wrapped in a **feedback loop** (Right-to-Left, ~15 iterations) so each pass "smears" the previous result slightly further in the offset direction, cheaply approximating an extended directional shadow/glow without any real light transport. Foreground drips are built back in **SOPs**: two Scatter passes (bottom-facing via `dot(N, -Y) > threshold`, top-facing via `dot(N, Y) > threshold`, each further Clipped by Y and by a custom "art edges" attribute using the new Houdini 20.5 **Clip by Attribute**) generate seed points, each given a randomized p-scale via Attribute Adjust Float (Random, mean/max tuned per pass). These points feed back into Cops as a second Cop-Import, stamped with an **SDF Shape** (compound of an egg shape + a basic line, independently thickness/rotation/scale-tuned) blurred and converted Mono→SDF→Mono for a drip-blob silhouette, maxed/blended with the existing outline via SDF operations for a seamless drip-to-letter transition. A final layer of small paint **splatters** reuses the same Distort (Fractal 3D noise) + Tile Pattern (SDF shape, random position/rotation/scale via seed) recipe, colored via a random-RGB-by-ID reference copy, masked by an inverted Y-axis Ramp (to keep splatters mostly toward the bottom, away from the top) and blended with reduced value/multiply into the final composite.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build base letter shapes from a **Font** node, Resample + Subdivision-curve smoothing for a rounder graffiti look; each letter is a single primitive.
+2. Randomize per-letter **scale** relative to each letter's own bounding-box centroid (not the whole word's center) via a `fit()`-remapped `random(prim_num + seed)` wrangle; assign a per-letter `ID` (= prim number).
+3. Promote ID to a name attribute, **pack** the letters (needed for per-primitive rigid transforms), add bulge via **Mountain**, then randomize orientation using `sampleDirectionCone()` (Z axis, angle threshold) + `dihedral()` to build a rotation matrix applied via `getpackedtransform()`/`setpackedtransform()`.
+4. **Unpack**, then build an exploded-view spread: a `class` attribute (from ID) drives per-letter centroid subtraction from the overall centroid, scaled by a channel-float multiplier, to procedurally push letters apart.
+5. Merge letters, run **Planar Inflate** (reduced target edge length for more subdivisions, output back-face) to puff the flat text into rounded 3D bubble-letter volumes; group boundary edges and run **UV Flatten** (boundary group fed in, manual layout off) for seam-aware flowing UVs.
+6. Prototype a fake specular highlight in SOPs (single-point "sun" light, direction via subtraction/normalize, `reflect()` between sun direction and surface normal, dotted against a constant front vector) purely to explain the math — not the final version.
+7. Offset the ID attribute by **+1** (`ID += 1`) before exporting to Cops, since the Cops background pixel would otherwise collide with letter ID 0; add normals, export.
+8. In Cops, rasterize a **frontal Z-axis position projection** (reference-box scale ~1.8 to avoid clipping) plus UV/normal/ID; recompute the specular pass per-pixel using **`uvdist()`-based padding** (clean edge resurrection, avoiding Restore Geometry's edge-bleed) for a crisp reflect/dot highlight.
+9. Use a custom **OpenCL** snippet to set any `source == 0` (background) pixel to **-1**, cleanly separating the background from the first real letter (ID 0) for all downstream masking.
+10. Blend the specular pass over a random-color-per-ID base layer (Overlay mode); build a second, tighter/sharper specular via remap+blur+HSV-Adjust for a crisp highlight; add a top-to-bottom color gradient via **UV map by ID** + green-channel extraction + alpha-masked HSV Adjust.
+11. Add interior surface detail with an **SDF Shape** (wave/ellipse) fed through **Tile Pattern** (random position/rotation/scale, seeded) then **Distort** (UV-space Fractal 3D noise) to break up tiling regularity, blended in via masked HSV Adjust.
+12. Build the layered background: a low-amplitude high-contrast Fractal 3D noise (Mono→RGB, tinted), plus a "wispy" second noise (UV-distorted by another Fractal 3D noise, Ramp-faded top-to-bottom), multiplied together and finished with HSV Adjust.
+13. Build the cartoon outline: **Edge Detect by Normal** → Dilate (thicken) → Equalize → Mono to SDF → SDF Adjust (blur, smooth dilation artifacts) → SDF to Mono (iso-offset) for the final crisp black outline, blended via HSV Adjust.
+14. **Fake drop-shadow via OpenCL feedback loop**: a custom kernel offsets UV by a channel-float parameter (X and Y), samples the source texture at the offset, writes `max(source, sample)` to the destination, wrapped in a Feedback Loop (~15 iterations, Right-to-Left) to progressively smear the result into an extended directional shadow without any real simulation.
+15. Build foreground drips in SOPs: Scatter bottom-facing (`dot(N,-Y) > threshold`) and top-facing (`dot(N,Y) > threshold`) point sets, each Clipped by Y and by a custom "art edges" attribute (Houdini 20.5's **Clip by Attribute**), randomized p-scale via Attribute Adjust Float.
+16. Bring drip points back into Cops as a second Cop-Import, stamp with an **SDF Shape** (egg + line compound, independently tuned) blurred/converted to a drip-blob silhouette, blend/max with the existing outline via SDF operations for seamless drip-to-letter transitions.
+17. Add paint splatters reusing the Distort+Tile-Pattern recipe (random position/rotation/scale via seed), color via random-RGB-by-ID, mask with an inverted Y-axis Ramp (bottom-weighted), blend into the final composite.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Font, Resample, Subdivision curves, bounding-box-centroid-relative scale wrangle (`fit()`, `random()`), Attribute Promote (ID→name), Pack, Mountain, `sampleDirectionCone()` + `dihedral()` orientation wrangle, `getpackedtransform()`/`setpackedtransform()`, Unpack, class-centroid exploded-view wrangle, Planar Inflate (Houdini 20.5+), boundary-edge Group + UV Flatten, SOPs fake-specular prototype wrangle (`reflect()`, dot product), Cops: frontal (Z) position rasterization (reference-box scale fit), UV/Normal/ID rasterization, `uvdist()`-padded specular wrangle, OpenCL (negative-ID background-separation kernel; feedback-loop drop-shadow kernel with UV offset + `max()`), Overlay blend, HSV Adjust (×multiple), Remap, Blur, UV Map by ID + Channel Extract (gradient), SDF Shape (wave/ellipse compound, egg+line compound), Tile Pattern (position/rotation/scale jitter, seeded), Distort (Fractal 3D noise, UV-space), Fractal 3D Noise (×multiple, layered background), Ramp (Y-axis fade/mask), Edge Detect by Normal, Dilate, Equalize, Mono to SDF, SDF Adjust, SDF to Mono, Feedback Loop (Right-to-Left, ~15 iterations), Scatter (dot-product-masked, ×2), Clip by Attribute (Houdini 20.5), Attribute Adjust Float (random p-scale), random-RGB-by-ID reference copy.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines packed-primitive VEX transform manipulation, Planar Inflate bubble-lettering, a from-scratch uvdist()-padded Cops specular pass, an OpenCL negative-ID masking trick, and a from-scratch OpenCL feedback-loop fake-shadow kernel — a comprehensive, multi-domain production piece).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0 (Planar Inflate and Clip by Attribute are noted as Houdini 20.5+ features; viewport shows Houdini Indie/Commercial 21.0).
 
 ### Tags
-[PENDING EXTRACTION]
+packed-primitives, planar-inflate, cops, openCL, sdf-shape, negative-id, drips, graffiti, mardini
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Pizza in COPS](procedural-pizza-in-cops.md) — shares layered Cops texturing, SDF Shape/Tile Pattern stamping, and Rasterize/Blend techniques used here.
+- [The Donut Tutorial in Cops - Houdini 20.5](the-donut-tutorial-in-cops-houdini-205.md) — shares the layered Fractal-Noise/Ramp/Tile-Pattern drip-mask approach used here for the graffiti's drips.
+- [Quality of Life Tips in Houdini](quality-of-life-tips-in-houdini.md) — shares the Poly Hinge / Houdini 20.5-era new-node showcase spirit, here featuring Planar Inflate and Clip by Attribute.

@@ -184,3 +184,4 @@ workflow, hotkeys, poly-hinge, connectivity, enumerate, selection-modes, matcap,
 - [Time saving tips in Houdini](time-saving-tips-in-houdini.md) — companion workflow-shortcuts video from the same channel, also covering hotkey fixes for incompatible keyboard layouts.
 - [Tips and Tricks for a Better Houdini Time](tips-and-tricks-for-a-better-houdini-time.md) — likely another grab-bag workflow-tips video from the same channel.
 - [Tips and tricks in Houdini 21](tips-and-tricks-in-houdini-21.md) — another grab-bag production-tips video from the same channel, focused on VEX/UV/matrix techniques instead.
+- [Procedural Graffiti in Houdini and COPS #mardini](procedural-graffiti-in-houdini-and-cops-mardini.md) — shares the Houdini 20.5-era new-node showcase spirit, here featuring Planar Inflate and Clip by Attribute.

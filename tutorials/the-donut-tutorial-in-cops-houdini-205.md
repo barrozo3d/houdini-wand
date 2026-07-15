@@ -575,3 +575,4 @@ cops, copernicus, uvs, procedural-textures, tile-pattern, karma, food, donut
 - [Procedural Pizza in COPs](procedural-pizza-in-cops.md) — companion food-shading-in-Cops tutorial from the same channel using similar Tile Pattern and Blend-mode techniques.
 - [Wood Barrel Texturing in COPs](wood-barrel-texturing-in-cops.md) — shares the same Cops-based procedural texturing workflow applied to a different material.
 - [Procedural Cliff Shapes in COPs - Free Lesson](procedural-cliff-shapes-in-cops-free-lesson.md) — related early Cops texturing tutorial from the same channel.
+- [Procedural Graffiti in Houdini and COPS #mardini](procedural-graffiti-in-houdini-and-cops-mardini.md) — shares the layered Fractal-Noise/Ramp/Tile-Pattern drip-mask approach used here, applied there to graffiti drips.

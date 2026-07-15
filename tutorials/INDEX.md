@@ -1884,9 +1884,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=suiPD-s1I9U
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0
+- **Tags:** packed-primitives, planar-inflate, cops, openCL, sdf-shape, negative-id, drips, graffiti, mardini
+- **Summary:** Turns font text into inflated bubble-letter graffiti via packed-primitive random transforms and Planar Inflate, then fakes 3D shading in Cops with a uvdist()-padded specular pass, an OpenCL negative-ID background-separation trick, and a from-scratch OpenCL feedback-loop kernel that fakes a directional drop-shadow by iteratively offsetting/maxing pixels.
 - **File:** tutorials/procedural-graffiti-in-houdini-and-cops-mardini.md
 
 
