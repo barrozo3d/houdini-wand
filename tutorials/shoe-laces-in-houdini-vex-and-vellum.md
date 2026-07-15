@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rlrWEjoO8jQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.301"
+tags: [vellum, vex, vellum-string, python-states, intersection-analysis, orient-along-curve, footwear, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 14
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Shoe Laces in Houdini | Vex and Vellum
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py shoe-laces-in-houdini-vex-and-vellum <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -37,30 +33,66 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_000.jpg
+- [2:10] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_001.jpg
+- [3:40] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_002.jpg
+- [5:00] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_003.jpg
+- [6:40] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_004.jpg
+- [8:00] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_005.jpg
+- [9:20] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_006.jpg
+- [10:40] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_007.jpg
+- [12:00] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_008.jpg
+- [13:40] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_009.jpg
+- [15:00] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_010.jpg
+- [16:40] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_011.jpg
+- [18:00] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_012.jpg
+- [19:10] tutorials/frames/shoe-laces-in-houdini-vex-and-vellum/frame_013.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a fully procedural criss-crossing shoelace pattern — deliberately over-engineered by the author's own admission — by placing eyelet points with a custom Python-States "place points on geo" HDA, generating the zig-zag lace path via sorted-by-X points and a group-by-range-style pattern wrangle, resolving self-intersections with **Intersection Analysis** before simulating, then finishing with a **Vellum String** pass (to pull the laces taut around the eyelet colliders) followed by a **Vellum Cloth** pass (to sweep/inflate the final lace geometry) — both driven by animated rest-scale/p-scale via **Vellum Rest Blend** rather than raw rest-scale animation.
 
 ### Summary
-[PENDING EXTRACTION]
+Eyelet points are hand-placed on the shoe mesh using a custom HDA ("Place Points on Geo," built with Python States — the same tool later built from scratch in the author's "Interactive Tools with Python States" video). Ring geometry gets a Connectivity + centroid pass to find each eyelet's position, and the eyelet points are mirrored and sorted by X so the zig-zag lace pattern can be generated: a wrangle creates an "ads" attribute selecting alternating groups of 2-of-4 points (equivalent to Group Range + Group Promote + Add-by-attribute, but done directly in VEX here), Poly Cut separates single primitives, primitives and points are sorted by X, and the first/last primitives get extra connecting segments (`0 to 1`, `endpoints -2 to -1`). A near-point-based grouping attribute lets matching points move together to build the zig-zag "up" pattern, after which the curves are sorted, Poly Path-unified, cleaned, and Resampled (interpolated, small distance) then Fused (since Resample leaves curves open). Ring centroids are snapped onto the newly-built lace curve via `minpos()`. A near-point group plus a **surface-distance mask** (remapped) lets the author move specific lace sections upward on Y (simulating the lace's "should go up and over" path), and a separate Z-axis point offset (via VEX, positive on one side, negative on the other) plus a **Soft Transform** pulls the bottom-most points down and away from the eyelet rings to avoid initial collisions. Since the geometry as-authored still intersects itself, an **Intersection Analysis** node finds intersecting points against the curves, groups the near-points of those intersections (promoted to a detail array attribute) and applies another Soft Transform offset to resolve them, followed by Resample/Fuse/Attribute Delete cleanup. Before simulating, the whole lace curve set is **animated shrinking down (scale) toward the collider**, then fed into a **Vellum String** setup with **Vellum Collider** constraints — critically requiring correctly-tuned **thickness** (undersized thickness with many overlapping points causes simulation problems). The Vellum solver uses a **POP Drag** plus **Vellum Rest Blend**, blending toward the pre-animated lace shape rather than animating rest-scale directly (rest-scale animation caused issues in testing); running the sim pulls the laces tight around the eyelet colliders, and the String constraint's thickness parameter naturally creates the visual gap/offset from the collider that gives the laces believable volume. The simulated result is Time Shifted, cleaned, and Resampled for better topology, then given actual sweep geometry via **Orient Along Curve** (critical for a stable "up" attribute — without it the Sweep is a mess) plus a **time-based Attribute Blur** that ramps in from frame 3 to 20 (the very first frame must be unblurred so it matches the eyelets/collision geometry exactly). A second full **Vellum Cloth** simulation (very stiff settings) with its own Vellum Rest Blend targeting the earlier lace-path animation (again avoiding raw rest-scale animation, which caused problems here too) inflates the swept lace-tube geometry from a small p-scale (0.1 → 1.9, animated) into its final tied shape, running with 2 substeps and no gravity since the first frame is already intersection-free. The finished, time-shifted lace mesh is UV-flattened using the earlier-created seam group (rectified) for clean texture space.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Merge the shoe base mesh; use a custom **Python-States HDA ("Place Points on Geo")** to hand-place eyelet points on the shoe (7 points per side, mirrored for both sides).
+2. Import the eyelet ring geometry, run **Connectivity** + **Extract Centroid** per ring piece; mirror the placed points and **sort by X** to establish a left-to-right ordering usable for pattern generation.
+3. Build the zig-zag lace pattern with a wrangle creating an "ads" attribute (2-of-4 alternating point selection, equivalent to Group Range + Group Promote-to-integer + Add-by-attribute, done here directly in VEX) — visualized as alternating 1/0/1/0 groups.
+4. **Poly Cut** to separate into single primitives; sort primitives and points by X; add extra connecting primitives at the very first/last segments (`0→1`, `endpoints -2→-1`) since these ends need special handling; merge everything.
+5. Create a **near-point-based grouping attribute** so matching points across curves share an ID (visualized via Point ID + Exploded View), then use it to move the correct points **up** (via Group by Range + a per-ID Transform + Add-by-attribute) to form the zig-zag "over" pattern.
+6. Sort primitives by X again, sort points by primitive index, **Poly Path** to unite the curves into continuous strands, delete temp attributes/groups, and **Resample** (interpolated, small distance) — then **Fuse**, since Resample always leaves the curve open at the ends.
+7. Import the eyelet rings again, Connectivity + Extract Centroid, then snap each ring's centroid onto the main lace curve using **`minpos()`**.
+8. Build a **near-point group** for the section that needs to route up and over the shoe tongue; create a **surface-distance-along-geometry mask** (remapped) from that group and use it to move the relevant lace section upward on Y by a controllable amount.
+9. Build a separate group at the bottom-most points (offset in Z via VEX — positive on one side, negative on the other) and use a **Soft Transform** to pull those points down and away from the eyelet rings, avoiding initial overlap (deliberately messy at this stage — "for learning purposes").
+10. **Resolve remaining self-intersections**: run **Intersection Analysis** to find intersecting points against the second input (the curves), group the **near points** of those intersecting points (promoted to a detail-array attribute), then apply another **Soft Transform** offset specifically to that group; Resample, Fuse, and Attribute Delete to clean up.
+11. **Animate the lace geometry shrinking (scale) down** toward the eyelet colliders as the pre-sim starting state.
+12. **Vellum String pass**: create Vellum String constraints plus **Vellum Collider** constraints on the eyelet rings, being careful to set correct **thickness** (too-small thickness with overlapping points causes sim failures); solve with a **POP Drag** and a **Vellum Rest Blend** targeting the pre-animated lace-shape geometry (found more reliable than animating rest-scale directly) — running the sim pulls the laces taut around the eyelets, and the string thickness naturally produces the visual standoff gap from the collider.
+13. **Time Shift** the settled result, delete attributes, Resample for cleaner topology, Fuse, Attribute Delete.
+14. Build the actual lace-tube geometry: **Orient Along Curve** to generate a stable "up" attribute (essential — without it, Sweep produces broken/twisted geometry); apply a **time-varying Attribute Blur** that ramps in only from frame 3 to frame 20 (the very first frame must stay unblurred so it matches the eyelet/collision geometry exactly).
+15. Animate a **p-scale from 0.1 to 1.9** on the rest-state geometry for the next sim stage.
+16. **Vellum Cloth pass**: set up a very stiff **Vellum Cloth** simulation with its own **Vellum Rest Blend** (again targeting the earlier lace-path animation rather than rest-scale animation, since that also caused problems here), run with 2 substeps and no gravity (safe since frame 1 is already intersection-free) — inflates the swept tube geometry into its final tied-lace shape.
+17. **Time Shift** to the settled frame, promote the earlier-created seam group, **UV Flatten** (rectifying the seam group) for clean UVs, and Attribute Delete for final cleanup.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Custom Python-States HDA ("Place Points on Geo"), Connectivity, Extract Centroid, Mirror, Sort (by X), Attribute Wrangle (2-of-4 alternating pattern, equivalent to Group Range/Group Promote/Add-by-attribute), Poly Cut, Add (extra end-segment primitives, near-point grouping), Point ID + Exploded View (visualization), Group by Range, Transform (per-group move), Poly Path, Resample (interpolated), Fuse, `minpos()` VEX function (ring-centroid-to-curve snapping), surface-distance-along-geometry mask + Remap, VEX Z-offset wrangle (sign-based side offset), Soft Transform (×2 — bottom-point pull-down, intersection resolution), Intersection Analysis, near-point grouping (detail array attribute), animated Transform (scale-down pre-sim), Vellum String, Vellum Collider constraints (thickness-critical), POP Drag, Vellum Rest Blend (targeting pre-animated geometry, not rest-scale animation), Time Shift, Orient Along Curve (up-attribute generation), time-varying Attribute Blur (frame 3→20 ramp, unblurred frame 1), animated p-scale (0.1→1.9), Vellum Cloth (very stiff, 2 substeps, no gravity), UV Flatten (seam-group rectify).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (explicitly acknowledged by the author as an over-engineered solution; combines VEX pattern generation, Intersection Analysis, and a two-stage Vellum simulation pipeline).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.301 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, vex, vellum-string, python-states, intersection-analysis, orient-along-curve, footwear, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Interactive Tools with Houdini Python States - Draw Pts on Geo](interactive-tools-with-houdini-python-states-draw-pts-on-geo.md) — the from-scratch build video for the exact "Place Points on Geo" HDA used here to place the eyelet points.
+- [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares this channel's broader pattern of using Vellum (String/Cloth) as a modeling/de-intersection tool.

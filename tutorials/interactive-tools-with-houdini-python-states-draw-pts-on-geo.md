@@ -422,4 +422,5 @@ Advanced/Expert — full custom Python Viewer State authoring (geometry intersec
 ---
 
 ## Related Tutorials
-Cross-link with houdini-beginner-tutorial-creating-a-perfume-bottle.md and houdini-techniques-to-improve-your-level.md (same author, same "Place Points on Geo" HDA referenced/used as a finished tool) once indexed together.
+- [Shoe Laces in Houdini - Vex and Vellum](shoe-laces-in-houdini-vex-and-vellum.md) — uses this exact "Place Points on Geo" HDA to hand-place shoelace eyelet points before the procedural pattern/Vellum pipeline.
+- Cross-link with houdini-beginner-tutorial-creating-a-perfume-bottle.md and houdini-techniques-to-improve-your-level.md (same author, same "Place Points on Geo" HDA referenced/used as a finished tool) once indexed together.

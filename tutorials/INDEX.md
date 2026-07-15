@@ -2274,9 +2274,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rlrWEjoO8jQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.301
+- **Tags:** vellum, vex, vellum-string, python-states, intersection-analysis, orient-along-curve, footwear, procedural-modeling
+- **Summary:** Builds a procedural zig-zag shoelace pattern using a custom Python-States eyelet-placement HDA and VEX pattern generation, resolves self-intersections via Intersection Analysis, then ties the laces with a Vellum String pass and inflates the final geometry with a second Vellum Cloth pass, both driven by Vellum Rest Blend.
 - **File:** tutorials/shoe-laces-in-houdini-vex-and-vellum.md
 
 
