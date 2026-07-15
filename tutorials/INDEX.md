@@ -1794,9 +1794,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fDV8SQegEDc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** python, hou-module, shelf-tool, object-merge, hotkey, tool-development, workflow-automation
+- **Summary:** A short hou-module Python script (wired to a shelf-tool hotkey) that auto-creates an Object Merge referencing the currently selected node, offset to avoid overlap, with an IndexError guard for empty selections.
 - **File:** tutorials/quick-object-merge-with-python-in-houdini.md
 
 

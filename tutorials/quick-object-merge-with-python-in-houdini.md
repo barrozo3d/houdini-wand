@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=fDV8SQegEDc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [python, hou-module, shelf-tool, object-merge, hotkey, tool-development, workflow-automation]
+extraction_status: complete
 frames_dir: tutorials/frames/quick-object-merge-with-python-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Quick object merge with Python in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py quick-object-merge-with-python-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -85,30 +81,50 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:55] tutorials/frames/quick-object-merge-with-python-in-houdini/frame_000.jpg
+- [1:40] tutorials/frames/quick-object-merge-with-python-in-houdini/frame_001.jpg
+- [2:30] tutorials/frames/quick-object-merge-with-python-in-houdini/frame_002.jpg
+- [4:20] tutorials/frames/quick-object-merge-with-python-in-houdini/frame_003.jpg
+- [5:50] tutorials/frames/quick-object-merge-with-python-in-houdini/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A short `hou`-module Python script, wired to a shelf tool with a hotkey, that automatically creates and wires up an Object Merge node pointing at whatever node is currently selected — turning a multi-click manual operation into a single keypress.
 
 ### Summary
-[PENDING EXTRACTION]
+The script grabs the current selection with `hou.selectedNodes()[0]`, then creates an Object Merge node as a child of the selected node's parent (`selection.parent().createNode("object_merge")`). To avoid the new node overlapping the source, it reads the selected node's position via `.position()` and offsets the new Object Merge by `-1` in both X and Y (`hou.Vector2(sel_pos[0]-1, sel_pos[1]-1)`) before setting it. The relative path from the Object Merge to the selected node is computed with `object_merge.relativePathTo(sel)` and written into the Object Merge's `objpath1` parameter, so the reference works correctly regardless of network location. Since running the tool with nothing selected would throw an `IndexError` on `selectedNodes()[0]`, the whole block is wrapped in a `try/except IndexError` that calls `hou.ui.displayMessage("No node selected")` instead of crashing. Finally, the script is turned into a reusable tool: copied into a new shelf tool (via the Shelf editor's "New Tool" + paste), given a name/icon, its language set to Python, and bound to a keyboard shortcut scoped to the Network Editor pane — so selecting a node and pressing the hotkey instantly creates a correctly-positioned, correctly-wired Object Merge referencing it.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Open the Python Source Editor and `import hou`.
+2. Grab the current selection: `sel = hou.selectedNodes()[0]`.
+3. Read the selected node's position: `sel_pos = sel.position()`.
+4. Create the Object Merge node as a child of the selection's parent: `obj_merge = sel.parent().createNode("object_merge")`.
+5. Offset the new node's position so it doesn't overlap the source: `obj_merge.setPosition(hou.Vector2(sel_pos[0]-1, sel_pos[1]-1))`.
+6. Compute the relative path from the new node to the selection: `rel_path = obj_merge.relativePathTo(sel)`.
+7. Set that relative path on the Object Merge's first object-path parameter: `obj_merge.parm("objpath1").set(rel_path)`.
+8. Wrap the whole block in `try/except IndexError:` calling `hou.ui.displayMessage("No node selected")` so running the tool with an empty selection fails gracefully instead of erroring.
+9. Open the Shelf editor, create a new tool, paste the script in as its Python script, rename it, pick an icon, and assign a keyboard shortcut scoped to the Network Editor pane — the tool now runs on a single hotkey press with a node selected.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+`hou.selectedNodes()`, `hou.Vector2`, `node.parent().createNode("object_merge")`, `node.setPosition()`, `node.relativePathTo()`, `node.parm().set()`, `try/except IndexError`, `hou.ui.displayMessage()`, Shelf Tool editor (Python script type, custom icon, Network-Editor-scoped hotkey).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner (a short, self-contained Python/`hou`-module script — approachable for anyone comfortable with basic Houdini Python scripting).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+python, hou-module, shelf-tool, object-merge, hotkey, tool-development, workflow-automation
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Duct Tape in Houdini](procedural-duct-tape-in-houdini.md) — uses this exact quick-Object-Merge shelf tool while wiring up the deformation-reference geometry.
+- [Time-saving tips in Houdini](time-saving-tips-in-houdini.md) — shares the same shelf-tool-hotkey and Python-scripted-node-creation productivity approach.
+- [Resample Color Ramps in Houdini](resample-color-ramps-in-houdini.md) — another short, self-contained `hou`-module Python utility script from the same channel.

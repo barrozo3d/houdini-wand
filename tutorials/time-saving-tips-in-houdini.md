@@ -115,3 +115,4 @@ python, hotkeys, karma, materialx, triplanar, workflow, automation, hou-module
 ## Related Tutorials
 - [Python in Houdini | Create a texture importer for Solaris](python-in-houdini-create-a-texture-importer-for-solaris.md) — related Python-automation-for-shading tutorial from the same channel.
 - [Quality of Life Tips in Houdini](quality-of-life-tips-in-houdini.md) — companion workflow-shortcuts video from the same channel.
+- [Quick object merge with Python in Houdini](quick-object-merge-with-python-in-houdini.md) — shares the shelf-tool-hotkey and Python-scripted-node-creation productivity approach used here.
