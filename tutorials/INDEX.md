@@ -2664,9 +2664,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=r2SSCwpgnVQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.306
+- **Tags:** karma, materialx, solaris, room-maps, udim, cops, vellum, favela, procedural-shading, texturing
+- **Summary:** Five shading tips on a favela apartment building: random per-piece texture assignment via findattribval(), UDIM-offset room-interior variation, LOPs subset-groups exposure for material targeting, and an experimental fluid-sim "lick map" wetness texture baked via COPs.
 - **File:** tutorials/procedural-shading-tips-2-in-houdini-20.md
 
 
