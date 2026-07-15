@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=utIfflheFqc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.435"
+tags: [karma, materialx, hda, color-jitter, geometry-property-value, instancing, stadium]
+extraction_status: complete
 frames_dir: tutorials/frames/quick-color-jitter-with-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Quick color jitter with karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py quick-color-jitter-with-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -69,30 +65,48 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/quick-color-jitter-with-karma/frame_000.jpg
+- [0:45] tutorials/frames/quick-color-jitter-with-karma/frame_001.jpg
+- [1:15] tutorials/frames/quick-color-jitter-with-karma/frame_002.jpg
+- [1:40] tutorials/frames/quick-color-jitter-with-karma/frame_003.jpg
+- [2:10] tutorials/frames/quick-color-jitter-with-karma/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Recreate a "color jitter" node (like Arnold/Redshift have, but Karma/MaterialX lacks) by generating a random 0–1 attribute per instance in SOPs, importing it into the material network via **Geometry Property Value**, and using it either to drive a Color Ramp directly or to feed hue/gain/saturation offsets into a Color Correct node — packaged into a reusable **"Jitter Karma" HDA**.
 
 ### Summary
-[PENDING EXTRACTION]
+Demonstrated on an instanced stadium-seat scene where all seats render the same flat color, an **Attribute Randomize** node creates a `1@jitter` (or similarly named) attribute per instance with min/max 0–1. In the material network, a **Geometry Property Value** node (the MaterialX/Karma equivalent of Arnold's User Data Float/Color) reads that attribute by name; feeding it directly into a **Color Ramp** lets you pick per-instance colors with probability control by dragging ramp color-stop positions (e.g. drag stops toward white to reduce how many seats render white). For finer control, three separate attributes (hue shift, gain, saturation) replicate a full color-jitter node by feeding each into the respective input of a **Color Correct** node. The whole setup — attribute creation plus the Property Value/Color Correct network — is packaged as a custom **"Jitter Karma" HDA** shown with hue/saturation/gain/global-seed parameters for easy reuse across scenes.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Identify the problem: Karma/MaterialX has no built-in "color jitter" node equivalent to Arnold's or Redshift's, despite needing per-instance color randomization (e.g. stadium seats all rendering identically green).
+2. In SOPs, add an **Attribute Randomize** node: set the attribute name, dimensions to 1, min/max to 0 and 1, with an optional global seed for reproducibility.
+3. Copy the attribute name and switch to the material network; create a **Geometry Property Value** node — the equivalent of Arnold's User Data Float/Color — and paste the attribute name into it.
+4. Rendering at this stage shows random grayscale values per seed (black to white) confirming the attribute is read correctly.
+5. Feed the Geometry Property Value output into a **Color Ramp** to map random values to specific colors; drag ramp color-stop positions to bias probability (e.g. moving other colors closer to a white stop reduces how many instances render white).
+6. For a fuller color-jitter equivalent, create **three separate attributes** — hue shift, gain, and saturation — and expose them as HDA parameters/interface controls.
+7. Feed each of the three attributes (via their own Geometry Property Value nodes) into the corresponding inputs of a **Color Correct** node, replicating a full color-jitter node's behavior with simple, controllable per-instance variation.
+8. Package the complete setup as a reusable **"Jitter Karma"** HDA with parameters for hue, saturation, gain, and global seed.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Attribute Randomize (per-instance attribute, min/max 0–1, global seed), Geometry Property Value (MaterialX/Karma equivalent of User Data Float/Color), Color Ramp (probability-biased color mapping via stop position), Color Correct (hue/gain/saturation inputs driven by separate randomized attributes); packaged as a custom "Jitter Karma" HDA.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate (a compact, practical shading trick once Geometry Property Value is understood).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.435 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+karma, materialx, hda, color-jitter, geometry-property-value, instancing, stadium
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Materialx and Karma Procedural Networks](materialx-and-karma-procedural-networks.md) — related MaterialX/Karma node-level shading techniques from the same channel.
+- [Houdini and Karma Tips and Tricks](houdini-and-karma-tips-and-tricks.md) — shares other quick Karma/MaterialX workflow tips.

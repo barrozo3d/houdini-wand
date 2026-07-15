@@ -2924,9 +2924,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=utIfflheFqc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.435
+- **Tags:** karma, materialx, hda, color-jitter, geometry-property-value, instancing, stadium
+- **Summary:** Recreates a color-jitter node for Karma/MaterialX (missing natively) using a per-instance random attribute read via Geometry Property Value, fed into a Color Ramp or a Color Correct's hue/gain/saturation inputs, packaged as a reusable "Jitter Karma" HDA.
 - **File:** tutorials/quick-color-jitter-with-karma.md
 
 
