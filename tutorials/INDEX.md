@@ -1604,9 +1604,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=iZwfnJGQUlI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0.512
+- **Tags:** connectivity, for-each, uv-flatten, xyzdist-alternative, cobblestone, houdini-21, patreon-course, sops-to-cops
+- **Summary:** Free-lesson excerpt chunking a wavy S-curve shape into cobblestone-like pieces without Labs Voronoi Fracture — a for-each-per-connected-piece pipeline extracts a skeleton, meshes a flat ribbon, live-transfers its UVs onto a flattened copy of the curved shape, then normalizes chunk size across pieces with an area-ratio scale factor before dividing into a grid.
 - **File:** tutorials/procedural-materials-in-houdini-21-patreon-december-25---free-lesson.md
 
 

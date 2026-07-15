@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=iZwfnJGQUlI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0.512"
+tags: [connectivity, for-each, uv-flatten, xyzdist-alternative, cobblestone, houdini-21, patreon-course, sops-to-cops]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-materials-in-houdini-21-patreon-december-25---free-lesson/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Materials in Houdini 21 | Patreon December '25  - Free Lesson
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-materials-in-houdini-21-patreon-december-25---free-lesson <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -203,30 +199,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:25] tutorials/frames/procedural-materials-in-houdini-21-patreon-december-25---free-lesson/frame_000.jpg
+- [1:50] tutorials/frames/procedural-materials-in-houdini-21-patreon-december-25---free-lesson/frame_001.jpg
+- [3:10] tutorials/frames/procedural-materials-in-houdini-21-patreon-december-25---free-lesson/frame_002.jpg
+- [4:20] tutorials/frames/procedural-materials-in-houdini-21-patreon-december-25---free-lesson/frame_003.jpg
+- [5:40] tutorials/frames/procedural-materials-in-houdini-21-patreon-december-25---free-lesson/frame_004.jpg
+- [7:00] tutorials/frames/procedural-materials-in-houdini-21-patreon-december-25---free-lesson/frame_005.jpg
+- [8:30] tutorials/frames/procedural-materials-in-houdini-21-patreon-december-25---free-lesson/frame_006.jpg
+- [10:00] tutorials/frames/procedural-materials-in-houdini-21-patreon-december-25---free-lesson/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Subdivide a wavy, non-planar S-curve shape into consistent, cobblestone-like polygon chunks — not with the paywalled Labs Voronoi Fracture SOP, but with a from-scratch **for-each-per-connected-piece** pipeline that extracts a skeleton curve, meshes a flat ribbon along it, transfers that flat pattern's UVs back onto the original curved shape, and normalizes cell size across differently-sized pieces using an area-ratio scale factor — a general recipe for "chunk any curvy shape into uniform grid cells" without relying on paid tools.
 
 ### Summary
-[PENDING EXTRACTION]
+The source geometry is a wavy S-curve-like shape (this is a free excerpt from a paid monthly Patreon lesson on generating a Cops/SOPs tiling pattern in Houdini 21). Since not everyone has access to the Labs Voronoi Fracture SOP used for a quick reference result, the tutorial builds an equivalent from scratch: first populate **Connectivity** on primitives (naming the class attribute "class"), then run a **For-Each Named Primitive** loop over each connected piece. Inside the loop, a Poly-to-Curve-style pass extracts the "skeleton" of each piece (color used for masking, a Resample at ~0.3 to follow the curve's shape, filtering out stray values, converting further). Because the extracted skeleton curve doesn't reach the exact ends of the geometry (causing downstream issues), a **normal-based curve-extension trick** is used: an even/odd point-number test (`ptnum % 2`, remapped to a signed multiplier) flips the direction of endpoint normals so the two tip points can be pushed outward along the tangent to properly extend the curve to the true silhouette edges. The extended curve is Fused, geometry roots deleted, then **Sweep** (ribbon) computes V's (needed later to transfer UVs back to the original geometry) and is set to a fixed size (~6 segments, inverted as needed). A **Subdivide** (~0.1) smooths the ribbon, then a **Live UV Transfer** copies these newly-generated UVs onto the flat, position-moved-to-UV-space geometry — meaning the actual polygon-cutting/gridding happens in a "flattened" UV-space copy of the shape rather than on the curved 3D geometry directly. On that flattened copy, **UV Flatten** (preserve seams + island chips) normalizes into 0–1 space, then **Measure** computes total area (not per-primitive) to get a **consistent physical cell size regardless of each connected piece's actual size** — since without this correction, differently-sized wavy pieces would produce inconsistent-looking chunk sizes. After splitting UV seams and promoting, an Attribute Swap moves UV to position, and unshared edges are found so the flat shape can be **divided along those edges** (Divide node) into a rough grid — configured via the bounding-box X size divided by a desired chunk count (e.g. `bbox_size_x / 10`) so the number of divisions scales with the shape's size. Poly Break + Convex converts irregular quads into consistent chunks. To fix inconsistent chunk sizing across different connected pieces (an issue when *not* normalizing by area), the **area-ratio scale-factor trick** is applied: read a per-primitive area (component 0) via a `xyzdist()`-style attribute-interpolate-from-rest-position pass, multiply by a large constant (e.g. 3000) to get a comparable, size-independent cell dimension — producing uniform-looking cobblestone chunks no matter how big or small the underlying connected piece is. Finally, results from each for-each iteration are merged, and cleanup includes assigning an `ID` attribute per primitive (`@primnum + 1`, offset by one since the background will otherwise share ID 0), splitting into unique points, and a small random per-primitive transform (offset ~-0.35) for visual variation before the geometry moves on to material work in Cops.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Run **Connectivity** on primitives (named "class") to identify each disconnected piece of the wavy S-curve shape.
+2. Loop with a **For-Each Named Primitive** over each connected piece.
+3. Extract each piece's skeleton curve (convert-to-curve-style pass, Resample ~0.3, filter stray values).
+4. **Extend the skeleton curve to the true silhouette edges** using a normal-based trick: flip endpoint normal direction via a signed `ptnum % 2` remap, then push the two tip points outward along the tangent.
+5. Fuse the extended curve, delete geometry roots, then **Sweep** (ribbon, ~6 segments, computing V's) to mesh a flat ribbon strip that will carry the UV pattern.
+6. **Subdivide** (~0.1) the ribbon for smoothness, then use **Live UV Transfer** to copy the ribbon's UVs onto a UV-space-moved (flattened) copy of the original curved geometry.
+7. On the flattened copy: **UV Flatten** (preserve seams + island chips) to normalize into 0–1 space, then **Measure** total area (not per-primitive) as groundwork for consistent scaling.
+8. Split UV seams, promote, Attribute Swap UV→position, find unshared edges, and use **Divide** to cut the flattened shape into a grid — sized via bounding-box-X divided by a target chunk count (e.g. `/10`) so division count scales with shape size.
+9. **Poly Break + Convex** to turn the resulting cells into consistent convex chunks.
+10. **Normalize chunk size across differently-sized connected pieces**: read each primitive's area via an attribute-interpolate-from-rest-position pass, multiply by a large constant (e.g. 3000) to get a comparable, size-independent scale factor for the Divide step — without this, pieces of different sizes would produce inconsistently-sized chunks.
+11. Merge all for-each iterations back together; assign a background-safe **ID attribute** (`@primnum + 1`), split to unique points, and apply a small random per-primitive transform (~-0.35 offset) for visual variation before moving into Cops for material work.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Connectivity (primitive class attribute), For-Each Named Primitive, curve-extraction pass (color/mask + Resample ~0.3), point wrangle (`ptnum % 2` signed normal-flip curve-extension), Fuse, Sweep (ribbon, fixed segment count, compute V's), Subdivide (~0.1), Live UV Transfer, UV Flatten (preserve seams + island chips), Measure (total area, not per-primitive), Split UV Seams, Attribute Promote, Attribute Swap (UV→position), unshared-edge detection, Divide (bbox-X-scaled division count), Poly Break + Convex, area-ratio attribute-interpolate scale-factor wrangle (×3000 constant), Merge, `@primnum + 1` ID attribute, unique-points split, small random per-primitive Transform (~-0.35).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (a from-scratch, paywall-free alternative to Labs Voronoi Fracture combining a UV-space flattening detour, live UV transfer, and an area-ratio normalization trick — several non-obvious steps chained together).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0.512 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+connectivity, for-each, uv-flatten, xyzdist-alternative, cobblestone, houdini-21, patreon-course, sops-to-cops
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural environment assets in Houdini 21](procedural-environment-assets-in-houdini-21.md) — another free-lesson excerpt from the same Patreon course series, covering a game-level tunnel and primitive-sort recovery instead.
+- [Tiling Patterns with Cops and SOPs](tiling-patterns-with-cops-and-sops.md) — another SOPs-to-Cops tiling-pattern tutorial from the same channel, covering a Cops SDF-stamped fan tile and circular stone-cluster for-each loop instead.
+- [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — shares the Connectivity/For-Each-per-piece pattern used here, applied there to RBD-based stone modeling.
