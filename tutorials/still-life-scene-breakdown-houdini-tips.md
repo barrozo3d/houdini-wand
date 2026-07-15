@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=peBkuU0Es1Q
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.590"
+tags: [ray-project, for-each-loop, cops, karma, materialx, displacement, product-viz, still-life, dust]
+extraction_status: complete
 frames_dir: tutorials/frames/still-life-scene-breakdown-houdini-tips/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Still Life Scene Breakdown | Houdini tips
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py still-life-scene-breakdown-houdini-tips <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -221,30 +217,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_000.jpg
+- [3:20] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_001.jpg
+- [5:00] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_002.jpg
+- [6:20] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_003.jpg
+- [7:00] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_004.jpg
+- [9:20] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_005.jpg
+- [10:20] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_006.jpg
+- [11:40] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_007.jpg
+- [13:00] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_008.jpg
+- [14:00] tutorials/frames/still-life-scene-breakdown-houdini-tips/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Four production tips for a champagne-bottle still-life render: fixing Ray Project stretching on curved bottles by projecting along **blurred point normals** instead of a fixed axis, building a torn-paper neck-wrap via a per-segment Bend-in-a-for-loop driven by a detail-iteration-matched point attribute, faking a water-puddle displacement from a plane using a COPs-baked noise texture, and a normal-Y-masked dust material mixed procedurally with the glass shader.
 
 ### Summary
-[PENDING EXTRACTION]
+Projecting a flat label onto a bottle with Ray Project set to Minimum Distance fails, and switching to Projected Rays along Z produces unwanted stretching; the fix is to transfer the bottle's normals onto the label, promote them to point normals, **blur** them (fairly heavily), and Ray Project using those blurred normals instead of a fixed vector — eliminating the stretch. The torn-paper "neck wrap" starts as a tube Ray-projected onto the bottle, given basic UVs, then a Mountain-distorted circle run through Voronoi Fracture creates a jagged tear silhouette, cleaned up and smoothed; UVs are converted to position to preserve the projected shape through later deformation. To bend the wrap randomly in different sections, a line along the wrap's top is resampled into segments, each point gets a named attribute (pt_0, pt_1... wrapping around since the geometry connects back on itself), transferred to the geometry and blurred for smooth transitions, then a **Fetch-Feedback for-loop set to Count** applies a Bend node per iteration — critically using **Scale by Attribute** (rather than uniform scaling) so each Bend only affects the geometry region tagged with that iteration's specific point attribute, with the bend angle randomized via a Fit(0,1)+random() function seeded per-iteration and clamped between 0 and -340; finally a Point Deform restores proper positioning and points are fused with softened normals. For water puddles, a plane is placed just below the table surface and driven by a **pre-baked displacement image** (created from a custom noise setup run through Smooth Step to increase black/white contrast) — the noise itself is built by UV-unwrapping and subdividing a grid, masking with soft dots distorted by Turbulence, then additively combining a Turbulence noise (Alligator type, Fit-ranged) with a Voronoi noise and multiplying by the initial mask; this is baked to an image via a **COPNet Attribute Import** node targeting the geometry and resolution, then loaded as a Karma displacement map. The dust material mixes a glass shader with a gray/noisy dust shader (Unified Noise at low frequency, contrasted via Smooth Step, mixed between dark/light gray), using as the mix factor a mask built by multiplying that dust noise with the **Y component of the surface normal** (so dust naturally collects on upward-facing surfaces), further distorted by adding a Fractal noise to the normal before extracting Y and contrasting with a Ramp.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Fix Ray Project label stretching**: instead of Minimum Distance or a fixed Projected-Rays vector (both produce distortion on curved bottles), transfer the bottle's normals onto the label geometry, promote to point normals, **Attribute Blur** them significantly, then Ray Project using those blurred normals as the projection vector — removing the stretched look entirely.
+2. **Neck-wrap base shape**: Ray-project a Tube onto the bottle, give it basic UVs; create the torn-edge silhouette using a Mountain-distorted Circle fed through **Voronoi Fracture**, then Blast/smooth the jagged result.
+3. Convert UVs to position (assign UV attribute to P) to lock in the projected shape so later deformation doesn't distort it.
+4. **Segmented random bend setup**: build a Line along the wrap's top edge, Resample into segments (4 in this example), create a per-point index attribute (`pt_0`, `pt_1`... wrapping since the geometry loops back on itself), transfer it onto the geometry, and **Attribute Blur** for smooth transitions between segments.
+5. Wrap the bending in a **For-Each loop set to Count with Fetch Feedback** (critical — without feedback per iteration, geometry duplicates instead of accumulating bends).
+6. Inside the loop: place the Bend's pivot at the correct spot, then bend using `fit01(random(iteration + seed))` scaled between 0 and roughly -340 degrees.
+7. Use **Scale by Attribute** on the Bend node, driven by the per-segment point attribute (loaded via `detail(-1, "iteration", 0)` to select which `pt_N` attribute this iteration should read) — this ensures only the tagged region bends per iteration instead of the whole geometry.
+8. After the loop, use **Point Deform** to restore the wrap to its correct position/orientation, then **Fuse** points and soften normals.
+9. **Water puddle displacement**: place a Plane slightly below the table surface, scaled up; load a pre-baked displacement image, run it through **Smooth Step** to increase black/white contrast, and connect to Karma's displacement input.
+10. **Building the puddle noise texture**: UV-unwrap and heavily subdivide a Grid, promote UVs to point attribute for Point VOP use; create a soft-dots mask, distort UVs with a **Turbulence** noise.
+11. Combine two noises additively: a **Turbulence noise set to Alligator type** (Fit-ranged) plus a **Voronoi noise**, then multiply the combined result by the initial soft-dots mask to contain the effect.
+12. **Bake to texture via COPs**: create an output node feeding a **COPNet**, use **Attribute Import** targeting the geometry and desired output resolution, then render the current frame to produce the final displacement texture file, reused in Solaris for the puddle effect.
+13. **Dust material**: build a gray dust shader from a low-frequency **Unified Noise**, contrasted via **Smooth Step**, mixed between dark and light gray.
+14. Build the mix mask: multiply the dust noise texture by the **Y component of the surface normal** (so effect concentrates on upward faces) — distort further by adding a **Fractal** noise to the normal before extracting Y, then contrast with a **Ramp**; use this final mask as the mix factor between the glass and dust materials.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Ray Project (Minimum Distance / Projected Rays / blurred-normal-vector modes), Attribute Transfer (normals), Attribute Promote (point normals), Attribute Blur, Tube, Circle, Mountain, Voronoi Fracture, Blast, UV-to-position assignment, Line, Resample, per-point named attributes (`pt_0`...`pt_N`), Attribute Transfer, For-Each loop (Count mode, Fetch Feedback), Bend (Scale by Attribute, `fit01()`+`random()`-driven angle, `detail(-1,"iteration",0)` attribute selection), Point Deform, Fuse, soft normals, Plane (sub-surface displacement source), Smooth Step (contrast), Grid (UV unwrap, subdivide), Point VOP (soft-dots mask, Turbulence UV distortion, Turbulence Alligator + Voronoi noise combination, mask multiply), COPNet (Attribute Import, target geometry/resolution, render-to-texture), Unified Noise (dust base), Smooth Step (dust contrast), normal.Y masking, Fractal noise (normal distortion), Ramp (mask contrast), Mix (glass/dust material blend).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the Fetch-Feedback + Scale-by-Attribute segmented bend loop and the COPs noise-to-displacement-texture bake are both non-trivial production techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.590 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+ray-project, for-each-loop, cops, karma, materialx, displacement, product-viz, still-life, dust
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Pizza in COPs](procedural-pizza-in-cops.md) — shares the COPs-bake-to-texture technique used here for the water-puddle displacement map.
+- [Procedural Tips: Flow Maps, RBD Emit and more](procedural-tips-flow-maps-rbd-emit-and-more.md) — related product-viz shading tricks (liquid/glass materials) from the same channel.

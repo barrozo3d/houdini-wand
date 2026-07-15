@@ -2444,9 +2444,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=peBkuU0Es1Q
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.590
+- **Tags:** ray-project, for-each-loop, cops, karma, materialx, displacement, product-viz, still-life, dust
+- **Summary:** Four still-life tips: fixing Ray Project label-stretching via blurred point normals, a Fetch-Feedback for-loop with Scale-by-Attribute for segmented random neck-wrap bending, a COPs-baked noise texture for water-puddle displacement, and a normal-Y-masked procedural dust material mixed with glass.
 - **File:** tutorials/still-life-scene-breakdown-houdini-tips.md
 
 
