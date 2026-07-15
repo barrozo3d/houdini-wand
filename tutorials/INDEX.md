@@ -3194,9 +3194,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=QEvlyVTk4Jw
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.593
+- **Tags:** voronoi-fracture, vex, procedural-modeling, bricks, ruins, environment, connectivity, compile-block, texturing
+- **Summary:** Builds a broken brick wall with realistic staggered alignment by fracturing each row/layer with its own randomized jitter seed inside a for-loop (driven by the detail iteration attribute), then adds compiled per-brick edge damage masked by an "inside bricks" attribute and randomized per-piece color.
 - **File:** tutorials/ruins-randomized-brick-wall.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=QEvlyVTk4Jw
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.593"
+tags: [voronoi-fracture, vex, procedural-modeling, bricks, ruins, environment, connectivity, compile-block, texturing]
+extraction_status: complete
 frames_dir: tutorials/frames/ruins-randomized-brick-wall/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Ruins randomized brick wall
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py ruins-randomized-brick-wall <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -93,30 +89,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:30] tutorials/frames/ruins-randomized-brick-wall/frame_000.jpg
+- [3:10] tutorials/frames/ruins-randomized-brick-wall/frame_001.jpg
+- [5:30] tutorials/frames/ruins-randomized-brick-wall/frame_002.jpg
+- [6:40] tutorials/frames/ruins-randomized-brick-wall/frame_003.jpg
+- [7:50] tutorials/frames/ruins-randomized-brick-wall/frame_004.jpg
+- [9:15] tutorials/frames/ruins-randomized-brick-wall/frame_005.jpg
+- [10:10] tutorials/frames/ruins-randomized-brick-wall/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a broken stone/brick wall with realistic non-repeating brick alignment by slicing a box into rows/columns/depth via repeated jittered Voronoi Fractures driven per-layer by a for-loop with a seeded random offset, then adding per-brick edge damage via a compiled mountain/peak pass masked by a "fracture boundary" attribute.
 
 ### Summary
-[PENDING EXTRACTION]
+Rather than a uniform brick grid, the wall is built by extracting bounding-box-derived guide curves along Y, X, and Z, resampling them into sections, jittering the interior points (endpoints preserved), cutting at each point, and subdividing for consistency. The key realism trick is fracturing each "layer" (row) with its own randomized jitter seed inside a for-loop using the detail iteration attribute — producing the classic randomized/staggered brick-alignment look instead of a perfectly uniform pattern. After an Exploded View separation and Boolean-based cleanup, individual bricks get a Connectivity ID, a small random rotation, and a computed "inside bricks" mask (blurred and remapped) that drives Mountain-based edge/surface damage inside a **Compile Block** for speed, concentrated more heavily on interior fracture bricks and less on boundary bricks. A random-per-class color/attribute pass (via Attribute Adjust Color with pattern type Random, randomized by the class/connectivity attribute) finishes the variation, and a black-and-white mask is exported for texturing.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start with a box as the base wall shape, plus a hand-drawn curve to act as the fracture/breaking pattern for an initial Boolean cut.
+2. Extract three guide curves from the input mesh's bounds — one each for Y, X, and Z axes.
+3. Run a **Voronoi Fracture** along the guide curves to create slice divisions; Resample controls how many sections per axis (e.g. Y-axis section count).
+4. Group the *inner* points of each guide curve (excluding endpoints) and **jitter** only those inner points so the end sections stay clean, then cut at every point to create individual line segments, and **Subdivide** each segment once for consistent point density per section.
+5. Fuse points, sort (e.g. by Y), group every-other point (middle points), and blast to isolate just the fracture-guide points that will drive the first level of slicing.
+6. First fracture pass: run **Voronoi Fracture** using those guide points — no loop needed here since this pass isn't randomized per layer.
+7. Second/randomized fracture pass (the key trick): run **Voronoi Fracture inside a for-loop** so each iteration (row/layer) gets its **own jitter randomization**, driven by the **detail iteration attribute** combined with a seed value — this randomizes the alignment of each layer of bricks independently rather than uniformly. Repeat the same process for the Z axis. Disabling jitter shows straight/uniform lines for comparison.
+8. Use **Exploded View** to separate bricks slightly (helps the Boolean and visual clarity), then Boolean the exploded/fractured shape out from the initial wall shape and clean the result; save the "B inside A" Boolean output group to isolate the inner cut polygons.
+9. Run **Connectivity** to give each individual brick a unique piece ID, then apply a small **randomized rotation** per brick (with its own seed, via a fit-based random function) using a Transform node.
+10. Create an "inside bricks" attribute from the fracture-bricks group, **blur** it, and **remap** it so it can drive a compiled **edge/surface damage** pass: measure each brick's area (to scale the remesh appropriately per brick size), blur edges a bit, and use the inside-bricks attribute to control Mountain-node amplitude and Peak-based Boolean damage per brick, all wrapped in a **Compile Block** for performance since this runs per-brick.
+11. The blurred inside-bricks attribute also feeds an **Attribute Blur** weight and a **Mountain** blend, so edge damage is more pronounced on interior/heavily-fractured bricks and less pronounced near clean boundary areas.
+12. Create a black-and-white mask attribute from the same setup for later texturing use.
+13. Final color variation: randomize the per-brick **class/connectivity** attribute and feed it to **Attribute Adjust Color** with Pattern Type set to **Random**, randomized by the custom class attribute, to color-vary each brick without manual painting.
+14. Author also shares a simpler alternative network in the project file that works for regular box-like shapes without the full randomized-jitter variation setup.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Box, Boolean, Bounds-derived guide curves (per-axis), Voronoi Fracture (guide-curve-driven, jittered, and randomized-per-loop-iteration variants), Resample, Group (inner points, exclude endpoints), Jitter, Cut, Subdivide, Fuse, Sort, Blast, For-Each loop (per-layer randomized fracture using detail `iteration` attribute + seed), Exploded View, Boolean ("B inside A" group extraction), Connectivity (per-brick class/piece ID), Transform (randomized rotation per brick, seeded), Attribute Blur, Remap, Measure (area, for per-brick remesh sizing), Mountain (amplitude driven by inside-bricks attribute), Peak, Compile Block (for per-brick edge-damage performance), Attribute Adjust Color (Pattern Type: Random, randomized by class attribute).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the per-layer randomized-fracture-in-a-loop technique and compiled per-brick edge-damage pipeline require solid procedural/VEX fluency).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.593 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+voronoi-fracture, vex, procedural-modeling, bricks, ruins, environment, connectivity, compile-block, texturing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — alternate RBD-simulation-based approach to a similar stacked-stone-wall problem from the same channel.
+- [Procedural Bricks with Houdini](procedural-bricks-with-houdini.md) — simpler, non-fractured brick-pattern technique using grid offsetting instead of Voronoi Fracture.
