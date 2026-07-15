@@ -3114,9 +3114,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rzWUiyF9EJI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.752
+- **Tags:** procedural-modeling, buildings, vex, xyzdist, boolean, roof, windows, architecture, environment
+- **Summary:** Full procedural house generator: randomized fit()+random() footprint, mirrored-ramp tapering roof, xyzdist()-driven window/door placement avoiding overlap, manual UV-space-flattened roof-tile grid generation via Divide+Match Size, and a wood-plank wall pass built by recentering each primitive before subdividing.
 - **File:** tutorials/procedural-house-generator.md
 
 

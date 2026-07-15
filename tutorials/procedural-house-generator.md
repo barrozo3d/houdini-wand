@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rzWUiyF9EJI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.752"
+tags: [procedural-modeling, buildings, vex, xyzdist, boolean, roof, windows, architecture, environment]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-house-generator/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural House Generator
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-house-generator <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -135,30 +131,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/procedural-house-generator/frame_000.jpg
+- [0:55] tutorials/frames/procedural-house-generator/frame_001.jpg
+- [1:30] tutorials/frames/procedural-house-generator/frame_002.jpg
+- [2:20] tutorials/frames/procedural-house-generator/frame_003.jpg
+- [3:10] tutorials/frames/procedural-house-generator/frame_004.jpg
+- [4:00] tutorials/frames/procedural-house-generator/frame_005.jpg
+- [5:00] tutorials/frames/procedural-house-generator/frame_006.jpg
+- [6:20] tutorials/frames/procedural-house-generator/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full procedural house generator: randomized base dimensions via `fit()` + random, a mirrored ramp-based tapering roof profile, silhouette-extraction for window/door placement using `xyzdist()`, per-roof grid-of-points tile generation via manual UV-space flattening, and a final wood-plank wall pass built by re-centering each primitive before subdividing.
 
 ### Summary
-[PENDING EXTRACTION]
+The house starts from a grid whose dimensions use `fit()` + `random()` for size variance within a range, with middle points transformed and sides bridged for a simple tapered footprint. A tapering effect on the profile uses a Ramp over relative bounding-box X, mirrored via a formula so only one side needs authoring. Windows/doors come from extracting the wall silhouette as curves, filtering out sections too small for a window, resampling to control window count, and using an `xyzdist()`-driven wrangle to identify and remove the primitive nearest the door point before copying box geometry to bullion out window/door openings oriented by wall normals. A chimney is a scattered point (scaled down to avoid roof-edge placement) with a simple model copied on. Roof tiles are the most involved part: each roof section is iterated over, extended slightly for overhang (accounting for roof orientation via saved attributes and a switch), then **manually flattened into UV space** (measuring width via area/bounding-box math, matching dimensions with Match Size) so a Divide node can create a clean tile grid without complex projection; per-tile centerline points get their own resampled/oriented set for ridge-cap tiles, and everything is Peak-formed with the original tile profile via Path Deform before normal transfer, random orientation/scale, and Copy to Points. Wood beams along roof edges use a simple Sweep. Wood-plank walls are built by centering each wall primitive (via copy-to-point + orient by normal) before dividing, insetting, and extruding for a plank look, then Booleaning window/door openings and adding color variation; a final for-loop over Copy to Points variations demonstrates generating multiple distinct houses.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Base footprint: Grid with `fit()` + `random()`-driven dimensions, transform the middle points, bridge the sides.
+2. Tapering roof profile: build a Ramp over relative bounding-box X; mirror the ramp formula so the effect is symmetric without manual duplication; Polyfill the bottom for later extrusion.
+3. Randomized roof module: place a center point using `fit()` + `random()` (bounded to the grid via the bounding-box function), then Switch randomly (seeded globally) between roof module variants; mirror the same roof setup to the other side.
+4. Split the geometry by the Fill node's patch group and Extrude to create the walls; merge everything back.
+5. **Windows/doors**: extract the wall silhouette, convert to curves, remove sections too small for a window, Resample to control window count; separately select a single random primitive and extract its centroid for the door.
+6. Use an **`xyzdist()`**-driven wrangle to find and remove the window primitive nearest the door point (so a window doesn't overlap the door), grab wall normals to orient window/door boxes correctly, then Copy box geometry and Boolean out the openings.
+7. **Chimney**: scatter a single point on the roof geometry (scaled down so it doesn't land at roof edges), copy a simple pre-modeled chimney onto it.
+8. **Roof tiles**: iterate over each roof section; extend the shape slightly at the edges for overhang by manipulating normals and Peak, extending sideways based on saved roof-orientation attributes via a Switch.
+9. **Manual UV-space flattening for tile grid**: measure Area, derive width from the bounding box and height from area/width, then **flatten** the roof section and use **Match Size** to set correct dimensions before running a **Divide** node to create a clean subdivided tile grid respecting the initial topology.
+10. Subdivide the flattened plane, clean inner polygons, extract the centroid and blast the center points (different geometry/idea for these), extract the middle edge and resample it to the tile count for the ridge-cap row (different ID), then **Path Deform** the tile profile back onto the points, transferring normals from the original geometry.
+11. Orient the copied tiles with Polyframe/normal-based up-vector and randomize normals/scale slightly, then Copy to Points using a "piece" ID attribute.
+12. Add simple **wood beam** trim along roof edges using a Sweep node.
+13. **Wood-plank walls**: clean the initial wall geometry, iterate per-primitive, save the geo's position (recentering it via Copy to Points + normal orientation for easier subdivision), then restore position after dividing; Inset and Extrude for the plank look, Boolean out windows/doors, and add color variation.
+14. Demonstrate variation generation: feed the whole generator into a **Copy to Points inside a for-loop** to produce multiple distinct houses per iteration.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Grid (`fit()`+`random()` dimensions), Transform, Bridge, Ramp (mirrored formula for tapering), Polyfill, Switch (seeded random roof module selection), Split, Extrude, Silhouette extraction + Convert Line, Resample, `xyzdist()` VEX function (nearest-primitive lookup for door/window conflict), Copy (box) + Boolean (window/door openings), Scatter (chimney point), Measure (area), Bounding Box math (width/height derivation), Flatten (manual UV-space projection), Match Size, Divide, Blast, Path Deform, Polyframe/normal-based orientation, Copy to Points (piece ID attribute), Sweep (wood beams), per-primitive centering (Copy to Points + orient by normal), Inset, Extrude (wood planks), color variation, For-loop (multi-house variation generation via Copy to Points).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines silhouette-based window placement, manual UV-space tile-grid generation, and multi-stage per-primitive centering — a substantial procedural system).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.752 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+procedural-modeling, buildings, vex, xyzdist, boolean, roof, windows, architecture, environment
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Roof Tiles in Houdini](procedural-roof-tiles-in-houdini.md) — much deeper dive into the exact manual UV-flattening + tile-grid technique used here for the roof.
+- [Procedural Buildings in Houdini Tips and Tricks](procedural-buildings-in-houdini-tips-and-tricks.md) — related building-generation techniques from the same channel.
+- [Procedural Favela in Houdini Tips and Tricks](procedural-favela-in-houdini-tips-and-tricks.md) — another full building-generation system with overlapping window/wall techniques.
