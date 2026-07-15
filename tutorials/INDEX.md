@@ -2784,9 +2784,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=015fds0mdyk
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.598
+- **Tags:** rbd, material-fracture, vdb, vex, packed-primitives, triplanar, karma, environment, rocks
+- **Summary:** Generates rock-cliff surfaces using RBD Material Fracture as a modeling tool with custom scattered seed points, removes side pieces via slope-masked normal-driven selection on packed primitives, VDB-remeshes, then details with three slope-masked whirling noises and a custom MaterialX CGS Triplanar for texturing.
 - **File:** tutorials/rbd-rock-surfaces-with-houdini.md
 
 
