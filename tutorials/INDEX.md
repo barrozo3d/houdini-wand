@@ -2264,9 +2264,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=meX4fLnITR0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.301
+- **Tags:** cops, copernicus, uvs, procedural-textures, tile-pattern, karma, food, donut
+- **Summary:** Builds a procedural glazed donut entirely in Houdini 20.5's new Copernicus (Cops) context: a custom UV-stretch wrangle for the torus, layered Fractal-Noise/Ramp/Tile-Pattern drip masks combined via Blend Overlay/Max, a mirrored-and-rotated Max blend to fake interior detail, and Tile-Pattern-scattered colored sprinkles.
 - **File:** tutorials/the-donut-tutorial-in-cops-houdini-205.md
 
 

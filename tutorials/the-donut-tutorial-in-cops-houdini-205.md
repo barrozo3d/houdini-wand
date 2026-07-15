@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=meX4fLnITR0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.301"
+tags: [cops, copernicus, uvs, procedural-textures, tile-pattern, karma, food, donut]
+extraction_status: complete
 frames_dir: tutorials/frames/the-donut-tutorial-in-cops-houdini-205/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 13
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # The Donut Tutorial in Cops | Houdini 20.5
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py the-donut-tutorial-in-cops-houdini-205 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -521,30 +517,61 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:00] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_000.jpg
+- [5:00] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_001.jpg
+- [8:20] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_002.jpg
+- [11:40] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_003.jpg
+- [15:00] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_004.jpg
+- [18:20] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_005.jpg
+- [23:20] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_006.jpg
+- [26:40] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_007.jpg
+- [30:50] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_008.jpg
+- [34:10] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_009.jpg
+- [37:30] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_010.jpg
+- [40:50] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_011.jpg
+- [41:50] tutorials/frames/the-donut-tutorial-in-cops-houdini-205/frame_012.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a fully procedural chocolate-glazed donut with dripping icing entirely in **Copernicus (Cops)** — Houdini 20.5's new node-based image-processing context — using a custom UV-stretch wrangle (since no built-in tool fills a torus's UVs to the full 0-1 tile), layered Fractal Noise + Blend(Overlay) + Ramp masks for the drip shape, Tile Pattern nodes for both the drip-blob silhouette and the sprinkle scatter, and a mirrored/rotated Blend(Max) pass to fake interior detail from the same texture.
 
 ### Summary
-[PENDING EXTRACTION]
+A 32x64 Torus gets UVs via seam-grouped UV Flatten (rectified, imperfect but acceptable), then a custom wrangle stretches the UVs to fill the full UV tile — using `geo unwrap`, a detail-mode bounding-box-max query, and per-component UV assignment (`uv.x` unchanged, `uv.z = 0`, `uv.y` divided by the bounding-box Y max), with sign-flips and +1 offsets to fix upside-down/out-of-range results. Basic Mountain-based surface deformation, a Subdivide, and Normal round out the base SOP network, feeding a Cops network for texturing. The icing/drip mask starts as a Fractal Noise (small element size, vertically stretched ~4x) distorted by a Chip 3D Noise (animatable offset, tuned lacunarity/roughness), blurred slightly, then blended with a vertical Ramp using **Overlay** mode to create the initial dripping-pattern silhouette; Remap and Quantize (2 segments) sharpen it into a hard black/white mask. A second, independent drip-blob layer comes from a **Tile Pattern** node (Compound shape type, ~18 divisions, jittered position/size, vertical scale ~2.7 for elongated drips, tuned seed), stretched further with a directional Streak Blur (angle 90°), then distorted with a UV-centered Fractal Noise (small size/amplitude) before Quantizing again for a sharp edge; this is combined with the first mask via **Blend set to Max** and transformed down to align. An "Add Detail" node plus Layer Properties (Clamp mode) prevents tiling repetition and rounds out the shape when blended back into the main mask — extensive iterative tweaking (moving/scaling individual drip blobs, adjusting radius/repetition) refines the silhouette by eye. Interior surface detail is faked (since a torus/donut can't be perfectly UV-unwrapped) by building a top-masked Ramp, then **mirroring and rotating 180° + offsetting** a copy of the same mask, and blending the two with **Max** — approximating the underside drip detail from the same source pattern. Color comes from two Fractal Noise layers (different element sizes/octaves/roughness) blended with **Multiply**, feeding a Ramp for the caramel/dough base color, further blended against a solid chocolate-color Constant using the blurred drip mask as the mixing factor; height/displacement reuses a more-blurred version of the same mask at a small multiplier. Sprinkles are built from a thick Line (SDF/Mono SDF) fed into a **Tile Pattern** (varying rotation, jittered offset, adjusted bounds to reduce overlap), masked by the height map so they only appear on the icing, tinted per-instance via an RGB-from-ID node (Blackbody-style palette) multiplied by the tile mask to avoid background bleed-through, and layered into both the base color and height (with a Multiply Constant to keep sprinkle height subordinate to the main icing height) and a dedicated normal-map contribution. A final Remap builds the roughness map (icing base ~0.5, sprinkles shinier ~0.3), and bumping the overall Cops resolution to 2K plus increasing SOP subdivisions reveals finer detail in the final render — with the caveat, acknowledged by the author throughout, that Cops mask-tiling for the outer drip silhouette never looks fully convincing and needed constant hand-tweaking.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base geometry + UVs**: Torus (32×64) → group seam edge-loops → UV Flatten (rectified) → custom wrangle to stretch UVs to fill the tile: `geo unwrap`, detail-mode bounding-box-max query, assign `uv.x` unchanged / `uv.z = 0` / `uv.y / bbox_max.y`, with sign flips and `+1` offsets to fix flipped/out-of-range results.
+2. Add basic **Mountain** distortion (hardcoded values), **Subdivide** (3), **Normal**, and an explicit **Output** node (so the network doesn't depend on a display flag on an arbitrary node).
+3. **Icing drip mask, layer 1**: Fractal Noise (small element size, ~4x vertical stretch) distorted by a **Chip 3D Noise** (animatable, tuned lacunarity/roughness/offset), Blur slightly, blend with a vertical **Ramp** using **Overlay** mode, then Remap + **Quantize** (2 segments) for a hard-edged mask.
+4. **Icing drip mask, layer 2**: build a **Tile Pattern** (Compound shape, ~18 divisions, jitter ~0.4, size variation ~0.3, vertical scale ~2.7, tuned seed) for elongated drip-blob shapes; apply a **Streak Blur** (angle 90°) to elongate further, then distort with a UV-centered Fractal Noise (size ~0.05, amplitude ~0.062, roughness ~0.1) and Quantize (2 segments) for sharp edges.
+5. **Combine masks**: Blend the two drip layers with mode **Max**, transform down (~0.05) to align; use an **Add Detail** node + **Layer Properties** (Clamp mode) to prevent tiling repetition, then blend back into the main mask to round out shapes — extensive manual tweaking (repositioning/scaling individual blobs) follows.
+6. **Interior detail fake**: build a top-masked vertical Ramp, duplicate and **Transform** it (rotate 180°, offset ~-0.8) to wrap it to the opposite side, then **Blend (Max)** the two — approximating underside drip detail on the same UV-stretched torus (acknowledged as an imperfect workaround since donuts/toruses have no perfect UV solution).
+7. **Color**: two Fractal Noise layers (different element size/octaves/roughness) blended with **Multiply**; feed a **Ramp** (dragged color stops) for the dough/caramel base; blend against a solid chocolate **Constant** (RGB) using a blurred version of the drip mask as the mixing factor for the base color.
+8. **Height/displacement**: reuse a more heavily blurred copy of the drip mask at a small multiplier (~0.02) for subtle displacement.
+9. **Sprinkles**: build a thick **Line** (SDF/Mono SDF shape), feed it into a **Tile Pattern** (varying rotation, jittered offset/seed, adjusted bounds to reduce overlap); mask by the height map so sprinkles only appear on icing; color via an **RGB from ID** node (Blackbody-style palette) multiplied by the tile mask to avoid background color bleed.
+10. Layer sprinkle contributions into base color, height (via a **Multiply Constant** to keep sprinkle height subordinate to the main icing height), and a separate **normal-map** pass (Bump-style node, small strength ~0.03).
+11. **Roughness**: a simple **Remap** (icing base ~0.5, sprinkles shinier ~0.3).
+12. **Finishing**: preview via a Karma Preview Material with texture connections into base color/height/normal/roughness; increase Cops resolution to 2K and SOP subdivisions to 4 for finer render detail; import into Solaris and render with Karma for a full production pipeline (left as an exercise by the author).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Torus, Group (seams), UV Flatten, Attribute Wrangle (`geo unwrap`, detail bounding-box-max, UV component reassignment), Mountain, Subdivide, Normal, Output; Copernicus/Cops network: Fractal Noise (×3+ variants), Chip 3D Noise (animatable offset), Blur, Ramp (Overlay/Max blend modes), Remap, Quantize, Tile Pattern (×2 — drip blobs + sprinkles; Compound shape, jitter, size/rotation variation), Streak Blur, Distort (UV-centered Fractal Noise), Transform 2D (mirror/rotate/offset for interior fake), Add Detail + Layer Properties (Clamp, anti-tiling), Blend (Multiply/Max/Overlay modes), Constant (RGB chocolate color), Mono SDF (sprinkle line shape), RGB from ID (Blackbody palette), Multiply Constant, Bump/normal node, Karma Preview Material.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (extensive iterative Cops mask-layering and manual tweaking; assumes comfort with Houdini 20.5's new node-based image/texture context).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.301 (visible in viewport title bar) — the video explicitly showcases Houdini 20.5's new **Copernicus (Cops)** image context.
 
 ### Tags
-[PENDING EXTRACTION]
+cops, copernicus, uvs, procedural-textures, tile-pattern, karma, food, donut
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Pizza in COPs](procedural-pizza-in-cops.md) — companion food-shading-in-Cops tutorial from the same channel using similar Tile Pattern and Blend-mode techniques.
+- [Wood Barrel Texturing in COPs](wood-barrel-texturing-in-cops.md) — shares the same Cops-based procedural texturing workflow applied to a different material.
+- [Procedural Cliff Shapes in COPs - Free Lesson](procedural-cliff-shapes-in-cops-free-lesson.md) — related early Cops texturing tutorial from the same channel.
