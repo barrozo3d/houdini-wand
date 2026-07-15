@@ -106,3 +106,4 @@ uvs, texturing, connectivity, sort, vex, procedural-uvs, tiling
 ## Related Tutorials
 - [Procedural UVs - UV Layout Node in Depth](procedural-uvs---uv-layout-node-in-depth.md) — deep dive into UV Layout's island/UDIM/scale attributes, including the same island-stacking-by-attribute technique used here.
 - [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — related procedural UV-manipulation tooling from the same channel.
+- [Scatter Shapes in Cops Randomly Without Overlap](scatter-shapes-in-cops-randomly-without-overlap.md) — shares the piece-scattering-without-overlap goal, using a physical point Relax in Cops/SOPs instead of UV-space stacking.

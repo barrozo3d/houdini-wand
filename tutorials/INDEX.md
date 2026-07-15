@@ -1524,9 +1524,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=bTA8XwTEcRg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** cops, point-relax, uv-gradient, tiling, matrix, stamping, rock-material, seamless
+- **Summary:** Fixes Cops' default Scatter Shapes overlap problem for a tileable rock material by packing pieces and running a p-scale-driven point Relax in SOPs, matching attributes across grid edges for seamless tiling, and building a from-scratch UV-gradient-based transform matrix to stamp each piece with correct scale/rotation.
 - **File:** tutorials/scatter-shapes-in-cops-randomly-without-overlap.md
 
 

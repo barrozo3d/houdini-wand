@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=bTA8XwTEcRg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [cops, point-relax, uv-gradient, tiling, matrix, stamping, rock-material, seamless]
+extraction_status: complete
 frames_dir: tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Scatter shapes in cops randomly without overlap
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py scatter-shapes-in-cops-randomly-without-overlap <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -171,30 +167,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:55] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_000.jpg
+- [1:40] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_001.jpg
+- [3:00] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_002.jpg
+- [4:20] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_003.jpg
+- [5:40] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_004.jpg
+- [7:00] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_005.jpg
+- [8:20] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_006.jpg
+- [9:50] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_007.jpg
+- [11:10] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_008.jpg
+- [12:30] tutorials/frames/scatter-shapes-in-cops-randomly-without-overlap/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Scatter multiple rock-shape variations across a seamlessly-tileable material without any overlap — the default Cops "Scatter Shapes" node breaks down as soon as jitter is increased (shapes clip through each other), so the fix is a SOPs-side pipeline: **pack the shapes as points, run a p-scale-aware point Relax to physically push them apart**, then feed the relaxed positions/orientations back into Cops via a custom stamping setup, plus a from-scratch **UV-gradient-based transform-matrix** system to make the tile pattern wrap seamlessly at all four grid edges/corners.
 
 ### Summary
-[PENDING EXTRACTION]
+Four rock variations are modeled in SOPs, masked out individually (a subnet used only because Cops lacks native loops — the subnet does the per-variation math and outputs each rock's mask as an image layer), then imported into Cops via Geo-to-Layer, Cable Pack, and stamped with the built-in Stamp Cop — which works fine for a small, systematic set but breaks down (heavy overlap) as soon as jitter/variation is increased for a more organic look. The fix moves variation-placement math into SOPs: a 10×10 grid of points (100 total) is built with Point Generate, given column/row attributes via a wrangle (offset so grid points sit at cell centers, not at -1/1), and each gets a random `variant` attribute (0–3) via Attribute from Pieces (based on a per-class enumerate on the imported rock variations) plus random p-scale/normal/orient attributes to instance geometry — but at this stage pieces still overlap heavily because of the added noise-based attribute jitter. **Pack the geometry, then run a point Relax** driven by each piece's p-scale — this physically separates overlapping instances based on their actual size, guaranteeing no intersections; a small amount of additional noise can be reintroduced afterward without breaking the relax result, as long as the attributes are re-matched before the tiling step (otherwise tiling breaks). To make the grid **tile seamlessly**, a custom function (`copy attributes`) copies orientation/variant/position attributes from the last column to the first column and from the last row to the first row (and handles corners), so points on opposite edges of the tile match exactly — visualized as a small preview grid of ~100 points at the origin that only actually tiles once a Layer Properties node is set (otherwise the pattern visibly repeats/drops at tile boundaries). To stamp geometry with correct scale/rotation at each point (beyond simple position matching), a from-scratch **transform-matrix pipeline** is built: measure each piece's area (by-piece, promoted to a per-piece centroid based on an index/class attribute, not the random variant), then **measure the UV gradients** (`uv.x` and `uv.y` as separate vector attributes, `UVF`) to get two stable per-piece coordinate axes usable for constructing a matrix — since the original pieces and the copy-destination points differ in scale, a scale vector is computed between them, and a full 4×4 transform matrix is built from the gradient vectors (normalized, used as look/up axes), a translation to the point's pivot, and the computed scale, producing a matrix that (when applied) reproduces each piece's original position/orientation exactly if fed identity scale, or the destination's actual scale/rotation otherwise. A "difference matrix" (an inverted-matrix multiply against the current matrix) is also saved for cases needing a relative rather than absolute transform. Once verified (object-merging the 4 original variant shapes at the top of the network, moving them to the center via Copy-to-Points with the built transform attributes to confirm they land back in the same position/orientation), the technique reliably tiles the scattered rock pattern with per-piece random scale/rotation and zero overlap, and can be further randomized (with the same noise-then-rematch caveat) before handing off to a paid Substance-Designer-style plugin node for slope blur / noise post-processing.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model 4 rock-shape variations in SOPs; isolate each with a subnet-based per-iteration mask (subnets used specifically because Cops has no native loop construct) and bring them into Cops as separate mask layers via **Geo to Layer**.
+2. Use **Cable Pack** + the built-in **Stamp** Cop to place the systematic set — works for small, uniform variation counts but breaks (heavy overlap) once jitter is increased for more organic placement.
+3. Build a **10×10 Point Generate** grid, derive column/row attributes with a wrangle (offset so points land at cell centers), and assign a random `variant` (0–3, via Attribute from Pieces keyed on an enumerated class) plus random p-scale/normal/orient attributes for instance variation.
+4. **Pack the resulting geometry, then run a point Relax driven by each piece's p-scale** — physically separates overlapping instances based on true piece size, eliminating intersections that naive jittered placement would otherwise cause.
+5. **Make the grid tile seamlessly**: build a custom "copy attributes" pass that copies orientation/variant/position from the last column to the first column and last row to first row (handling corners too), so opposite tile edges match exactly; verify by placing a **Layer Properties** node (without it, the preview looks fine but doesn't actually repeat correctly across tile boundaries).
+6. If adding extra noise/randomization after relaxing, always **re-match the tiling attributes afterward** — noise alone will break the seamless-tile matching if left unmatched.
+7. **Build a from-scratch transform matrix per stamped piece**: measure each piece's area (grouped/promoted by index/class, not the random variant), then measure the **UV gradients** (`uv.x`, `uv.y` as separate vector attributes) to get two stable, piece-relative coordinate axes.
+8. Compute a scale vector between the original piece size and its destination point's size, then build a full 4×4 matrix from the normalized gradient vectors (as look/up axes), the point's pivot as translation, and the computed scale.
+9. Extract points from the transform network and transfer the matrix attribute, saving an optional "difference matrix" (current matrix × inverted reference matrix) for cases needing a relative rather than absolute transform.
+10. Verify by object-merging the 4 original variant shapes, moving them to center, and Copy-to-Points-ing with the built transform attribute — confirms each piece lands back in its original position/orientation before trusting the matrix pipeline for the full tiled scatter.
+11. Optionally layer in a paid Substance-Designer-style Houdini plugin (slope blur, Voronoise, etc.) for additional post-processing once the base tileable, non-overlapping scatter is confirmed correct.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Cops: Geo to Layer, Cable Pack, Stamp, custom subnet (per-iteration masking, loop substitute), custom "copy attributes" tiling function, Layer Properties (tile verification). SOPs: Point Generate (10×10 grid), column/row wrangle, Attribute from Pieces (variant selection via enumerated class), random p-scale/normal/orient attribute noise, Pack, point **Relax** (p-scale-driven, non-overlap guarantee), Enumerate (class attribute), area Measure (by-piece, index/class-grouped), UV gradient Measure (`uv.x`/`uv.y` as vector attributes, "UVF"), scale-vector wrangle, 4×4 transform-matrix construction (gradient-based look/up axes + pivot translation + scale), difference-matrix wrangle (inverted-matrix multiply), Point extraction + matrix attribute transfer, Object Merge (verification), Copy to Points (transform-attribute-driven placement).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the UV-gradient-based from-scratch transform-matrix construction and the p-scale-driven Relax-for-non-overlap technique are both sophisticated, non-obvious production solutions to a real material-authoring problem).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+cops, point-relax, uv-gradient, tiling, matrix, stamping, rock-material, seamless
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [UV Randomizer - Texturing Multiple Objects](uv-randomizer---texturing-multiple-objects.md) — shares the piece-scattering-without-overlap goal, using Connectivity+ID+Sort for UV-space stacking instead of a physical point Relax.
+- [Procedural Environments in Houdini | Patreon February '26 Free Lesson](procedural-environments-in-houdini-patreon-february-26-free-lesson.md) — shares the OpenCL-based custom Cops workflow approach used here for organic edge/tiling effects.
+- [Wood Barrel Texturing in Cops](wood-barrel-texturing-in-cops.md) — shares the uvdist()/UV-gradient-based attribute-resurrection approach for building custom per-piece Cops workflows.

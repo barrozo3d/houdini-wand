@@ -381,3 +381,4 @@ cops, copernicus, uvdist, texture-paint, rasterize, karma, wood, rust, texturing
 - [Tiling Patterns with COPS and SOPS](tiling-patterns-with-cops-and-sops.md) — shares the same Cops-based texturing workflow and stamp/rasterize approach applied to a different material.
 - [Procedural Pizza in COPs](procedural-pizza-in-cops.md) — another SOPs-to-Cops resurrection pipeline, here building a stamped leaf topping instead of barrel-grain detail.
 - [Tips and Tricks to level up your Houdini Skills](tips-and-tricks-to-level-up-your-houdini-skills.md) — shares the exact same uvdist()-based attribute-resurrection wrangle technique, applied there to a salmon-pattern sushi texture.
+- [Scatter Shapes in Cops Randomly Without Overlap](scatter-shapes-in-cops-randomly-without-overlap.md) — shares the UV-gradient-based custom transform-matrix approach for building per-piece Cops workflows.
