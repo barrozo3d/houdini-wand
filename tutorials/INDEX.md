@@ -3309,6 +3309,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/learning-vex---recreating-attribute-reorient-sop.md
 
+
+### Gestation Effect in Houdini. Scene Breakdown.
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=JiQyPj-rLII
+- **Author:** Pixel In The Frame
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/gestation-effect-in-houdini-scene-breakdown.md
+
 ---
 
 ## Tag Reference
