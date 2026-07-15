@@ -2874,9 +2874,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fSouWuGd_Tg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.403
+- **Tags:** materialx, karma, vex, food, procedural-modeling, solaris, spiral, normals
+- **Summary:** Builds a banana bunch via blended outward/Y-flattened normals for controllable cluster flatness, spiral cluster placement using a VEX point-number rotation trick, then shades with tiled 3D MaterialX noises (Position×constant tiling) and a fractal yellow/brown color blend in Karma.
 - **File:** tutorials/procedural-assets-and-shading-with-houdini-and-materialx.md
 
 

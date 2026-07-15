@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=fSouWuGd_Tg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.403"
+tags: [materialx, karma, vex, food, procedural-modeling, solaris, spiral, normals]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-assets-and-shading-with-houdini-and-materialx/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural assets and shading with Houdini and MaterialX
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-assets-and-shading-with-houdini-and-materialx <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -83,30 +79,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/procedural-assets-and-shading-with-houdini-and-materialx/frame_000.jpg
+- [0:45] tutorials/frames/procedural-assets-and-shading-with-houdini-and-materialx/frame_001.jpg
+- [1:15] tutorials/frames/procedural-assets-and-shading-with-houdini-and-materialx/frame_002.jpg
+- [1:50] tutorials/frames/procedural-assets-and-shading-with-houdini-and-materialx/frame_003.jpg
+- [2:25] tutorials/frames/procedural-assets-and-shading-with-houdini-and-materialx/frame_004.jpg
+- [2:55] tutorials/frames/procedural-assets-and-shading-with-houdini-and-materialx/frame_005.jpg
+- [3:50] tutorials/frames/procedural-assets-and-shading-with-houdini-and-materialx/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a banana bunch procedurally by blending outward-pointing and Y-flattened normals (for controllable "flatness" of individual banana clusters), then placing clusters along the main stem in a spiral pattern via a VEX rotation-per-point-number trick, and shade everything with tileable 3D MaterialX noises in Karma.
 
 ### Summary
-[PENDING EXTRACTION]
+Individual bananas use mixed procedural/direct modeling. On the bunch, faces are selected via range nodes, mirrored for two layers, and the centroid extracted as the placement anchor. A wrangle creates outward-pointing normals, flattens the Y component, and blends the two orientations with a slider using `lerp()`, letting the artist dial in how "flat" vs "pointing out" each bunch looks, then locks the normal to positive Y; slight randomization avoids a too-uniform bunch distribution. The main stem placement uses a Line matching the tube's size, a Mountain node for non-uniformity, Carve to control where the bunch starts/ends along the stem, Resample, and Y-jitter. Normals along X are added, and the **spiral placement trick**: a variable sets a ~90° rotation interval with a seed, then for each point the point number is multiplied by that rotation amount — creating the spiral effect around the stem. Random per-cluster scale is added before Copy to Points places the banana clusters. The stem itself is a simple tube with a Mountain node affecting position, plus gravity-like bending. Names are added for Solaris targeting (stem vs. bananas). In Solaris, primitives are set to be a point instancer; shading uses a Geo Property Value mask for banana tips (dark brown via Color Mix), tiled 3D MaterialX noises (tiled by multiplying the Position node output by a repetition-count constant before feeding the noise), a grid-blend layer, and a final mix blending main yellow with brown via a fractal 3D noise; the shader itself uses modest roughness values and some SSS.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model individual bananas via a mix of procedural and direct modeling (details left to project files); build the bench/bunch base from a tube.
+2. Select a subset of tube faces with Range nodes, Mirror for two layers of bananas, and extract the **centroid** as the eventual placement point.
+3. **Orientation wrangle**: create normals pointing outward, flatten the Y component of a second normal copy, blend the two with a slider (`lerp()`-based mixing function) to control how flat vs. outward-facing each cluster is, then lock the resulting attribute to point along positive Y — visually tunable via the blend slider.
+4. Randomize the normals slightly for a less uniform bunch look.
+5. **Main stem placement**: build a Line matching the stem tube's size, add a Mountain node for non-uniformity, use **Carve** to control where along the stem the bunch starts/ends, Resample, and jitter along Y.
+6. Add normals along X, then implement the **spiral effect**: define a rotation-interval variable around 90° with a random seed, and for each point multiply the point number by that rotation amount — producing a spiraling placement pattern up the stem.
+7. Add random scale per cluster, then **Copy to Points** to place the banana clusters along the spiral.
+8. Build the stem geometry itself from a simple tube with a Mountain node affecting position plus a gravity-like bending end.
+9. Add name attributes for the stem and bananas separately, for targeted material assignment in Solaris.
+10. **Solaris setup**: set the imported geo's primitives to be a **point instancer**.
+11. **Shading**: import a banana-tip mask via **Geo Property Value**, use Color Mix to assign a dark brown tip color, then blend downstream with more Color Mix nodes.
+12. Use **3D MaterialX noises**, tiled by connecting a **Position** node through a **Multiply** by a repetition-count constant before feeding the noise (standard tiling trick for 3D noise in MaterialX).
+13. Add a grid-blend mix layer, then a final mix blending the main yellow banana color with brown using a **fractal 3D noise**.
+14. Shader itself uses modest roughness values with a bit of SSS for a believable banana-peel look.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Range (face selection), Mirror, Extract Centroid, Attribute Wrangle (outward normal, Y-flatten, `lerp()` blend slider, lock to +Y, randomize), Line, Mountain, Carve, Resample, Jitter, Normal (X-axis), VEX rotation-per-point-number spiral wrangle (seeded interval ~90°), Attribute Randomize (per-cluster scale), Copy to Points, Tube (stem, Mountain-driven bend), Name attribute, Solaris point instancer flag, Geo Property Value (tip mask), Color Mix, MaterialX 3D noise (Position × repetition-constant tiling trick), Fractal 3D noise (yellow/brown blend), Standard Surface shader (roughness, SSS).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the spiral-placement VEX trick and normal-blend orientation wrangle are the standout non-obvious techniques; overall pipeline is approachable).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.403 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+materialx, karma, vex, food, procedural-modeling, solaris, spiral, normals
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Fries with MtlX and Karma XPU](procedural-fries-with-mtlx-and-karma-xpu.md) — related MaterialX food-shading technique from the same channel.
+- [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares the same channel's food-modeling focus, using Vellum instead of pure procedural placement.
