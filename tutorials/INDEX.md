@@ -2304,9 +2304,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=_C6-g1C--ws
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.760
+- **Tags:** vex, uv-sample, sign-function, connectivity, minpos, vex-snippets, quick-tips
+- **Summary:** Five VEX one-liners: recentering packed points, uvsample()-based logo wrapping onto curved geometry, sign() as a mirrored-deformation multiplier instead of if/else, a from-scratch Connectivity-driven "lay flat on grid" alternative, and minpos() for snapping geometry to a curve.
 - **File:** tutorials/useful-vex-snippets-houdini-tips-and-tricks.md
 
 
