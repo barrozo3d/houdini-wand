@@ -2634,9 +2634,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=5Cv1SJRm538
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.311
+- **Tags:** groups, vex, boundary-groups, orient-along-curve, connectivity, hot-air-balloon, procedural-modeling
+- **Summary:** Seven tips on a hot-air-balloon model: multi-boundary group separation, a Connectivity+iteration-modulo repeating color pattern for gores, the wicker-basket weave technique (with a Sort-based alternation fix), Orient-Along-Curve-based sim-object replacement, and curvature-based pipe joining across mismatched point counts.
 - **File:** tutorials/procedural-problem-solving-in-houdini.md
 
 

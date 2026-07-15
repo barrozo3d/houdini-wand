@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=5Cv1SJRm538
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.311"
+tags: [groups, vex, boundary-groups, orient-along-curve, connectivity, hot-air-balloon, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-problem-solving-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 9
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Problem Solving in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-problem-solving-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -104,30 +100,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/procedural-problem-solving-in-houdini/frame_000.jpg
+- [0:40] tutorials/frames/procedural-problem-solving-in-houdini/frame_001.jpg
+- [1:05] tutorials/frames/procedural-problem-solving-in-houdini/frame_002.jpg
+- [1:30] tutorials/frames/procedural-problem-solving-in-houdini/frame_003.jpg
+- [2:00] tutorials/frames/procedural-problem-solving-in-houdini/frame_004.jpg
+- [2:30] tutorials/frames/procedural-problem-solving-in-houdini/frame_005.jpg
+- [3:00] tutorials/frames/procedural-problem-solving-in-houdini/frame_006.jpg
+- [3:40] tutorials/frames/procedural-problem-solving-in-houdini/frame_007.jpg
+- [4:15] tutorials/frames/procedural-problem-solving-in-houdini/frame_008.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Seven quick procedural-problem-solving tips applied to a hot-air-balloon model: multi-boundary separation via "create boundary groups," a per-section-connectivity + iteration-modulo color-repeat pattern for the balloon panels, a wire/basket weave reused from a prior wicker-basket tutorial, an Orient-Along-Curve-derived instancing trick for a simulated-object replacement, and a curvature-based approach for joining separate pipe models.
 
 ### Summary
-[PENDING EXTRACTION]
+To manipulate multiple mesh boundaries independently (e.g. isolating just the top rim of the balloon), Group by unshared edges in points mode with **"create boundary groups"** enabled automatically creates a separate group per boundary loop. For the balloon's colored panel pattern, each gore/section gets a Connectivity ID, then a for-each loop over each piece runs a wrangle creating a repeating value pattern via **modulo combined with the loop's iteration value**, offsetting colors between adjacent gores; the first and second gores get manually forced values to match the reference photo, then the resulting attribute is remapped to specific chosen colors (with a computed maximum for correct range normalization). A wire/rope decoration reuses the group-from-attribute-boundary technique to select boundary edges for the wire pass; a related problem — placing a circle exactly on each wire's edge endpoint — is solved in a wrangle by measuring the distance from center to the point's position and feeding that value directly into the circle's scale parameter. The basket's alternating over-under "weave" is built with a Sweep set to Rows for horizontal lines, using the same Orient-Along-Curve normal-calculation approach as the studio's dedicated basket tutorial, then grouping every-other shape via modulo and promoting to points. To fix the weave not alternating correctly (all waves going the same direction instead of alternating), a Sort node targeting the saved group **shifts the point order by one**, flipping every other row's phase. For replacing a simple placeholder object with a fully simulated one while keeping correct orientation, Orient Along Curve is used to extract the **N** and **up** attributes (a tip from "swalch" on the CGWiki Discord), promoted to primitive attributes so the centroid can be extracted and used for Copy to Points, with perimeter optionally measured as a p-scale scaling factor. Finally, for joining pipes/tubes from separate models, curvature is measured along the connecting curve and points above a curvature threshold are grouped, isolated, and fused; since the two streams being joined have differing point counts, points are replicated to match, an attribute added to identify the stream, and an **Add node set by attribute** connects matching points into new primitives (bridging the gap cleanly).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Multiple boundary separation**: Group by unshared edges (points mode) with **"create boundary groups"** enabled — automatically creates a distinct group per boundary loop (e.g. two groups for two rim edges), then promote to edges/primitives for downstream operations like closing one boundary but not the other.
+2. **Repeating color pattern**: give each panel/gore a **Connectivity** ID; iterate over each piece in a for-each loop, using a wrangle to create a repeating value via **modulo combined with the iteration value**, offsetting colors between neighbors; manually override the first and second gore's values to match a specific reference look.
+3. Remap the resulting attribute to chosen colors, computing a **maximum** of the attribute first so the remap range normalizes correctly regardless of gore count.
+4. **Wire effect**: since the pattern attribute already exists, use **Group from Attribute Boundary** to select the boundaries, then use that edge selection to build the wire geometry.
+5. **Circle-on-wire-endpoint placement**: create the wires and group the bottom/end points; in a wrangle targeting that group, measure the distance from the center to each point's position, and feed that value directly into the circle node's **scale** parameter so each circle matches its wire's endpoint radius.
+6. **Basket weave (alternating)**: use a Sweep set to **Rows** for the horizontal lines; calculate orientation with **Orient Along Curve** (same approach as the dedicated basket tutorial); group every-other shape via **modulo** and promote to points.
+7. **Fixing non-alternating weave**: since the initial result waves but doesn't alternate direction between rows, target the saved group in a **Sort** node and **shift the point order by one**, flipping the phase so adjacent rows alternate correctly.
+8. **Simulated-object replacement with correct orientation**: use **Orient Along Curve** to extract the **N** and **up** attributes (credit: swalch, CGWiki Discord), promote them to primitive attributes, extract the centroid, and Copy to Points; optionally measure the perimeter as a **p-scale** scaling factor.
+9. **Connecting pipes from separate models**: measure **curvature** on the connecting curve, group points above a chosen curvature threshold, isolate and Fuse them.
+10. Since the two geometry streams being connected have differing point counts, **replicate points** on the smaller stream to match, add a stream-identifying attribute to both, and use an **Add node set by attribute** to connect matching points into new bridging primitives.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Group (unshared edges, points mode, "create boundary groups"), Connectivity, For-Each loop (per-piece iteration), Attribute Wrangle (modulo + iteration-value repeating pattern), Remap (with computed attribute maximum), Group from Attribute Boundary, distance-to-scale wrangle (circle scale from point-to-center distance), Sweep (Rows surface type), Orient Along Curve (N/up extraction), Sort (point-order shift for weave alternation), Attribute Promote (primitive N/up), Extract Centroid, Copy to Points, Measure (perimeter → p-scale), Measure (curvature), Group (curvature threshold), Fuse, point replication (matching stream point counts), Add (set by attribute — stream-matched bridging).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (each tip is a compact, standalone technique reused from or feeding into other tutorials in the same channel).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.311 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+groups, vex, boundary-groups, orient-along-curve, connectivity, hot-air-balloon, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Wicker Basket in Houdini](procedural-wicker-basket-in-houdini.md) — source of the alternating-weave Sweep/Orient-Along-Curve technique reused (and fixed) in this video.
+- [Groups, Patterns in Houdini](groups-patterns-in-houdini.md) — deeper dive into boundary-group and other group-selection patterns used throughout this video.
