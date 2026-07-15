@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=mL2TkAB_Rqc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [cops, materialx, procedural-texturing, stamping, leaf-generation, uv, rasterize, karma, food]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-pizza-in-cops/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Pizza in COPS
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-pizza-in-cops <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Creating the pizza crust [0:00]
@@ -128,30 +124,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:57] tutorials/frames/procedural-pizza-in-cops/frame_000.jpg
+- [1:25] tutorials/frames/procedural-pizza-in-cops/frame_001.jpg
+- [3:22] tutorials/frames/procedural-pizza-in-cops/frame_002.jpg
+- [5:22] tutorials/frames/procedural-pizza-in-cops/frame_003.jpg
+- [5:01] tutorials/frames/procedural-pizza-in-cops/frame_004.jpg
+- [6:37] tutorials/frames/procedural-pizza-in-cops/frame_005.jpg
+- [9:41] tutorials/frames/procedural-pizza-in-cops/frame_006.jpg
+- [12:08] tutorials/frames/procedural-pizza-in-cops/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a full procedural pizza-slice texture set (crust, leaf toppings, cloth/napkin, sliced albedo) entirely in **Cops (COPs)**, using SOPs only to generate leaf geometry that is then stamped/resurrected as a texture layer — combining Rasterize/Stamp workflows, VEX-driven point placement, and a "surface distance from group" mask to fake bump/interior detail on 2D texture layers.
 
 ### Summary
-[PENDING EXTRACTION]
+The crust look starts from a ring compared against an SDF, smoothed to get a rounded profile, then previewed via a height/displacement connection; a pointy artifact from a small grid-division size is fixed by blurring and blending with Minimum mode against the original texture (repeated at increasing scale) to keep some sharp corners while rounding the rest. A separate distortion pass is masked so the interior distorts differently than the exterior, and a "crust breaks" detail is faked by converting an asterisk shape to Mono, blending with noise, eroding, transforming/distorting it, then blending over the base crust shape. The most involved part is generating basil/oregano-style leaves: built in SOPs from a Line with curve-parameter sampling, deformed into a leaf silhouette via normal displacement and a Ramp, mirrored, Polypath'd to unify, Polyfilled for geometry, then the curve is removed. Veins are added by copying two points per line, carving top/bottom to control vein position, and setting per-point normals using a modulo-based alternating (-1/1) "aperture" attribute so an Attribute Adjust Vector can randomly rotate normals along that aperture — the result is re-projected onto the leaf mesh, resampled, and converted to Subdivision curves for a simple usable leaf. Interior "bump" detail is faked using a **near-point group** + **surface distance** measurement between an interior point group and the leaf boundary, blurred to create a soft mask usable for stamping. The leaf is then resurrected/stamped into Cops with an alpha (leaf shape + leaf-interior sub-ID) and the surface-distance attribute, with a distort pass applied to weld shapes so different stamped layers (shading, displacement) stay in registration; a Compare on a dedicated ID (999 for veins) isolates the interior for separate blending. A subtle curling/banding look on the leaves comes from extracting the UV coordinates, building an inverted ramp along one UV axis, and multiplying that over the displacement map. A simpler "cloth material" section demonstrates a Cops stamping trick: a 4-primitive grid is reordered into a true circular primitive sequence (reversing prim order on two of the four prims), then a for-each loop over 4 iterations uses Group Range (offset by the iteration attribute) to isolate 2 primitives per iteration, sets a "stamp" attribute to the iteration number, and blends different colors per stamp ID — centered via translate + uniform-scale transform and finished with X-scaled noise. Finally, the pizza slice cut is done by taking an 8-division circle, using a class attribute to divide it into eighths, blasting/keeping one wedge (piece 5), removing unshared edges, and insetting for an extra playable attribute in Cops — the isolated slice and the rest of the pizza are transformed and blended together to produce the final albedo.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Crust base shape:** build a ring, compare against an SDF converted to Mono, smooth slightly, connect to a preview material via height/displacement.
+2. Fix pointy grid-tessellation artifacts (small size + high grid divisions) by **blurring**, then **blending in Minimum mode** with the original unblurred texture (repeated at increasing scale/strength) to retain sharp corners while rounding the rest.
+3. Mask the interior vs. exterior separately so a **distortion** pass can use a different scale on each region.
+4. Fake **crust "breaks"**: start from an asterisk shape, convert to Mono, blend with noise, erode, transform/distort, then blend over the base crust for random surface breaks.
+5. **Leaf base geometry (SOPs):** Line with curve-parameter sampling → deform along normals into a leaf silhouette using a Ramp → mirror → Polypath (unify) → Polyfill → add normals → remove curve.
+6. **Leaf veins:** copy 2 points per line, carve top/bottom to control vein placement, reassemble, then set per-point normals using a **modulo alternation** (0/1 scaled ×2 minus 1 → range -1..1) to build an "aperture" attribute; use **Attribute Adjust Vector** to randomly rotate normals along that aperture, adjust p-scale, re-project onto the leaf mesh, resample, convert to Subdivision curves.
+7. **Interior bump mask:** build a near-point group + an "unshared" boundary group, combine into a mask via **surface distance** (distance from the interior point group to the boundary), then Attribute Blur for a soft usable stamping mask.
+8. **Stamp/resurrect into Cops:** re-rasterize the alpha (leaf shape + leaf-interior sub-ID via an ID of 999 for veins) plus the surface-distance attribute; apply a distort pass to weld shapes across layers so shading/displacement stamps stay aligned; use **Compare** on the vein ID to isolate and separately blend the interior detail.
+9. **Leaf curling:** extract UV coordinates, build an inverted Ramp along one UV axis, multiply that ramp over the displacement map to fake curling/banding.
+10. **Cloth/napkin stamping trick:** reorder a 4-primitive grid into circular order (reverse prim order on 2 of 4 prims), for-each over 4 iterations, Group Range offset by the iteration attribute isolates 2 prims per iteration, set "stamp" attribute = iteration number, blend colors per stamp ID (default vs. unsorted-weighted blending), center via translate 0.5,0.5 + uniform scale transform, finish with X-axis-scaled noise.
+11. **Pizza-slice cut:** 8-division circle → Class attribute divides into eighths → Blast/keep one wedge (piece 5) → remove unshared edges → Inset for an extra Cops attribute → isolate the slice and the remainder, transform and blend together for the final sliced albedo texture.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Cops: Ring, SDF to Mono, Smooth, Blur, Blend (Minimum mode), distortion node with interior/exterior mask, Mono conversion, noise blend, Erode, Transform, Rasterize/Stamp, ID-based Compare, UV-based inverted Ramp, Grid (4 primitives), For-Each Number loop, Group Range (iteration-offset), Centroid write, stamp-color Blend, Transform (translate + uniform scale), X-scaled Noise, Circle (8 divisions), Class attribute, Blast, Remove Shared Edges, Inset. SOPs: Line, curve-parameter sampling, normal-based leaf deformation with Ramp, Mirror, Polypath, Polyfill, Copy-to-points (2 pts/line), modulo-based aperture attribute (`%`, ×2, -1), Attribute Adjust Vector, Re-project, Resample, Convert to Subdivision, near-point Group, Surface Distance, Attribute Blur.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced (combines a Cops-native procedural crust/breaks pipeline with a SOPs-built leaf asset resurrected into Cops via stamping and ID-based masking).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+cops, materialx, procedural-texturing, stamping, leaf-generation, uv, rasterize, karma, food
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [The Donut Tutorial in Cops (Houdini 20.5)](the-donut-tutorial-in-cops-houdini-205.md) — shares the layered Cops texturing/drip-mask and stamping approach applied there to a torus/donut instead of a pizza.
+- [Wood Barrel Texturing in Cops](wood-barrel-texturing-in-cops.md) — another SOPs-to-Cops resurrection pipeline building procedural surface detail for a food/product asset.
+- [Tiling Patterns with Cops and SOPs](tiling-patterns-with-cops-and-sops.md) — shares the Cops SDF-stamped tiling and SOPs-circular-cluster for-each approach used for the leaf/cloth stamping here.

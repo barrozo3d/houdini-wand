@@ -1954,9 +1954,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=mL2TkAB_Rqc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** cops, materialx, procedural-texturing, stamping, leaf-generation, uv, rasterize, karma, food
+- **Summary:** Builds a full procedural pizza-slice texture set in Cops — rounded crust via SDF/blur/Minimum-blend, faked crust breaks, SOPs-built leaf toppings (vein normals via modulo aperture, surface-distance interior bump mask) resurrected/stamped into Cops with ID-based Compare, a circular-primitive stamp trick for cloth/napkin, and a Class-attribute wedge cut for the final sliced albedo.
 - **File:** tutorials/procedural-pizza-in-cops.md
 
 

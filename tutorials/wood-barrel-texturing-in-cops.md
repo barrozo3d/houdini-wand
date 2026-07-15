@@ -379,3 +379,4 @@ cops, copernicus, uvdist, texture-paint, rasterize, karma, wood, rust, texturing
 ## Related Tutorials
 - [The Donut Tutorial in Cops - Houdini 20.5](the-donut-tutorial-in-cops-houdini-205.md) — related Cops procedural-texturing tutorial from the same channel, using similar Rasterize/Blend layering techniques.
 - [Tiling Patterns with COPS and SOPS](tiling-patterns-with-cops-and-sops.md) — shares the same Cops-based texturing workflow and stamp/rasterize approach applied to a different material.
+- [Procedural Pizza in COPs](procedural-pizza-in-cops.md) — another SOPs-to-Cops resurrection pipeline, here building a stamped leaf topping instead of barrel-grain detail.

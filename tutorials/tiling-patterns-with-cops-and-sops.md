@@ -90,3 +90,4 @@ cops, copernicus, sops, for-each-loop, stamp-point, uv-by-id, tiling, stone, tex
 ## Related Tutorials
 - [The Donut Tutorial in Cops - Houdini 20.5](the-donut-tutorial-in-cops-houdini-205.md) — related Cops procedural-texturing tutorial with a similar seamless-tiling focus from the same channel.
 - [Wood Barrel Texturing in COPs](wood-barrel-texturing-in-cops.md) — shares the same Cops-based procedural texturing workflow applied to a different material.
+- [Procedural Pizza in COPs](procedural-pizza-in-cops.md) — shares the circular-primitive-reordering stamp trick used here for the cloth/napkin material.
