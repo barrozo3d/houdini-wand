@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=t9ldXkD7oqA
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5"
+tags: [hda, python-states, cops, texture-projection, uv-less, tool-development, product-packaging]
+extraction_status: complete
 frames_dir: tutorials/frames/texture-projection-tool-for-houdini-205/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Texture Projection Tool for Houdini 20.5
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py texture-projection-tool-for-houdini-205 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -132,30 +128,51 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:05] tutorials/frames/texture-projection-tool-for-houdini-205/frame_000.jpg
+- [1:35] tutorials/frames/texture-projection-tool-for-houdini-205/frame_001.jpg
+- [2:23] tutorials/frames/texture-projection-tool-for-houdini-205/frame_002.jpg
+- [3:20] tutorials/frames/texture-projection-tool-for-houdini-205/frame_003.jpg
+- [4:20] tutorials/frames/texture-projection-tool-for-houdini-205/frame_004.jpg
+- [5:40] tutorials/frames/texture-projection-tool-for-houdini-205/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Demo of a custom, interactive **texture-projection HDA** (built with Python States) that lets an artist click-drag-drop label/logo textures directly onto a UV-less 3D bottle mesh in the viewport, with the actual projection compositing happening under the hood in **Cops** — no manual UV unwrapping required.
 
 ### Summary
-[PENDING EXTRACTION]
+This is a tool demo/showcase rather than a from-scratch build tutorial: the presenter walks through a beta HDA that projects flat textures (logos, labels) onto arbitrary geometry interactively. The tool checks the input mesh for vertex UVs and no UDIMs (a "check" indicator shows "all good") since the underlying compositing runs in Cops, which doesn't support UDIMs — meaning highly non-planar or UDIM'd geometry isn't the fastest use case. Interaction is fully viewport-driven: left-click-drag places and moves a projected texture, holding Ctrl rotates it, scaling is done by dragging handles, Max Distance controls how far the projection reaches around curved geometry (too low clips the projection on the front face only, too high wraps it onto the back), Near Point Radius controls how close the cursor must be to an existing placed point to grab/edit it versus placing a new one, and middle-click removes a projection. Multiple textures can be placed independently (different logos/labels at different scales/rotations/resolutions, e.g. up to 1K), each keeping its own settings editable after the fact by dragging its handles again. Standard Ctrl+Z / Ctrl+Y undo/redo is supported, and a "Remove All" button resets the whole tool if a placement goes wrong. The tool exposes a copyable path to its internal Cop network output node, which is then wired directly into an Image texture node inside Solaris/Karma (with the source geometry material set to transparent) so the projected decals overlay cleanly on top of any other base material — demonstrated live by importing the projected bottle into a LOP network, loading it into a material's transparent Image node, and confirming the projected logo renders correctly blended over the base packaging texture.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Apply the (beta) Texture Projection HDA to a mesh; confirm it reports vertex UVs present and no UDIMs (a requirement since the tool composites through Cops internally, which doesn't support UDIMs).
+2. Left-click-drag in the viewport to place and position a texture projection directly on the mesh surface.
+3. Hold **Ctrl** and drag to rotate the placed projection; drag the corner/edge handles to scale it.
+4. Tune **Max Distance** to control how far around curved geometry the projection wraps — too low clips it to the front face only, too high bleeds it onto the back side.
+5. Tune **Near Point Radius** to control how close the cursor needs to be to an existing placement point before it's grabbed for editing instead of creating a new projection.
+6. Middle-click to remove an individual projection; use **Remove All** to reset the entire tool state, or standard Ctrl+Z/Ctrl+Y to undo/redo point placements.
+7. Place multiple independent texture projections (different images, resolutions up to 1K+, rotations, and scales) on the same mesh, each remaining individually editable afterward.
+8. Copy the HDA's internal Cop-network output path via its provided button.
+9. In Solaris/Karma, load that path into an **Image texture node**, set the source material to transparent, and layer it over the base material so the projected decal composites correctly on render — verified with a live render showing the logo blended over the bottle's base packaging texture.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Custom HDA ("Texture Projection", beta) built with Python States for viewport interaction (click-drag placement, Ctrl-rotate, handle-scale, near-point-radius point-grabbing, undo/redo), internal Cop network for projection compositing (works around lack of UDIM support in Cops), Solaris/LOPs Image texture node fed from the HDA's exposed Cop-output path, transparent material setup for decal overlay.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner (as a user of the tool — this is a feature demo, not a from-scratch build walkthrough); the underlying HDA itself (Python States + Cops compositing) is Advanced, but that implementation isn't shown here.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.
 
 ### Tags
-[PENDING EXTRACTION]
+hda, python-states, cops, texture-projection, uv-less, tool-development, product-packaging
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Quick CG integration with Houdini and Karma](quick-cg-integration-with-houdini-and-karma.md) — uses this exact Texture Projection tool to add an Houdini logo decal onto a bottle for a CGI-integration render.
+- [Shoe Laces in Houdini VEX and Vellum](shoe-laces-in-houdini-vex-and-vellum.md) — shares the same Python-States-driven custom viewport-interaction HDA approach for artist-friendly placement tools.
+- [Interactive tools with Houdini Python States - draw pts on geo](interactive-tools-with-houdini-python-states-draw-pts-on-geo.md) — companion Python States tool-development tutorial covering the underlying interaction pattern used by tools like this one.

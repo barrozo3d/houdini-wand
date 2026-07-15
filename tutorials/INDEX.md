@@ -1874,9 +1874,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=t9ldXkD7oqA
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5
+- **Tags:** hda, python-states, cops, texture-projection, uv-less, tool-development, product-packaging
+- **Summary:** Demos a custom Python-States HDA that interactively projects logo/label textures onto UV-less geometry via click-drag placement (with rotate/scale/max-distance/near-point-radius controls), compositing under the hood in Cops, then exposes the result as an Image texture node for Solaris/Karma rendering.
 - **File:** tutorials/texture-projection-tool-for-houdini-205.md
 
 
