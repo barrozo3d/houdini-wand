@@ -2724,9 +2724,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=bgUI52CFMLU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.598
+- **Tags:** vex, for-each-loop, karma, materialx, rotate-to-vector, fetch-feedback, capsule, procedural-modeling
+- **Summary:** Six tips: VEX bbox_max-based normal derivation for roof-tile orientation without a Transform, a MaterialX Rotate2D rainbow-CD shader, quick rock-modeling shortcuts (clamped-normal noise masking), a Fetch-Feedback for-loop for stacking objects, and a DIY capsule from just a Line + round Sweep.
 - **File:** tutorials/procedural-tips-3-vex-shading-and-loops.md
 
 

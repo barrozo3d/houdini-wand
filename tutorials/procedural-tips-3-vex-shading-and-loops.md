@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=bgUI52CFMLU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.598"
+tags: [vex, for-each-loop, karma, materialx, rotate-to-vector, fetch-feedback, capsule, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-tips-3-vex-shading-and-loops/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Tips #3 VEX Shading and Loops
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-tips-3-vex-shading-and-loops <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -90,30 +86,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/procedural-tips-3-vex-shading-and-loops/frame_000.jpg
+- [1:00] tutorials/frames/procedural-tips-3-vex-shading-and-loops/frame_001.jpg
+- [1:40] tutorials/frames/procedural-tips-3-vex-shading-and-loops/frame_002.jpg
+- [2:45] tutorials/frames/procedural-tips-3-vex-shading-and-loops/frame_003.jpg
+- [3:40] tutorials/frames/procedural-tips-3-vex-shading-and-loops/frame_004.jpg
+- [4:20] tutorials/frames/procedural-tips-3-vex-shading-and-loops/frame_005.jpg
+- [5:20] tutorials/frames/procedural-tips-3-vex-shading-and-loops/frame_006.jpg
+- [6:15] tutorials/frames/procedural-tips-3-vex-shading-and-loops/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A grab-bag of six procedural tips: roof-tile alignment via a manually-computed cross-product normal (vs. relying on grid orientation), a MaterialX Rotate2D-based rainbow-CD shader recreation, several quick procedural-rock modeling shortcuts, a Fetch-Feedback for-loop for stacking objects, and building a capsule primitive from just a Line + round Sweep since Houdini has no native capsule.
 
 ### Summary
-[PENDING EXTRACTION]
+For roof-tile instancing, rather than relying on a grid's default orientation (needing a Transform + "up" attribute + 90° rotation since Sweep-copied geometry aligns its Z axis to the point normal by default), a VEX-only alternative computes the normal directly: get the topmost point via bounding-box max, subtract the current position from it to get a direction vector, assign that as the normal, and reuse the same up attribute — achieving identical orientation results without any Transform node or precomputed normals. For a MaterialX/Karma recreation of an Arnold/Maya "rainbow CD" reflection shader, a ramp type is mapped to the specular rotation; the key node is **MaterialX Rotate2D**, offsetting the ramp a few degrees per shader instance; three materials (red/green/blue base color) are additively combined so they sum toward white while producing the rainbow reflection effect, with isotropy and metalness set to 1, plus a custom Triplanar grunge texture on roughness. Quick procedural-rock tips: copy the base shape to a single point with a randomized scale attribute (seed-driven variety), use Subdivide's crease-weight controls plus 1-2 subdivisions to control roundness, and to avoid Mountain's Y-axis noise removal also killing top detail, use a Point VOP noise via Displace Along Normal with the normal's Y component clamped (0 on the min side, desired amount on the max) so only the underside flattens. A "stacking objects" for-loop exercise uses a For-Each Count loop with **Fetch Feedback** to access the previous iteration's result, feeding it into Match Size (aligning new box bottom to previous box top) while randomizing rotation/scale per iteration. Finally, since Houdini lacks a native capsule primitive, one is built from just a **Line** + a **Sweep** node set to Round/Tube with an End Cap set to Grid — line length/points control height/subdivisions, and grid subdivisions control the round cap's resolution.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Roof-tile orientation without a Transform node**: instead of computing normals + up attribute + rotating 90°, use a wrangle to find the topmost point via `bbox_max`, subtract current position to get a direction vector, assign it directly as the normal, and reuse the same up attribute — verified to produce identical results to the Transform-based approach.
+2. **Rainbow CD shader**: build a ramp mapped to specular rotation; the key node is **MaterialX Rotate2D**, offsetting the ramp by a few degrees per material instance to create the rainbow effect.
+3. Create three near-identical materials differing only in base color (red, green, blue); additively combine them in the shading network so they sum toward white while the reflection shows rainbow banding; set isotropy and metalness to 1; add a **custom Triplanar** grunge texture on roughness as a finishing touch.
+4. **Rock modeling tip 1**: copy the base rock shape to a single point with a **randomized scale attribute**, allowing quick size/shape variation just by changing the attribute's seed.
+5. **Rock modeling tip 2**: use a **Subdivide** node's crease-weight controls plus 1-2 subdivisions to control overall roundness without extra geometry operations.
+6. **Rock modeling tip 3**: to distort a rock with Mountain but avoid killing the desired noise on top when disabling the Y axis to fix bottom distortion, use a **Point VOP** with noise fed through **Displace Along Normal**, clamping the normal's Y component (0 for the min bound, the desired amount for the max) so only the underside is flattened while the top keeps its noise detail.
+7. **Stacking objects with a for-loop**: use a For-Each **Count** loop; inside, access the previous iteration's geometry via a new Begin node set to **Fetch Feedback**; feed that into **Match Size** to align the new box's bottom to the previous box's top (or min-to-max); randomize rotation and scale per iteration using the loop's iteration value.
+8. **DIY capsule primitive**: since Houdini has no native capsule, build one from just a **Line** node feeding a **Sweep** node set to **Round/Tube** with **End Cap set to Grid** — control height via the line's length/points, and cap resolution via the grid's subdivisions.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Attribute Wrangle (`bbox_max` topmost-point normal derivation, up-attribute reuse), MaterialX Rotate2D (specular-rotation ramp offset), additive material combination (red/green/blue base color sum), custom Triplanar (roughness grunge texture), Copy to Points (single point, randomized scale attribute), Subdivide (crease weights, subdivision count for roundness), Mountain (Y-axis disable), Point VOP (Displace Along Normal, clamped normal-Y noise mask), For-Each loop (Count mode, Fetch Feedback Begin node), Match Size (min-to-max alignment), Transform (per-iteration randomized rotation/scale), Line, Sweep (Round/Tube profile, End Cap set to Grid).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (each tip is a compact, standalone technique; the Fetch-Feedback loop and clamped-normal noise mask are the more advanced items).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.598 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vex, for-each-loop, karma, materialx, rotate-to-vector, fetch-feedback, capsule, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Roof Tiles in Houdini](procedural-roof-tiles-in-houdini.md) — deeper dive into the same roof-tile orientation problem this video offers a VEX shortcut for.
+- [Infinite Mirror in Karma XPU](infinite-mirror-in-karma-xpu.md) — related Karma material trick from the same channel using layered reflective shading.
+- [Procedural Hard Surface Modeling Tips](procedural-hard-surface-modeling-tips.md) — companion grab-bag tips video with similar VEX/attribute-based problem-solving format.
