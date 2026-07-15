@@ -2124,9 +2124,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=7ZJeWIFYSxg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.302
+- **Tags:** uvs, find-shortest-path, vdb, vex, hda, gradient, cake, procedural-uvs
+- **Summary:** UVs a messy VDB-derived cake mesh with no manual seam options by deriving seam curves from an edge-angle-detected proxy, snapping them onto exact edges via cost-driven Find Shortest Path, then fixing island rotation with a custom gradient-measuring "Orient UVs Up" HDA.
 - **File:** tutorials/procedural-uvs-in-houdini.md
 
 

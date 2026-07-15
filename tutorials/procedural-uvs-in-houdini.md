@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=7ZJeWIFYSxg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.302"
+tags: [uvs, find-shortest-path, vdb, vex, hda, gradient, cake, procedural-uvs]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-uvs-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural UV's In Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-uvs-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -88,30 +84,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/procedural-uvs-in-houdini/frame_000.jpg
+- [1:00] tutorials/frames/procedural-uvs-in-houdini/frame_001.jpg
+- [1:40] tutorials/frames/procedural-uvs-in-houdini/frame_002.jpg
+- [2:30] tutorials/frames/procedural-uvs-in-houdini/frame_003.jpg
+- [3:10] tutorials/frames/procedural-uvs-in-houdini/frame_004.jpg
+- [3:50] tutorials/frames/procedural-uvs-in-houdini/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+UV a messy, high-poly VDB-derived mesh (a cut cake slice) with no clean manual seam options by procedurally deriving seam curves from a simplified/edge-angle-detected proxy, using **Find Shortest Path** (fed a color-derived cost attribute) to snap those rough seam curves onto exact edge paths on the real geometry, then fixing island rotation with a custom **Orient UVs Up** HDA that measures a UV-space gradient to auto-align each shell.
 
 ### Summary
-[PENDING EXTRACTION]
+The source geometry (from a VDB Boolean cut) is too irregular/tessellated for traditional manual seam picking. The fix: build a simplified proxy by Remeshing (reducing polycount) and Ray-projecting it back onto the original silhouette, then **Poly Reduce** it further so only the sharpest edges remain — these are selected via a **mean-edge-length/edge-angle** Group, which reliably marks the natural break lines (the future seams). That edge selection is converted to a Line, heavily Resampled, and Ray-projected back onto the original cake geometry, then smoothed slightly and grouped as "seams." A red/black color is assigned and transferred onto the original mesh to serve as a **cost attribute for Find Shortest Path** — inverted since the red channel needs flipping for the cost to behave correctly. The seam-guide curve is Resampled heavily and Converted to Line so each segment is a single 2-point primitive; a for-each loop over these segments runs **Find Shortest Path** using the assigned cost attribute (with start/end points set to 0/1) to snap each rough segment onto the exact shortest edge-path on the real mesh — the result is grouped and Group-Transferred back onto the original geometry as the true seam group, which finally feeds **UV Flatten** to produce almost-perfect UVs for this otherwise-impossible-to-hand-UV geometry. Since some resulting UV shells end up randomly rotated relative to each other, a custom **HDA** ("Cheap UVs" / orient-UVs-up style) fixes this: it runs Connectivity on the UV shells, builds a Y-axis mask from the relative bounding box, swaps that mask into UV space, **measures the gradient of the mask** to get a "which way is up" direction per shell, computes the rotation angle via VEX, swaps back to 3D space, and finally runs **UV Layout** to resolve any resulting overlaps — producing correctly-oriented, non-overlapping UV islands. The same pipeline was applied to both the main cake body and the cut slice piece.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a simplified seam-detection proxy: **Remesh** the messy source geometry to reduce polycount, then **Ray**-project it back onto the original silhouette to preserve the overall shape.
+2. **Poly Reduce** further and select the resulting sharp edges via a **mean edge length / edge angle** Group — these naturally mark the seam locations.
+3. Convert that edge group to a **Line**, Resample heavily, and **Ray**-project the curve back onto the original high-poly cake geometry to get seam curves that actually sit on the real surface.
+4. Smooth the projected lines slightly, group as "seams," assign a red/black color, and **transfer that color onto the original mesh** to act as a **Find Shortest Path cost attribute** — inverting the red channel so the cost behaves correctly (low-cost paths follow the intended seam).
+5. **Resample** the seam-guide curve heavily and **Convert Line** so each 2-point segment becomes an individual primitive (needed for per-segment iteration).
+6. Run a **for-each loop** over each 2-point segment, using **Find Shortest Path** with the assigned cost attribute and start/end points set to 0/1 — this snaps each rough guide segment onto the exact shortest edge-path on the real mesh.
+7. **Group** the resulting shortest-path edges and **Group Transfer** them back onto the original geometry as the definitive seam group.
+8. Feed that seam group into **UV Flatten** — produces near-perfect UVs for otherwise un-UV-able geometry, though some resulting shells end up randomly rotated relative to each other.
+9. **Custom "Orient UVs Up" HDA fix**: run **Connectivity** on the UV shells; build a Y-axis mask using the relative bounding box; **swap the mask into UV space**.
+10. **Measure the gradient** of that mask (per island) to determine each shell's "which way is up" direction; compute the required rotation angle via a VEX wrangle.
+11. Swap back to 3D space, apply the computed rotation per shell, then run **UV Layout** to resolve any overlaps introduced by the rotation — final result: correctly-oriented, non-overlapping UV islands, applied to both the cake body and the cut slice piece.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Remesh, Ray (silhouette-preserving re-projection, ×2 uses), Poly Reduce, Group (mean edge length / edge angle seam detection), Convert Line, Resample, Smooth, color assignment (red/black) + Attribute Transfer (cost attribute), Find Shortest Path (cost-driven, per-segment for-each loop), Group + Group Transfer, UV Flatten, custom HDA ("Orient UVs Up" / "Cheap UVs"): Connectivity, relative-bounding-box Y mask, UV-space swap, Measure (gradient), VEX angle-computation wrangle, UV Layout (overlap resolution).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the Find-Shortest-Path-based seam-snapping and gradient-based UV-orientation HDA are both sophisticated, non-obvious solutions to a real production UV problem).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.302 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+uvs, find-shortest-path, vdb, vex, hda, gradient, cake, procedural-uvs
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — deeper, more robust follow-up version of the same gradient/oriented-bounding-box UV-auto-orientation HDA referenced here.
+- [Procedural tips and tricks in Houdini 20.5](procedural-tips-and-tricks-in-houdini-205.md) — shares the Find Shortest Path technique used here, applied there to jewelry stone-holder wire meshes.

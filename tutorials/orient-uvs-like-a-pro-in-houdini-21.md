@@ -81,5 +81,6 @@ uvs, python, hda, matrices, oriented-bounding-box, vex, dihedral, procedural-uvs
 ---
 
 ## Related Tutorials
+- [Procedural UV's In Houdini](procedural-uvs-in-houdini.md) — earlier, simpler version of this gradient-based UV-orientation HDA, applied there to a cake mesh with Find-Shortest-Path-derived seams.
 - [Houdini Tips - Procedural UVs, Channel Packing and More](houdini-tips---procedural-uvs-channel-packing-and-more.md) — related UV-space manipulation techniques from the same channel.
 - [Procedural UVs - UV Layout Node in Depth](procedural-uvs---uv-layout-node-in-depth.md) — companion UV-tooling video covering island packing/distribution, a natural next step after auto-orienting islands with this HDA.
