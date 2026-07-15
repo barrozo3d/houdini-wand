@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=SHAgvzji9vM
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vex, quick-tips, channel-ramp, quaternion, curve, overhang, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/vex-quick-tips-overhang-look-with-channel-ramps/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Vex quick tips | Overhang look with channel ramps
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vex-quick-tips-overhang-look-with-channel-ramps <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -138,30 +134,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:55] tutorials/frames/vex-quick-tips-overhang-look-with-channel-ramps/frame_000.jpg
+- [1:40] tutorials/frames/vex-quick-tips-overhang-look-with-channel-ramps/frame_001.jpg
+- [2:27] tutorials/frames/vex-quick-tips-overhang-look-with-channel-ramps/frame_002.jpg
+- [3:47] tutorials/frames/vex-quick-tips-overhang-look-with-channel-ramps/frame_003.jpg
+- [6:00] tutorials/frames/vex-quick-tips-overhang-look-with-channel-ramps/frame_004.jpg
+- [7:22] tutorials/frames/vex-quick-tips-overhang-look-with-channel-ramps/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Fake an "overhang" curve profile (a leaf-like shape whose displacement doubles back on itself, impossible with a straight displace-along-normal) by rotating each point's normal with a per-point quaternion before displacing along it — channel ramps alone can't produce overhangs because they're single-valued functions, so the rotation trick works around that limitation.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a Line, Resample heavily (0.02) with curve-view output, the curve is first displaced along its X-axis normals using a channel ramp sampled by curve view (`leafRamp`) multiplied by a displacement-amount slider to build a simple leaf-shaped silhouette (mirrorable for a full leaf). To get the overhang look, a second wrangle recomputes normals along the tangent's perpendicular (X axis) instead of along the curve tangent, then builds a `u` variable from curve view that first displaces the normals themselves via a channel ramp (multiplied by a displacement multiplier) before the position is displaced — displacing the normal, not just the position, is what allows the curve to double back on itself. To create a repeating pattern, curve view is multiplied by a "reps" channel float and wrapped with `%1.0`. The actual overhang shape comes from rotating the normals with a quaternion: an `angle` variable is built from a second channel ramp (`angleRamp`) sampled along the *original* (non-repeated) curve view, converted to a quaternion via `quaternion(angle, {0,0,1})`, and applied to the normal with `qrotate()` — this rotation is what lets the displacement fold back over itself into a true overhang. A final `pow(u, upow)` remap on U (channel float `uPower`, e.g. 1.5) smooths where the overhang effect starts along the curve, and the whole shape can be mirrored and repeated (e.g. 15–20 reps) with a B-spline ramp basis for a more rounded variant.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a Line, Resample finely (~0.02) with curve-view output for later ramp sampling.
+2. Compute normals along X (not the tangent) via a wrangle so the leaf can be displaced sideways.
+3. Displace along the normal using a channel ramp (`leafRamp`) sampled by curve view, multiplied by a displacement-amount slider, to create the base leaf-contour silhouette (mirror for the full leaf shape).
+4. In a second wrangle, recompute normals along the curve's perpendicular X axis (needed for the overhang rotation step), and build a `u` float copy of curve view to manipulate independently.
+5. Displace the *normal* itself (not yet the position) using a channel ramp sampled along `u`, multiplied by a displacement-amount slider — this pre-bends the normal before the final displacement.
+6. Multiply `u` by a "reps" channel float and wrap with `mod(u, 1.0)` to create a repeating pattern along the curve.
+7. Build an `angle` variable from a second channel ramp (`angleRamp`) sampled along the *original*, non-repeated curve view (important — repeating would break the rotation continuity).
+8. Convert `angle` to a quaternion via `quaternion(angle, {0,0,1})` and rotate the normal with `qrotate()` — this is the key step that produces the actual overhang, since a straight displacement can never fold back on itself.
+9. Displace the position along the now-rotated normal, multiplied by the displacement amount — the overhang look appears once the angle ramp is tuned.
+10. Remap `u` through `pow(u, upower)` (channel float, e.g. 1.5) to control where along the curve the overhang effect starts and how it tapers.
+11. Mirror the curve and adjust repetitions (e.g. 15–20) and ramp basis (Linear vs. B-Spline) for variations — more reps/B-spline gives a smoother, more rounded repeating overhang pattern.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Line, Resample (fine, curve-view output), point wrangle ×2 (normal computation along X, leaf-contour displacement via channel ramp; second wrangle for normal pre-displacement + rotation), `chramp()` channel ramps (leafRamp, displacement-amount channel ramp, angleRamp), `chf` sliders (displacement amount, reps, uPower), `quaternion(angle, axis)`, `qrotate()`, `pow()`, `mod()` / `%1.0` wraparound.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the quaternion-based normal-rotation trick to defeat the single-valued-ramp limitation is a non-obvious VEX technique, but the rest of the setup is straightforward point-wrangle displacement).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vex, quick-tips, channel-ramp, quaternion, curve, overhang, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vex Quick Tips #2 | Iterating over numbers](vex-quick-tips-2-iterating-over-numbers.md) — same "Vex Quick Tips" series, focused on for-each-over-numbers patterns instead of curve/ramp displacement.
+- [Vex Quick Tips #4 - Pineapple Crown](vex-quick-tips-4---pineapple-crown.md) — same series, uses a related curve-parameter + quaternion-rotation approach for leaf/crown orientation.
+- [Useful Vex Snippets - Houdini Tips and Tricks](useful-vex-snippets-houdini-tips-and-tricks.md) — shares small hand-written VEX utility patterns in the same quick-tips spirit.

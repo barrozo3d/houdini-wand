@@ -1924,9 +1924,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=SHAgvzji9vM
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vex, quick-tips, channel-ramp, quaternion, curve, overhang, procedural-modeling
+- **Summary:** Fakes an overhang curve profile that channel ramps can't produce alone by rotating each point's normal with a quaternion (built from an angle ramp sampled along the un-repeated curve view) before displacing along it, letting the displacement fold back over itself into a true overhang.
 - **File:** tutorials/vex-quick-tips-overhang-look-with-channel-ramps.md
 
 

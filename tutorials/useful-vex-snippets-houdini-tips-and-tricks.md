@@ -133,3 +133,4 @@ vex, uv-sample, sign-function, connectivity, minpos, vex-snippets, quick-tips
 ## Related Tutorials
 - [Vex Problem Solving in Houdini](vex-problem-solving-in-houdini.md) — companion VEX-tips video from the same channel.
 - [Vex Quick Tips 2 - Iterating over Numbers](vex-quick-tips-2-iterating-over-numbers.md) — related short-form VEX tips series from the same channel.
+- [Vex quick tips | Overhang look with channel ramps](vex-quick-tips-overhang-look-with-channel-ramps.md) — same quick-tips series, focused on quaternion-based normal rotation for an overhang effect.
