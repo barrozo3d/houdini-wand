@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=iQql20c4Gio
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.701"
+tags: [workflow, hotkeys, poly-hinge, connectivity, enumerate, selection-modes, matcap, viewport, quality-of-life]
+extraction_status: complete
 frames_dir: tutorials/frames/quality-of-life-tips-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Quality of life tips in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py quality-of-life-tips-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -137,30 +133,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/quality-of-life-tips-in-houdini/frame_000.jpg
+- [1:00] tutorials/frames/quality-of-life-tips-in-houdini/frame_001.jpg
+- [1:40] tutorials/frames/quality-of-life-tips-in-houdini/frame_002.jpg
+- [2:15] tutorials/frames/quality-of-life-tips-in-houdini/frame_003.jpg
+- [2:55] tutorials/frames/quality-of-life-tips-in-houdini/frame_004.jpg
+- [3:40] tutorials/frames/quality-of-life-tips-in-houdini/frame_005.jpg
+- [4:20] tutorials/frames/quality-of-life-tips-in-houdini/frame_006.jpg
+- [5:50] tutorials/frames/quality-of-life-tips-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A grab-bag of eleven viewport/workflow quality-of-life tips demonstrated on a tuk-tuk model: snap-orient object picking, the new Houdini 20 **Poly Hinge** node used procedurally (position-and-orientation mode) instead of the old copy/divide-angle/skin workflow, Enumerate for reordering random Connectivity class IDs, several selection-mode tricks, and hotkey fixes for keyboard-layout-incompatible defaults.
 
 ### Summary
-[PENDING EXTRACTION]
+To snap-orient a new object (e.g. a box) onto part of a reference model, Ctrl-click the reference's display flag to set it as the pick reference, drop the new object, press Enter to enter the tool state, and use the (potentially remapped) "start orientation picking" hotkey plus left-click to snap position/orientation to any point on the model. The new **Poly Hinge** node, when switched from its default mode to **Position and Orientation**, can procedurally sweep/hinge a profile around an angle (e.g. 90°) along an axis directly — replacing the older manual technique of duplicating the shape, dividing the angle by (copies − 1), moving the pivot, and skinning the results, with an identical outcome. When Connectivity assigns class IDs to fractured/grouped pieces, the resulting values are effectively random; running **Enumerate** with mode set to "enumerate pieces" reorders them into clean sequential IDs. Poly Hinge combined with a custom class-attribute selection filter (select tool set to pick by that attribute) lets you isolate one piece via Blast, then hinge only that piece — using the isolated piece's **centroid** as the hinge's position input snaps it immediately to the correct spot, after which fine Y-offset adjustments complete the placement. Additional tips cover: fixing keyboard-incompatible default hotkeys (Smooth Mesh Preview, Toggle Comments, Orientation Picking) via the Hotkey Manager; using **H** to flood-fill-select connected geometry when double-click doesn't register (e.g. with a tablet pen); **Select by 3D Connectivity** combined with **Select Visible Geometry Only** to avoid accidentally grabbing backside geometry; using an imported "Olympic" (per-piece) attribute from Maya-exported models as an alternate selection/material-assignment target; **Shift+H** ("edge in between") to flood-fill-select the polygon strip between two selected edge loops; unchecking **Secure Selection** on the Edit node so selection doesn't require constantly re-toggling out of the Transform tool; camera-view hotkeys (1/2/3/4 toggle between opposite views on repeated press), **H** to reset/home a tumbled/tilted camera, Ctrl+Alt-drag to zoom into a region, and double-left-click to zoom to a piece of geometry; and finally loading custom **Matcap** textures (e.g. from PixelFondue) under the Material tab in Matcap shading mode for quick shading-issue diagnosis.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Snap-orient object picking**: Ctrl-click the reference model's display flag, drop a new object (e.g. Box), press **Enter** to enter tool state, use the (possibly remapped) orientation-picking hotkey + left-click to snap position/orientation to any point on the reference geometry, then resize/adjust as needed.
+2. **Poly Hinge procedural mode**: drop a Poly Hinge node on a profile (e.g. Circle), switch its mode to **Position and Orientation**, set the hinge angle (e.g. 90°) and move along an axis (e.g. X) — produces identical results to the older manual technique (copy, divide angle by copies−1, move pivot, Skin) but in one node.
+3. **Reordering random class IDs**: after Connectivity assigns essentially-random class values to grouped/fractured pieces, run **Enumerate** with mode set to **Enumerate Pieces** to reassign clean sequential IDs.
+4. **Poly Hinge with a custom class filter**: enter the select tool, pick the custom class attribute as the selection filter, select a specific class value, Blast to isolate it, drop a new Poly Hinge selecting the same class, set to Position and Orientation, then feed the isolated piece's **centroid** as the hinge position so it snaps immediately to the correct location; fine-tune with a Y offset.
+5. **Fixing incompatible default hotkeys**: for Smooth Mesh Preview, search "subdivision" in the Hotkey Manager and rebind (author uses keypad +/−); the viewport's geometry tab also exposes a manual level-of-detail control for the smoothed preview.
+6. **Selection mode tips**: press **H** to flood-fill-select connected geometry when double-click doesn't register reliably (e.g. tablet pen use); enable **Select by 3D Connectivity** for multi-piece selection, paired with **Select Visible Geometry Only** to avoid grabbing hidden backside geometry; note that Maya-exported models may carry an "Olympic"/per-piece attribute usable as an alternate selection/material target even if poorly organized.
+7. **Boundary selection**: select one edge loop, then another on the opposite side, and press **Shift+H** ("edge in between") to flood-fill the polygon strip between them; **H** alone selects just the connecting polygons.
+8. **Edit node + Transform tool friction**: uncheck **Secure Selection** on the Edit node so you can select geometry directly while a Transform tool is active, without switching back to the Select tool each time.
+9. **Camera/viewport tips**: in camera tool mode, press 1/2/3/4 to switch camera views, and press the **same key again** to toggle to the opposite view (left↔right, top↔bottom, front↔back); press **H** to reset a tilted/tumbled camera to home view; use **Ctrl+Alt+drag** to zoom into a specific region, or **double-left-click** on geometry to zoom to it.
+10. **Custom Matcaps**: enter Matcap shading mode, press **D** under the Material tab to find the matcap texture parameter, and load a downloaded matcap (author uses PixelFondue matcaps) for quick shading-issue diagnosis without full material setup.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Hotkey Manager (orientation-picking, subdivision/Smooth-Mesh-Preview, Toggle Comments rebinding), Poly Hinge (Position and Orientation mode), Connectivity (class attribute), Enumerate (Enumerate Pieces mode), Blast (class-filtered isolation), Extract Centroid, select-tool custom-attribute filtering, Select by 3D Connectivity, Select Visible Geometry Only, Edit node (Secure Selection toggle), viewport camera hotkeys (1/2/3/4 toggle, H home reset, Ctrl+Alt zoom-region, double-click zoom-to-geo), Matcap shading mode (Material tab texture parameter).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate (pure workflow/UI tips; the Poly Hinge procedural technique is the most substantively useful modeling shortcut).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.701 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+workflow, hotkeys, poly-hinge, connectivity, enumerate, selection-modes, matcap, viewport, quality-of-life
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Time saving tips in Houdini](time-saving-tips-in-houdini.md) — companion workflow-shortcuts video from the same channel, also covering hotkey fixes for incompatible keyboard layouts.
+- [Tips and Tricks for a Better Houdini Time](tips-and-tricks-for-a-better-houdini-time.md) — likely another grab-bag workflow-tips video from the same channel.

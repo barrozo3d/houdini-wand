@@ -2394,9 +2394,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=iQql20c4Gio
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.701
+- **Tags:** workflow, hotkeys, poly-hinge, connectivity, enumerate, selection-modes, matcap, viewport, quality-of-life
+- **Summary:** Eleven workflow tips: snap-orient object picking, Houdini 20's Poly Hinge node used procedurally instead of the old copy/skin workflow, Enumerate for reordering random Connectivity IDs, several selection-mode tricks (3D connectivity, edge-in-between), and hotkey fixes for keyboard-incompatible defaults.
 - **File:** tutorials/quality-of-life-tips-in-houdini.md
 
 
