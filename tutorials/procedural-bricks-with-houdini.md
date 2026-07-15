@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=-5cycyb5m-E
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.398"
+tags: [beginner, hscript-expressions, bricks, procedural-modeling, groups, box-clip, architecture]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-bricks-with-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Bricks with Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-bricks-with-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -78,30 +74,50 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/procedural-bricks-with-houdini/frame_000.jpg
+- [0:55] tutorials/frames/procedural-bricks-with-houdini/frame_001.jpg
+- [1:30] tutorials/frames/procedural-bricks-with-houdini/frame_002.jpg
+- [2:20] tutorials/frames/procedural-bricks-with-houdini/frame_003.jpg
+- [3:15] tutorials/frames/procedural-bricks-with-houdini/frame_004.jpg
+- [3:55] tutorials/frames/procedural-bricks-with-houdini/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a fully procedural, self-scaling brick pattern using a Grid sized/positioned via **expressions referencing the incoming geometry's bounding box**, so the pattern automatically re-offsets, re-clips, and re-fills correctly if the source geometry or grid resolution changes — applied here to the base of a Gothic cathedral tower.
 
 ### Summary
-[PENDING EXTRACTION]
+A portion of the tower's polygon faces is selected using the polycount display (`11 of 22`) and blasted off to be replaced by a brick pattern. A Grid is Match-Sized to the extracted section, then Face Set separates each face for an Exploded View check. A **Group by Range** selects every other row/column using an expression based on the grid's column count (columns − 1, and columns × 2) so brick offsetting scales automatically with the grid resolution rather than needing manual re-tuning. The selected faces are offset by exactly half a brick width — calculated procedurally via the incoming geometry's bounding-box X size divided by (grid columns − 1) × 2, so that changing the grid's column count still produces a correctly-centered offset instead of breaking the pattern. A **Box Clip** trims the extra edge geometry using the same bounding box (X/Y) and centroid as reference, and a **Transform** (with pivot correctly centered via `$CX $CY $CZ`) scales the grid to fill in bricks that would otherwise be missing at the edges after clipping. A final small Extrude + Bevel sells the brick relief look.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Identify and isolate the target wall section: enable polycount display, select `11 of 22` faces (matching the target subnet's face count), Blast the selected primitives.
+2. Build the base Grid and use **Match Size** to scale it to the exact bounding-box size of the removed geometry.
+3. Use **Face Set** to separate the grid's faces, verified visually with Exploded View.
+4. **Select every other row/column**: use Group by Range with the first field set to (grid columns − 1) and the second field set to (grid columns × 2) — this expresses "amount of faces horizontally, skip the same amount" procedurally instead of hardcoding numbers.
+5. Offset the selected faces horizontally: query the **incoming geometry's bounding-box X size**, divide it by (grid columns − 1) multiplied by 2, and use that value as the offset amount — this keeps the brick stagger exactly centered even if the grid's column count changes later.
+6. Clip the pattern: use a **Box Clip** node matched to the original bounding box (both X and Y from Match Size), centered on the same centroid as the source geometry — fixes extra geometry along the sides introduced by the offset grid.
+7. Fix missing bricks on the edges left by the clip: add a **Transform** before the clip to scale the grid in X (and Y, if needed) — critically, set the pivot to the default `$CX $CY $CZ` expression variables so scaling happens around the object's own center rather than the world origin.
+8. Confirm the whole setup is now fully parametric: changing grid resolution or brick count no longer breaks the offset or clipping.
+9. Finish with a small **Extrude** and **Bevel** to sell the 3D brick relief effect.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Subnetwork (clean organization), polycount display, Blast, Grid, Match Size, Face Set, Exploded View, Group by Range (expression-driven: `columns-1`, `columns*2`), Transform (expression-driven offset: `bbox_x / ((columns-1)*2)`), Box Clip (bounding-box + centroid matched), Transform (`$CX $CY $CZ` pivot centering for scale), Extrude, Bevel.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner (explicitly noted by the author as still learning Houdini), though the expression-driven parametric approach to grid offsetting is a genuinely useful intermediate-level habit.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.398 (visible in viewport title bar — same project/session as the Gothic cathedral first-steps video).
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, hscript-expressions, bricks, procedural-modeling, groups, box-clip, architecture
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Modeling | First steps with Houdini](procedural-modeling-first-steps-with-houdini.md) — the Gothic cathedral tower this brick pattern is applied to; direct continuation of that build.
+- [Ruins randomized brick wall](ruins-randomized-brick-wall.md) — much more advanced brick/wall generation technique (Voronoi Fracture + per-layer randomized jitter) from the same channel's later work.

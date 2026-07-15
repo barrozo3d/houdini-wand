@@ -235,5 +235,6 @@ beginner, boolean, revolve, groups, architecture, gothic, polywire, procedural-m
 ---
 
 ## Related Tutorials
+- [Procedural Bricks with Houdini](procedural-bricks-with-houdini.md) — direct continuation applying a parametric brick pattern to this same Gothic cathedral tower's base.
 - [Procedural Modeling tips for beginners](procedural-modeling-tips-for-beginners.md) — companion beginner-tips video from the same early period of the channel.
 - [Groups, Patterns in Houdini](groups-patterns-in-houdini.md) — deeper dive into the group-selection patterns (Group by Range, Bounding Regions, Keep by Normals) used extensively throughout this build.

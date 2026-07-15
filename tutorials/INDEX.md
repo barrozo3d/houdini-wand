@@ -2964,9 +2964,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=-5cycyb5m-E
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.398
+- **Tags:** beginner, hscript-expressions, bricks, procedural-modeling, groups, box-clip, architecture
+- **Summary:** Builds a fully parametric brick pattern on a Gothic tower base using a Grid sized/offset via bounding-box expressions (columns-1, bbox_x/((columns-1)*2)) so the stagger and Box Clip stay correct automatically if grid resolution or source geometry changes.
 - **File:** tutorials/procedural-bricks-with-houdini.md
 
 
