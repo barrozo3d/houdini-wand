@@ -1534,9 +1534,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=F_xggmIONZ4
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.0
+- **Tags:** cops, openCL, rip-mask, edge-smooth, divide, brick-wall, houdini-21, patreon-course
+- **Summary:** Course-lesson excerpt building an organic torn/ripped-edge damage mask in Cops (OpenCL pixel-threshold math blended with Fractal Noise), loading it onto a mesh via Attribute From Map to drive a Clip cut plus Labs Edge Smooth relaxation, then setting up a density-driven Divide grid ready for the next lesson's brick-wall-in-Cops continuation.
 - **File:** tutorials/procedural-environments-in-houdini-patreon-february-26-free-lesson.md
 
 

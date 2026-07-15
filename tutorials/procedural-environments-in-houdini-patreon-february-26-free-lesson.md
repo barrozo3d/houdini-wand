@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=F_xggmIONZ4
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.0"
+tags: [cops, openCL, rip-mask, edge-smooth, divide, brick-wall, houdini-21, patreon-course]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-environments-in-houdini-patreon-february-26-free-lesson/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Environments in Houdini | Patreon February '26 Free Lesson
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-environments-in-houdini-patreon-february-26-free-lesson <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -109,30 +105,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/procedural-environments-in-houdini-patreon-february-26-free-lesson/frame_000.jpg
+- [1:40] tutorials/frames/procedural-environments-in-houdini-patreon-february-26-free-lesson/frame_001.jpg
+- [2:50] tutorials/frames/procedural-environments-in-houdini-patreon-february-26-free-lesson/frame_002.jpg
+- [4:10] tutorials/frames/procedural-environments-in-houdini-patreon-february-26-free-lesson/frame_003.jpg
+- [5:20] tutorials/frames/procedural-environments-in-houdini-patreon-february-26-free-lesson/frame_004.jpg
+- [6:40] tutorials/frames/procedural-environments-in-houdini-patreon-february-26-free-lesson/frame_005.jpg
+- [7:50] tutorials/frames/procedural-environments-in-houdini-patreon-february-26-free-lesson/frame_006.jpg
+- [9:10] tutorials/frames/procedural-environments-in-houdini-patreon-february-26-free-lesson/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+First month-one lesson of a multi-part environment course: build a noise-masked "ripped/torn edge" damage mask in **Cops** (OpenCL-based resolution-relative edge detection + fractal noise) and load it back onto a mesh's UVs to drive a Clip-based tear/hole cut, then set up a simple, evenly-subdivided wall base ready for next month's brick-wall-in-Cops continuation.
 
 ### Summary
-[PENDING EXTRACTION]
+The ripping/edge-damage effect is built entirely in a Cop network using **OpenCL** since it's simple enough not to need the default node bindings: a bound `edge` float parameter is multiplied by the image's X resolution to get a pixel-space edge threshold, then a mask is grown from the left (`pixel.x < edge`) and right (`pixel.x > xres - edge`) sides of the image using simple threshold comparisons. Straight-line edges look unnatural, so a **Fractal Noise** (Worley/Cellular-style, amplitude/center/offset/element-size/roughness tuned) is added into the edge threshold itself before evaluating the mask, producing organic, irregular torn edges instead of a hard cutoff — tuned interactively (edge size ~0.2, offset, roughness reduced for a less chaotic line). This mask is loaded onto the mesh via an **Attribute From Map** (float, not vector, `op:` syntax path) sampled through the mesh's UVs, scaled (~×10) for sharper thresholds, with additional secondary noise-offset tuning applied directly to the mask sampling. The resulting mask then drives a **Clip** node (threshold ~0.1, inverted direction as needed) to physically cut away the torn portions of the mesh — followed by a **Labs Edge Smooth** node (iterations ~99, ~4 divisions, "include unshared edges" enabled, guides hidden) to relax/soften the newly-cut jagged boundary into a more natural torn-cloth/wall-damage silhouette. The geometry is then Object-Merged in, Match-Sized, and **Divide**-cut into a grid using a **density parameter** approach: bounding-box X size is divided by `ceil(bbox_size / density)` to guarantee square-ish cells regardless of the mesh's exact proportions (set to density 1 here, though the technique generalizes), Attribute Deleted for cleanliness, then Poly Extruded (inset ~0.032, individual elements) to create a window-like grid of frame pieces — split into a "frame" group and an inverted "windows to break" group, setting up the geometry for the brick-wall-in-Cops continuation planned for the following lesson.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. In a **Cop network**, bind a float `edge` parameter (optional) and build an OpenCL snippet: multiply `edge` by the image's X resolution to get a pixel-space threshold.
+2. Build a growing mask from both the left (`pixel.x < edge_px`) and right (`pixel.x > xres - edge_px`) sides of the image using simple pixel-coordinate comparisons.
+3. Add a **Fractal Noise** (Worley/Cellular, tuned amplitude/center/offset/element-size/roughness) into the edge threshold before the mask comparison, so the resulting edge is organically irregular instead of a straight cut.
+4. Load that mask onto the mesh via **Attribute From Map** (float type, `op:` path syntax) sampled through the mesh's existing UVs; scale the result (~×10) for a sharper threshold and fine-tune with secondary offset/noise adjustments.
+5. Feed the mask into a **Clip** node (threshold ~0.1) to physically cut away the torn/damaged portions of the mesh geometry.
+6. Run a **Labs Edge Smooth** (iterations ~99, ~4 divisions, include unshared edges, hide guides) to relax the newly-cut jagged boundary into a smoother, more natural torn silhouette.
+7. Object Merge the wall/window base mesh, Match Size it, then use **Divide** with a density-driven cell count (`ceil(bbox_size / density)`, both X and Y) to cut it into an even, proportionally-square grid regardless of the mesh's exact dimensions.
+8. Attribute Delete for cleanup, then **Poly Extrude** (small inset, individual elements) on the grid cells to create window-frame-like geometry, splitting the result into a "frame" group and an inverted "windows to break" group for the next lesson's continuation.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Cops: OpenCL (custom snippet, bound `edge` parameter, pixel-space threshold math), Fractal Noise (Worley/Cellular), Attribute From Map (float, UV-sampled, `op:` path), Clip (threshold-driven mesh cut), Labs Edge Smooth (iterations, divisions, unshared-edges inclusion). SOPs: Object Merge, Match Size, Divide (density-driven cell count via `ceil(bbox_size/density)`), Attribute Delete, Poly Extrude (inset, individual elements), group splitting (frame vs. windows-to-break).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the OpenCL edge-threshold + noise trick for organic tearing is a nice, approachable Cops technique; the rest of the pipeline is standard node-based setup).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+21.0 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+cops, openCL, rip-mask, edge-smooth, divide, brick-wall, houdini-21, patreon-course
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural environment assets in Houdini 21](procedural-environment-assets-in-houdini-21.md) — another free-lesson excerpt from a Patreon course series on environment building, covering a game-level tunnel and primitive-sort recovery instead.
+- [Procedural Materials in Houdini 21 | Patreon December '25 - Free Lesson](procedural-materials-in-houdini-21-patreon-december-25---free-lesson.md) — another free-lesson excerpt from the same channel's course-style content, covering a cobblestone-chunking pipeline.
+- [Scatter Shapes in Cops Randomly Without Overlap](scatter-shapes-in-cops-randomly-without-overlap.md) — shares the OpenCL-based custom Cops workflow approach used here for organic edge/tiling effects.
