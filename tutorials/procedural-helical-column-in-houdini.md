@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=HDIIwy11otU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.319"
+tags: [vdb, vex, intersection-analysis, orient-along-curve, quad-remesh, architecture, column, box-clip]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-helical-column-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 14
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Helical Column in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-helical-column-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -518,30 +514,62 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/procedural-helical-column-in-houdini/frame_000.jpg
+- [2:10] tutorials/frames/procedural-helical-column-in-houdini/frame_001.jpg
+- [4:20] tutorials/frames/procedural-helical-column-in-houdini/frame_002.jpg
+- [5:40] tutorials/frames/procedural-helical-column-in-houdini/frame_003.jpg
+- [7:40] tutorials/frames/procedural-helical-column-in-houdini/frame_004.jpg
+- [10:40] tutorials/frames/procedural-helical-column-in-houdini/frame_005.jpg
+- [14:00] tutorials/frames/procedural-helical-column-in-houdini/frame_006.jpg
+- [18:00] tutorials/frames/procedural-helical-column-in-houdini/frame_007.jpg
+- [19:20] tutorials/frames/procedural-helical-column-in-houdini/frame_008.jpg
+- [23:20] tutorials/frames/procedural-helical-column-in-houdini/frame_009.jpg
+- [28:20] tutorials/frames/procedural-helical-column-in-houdini/frame_010.jpg
+- [32:30] tutorials/frames/procedural-helical-column-in-houdini/frame_011.jpg
+- [35:00] tutorials/frames/procedural-helical-column-in-houdini/frame_012.jpg
+- [36:20] tutorials/frames/procedural-helical-column-in-houdini/frame_013.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a helical (twisted-braid) decorative column by sweeping a tube along two offset copies of a Spiral primitive, VDB-smoothing/reshaping the swept twist into a clean high-quality mesh, then deriving the ornamental "railing" ribbon geometry directly from **Intersection Analysis** of the two braid strands (rather than hand-modeling it), and finally decorating the middle band with quad-remeshed flower ornaments copied along a VEX-computed center curve and bent to hug the column's curvature.
 
 ### Summary
-[PENDING EXTRACTION]
+Two Spiral primitives (radius scale 1.2, 5 turns, tuned start angle) are offset — one scaled up slightly (1.2 in X/Y) — merged, and swept with a round tube profile (12 divisions, radius 1, single-polygon end cap), with per-primitive p-scale variation (1.1/1.2) giving the two strands slightly different thickness. The swept mesh is clipped top and bottom, converted to VDB, heavily VDB-smoothed (SDF, ~20 iterations) for the characteristic soft braided look, then refined via VDB Resample (voxel size 0.3) → VDB Reshape (dilate ~1) → another VDB Smooth pass to eliminate low-poly artifacts before converting back to polygons and Quad Remeshing (~5000 target) for a clean, subdivision-ready base mesh. The ornamental ribbon/railing that traces the strand intersections is generated procedurally via **Intersection Analysis** on the pre-VDB swept curves (output as curves), cleaned up with paired Clip nodes (one close to the ends, one further in) to remove stray fragments, joined with Poly Path, then double-Resampled (subdivision curves) for clean density. These curves are **Ray**-projected onto the finished mesh (Minimum Distance) to snap them to the surface — smoothed afterward (~50) since minimum-distance projection tends to leave points jagged. The actual railing profile comes from a **Labs Simple Shapes** Quad (unequal top/base sizing for an elongated cross-section) swept along the projected curve using Cross Section mode; orientation is the trickiest part — after trying normal transfer and attribute swap, **Orient Along Curve** combined with a heavily-blurred "up" attribute (Attribute Blur, ~300–500 iterations, pinned border points) gives the cleanest, twist-consistent orientation for the swept ribbon. Center-band decoration points are derived with a hand-written VEX wrangle: `xyzdist()` measures the distance between the two braid curves at matching points, and a new point is added at the midpoint (`(p1.x+p2.x)/2, p1.y + dist/2, (p1.z+p2.z)/2`, with curve-order-dependent sign correction) — these points are grouped, isolated via Blast, converted to a curve, Resampled, then Ray-projected (Minimum Distance) onto an Object-Merged copy of the mesh with sampled normals (Peak-adjusted) to sit correctly on the surface. Flower ornaments are built from two circles Boolean-unioned, Dissolved (light edges), then Quad Remeshed (author's paid tool, ~500 target — plain Remesh works too but looks worse) for clean topology; a radial "center" mask plus a directional "mask_x" (bounding-box-derived, B-spline/Bezier interpolation) drives a VEX position offset (`P.z += mask_x * depth`, with a conditional dent for `center > 0.7`) so each petal recesses/overlaps realistically when copied in a ring pattern; Smooth, Extrude (~0.3), and Bevel (ignore flat edges) finish the petal shape, with a separate Tube-based center boss (blasted/poly-filled end cap, surface-offset rounded) match-sized into place — the whole thing collapsed into a "flower" subnet. Flowers are Copy-to-Points'd along the resampled center curve (uniform p-scale ~0.2), oriented via an aperture-root/up-vector setup (`up` set from a rotate-around-normal vector at -90°) so each flower's indentation faces the correct direction, then a final **Bend** (~26°, both directions) curves the flat flower band to hug the column's helical curvature. A bonus tip at the end shows using **Labs Box Clip** with a Bound node (tuned min/max values) to easily tile the finished column vertically for repeated architectural use.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base braid geometry**: two Spiral primitives (radius scale 1.2, 5 turns, offset start angle) → merge with an offset/scaled (1.2x/1.2y) duplicate → Sweep with Round Tube profile (12 divisions, radius 1, single-polygon end cap) → per-primitive p-scale variance (1.1 vs 1.2) for slightly different strand thickness.
+2. **Clip and VDB smoothing**: Clip top and bottom (fill polygons on both) → VDB from Polygons (~0.1 voxel) → VDB Smooth SDF (~20 iterations) for the soft braided silhouette → VDB Resample (voxel 0.3) → VDB Reshape (dilate ~1) → another VDB Smooth pass → Convert to Polygons → Quad Remesh (~5000) for a clean base mesh.
+3. **Railing/ribbon curve generation**: run **Intersection Analysis** on the pre-VDB swept curves (output as curve) to automatically find where the two braid strands cross; clean with two Clip passes (one tight near the ends ~0.01, one further in) to remove stray fragments; Poly Path to join, then Resample twice (subdivision curves) for clean point density.
+4. **Snap curves to the finished mesh**: **Ray** node set to Minimum Distance projects the curves onto the quad-remeshed surface; Smooth (~50) afterward to fix the jaggedness minimum-distance projection introduces.
+5. **Railing cross-section + orientation**: build an elongated quad cross-section via **Labs Simple Shapes** (unequal top/base sizing), Sweep it along the projected curve using **Cross Section** surface type (scaled down ~0.3); after testing normal-transfer and attribute-swap approaches, settle on **Orient Along Curve** combined with a heavily blurred "up" attribute (Attribute Blur ~300–500 iterations, pinned border points) for correct, twist-consistent ribbon orientation.
+6. **Center-band point derivation (VEX)**: measure the distance between corresponding points on the two braid curves with `xyzdist()`, then `addpoint()` a new point at the computed midpoint (`(p1.x+p2.x)/2`, `p1.y + dist/2`, `(p1.z+p2.z)/2`, with a sign fix depending on curve winding order); group these new points, Blast to isolate, Convert to a curve, Resample.
+7. **Project center curve onto mesh**: Object Merge the finished mesh, transfer normals via VEX (primitive-intrinsic UV lookup then abandoned in favor of a simpler direct sample), **Ray** (Minimum Distance) to snap onto the surface, Peak-adjust slightly, Resample (~0.6) for the flower-placement curve.
+8. **Flower ornament build**: two Circles (4 & 64 divisions) Copy-to-Points'd and **Boolean Union**'d, Dissolve (light inner edges), then Quad Remesh (author's paid Exoside-style tool, ~500 target — plain Remesh is an option but looks worse).
+9. **Petal depth variation**: build a radial "center" mask (inverted) and a directional "mask_x" mask (bounding-box-derived, B-spline/Bezier ramp interpolation), then in an Attribute Wrangle offset `@P.z += mask_x * ch("depth")`, adding a conditional dent (`if (center > 0.7) @P.z -= 0.25`) so petals overlap/recess realistically once arrayed in a ring.
+10. Smooth, **Extrude** (~0.3), **Bevel** (ignore flat edges, angle-tuned, 3 subdivisions) for the petal relief; build a separate center-boss **Tube** (blast + Poly Fill the end cap, surface-offset rounded), Match Size into place; collapse the whole flower network into a **subnet** for reuse.
+11. **Distribute flowers**: Copy to Points along the resampled center curve with a uniform p-scale (~0.2); orient via an aperture-root "up" vector, rotated around the normal (author uses -90°) so each flower's indentation faces the correct direction relative to the column's twist.
+12. Finish with a **Bend** deformer (~26°, applied in both directions) to curve the otherwise-flat flower band so it properly hugs the column's helical curvature.
+13. **Bonus tiling tip**: use **Labs Box Clip** fed by a **Bound** node (tuned min/max — e.g. -1.2 bottom, -2.1 top) to easily clip/tile the finished column vertically for repeated architectural placement.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Spiral, Sweep (Round Tube profile, single-polygon end cap, per-primitive p-scale), Clip, VDB from Polygons, VDB Smooth SDF, VDB Resample, VDB Reshape (dilate), Convert VDB, Quad Remesh, Intersection Analysis (curve output), Poly Path, Resample (subdivision curves), Ray (Minimum Distance projection), Smooth, Labs Simple Shapes (Quad, unequal sizing), Sweep (Cross Section surface type), Orient Along Curve, Attribute Blur (up-vector smoothing, pinned borders), `xyzdist()` VEX function, `addpoint()` VEX function (midpoint curve derivation), Blast, Object Merge, Circle (Boolean Union), Dissolve, Quad Remesh (petal topology), radial "center" mask + bounding-box "mask_x" mask (B-spline/Bezier ramp), Attribute Wrangle (position-offset petal depth, conditional dent), Extrude, Bevel, Tube (center boss, surface-offset), Match Size, Subnet collapse, Copy to Points (uniform p-scale, aperture-root/up-vector orientation), Bend (both-direction curvature), Labs Box Clip + Bound (vertical tiling).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (Intersection-Analysis-derived ornamental geometry, VEX-computed midpoint curves, and the multi-attempt orientation solve for the swept ribbon are all non-trivial production techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.319 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vdb, vex, intersection-analysis, orient-along-curve, quad-remesh, architecture, column, box-clip
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Environments in Houdini Part 2 - Stone Bridge](environments-in-houdini-part-2---stone-bridge.md) — related architectural-column/structural-element modeling from the same channel.
+- [Modern Furniture Modeling in Houdini](modern-furniture-modeling-in-houdini.md) — shares similar decorative-ornament copy-to-points and orientation techniques.

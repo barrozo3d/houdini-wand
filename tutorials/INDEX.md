@@ -2224,9 +2224,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=HDIIwy11otU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.319
+- **Tags:** vdb, vex, intersection-analysis, orient-along-curve, quad-remesh, architecture, column, box-clip
+- **Summary:** Builds a twisted-braid column from two swept/VDB-smoothed Spiral strands, derives the ornamental ribbon geometry directly from Intersection Analysis of the strands, computes a VEX xyzdist()-based center curve for flower placement, and finishes with quad-remeshed flower ornaments bent to the column's curvature.
 - **File:** tutorials/procedural-helical-column-in-houdini.md
 
 
