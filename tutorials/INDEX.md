@@ -3329,6 +3329,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/vellum-fundamentals---week-5-cell-splitting-part-1.md
 
+
+### Vellum Fundamentals - Week 5: Cell Splitting Part 2
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=G7SnVk4Jj8U
+- **Author:** Tim van Helsdingen
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/vellum-fundamentals---week-5-cell-splitting-part-2.md
+
 ---
 
 ## Tag Reference
