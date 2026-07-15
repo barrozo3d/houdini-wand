@@ -1854,9 +1854,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=JCdVrNwiMGk
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** brickify, voronoi-fracture, labs-sort, lattice, poly-bevel, architecture, ornament, procedural-modeling
+- **Summary:** Tips from a domed building build: per-layer Voronoi-Fractured brickify pattern with Labs Circular Sort randomization, point-count-independent tapering spire generation, directional (horizontal vs. vertical) edge bevel selection via Group Range, a Lattice-based blend connecting polygonal and rounded sections seamlessly, and a mirrored-ramp overlap mask for roof paneling.
 - **File:** tutorials/procedural-buildings-in-houdini-tips-and-tricks.md
 
 

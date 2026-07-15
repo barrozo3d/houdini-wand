@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=JCdVrNwiMGk
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [brickify, voronoi-fracture, labs-sort, lattice, poly-bevel, architecture, ornament, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 11
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Buildings in Houdini | Tips and Tricks
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-buildings-in-houdini-tips-and-tricks <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Introduction [0:00]
@@ -170,30 +166,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:45] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_000.jpg
+- [1:40] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_001.jpg
+- [3:30] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_002.jpg
+- [4:35] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_003.jpg
+- [5:40] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_004.jpg
+- [7:05] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_005.jpg
+- [8:00] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_006.jpg
+- [9:30] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_007.jpg
+- [10:55] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_008.jpg
+- [12:15] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_009.jpg
+- [13:15] tutorials/frames/procedural-buildings-in-houdini-tips-and-tricks/frame_010.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Grab-bag of production tips from a procedural onion-dome/minaret-style building: a scatter-and-layer "brickify" technique for a domed roof using Labs Circular Sort to randomize brick offsets along a curve's intrinsic U, a custom point-distribution formula (instead of the Bridge tool) for building a tapering polygonal spire shape, per-vertex group-range bevel selection to bevel horizontal vs. vertical edges independently, a Lattice-based blend to connect a beveled polygonal section to a smooth rounded section without a visible seam, and a bounding-box-mask/mirrored-ramp trick for overlapping roof-panel detailing.
 
 ### Summary
-[PENDING EXTRACTION]
+The dome's "brickify" pattern starts by scattering many points on a swept 8-division base shape, then dividing them into horizontal layers by computing the bounding-box min/max, deriving a per-layer height ("layer height"), assigning each point a `layer` index, and remapping `P.y` from the bounding-box min plus `layer * layerHeight` so points snap into discrete bands that always reach the bounding-box max. Points are Fused, then offset along each layer's own curve direction using **Labs Circular Sort** (not the default Sort) to get true circular ordering, Converted to Line, and re-sampled via the curve's intrinsic UV (`xyzdist()`/`prim()` position sampling) with a random-per-layer offset (seeded by the layer index) added to the U value and wrapped with modulo 1 — producing staggered, non-repeating brick-row offsets that are then Voronoi-Fractured **per layer inside a loop** (fracturing all layers at once gives unpredictable results). For the tapering polygonal spire shape (where the Bridge tool didn't give enough control), the base triangle profile is extracted via Clip, Match-Sized to the desired start position, and a point is added behind it so Copy-and-transform can generate a row of points along a scaled trajectory using **Point Generate** (e.g. 32 points) — each point's Y position is derived from `(pointNumber / totalPoints)` normalized against the original bounding-box height, so the whole rig auto-adjusts when the point count changes. The triangles are copied to these points, their P-scale is driven by an **Attribute Adjust Float** along the bounding-box Y with a custom ramp profile for a tapering silhouette, then Skinned and Polyfilled into the final spire geometry. Individually beveling only the vertical edges of a revolved profile (a technique some viewers may not know) is done by selecting one-out-of-two vertices in Vertex Mode, promoting to edges, and using **Group Range**'s offset to separate horizontal from vertical edge groups so each can be bevelled with different settings. To connect a polygonal (sharp-edged, beveled) lower section with a rounded upper section without a visible seam, unshared-point boundary groups are extracted per section, the polygonal boundary is converted to a Line, resampled, and re-projected onto the rounded section's silhouette curve, then a **Lattice** (Points mode) deforms the polygonal edge toward that rounded reference curve over a few iterations (with intermediate Subdivides, skipping the first iteration) to blend the hard-edged look into the round shape gradually. Finally, a decorative "paneling" overlap pattern on hard/sharp edges is built by copying panel geometry along those edges with a Copy-to-Points/Sweep, then faking a rigid overlap mask by taking the geometry's bounding-box Z, mirroring it with an expression, and remapping through a **Ramp** to alternate whether each panel goes above or below its neighbor.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Brickify dome:** scatter points on a swept base shape (8 divisions), divide into horizontal layers by computing bounding-box min/max and a per-layer height, remap `P.y` to snap points into discrete layer bands anchored to the bounding-box max.
+2. Fuse the layered points, then use **Labs Circular Sort** (not default Sort) plus Convert-to-Line and intrinsic-curve-UV sampling (`prim()`/`xyzdist()`) with a per-layer-seeded random U offset (wrapped mod 1) to stagger brick positions along each ring without uniform alignment.
+3. Voronoi-Fracture **each layer separately inside a for-each/stage loop** (not all at once) to get predictable, controllable per-row brick divisions.
+4. **Tapering spire shape:** extract the base triangle profile via Clip, Match-Size it to the start position, add a point behind it, then use **Point Generate** (e.g. 32 points) to build a row of copy targets along a scaled trajectory, deriving each point's Y from `pointNumber / totalPoints` against the original bounding-box height so the setup auto-adjusts to point-count changes.
+5. Copy the triangle profile to those generated points, drive **P-scale** via an Attribute Adjust Float along the bounding-box Y with a custom ramp for the tapering profile, then Skin and Polyfill into the final spire.
+6. **Per-direction edge bevel:** select one-of-two vertices in Vertex Mode on a revolved profile, promote to edges, then use **Group Range**'s offset to separate horizontal-edge vs. vertical-edge groups so each can be bevelled independently with different settings.
+7. **Seamless polygonal-to-round connection:** extract unshared-point boundary groups from both the beveled polygonal section and the rounded section, Convert-Line + Resample the polygonal boundary, re-project it onto the rounded section's silhouette curve.
+8. Deform the polygonal boundary toward the rounded reference with a **Lattice** in Points mode (rest geometry = original edge, foreign geometry = the rounded reference curve) over a few iterations with intermediate Subdivides (skip subdividing on the first iteration) to gradually blend the hard edge into the round shape.
+9. **Overlapping roof-panel detailing:** copy panel geometry along hard edges with Copy-to-Points/Sweep, then fake an alternating overlap mask by taking the geometry's bounding-box Z, mirroring it via an expression, and remapping through a **Ramp** so each panel alternately sits above or below its neighbor.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Sweep (8-division base), Scatter, bounding-box min/max wrangle (layer-height/layer-index/`P.y` remap), Fuse, Labs Circular Sort, Convert Line, curve-UV sampling (`prim()`/`xyzdist()`), per-layer random seed + modulo-1 wrap, Voronoi Fracture (per-layer loop), Clip, Match Size, Point Generate, copy-to-points transform math (`pointNumber / totalPoints` normalization), Attribute Adjust Float (P-scale via bounding-box Y + custom ramp), Skin, Polyfill, Vertex-mode edge selection + Group Range (offset-based horizontal/vertical edge separation), Poly Bevel (per-group), unshared-point boundary Group, Convert Line, Resample, re-projection, Lattice (Points mode, rest/foreign geometry inputs), Subdivide (conditional on iteration), Copy to Points, Sweep, bounding-box-Z mirror expression, Ramp (alternating above/below mask).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines multiple non-obvious production techniques: per-layer Voronoi fracturing with circular-sort-driven randomization, custom point-count-independent spire generation math, Lattice-based hard-to-soft seam blending, and Group-Range-based directional edge selection).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+brickify, voronoi-fracture, labs-sort, lattice, poly-bevel, architecture, ornament, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Ruins - Randomized Brick Wall](ruins-randomized-brick-wall.md) — shares the per-layer randomized Voronoi Fracture inside a for-loop technique used here for the dome's brickify pattern.
+- [Procedural Helical Column in Houdini](procedural-helical-column-in-houdini.md) — shares Intersection-Analysis-derived ornament and Lattice-free architectural detailing from the same channel.
+- [Procedural Environment Assets in Houdini 21](procedural-environment-assets-in-houdini-21.md) — shares the Labs-Sort/intrinsic-curve-UV based point-ordering approach used here for the dome's brick layering.

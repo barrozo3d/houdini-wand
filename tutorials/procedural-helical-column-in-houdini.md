@@ -573,3 +573,4 @@ vdb, vex, intersection-analysis, orient-along-curve, quad-remesh, architecture, 
 ## Related Tutorials
 - [Environments in Houdini Part 2 - Stone Bridge](environments-in-houdini-part-2---stone-bridge.md) — related architectural-column/structural-element modeling from the same channel.
 - [Modern Furniture Modeling in Houdini](modern-furniture-modeling-in-houdini.md) — shares similar decorative-ornament copy-to-points and orientation techniques.
+- [Procedural Buildings in Houdini | Tips and Tricks](procedural-buildings-in-houdini-tips-and-tricks.md) — shares Intersection-Analysis-adjacent ornament/architectural detailing tricks from the same channel.

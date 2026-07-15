@@ -142,3 +142,4 @@ voronoi-fracture, vex, procedural-modeling, bricks, ruins, environment, connecti
 ## Related Tutorials
 - [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — alternate RBD-simulation-based approach to a similar stacked-stone-wall problem from the same channel.
 - [Procedural Bricks with Houdini](procedural-bricks-with-houdini.md) — simpler, non-fractured brick-pattern technique using grid offsetting instead of Voronoi Fracture.
+- [Procedural Buildings in Houdini | Tips and Tricks](procedural-buildings-in-houdini-tips-and-tricks.md) — shares the per-layer randomized Voronoi Fracture inside a loop technique, applied there to a domed roof's brickify pattern.
