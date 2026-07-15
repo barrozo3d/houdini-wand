@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=xm9d-Un3Hrg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.410"
+tags: [solaris, karma, cops, aov, uv-projection, background-plate, physical-sky, cgi-integration, product-viz]
+extraction_status: complete
 frames_dir: tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 9
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Quick CGI Integration with Houdini and Solaris
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py quick-cgi-integration-with-houdini-and-solaris <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -133,30 +129,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/frame_000.jpg
+- [1:00] tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/frame_001.jpg
+- [2:10] tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/frame_002.jpg
+- [3:20] tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/frame_003.jpg
+- [4:10] tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/frame_004.jpg
+- [5:20] tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/frame_005.jpg
+- [7:00] tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/frame_006.jpg
+- [8:20] tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/frame_007.jpg
+- [9:10] tutorials/frames/quick-cgi-integration-with-houdini-and-solaris/frame_008.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Integrate a CG model (a pickup truck) into a real photo background plate using a **dome-projected HDRI environment** built from a half-sphere (polar-UV-projected, back-face culled and reversed so the interior is visible), a shadow-catching ground plane, cheap **opacity-traced vegetation cards as shadow/reflection casters**, a Physical Sky aligned to the HDRI's light source for proper shadow direction, and a Karma AOV-driven compositing pass (beauty alpha + ambient occlusion + isolated shadow pass) blended in Cops for contact-shadow realism.
 
 ### Summary
-[PENDING EXTRACTION]
+A half-sphere "dome" (Polyfill, Bevel, Subdivide) is polar UV-projected and rotated to align with the background plate, then set to **remove back faces** (Optimize display option) so its interior — where the HDRI texture will be projected — is visible in the viewport, with normals reversed so the camera sees the interior rather than the exterior. This dome is Quick-Shaded with the HDRI (or a quick JPEG) for viewport preview. The environment is split into a **ground** piece (to catch shadows) and an **environment** piece (to carry the projected HDRI); a **Render Geometry Settings** node on the dome sets it to not cast shadows and not be visible to primary/camera rays (it's purely an environment light source, not a rendered object). The truck model (built with a modular kitbash plugin, covered in a future video) is loaded alongside cheap **shadow-caster vegetation cards**: an opacity texture is traced, small parts deleted, iterated/centered, basic-Remeshed, then Copy-to-Points'd with a Line and Y-scaled (stretched vertically) to cast believable roadside-foliage shadows/reflections onto the truck without needing real 3D vegetation. On the background-plate/ground object, the ground primitive is set to receive/project the back plate and cast shadows; the background plate itself is set to **not render** (Use Background off in Render Geometry Settings) so it still contributes an alpha channel for compositing rather than baking directly into the beauty pass. The environment material uses the dome's polar UVs feeding a **Standard Surface emission** (color = HDRI texture, emission strength ~1.5) — since pure emission doesn't cast convincing shadows, a **Physical Sky** light is added and manually aligned to match the HDRI's actual light-source direction for proper shadow casting. Karma outputs the beauty pass plus an **ambient occlusion AOV** (used later for contact shadows) and an isolated shadow AOV. In **Cops**, a slap-comp import brings in the beauty (with alpha) and AOVs; the background plate (sourced from a Poly Haven HDRI+backplate set) is Size-Ref'd and blended to avoid resolution-mismatch crashes reported by others, then swapped for a dedicated **shadow-clean plate** (same background without existing shadows) that gets basic color correction. The **AO/shadow AOVs are channel-extracted, value-scaled down, and multiplied together** to mask in extra contact-shadow darkening at the truck's contact points/edges, then the truck beauty (with alpha) is blended on top using its own extracted **alpha channel** (converted to RGBA) as the composite mask — producing a final image with grounded contact shadows, environment-cast vegetation shadows, and a properly-exposed integrated CG element. As a final material tip, the truck's headlights (which have no UVs) are textured using a **repeating ramp** sampled via a **Material Exposition node's combined X/Y components** as manual texture coordinates fed into a MaterialX Image node, multiplied to control repetition — reused identically for both displacement and normal inputs.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Dome environment build**: Sphere generator cut in half → Polyfill → Bevel → Subdivide; UV Project set to **Polar**, rotated to align with the background plate.
+2. Enable **Optimize → Remove Back Faces** in the viewport display options so the dome's interior (where the HDRI is projected) is visible; **reverse normals** so the camera sees the interior surface rather than the exterior.
+3. Quick Shade the dome with the HDRI (or a fast JPEG proxy) for real-time viewport preview; split the dome geometry into a **ground** piece (shadow catcher) and an **environment** piece (HDRI carrier).
+4. **Render Geometry Settings** on the dome: set Render Visibility to not cast shadows and not be visible to camera/primary rays — it exists purely to provide environment lighting/reflection, not as rendered geometry.
+5. **Cheap shadow-caster vegetation**: trace an opacity texture, delete small parts, iterate through pieces and center them, basic Remesh, Copy to Points with a Line, and scale primarily along **Y** to stretch cards vertically for believable roadside-vegetation shadow/reflection casting.
+6. **Background plate setup**: on the ground/background object, set it to receive the projected back plate and cast shadows; in the **background plate's own Render Geometry Settings**, disable **Use Background** so it still produces an alpha channel for compositing instead of baking flatly into the beauty render.
+7. **Environment material**: feed the dome's polar UVs into a **Standard Surface** shader's **emission color** (HDRI texture) with emission strength ~1.5.
+8. Add a **Physical Sky** light, manually aligned/rotated to match the HDRI's actual light-source direction — pure emission alone doesn't cast convincing directional shadows.
+9. **Karma AOVs**: output the beauty pass plus an **ambient occlusion AOV** and an isolated **shadow AOV** for compositing-stage contact-shadow enhancement.
+10. **Compositing (Cops slap comp)**: import the beauty (with alpha) and AOVs; bring in the Poly Haven background plate, **Size Ref** it and blend to avoid resolution-mismatch render crashes; swap in a dedicated **shadow-clean back plate** (same scene without baked-in shadows) instead, with basic color correction applied.
+11. **Contact shadow enhancement**: channel-extract the AO and shadow AOVs, reduce their value scale, and **multiply them together** to mask in extra darkening specifically at contact/edge areas between the truck and ground.
+12. **Final composite**: blend the truck's beauty pass (with alpha) on top of the shadow-enhanced background using the truck's **extracted alpha channel** (converted to RGBA) as the blend mask — producing the final integrated composite.
+13. **Bonus material tip — UV-less headlight texturing**: build a repeating **Ramp** texture; in the shader, use a **Material Exposition node**, combine its X and Y components as manual texture coordinates fed into a **MaterialX Image** node, and multiply for repetition control — reused identically for both displacement and normal map inputs, avoiding the need for real UVs on the headlight geometry.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Sphere (half-dome), Polyfill, Bevel, Subdivide, UV Project (Polar), viewport Optimize (Remove Back Faces), Reverse (normals), Quick Shade, Render Geometry Settings (visibility/shadow-casting flags, Use Background toggle), opacity trace + Remesh + Copy to Points (Y-scaled vegetation shadow cards), Standard Surface (emission color/strength), Physical Sky light, Karma AOVs (beauty/alpha, ambient occlusion, shadow), Cops slap comp import, Size Ref (background-plate resolution matching), Channel Extract, Multiply (AO × shadow contact-shadow mask), Blend (alpha-masked composite), Convert to RGBA, Material Exposition node (X/Y combine for manual UV-less texture coordinates), MaterialX Image, Multiply (texture repetition), Ramp (headlight texture).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced (a full production CGI-integration pipeline spanning environment modeling, Karma AOV setup, and Cops-based compositing).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.410 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+solaris, karma, cops, aov, uv-projection, background-plate, physical-sky, cgi-integration, product-viz
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Quick CG Integration with Houdini and Karma](quick-cg-integration-with-houdini-and-karma.md) — likely companion/earlier CGI-integration tutorial from the same channel.
+- [Materialx and Karma Procedural Networks](materialx-and-karma-procedural-networks.md) — shares the Material Exposition-based manual UV coordinate trick used here for the headlights.

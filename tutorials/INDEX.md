@@ -1964,9 +1964,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=xm9d-Un3Hrg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.410
+- **Tags:** solaris, karma, cops, aov, uv-projection, background-plate, physical-sky, cgi-integration, product-viz
+- **Summary:** Integrates a CG truck into a photo plate using a polar-UV-projected, back-face-culled HDRI dome, cheap opacity-traced vegetation shadow cards, a Physical Sky aligned to the HDRI light source, and a Cops slap-comp pass multiplying AO/shadow AOVs for contact-shadow realism.
 - **File:** tutorials/quick-cgi-integration-with-houdini-and-solaris.md
 
 
