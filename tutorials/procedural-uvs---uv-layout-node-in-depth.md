@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=7kUDLsNn0iA
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.551"
+tags: [uvs, uv-layout, udim, procedural-uvs, vex, pebbles, texturing]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-uvs---uv-layout-node-in-depth/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural UVs - UV Layout Node in Depth
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-uvs---uv-layout-node-in-depth <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -84,30 +80,50 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/procedural-uvs---uv-layout-node-in-depth/frame_000.jpg
+- [0:45] tutorials/frames/procedural-uvs---uv-layout-node-in-depth/frame_001.jpg
+- [1:15] tutorials/frames/procedural-uvs---uv-layout-node-in-depth/frame_002.jpg
+- [1:50] tutorials/frames/procedural-uvs---uv-layout-node-in-depth/frame_003.jpg
+- [2:25] tutorials/frames/procedural-uvs---uv-layout-node-in-depth/frame_004.jpg
+- [2:55] tutorials/frames/procedural-uvs---uv-layout-node-in-depth/frame_005.jpg
+- [3:40] tutorials/frames/procedural-uvs---uv-layout-node-in-depth/frame_006.jpg
+- [4:20] tutorials/frames/procedural-uvs---uv-layout-node-in-depth/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A deep dive into UV Layout's custom-attribute-driven controls — edge-group cutting, island-stacking via an "island" attribute, UDIM targeting, per-island scale, and using the layout algorithm itself (via a position-based projection) as an intersection-avoidance packer for scattered geometry.
 
 ### Summary
-[PENDING EXTRACTION]
+Beyond basic auto-unwrapping, UV Layout accepts custom primitive attributes to control exactly how islands are cut, stacked, distributed across UDIMs, scaled, and even used to pack non-UV geometry without overlaps. A window-frame example shows edge-group-driven cutting to maximize texture coverage (20%→70%). An "island" integer attribute (promoted to primitive) lets repeating geometry (8 packed spheres) share UV space in groups via modulo, trading resolution for texture variation. A separate UDIM-target attribute routes different primitives to different UDIM tiles, with padding and spread-to-available-space options. Floor tiles use a shared VEX snippet (credit: Constantine Magnus) for random UV rotation, then UV Layout's iteration/seed controls distribute the resulting overlapping islands with controlled randomness. A per-primitive "island scale" attribute lets some islands use different (e.g. lower) texture resolution. Finally, two advanced examples: packing pebble-like shapes without intersections by feeding **position** (not UVs) into UV Layout with a chosen projection plane, and combining island + UDIM attributes together (with point order randomized via Sort) for full variation/resolution/tile-count control simultaneously.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Maximize texture space**: group all cut edges on a window-frame mesh, unwrap, then feed that edge group into UV Layout's cut input — coverage improves from ~20% to ~70%.
+2. **Island stacking**: copy geometry (8 packed spheres), create an integer "island" attribute via a wrangle using modulo so it repeats across a chosen count (e.g. 0–3), promote it to a **primitive attribute** (required by UV Layout), then feed it into the layout node — pieces sharing an island value stack on top of each other instead of each getting 1-of-18 separate UV space.
+3. **Target UDIM feature**: assign a UDIM-target integer attribute per primitive in a wrangle (e.g. 2 different values), enable UDIM targeting in UV Layout, and set the desired tile count — islands distribute into separate UDIM tiles based on the attribute; padding and "spread to available space" settings help avoid baking/texturing seams.
+4. **Randomizing UV set/rotation**: apply a shared VEX rotation snippet (credit: Constantine Magnus) to randomly rotate floor-tile UVs, causing overlaps, then let UV Layout distribute them while preserving randomness — increasing iterations under Advanced settings and varying the seed controls how "random" the final offset looks.
+5. **Per-island scale**: create a primitive attribute (e.g. primitive number + 1) and feed it into UV Layout's island-scale input to give some islands smaller/larger texture footprints — useful for de-prioritizing less-visible areas.
+6. **Packing non-UV geometry (pebbles) without intersections**: copy shapes to points (using the copy `name` attribute), then in UV Layout feed the **position** attribute instead of UVs, set the correct projection plane, and increase iterations/vary the seed for better results; islands come from a second input (the initial grid) but can be swapped for any geometry — leftover empty space can be filled with a second pass of smaller pebbles using identical settings, then merged.
+7. **Combining island + UDIM together**: for repeating geometry with overlapping UVs, use a wrangle to distribute points into 3 islands and 3 UDIMs simultaneously (promoting/unpacking as needed), feed both attributes into UV Layout, and **randomize point order with Sort** beforehand so the island/UDIM assignment doesn't create a visibly repeating pattern.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Group (edge cutting), UV Unwrap, UV Layout (cut-edges input, island attribute, target UDIM attribute, island-scale attribute, position-based packing with projection plane, iterations/seed under Advanced, padding, spread-to-available-space), Attribute Wrangle (island modulo assignment, UDIM assignment, random-rotation snippet credited to Constantine Magnus, island-scale expression), Attribute Promote (point→primitive for island/UDIM attributes), Copy to Points (name attribute for pebble instancing), Sort (randomize point order).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced (assumes comfort with UV Layout's parameter set; the position-based pebble-packing and combined island+UDIM examples are more advanced).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.551 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+uvs, uv-layout, udim, procedural-uvs, vex, pebbles, texturing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [UV Randomizer - Texturing multiple objects](uv-randomizer---texturing-multiple-objects.md) — simpler, focused version of the island-stacking technique covered in depth here.
+- [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — related procedural-UV tooling from the same channel, useful as a pre-pass before layout.

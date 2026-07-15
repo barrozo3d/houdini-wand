@@ -3104,9 +3104,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=7kUDLsNn0iA
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.551
+- **Tags:** uvs, uv-layout, udim, procedural-uvs, vex, pebbles, texturing
+- **Summary:** Deep dive into UV Layout's custom-attribute controls: edge-group cutting, island-stacking, UDIM targeting, per-island scale, randomized rotation distribution, and using position-based projection to pack non-UV geometry (pebbles) without intersections.
 - **File:** tutorials/procedural-uvs---uv-layout-node-in-depth.md
 
 
