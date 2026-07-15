@@ -2364,9 +2364,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Sr7iwTjwo2E
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.701
+- **Tags:** vellum, curvature, remesh, materialx, karma, typography, wrinkles, animated-mask, metal
+- **Summary:** Drives balloon-typography wrinkles with a curvature-derived animated mask (0→1 only near the end of the sim) that locally amplifies Vellum stretch/pressure constraints exactly at the letters' inner curves, remeshed by attribute for extra detail there, shaded gold via MaterialX Random Color keyed to connectivity class.
 - **File:** tutorials/vellum-typography-in-houdini.md
 
 

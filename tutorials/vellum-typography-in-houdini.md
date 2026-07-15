@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Sr7iwTjwo2E
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.701"
+tags: [vellum, curvature, remesh, materialx, karma, typography, wrinkles, animated-mask, metal]
+extraction_status: complete
 frames_dir: tutorials/frames/vellum-typography-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Vellum Typography in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vellum-typography-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -85,30 +81,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:25] tutorials/frames/vellum-typography-in-houdini/frame_000.jpg
+- [0:50] tutorials/frames/vellum-typography-in-houdini/frame_001.jpg
+- [1:30] tutorials/frames/vellum-typography-in-houdini/frame_002.jpg
+- [2:10] tutorials/frames/vellum-typography-in-houdini/frame_003.jpg
+- [3:20] tutorials/frames/vellum-typography-in-houdini/frame_004.jpg
+- [4:20] tutorials/frames/vellum-typography-in-houdini/frame_005.jpg
+- [5:20] tutorials/frames/vellum-typography-in-houdini/frame_006.jpg
+- [6:20] tutorials/frames/vellum-typography-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Drive a Vellum balloon-typography simulation with a **curvature-derived, animated custom mask** — computed from the letters' inner-edge curves, remeshed by attribute for extra detail there, and animated from 0 to 1 only near the end of the sim — so the pressure/stretch constraints locally amplify only around tight curves, producing realistic wrinkles concentrated exactly where real inflated letters would wrinkle.
 
 ### Summary
-[PENDING EXTRACTION]
+Text is created via Font, arranged with an Edit node, centered/thickened via Match Size, then rounded with a VDB from Polygons → Smooth → Convert back to polygons pass. After splitting primitives along Z and grouping unshared edges, those edges are converted to curves, resampled, and re-projected onto the VDB-smoothed geometry. A curvature attribute is set to 1 on the curves and 0 on the base geometry, then blended via Attribute Transfer with a tunable blend width for a smooth falloff — concentrating detail near the letters' inner curves. **Remesh by Attribute** uses this curvature value to drive a target-mesh-size range, adding more polygons specifically where wrinkle detail will appear. The curvature attribute is then **animated from 0 to 1 between frames 12 and 14** — deliberately localized to the sim's tail end. Collision geometry is a simple Bound-derived box; **Vellum Configure Balloon** creates the cloth/pressure setup, with the stretch group and pressure group both saved for solver-level targeting. Inside the **Vellum Solver**, a Vellum Constraint Property on the **pressure group** animates rest-length-scale from 1 to 5.5 between frames 1 and 15 (inflating the letters), while a second constraint on the **stretch group** loads the curvature mask and blends between the original rest scale and a **1.8×-multiplied** rest scale using that mask — so only the curvature-flagged regions stretch more, creating wrinkles that only appear from frame 13 onward once the animated curvature mask kicks in. After Time Shifting to frame 15, a Vellum Post Process smooths the geometry with one level of subdivision, unneeded attributes are deleted, Connectivity creates a per-letter class attribute, and normals are softened. In Solaris, a MaterialX Random Color node keyed to the connectivity class attribute (with tuned hue range/saturation/brightness/seed) produces a gold/yellow color variation per letter, with metalness set to 1 and roughness/coat tuned for a glossy balloon-metal look; a Dome Light plus a side light complete the setup for the final metallic, visibly-wrinkled render.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create text via **Font**, arrange letters with an **Edit** node, center and add thickness via **Match Size**.
+2. Round the extruded shape with **VDB from Polygons** → **VDB Smooth** → **Convert VDB** back to polygons.
+3. **Split** primitives along Z, group unshared edges, **Convert Line**, **Resample**, and re-project the curves onto the VDB-smoothed geometry via Ray Project.
+4. Set a **curvature** attribute to 1 on the curves and 0 on the base geometry, then blend with **Attribute Transfer** using a tunable blend width for a smooth falloff around the letters' inner edges.
+5. **Remesh by Attribute**: use the curvature value to drive a target-mesh-size range, so more polygons are added specifically in the curvature/wrinkle-prone regions.
+6. **Animate the curvature attribute from 0 to 1 between frames 12 and 14** — deliberately timed to only affect the tail end of the simulation, so wrinkles appear late rather than throughout.
+7. Build collision geometry from a **Bound**-derived box; set up **Vellum Configure Balloon** (near-default settings), saving both the **stretch** output group and the **pressure** output group for solver targeting.
+8. In the **Vellum Solver**, add a Vellum Constraint Property targeting the **pressure group**, animating rest-length-scale from **1 to 5.5** between frames 1 and 15 to inflate the letters.
+9. Add a second Vellum Constraint Property targeting the **stretch group**, loading the curvature mask and **blending between the original rest scale and a 1.8×-multiplied rest scale** using that mask — so wrinkle-prone (high-curvature) regions stretch more once the mask activates.
+10. Observe the result: no wrinkle detail visible up to frame 12, wrinkles begin appearing from frame 13 through 15 as the animated curvature mask ramps up — matching the desired look.
+11. **Time Shift** to frame 15, run a **Vellum Post Process** to smooth the geometry with one level of subdivision, delete unneeded attributes, run **Connectivity** for a per-letter class attribute, and soften normals.
+12. **Shading in Solaris**: import the geometry, build a material keyed by the Connectivity class attribute feeding a **MaterialX Random Color** node — tune hue range, saturation, brightness, and seed to land on a gold/yellow color variation per letter; set metalness to 1 and adjust roughness/coat for a glossy balloon look.
+13. Light with a Dome Light plus a side light for reflections; render to show the metallic look with visible wrinkles concentrated exactly where the animated curvature mask drove extra stretch.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Font, Edit, Match Size, VDB from Polygons, VDB Smooth, Convert VDB, Split, Group (unshared edges), Convert Line, Resample, Ray Project, Attribute Create (curvature = 0/1), Attribute Transfer (blend width), Remesh by Attribute (curvature-driven target mesh size), animated curvature attribute (frame 12→14), Bound (collision box), Vellum Configure Balloon (stretch/pressure output groups), Vellum Solver, Vellum Constraint Property (pressure-group rest-length-scale animation 1→5.5 over frames 1–15; stretch-group mask-blended rest scale ×1.8), Time Shift, Vellum Post Process (smooth + subdivision), Attribute Delete, Connectivity (per-letter class), soft normals, MaterialX Random Color (hue/saturation/brightness/seed keyed by class attribute), Standard Surface (metalness 1, roughness/coat tuning), Dome Light + side light, Karma render.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the curvature-derived animated mask driving two separate Vellum constraint properties is a sophisticated, non-obvious simulation-shaping technique).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.701 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, curvature, remesh, materialx, karma, typography, wrinkles, animated-mask, metal
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vellum Balloon Text in Houdini](vellum-balloon-text-in-houdini.md) — earlier, simpler balloon-typography video from the same channel using extreme stiffness values instead of a curvature-driven animated mask for wrinkle control.
+- [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares the broader pattern of using Vellum constraints/masks for stylized deformation rather than realistic simulation.
