@@ -1914,9 +1914,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=7PHYAnZbTvM
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vex, quick-tips, for-each, lots-of-division, random-cut, find-shortest-path, expand-point-group
+- **Summary:** Breaks up the repeating seam Lots of Division creates on a flat grid by cutting a random Find-Shortest-Path edge across it first, comparing a sort-based random-point-selection approach against a cheaper for-each-over-just-2-numbers alternative that avoids sorting entirely.
 - **File:** tutorials/vex-quick-tips-2-iterating-over-numbers.md
 
 

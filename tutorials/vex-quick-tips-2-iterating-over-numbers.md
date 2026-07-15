@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=7PHYAnZbTvM
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vex, quick-tips, for-each, lots-of-division, random-cut, find-shortest-path, expand-point-group]
+extraction_status: complete
 frames_dir: tutorials/frames/vex-quick-tips-2-iterating-over-numbers/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Vex quick tips #2 | Iterating over numbers
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vex-quick-tips-2-iterating-over-numbers <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -171,30 +167,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/vex-quick-tips-2-iterating-over-numbers/frame_000.jpg
+- [2:12] tutorials/frames/vex-quick-tips-2-iterating-over-numbers/frame_001.jpg
+- [4:05] tutorials/frames/vex-quick-tips-2-iterating-over-numbers/frame_002.jpg
+- [5:40] tutorials/frames/vex-quick-tips-2-iterating-over-numbers/frame_003.jpg
+- [7:00] tutorials/frames/vex-quick-tips-2-iterating-over-numbers/frame_004.jpg
+- [10:20] tutorials/frames/vex-quick-tips-2-iterating-over-numbers/frame_005.jpg
+- [13:20] tutorials/frames/vex-quick-tips-2-iterating-over-numbers/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Break up the visible, repeating seam that **Lots of Division** creates on a flat grid (a fixed diagonal from its first-iteration cut) by introducing a random cut path between two edge points via **Find Shortest Path**, then compares two ways of picking those random start/end points: sorting all points randomly, versus a cheaper "for-each over numbers" (only 2 iterations) approach that avoids sorting entirely.
 
 ### Summary
-[PENDING EXTRACTION]
+By default, feeding a flat plane straight into Lots of Division produces a visually obvious fixed seam from its first subdivision iteration. The fix is to cut a random path across the grid first with Find Shortest Path, then subdivide. The tutorial builds row/column attributes on a Grid (`row = floor(ptnum/cols)`, `col = ptnum % cols`, with `max_col` stored as a detail attribute), then demonstrates two ways to pick one random point in column 0 and one in the last column to serve as the cut's start/end: **Approach 1 (sort-based)** — randomly sort all points (Sort node, random order + seed), use `expandpointgroup()` on `col==0` and `col==max_col` to get each column's point array, then group the first point of each shuffled array as `start`/`end`; feed those into Find Shortest Path to get a random edge path, group it, Group Transfer it back, then run Lots of Division for a randomized, seam-free result. **Approach 2 (for-each-over-numbers, no sort needed)** — since only 2 points are actually needed (not a full point-order shuffle), iterate a For-Each over just 2 numbers; build a manual `cols_array` (or "groups" array) containing the string names of column-0 and last-column groups, index into it with `@iteration` (0 first pass, 1 second pass) via `expandpointgroup()`, generate a random index with `int(random(@iteration + seed) * len(array))`, and manually `setpointgroup()` at each iteration to build `group0`/`group1` (Houdini doesn't let you rename iterated groups automatically, so a Switch node is used afterward to route between them) — this selects one random point per iteration without any sort node or full-point-order randomization, which is more efficient since only 2 iterations are needed instead of iterating over every point.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. On a Grid (subdivided into columns/rows), build `row` and `col` int attributes via a wrangle: `row = floor(ptnum / cols)`, `col = ptnum % cols` — plus a detail attribute `max_col` via `int max_col = @col; ... setdetailattrib(..., "max", ...)` (max reduction) for later reference.
+2. **Approach 1 — sort-based:** randomly reorder all points with a **Sort** node (random order, seed), use `expandpointgroup(0, "@col=0")` and `expandpointgroup(0, "@col=" + itoa(max_col))` to get each column's point array (now in randomized order thanks to the Sort), and group the first entry of each as `start`/`end`.
+3. Feed the `start`/`end` groups into **Find Shortest Path** to compute a random path between the two columns.
+4. Group the resulting path edges, **Group Transfer** them back onto the original geometry, then feed into **Lots of Division** — the random cut breaks up the seam, and changing the seed changes the whole pattern.
+5. **Approach 2 — for-each over numbers (no sort):** set a **For-Each Number** loop to iterate exactly 2 times (since only 2 points are needed — one per side).
+6. Manually build a string array `cols_array` (or "groups") containing the two group names — column 0 and the last column (`"col=0"`, `"col=" + itoa(max_col)`) — this is the one piece of manual setup required.
+7. Inside the loop, use `expandpointgroup()` indexed by `@iteration` (0 on the first pass, 1 on the second) to fetch the correct column's point array each iteration.
+8. Generate a random index into that array with `int(random(@iteration + seed_param) * len(array))`, then manually build and assign a group name per iteration (e.g. `group0`, `group1`) via `setpointgroup()`, since Houdini doesn't support renaming iterated for-each groups automatically.
+9. After the loop, use a **Switch** node to select between the `group0`/`group1` outputs (workaround for the manual-rename limitation), feed the two points into Find Shortest Path as before, then Lots of Division — same visual result, but without ever sorting or touching every point, since only 2 iterations run instead of N.
+10. Optionally visualize with `@class = @primnum` (or `@Cd` via primitive) to distinguish which points/edges belong to which side, and compare frame-rate/complexity between the sort-based and for-each-over-numbers approaches.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Grid, point wrangle (`floor()`, `%` modulo, `int`, detail-attribute max reduction for `max_col`), Sort (random order + seed), `expandpointgroup()`, group creation via point-number comparison, Find Shortest Path (cost-free path search between grouped start/end points), Group, Group Transfer, Lots of Division (irregularity, iterations), For-Each Number (2 iterations), `random()`, `len()`, `setpointgroup()`, `itoa()`, Switch node (group-name workaround).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the sort-based version is approachable; the for-each-over-numbers alternative requires understanding `expandpointgroup()` indexing by iteration and manual group-array bookkeeping).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vex, quick-tips, for-each, lots-of-division, random-cut, find-shortest-path, expand-point-group
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vex quick tips | Overhang look with channel ramps](vex-quick-tips-overhang-look-with-channel-ramps.md) — same quick-tips series, focused on quaternion-based normal rotation instead of for-each/group patterns.
+- [Vex Quick Tips #4 - Pineapple Crown](vex-quick-tips-4---pineapple-crown.md) — same series, applies similar attribute-manipulation VEX patterns to a leaf-placement problem.
+- [Procedural UV's In Houdini](procedural-uvs-in-houdini.md) — shares the Find Shortest Path technique used here, applied there to seam-snapping for UV flattening.
