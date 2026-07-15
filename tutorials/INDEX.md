@@ -2594,9 +2594,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=T-_L6BeLSkg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.331
+- **Tags:** vellum, vdb, typography, karma, materialx, simulation, balloon, text-effects
+- **Summary:** Creates inflated "balloon text" by VDB-rounding extruded font letters, remeshing, then running Vellum Configure Balloon with deliberately extreme stiffness/pressure values (high stretch, low bend, high pressure rest-scale) and freezing on whichever unsettled frame looks best, rendered in Karma XPU.
 - **File:** tutorials/vellum-balloon-text-in-houdini.md
 
 

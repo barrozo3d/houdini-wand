@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=T-_L6BeLSkg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.331"
+tags: [vellum, vdb, typography, karma, materialx, simulation, balloon, text-effects]
+extraction_status: complete
 frames_dir: tutorials/frames/vellum-balloon-text-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Vellum Balloon Text in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vellum-balloon-text-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -152,30 +148,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/vellum-balloon-text-in-houdini/frame_000.jpg
+- [1:30] tutorials/frames/vellum-balloon-text-in-houdini/frame_001.jpg
+- [2:50] tutorials/frames/vellum-balloon-text-in-houdini/frame_002.jpg
+- [5:00] tutorials/frames/vellum-balloon-text-in-houdini/frame_003.jpg
+- [5:50] tutorials/frames/vellum-balloon-text-in-houdini/frame_004.jpg
+- [6:20] tutorials/frames/vellum-balloon-text-in-houdini/frame_005.jpg
+- [9:10] tutorials/frames/vellum-balloon-text-in-houdini/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Create an inflated "balloon text" effect by VDB-rounding a font's extruded letters (since Bevel alone looks too sharp), remeshing for simulation-friendly topology, then running a **Vellum Configure Balloon** setup and deliberately dialing in unstable/high parameters (very high stretch stiffness, very low bend stiffness, cranked pressure rest scale) to produce the characteristic wrinkled-fabric look, freezing on whichever single frame looks best rather than letting the sim settle.
 
 ### Summary
-[PENDING EXTRACTION]
+Text is created via a Font node, extruded (~0.2, with back cap), then converted to VDB and rounded out via **VDB Smooth**, since a straight Bevel wasn't smooth enough. After converting back to polygons to check the result, the smooth amount and an added **Erode** pass refine the rounded shape further. Since this VDB-remeshed geometry isn't well-suited for simulation directly, a separate **Remesh** pass (small remesh size, e.g. 0.0075) gives clean, simulation-appropriate topology. The core Vellum setup uses **Vellum Configure Balloon** (auto-creating the Vellum Cloth and Pressure constraints) feeding a **Vellum Solver**, with gravity removed so the letters don't fall. To get the wrinkled balloon-fabric look, the Vellum Cloth constraint's rest-scale/stiffness values are pushed to unusual extremes: stretch stiffness cranked to ~10,000, bend stiffness dropped to ~0.01 — producing an uncontrolled, overly wrinkled result — then the **Vellum Pressure** constraint's rest-scale is set high (~50) and only a single simulated frame is used (not letting it fully settle), since one particular early frame produced the best-looking wrinkle pattern. The chosen frame is baked to a **Vellum I/O cache** (with "remove time dependent" caching) so it can be frozen and used as static geometry for rendering. Rendering brings the geometry into Solaris, assigns a Karma Material Builder material, uses a Dome Light with an HDRI (from Poly Haven), sets Karma to XPU, tweaks camera/quality/reflection-refraction limits, disables the environment-light background for a clean black backdrop, and finishes with a simple gold/metallic MaterialX shader (increased metalness and roughness) rather than building a full custom material.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Create text via **Font** node, **Extrude** (~0.2, with back cap enabled), choosing a rounded-corner font style that suits the inflated look.
+2. Convert to **VDB from Polygons** and use **VDB Smooth** to round out the sharp extruded edges (a plain Bevel wasn't smooth enough for this effect).
+3. Convert back to polygons to check the result; if it still looks rough, increase the smooth amount (~10) and add a **VDB Reshape/Erode** pass to further refine the rounded shape.
+4. Since this VDB-derived geometry isn't ideal for simulation, **Remesh** it with a small remesh size (~0.0075) for clean, simulation-friendly topology.
+5. Set up **Vellum Configure Balloon** (auto-creates the Vellum Cloth constraint and Vellum Pressure constraint) and connect it to a **Vellum Solver** (hold J to drag-connect nodes quickly).
+6. Remove gravity from the solver so the balloon letters don't fall.
+7. In the **Vellum Cloth** constraint, push the **stretch stiffness** rest-scale/value up dramatically (author uses ~10,000) and drop the **bend stiffness** down to ~0.01 — producing an initial, overly-wrinkled/uncontrolled result.
+8. In the **Vellum Pressure** constraint, set the rest-scale to a high value (~50) to control the amount of inflation/wrinkle detail.
+9. Rather than simulating to convergence, **scrub through individual frames** and pick whichever single frame gives the best wrinkle look (an earlier, less-settled frame was chosen over a later one that looked "too much").
+10. Bake the chosen frame to a **Vellum I/O** cache node with time-dependent caching disabled, freezing it as static geometry.
+11. **Render setup**: import the geometry into Solaris, create a Material Library with a Karma Material Builder, assign it to everything; add a Dome Light using an HDRI (Poly Haven, "Christmas photo studio"); set the render engine to **Karma XPU**, tune quality/diffuse/reflection/refraction limits, disable the dome light as a visible background for a clean black backdrop, and enable "save viewport size" for camera-less quick renders.
+12. Finish with a simple gold-look MaterialX shader: increase metalness and bump up roughness slightly, without building a fully custom shading network.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Font, Extrude, VDB from Polygons, VDB Smooth, Convert VDB, VDB Reshape/Erode, Remesh, Vellum Configure Balloon (Vellum Cloth + Vellum Pressure constraints), Vellum Solver (gravity disabled), stiffness/rest-scale tuning (stretch ~10,000, bend ~0.01, pressure rest-scale ~50), frame-by-frame visual selection (no full settle), Vellum I/O (time-dependent caching disabled), Material Library, Karma Material Builder, Dome Light (Poly Haven HDRI), Karma XPU render settings, MaterialX Standard Surface (metalness/roughness gold look).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the technique is approachable — mostly extreme parameter tuning and frame-picking rather than complex node networks).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.331 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, vdb, typography, karma, materialx, simulation, balloon, text-effects
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vellum Typography in Houdini](vellum-typography-in-houdini.md) — likely companion/alternate typography-effect video using Vellum from the same channel.
+- [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares the studio's broader pattern of using Vellum for stylized deformation rather than realistic simulation.
