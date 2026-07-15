@@ -2604,9 +2604,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=lcgNaIicsZU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.331
+- **Tags:** materialx, karma-xpu, hda, decals, vex, boolean, displacement, food, product-viz
+- **Summary:** Custom UV-planar-projection HDA generates a proximity mask so a logo decal only shows on the cup's front (Address Mode Constant + alpha×mask mixing in Solaris), plus a modeled (not shaded) rim-sharpness detail via edge-normal transfer and Boolean Shatter, and a noise-mixed fries shader with displacement.
 - **File:** tutorials/procedural-fries-with-mtlx-and-karma-xpu.md
 
 

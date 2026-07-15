@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=lcgNaIicsZU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.331"
+tags: [materialx, karma-xpu, hda, decals, vex, boolean, displacement, food, product-viz]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-fries-with-mtlx-and-karma-xpu/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Fries with Mtlx and Karma XPU
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-fries-with-mtlx-and-karma-xpu <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -91,30 +87,51 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/procedural-fries-with-mtlx-and-karma-xpu/frame_000.jpg
+- [0:50] tutorials/frames/procedural-fries-with-mtlx-and-karma-xpu/frame_001.jpg
+- [1:30] tutorials/frames/procedural-fries-with-mtlx-and-karma-xpu/frame_002.jpg
+- [2:00] tutorials/frames/procedural-fries-with-mtlx-and-karma-xpu/frame_003.jpg
+- [2:35] tutorials/frames/procedural-fries-with-mtlx-and-karma-xpu/frame_004.jpg
+- [3:10] tutorials/frames/procedural-fries-with-mtlx-and-karma-xpu/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A custom UV-planar-projection HDA generates a proximity-based mask so a logo decal (e.g. a McDonald's-style cup) only appears on the front of a cylindrical surface, driven in Solaris by multiplying the texture's alpha against that SOP-computed mask; a separate rim-sharpening detail is achieved by extracting/transferring edge-curve normals and Boolean-shattering a swept ring rather than attempting it in pure procedural shading.
 
 ### Summary
-[PENDING EXTRACTION]
+A simple custom HDA performs UV planar projection with a point placed at the same position as the projection plane, transferring a proximity-based attribute to the geometry so the decal naturally fades out anywhere not facing the projector — avoiding the logo wrapping onto the back of the cup. In Solaris, a Place2D-style node controls texture scale, the texture's Address Mode is set to **Constant** (not tiled/repeat) so it doesn't repeat around the cylinder, and the texture's alpha is multiplied by the SOP-computed mask (again preventing back-of-model bleed from the planar projection) before using that combined mask as the mix factor between the decal texture and the base red material. A rim/sharpness detail line at the cup's top is achieved by modeling rather than shading: side edge groups (saved during modeling) are used to compute normals along the curves, transferred onto the top edge curve so it can be "picked" (peaked) along the shape, resampled for smoothness, duplicated via Sweep, then Boolean'd in **Shatter mode** to break up the swept ring into the desired jagged detail pattern, with the resulting group stored as the sharpness-driving primitive attribute. The fries shader mixes orange/yellow via a whirling noise for albedo variation, distorts a Unified Noise with a Fractal noise added to position for displacement (duplicated with a different frequency/type and remapped to the needed displacement range), adds bump via another distorted noise, and reuses the same yellow color mix for both albedo and a small-scale subsurface contribution.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Decal/logo projection mask**: build a small custom HDA doing **UV planar projection**, placing a reference point at the same position as the projection plane and transferring a **proximity-based mask** attribute onto the geometry so the projected decal naturally fades where it shouldn't appear (e.g. the back of a cylindrical cup).
+2. In Solaris, control decal scale via a Place2D-style node; load the texture and set its **Address Mode to Constant** so it doesn't tile/repeat around the surface.
+3. Multiply the texture's alpha by the SOP-computed mask attribute (again preventing the decal from bleeding onto the back).
+4. Use the combined mask as the **mix factor** between the decal texture and the base color material.
+5. **Rim detail (modeled, not shaded)**: extract the side edge groups saved during modeling, compute normals along those curves, and transfer them onto the top edge curve so it can be Peaked along the shape's contour.
+6. **Resample** the top curve for smoothness, duplicate it with a **Sweep**, then use a **Boolean set to Shatter mode** to break the resulting swept ring into the jagged detail pattern; store the resulting group as a primitive attribute driving the sharpness look.
+7. **Fries shader — albedo**: mix orange and yellow using a whirling noise; use a second noise to mix in additional yellow-shade color variation.
+8. **Displacement**: distort a Unified Noise by adding a Fractal noise to its position input (VOP-style); duplicate the noise setup with a different frequency/type, add the two together, and remap to fit the target displacement range.
+9. Add **bump** via a separately distorted noise.
+10. **Final shader assembly**: reuse the same yellow color-mix network for both albedo and a small-scale subsurface scattering contribution (SSS scale depends on overall scene scale).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Custom HDA (UV planar projection + proximity mask), Place2D-style scale control, MaterialX texture node (Address Mode: Constant), alpha/mask multiply + mix, Attribute Transfer (curve normals), Peak (contour-following pick), Resample, Sweep, Boolean (Shatter mode), primitive attribute (sharpness group), MaterialX Noise nodes (whirling/turbulent for albedo mix), Unified Noise + Fractal noise (position-distorted displacement), noise duplication + Remap (displacement range), bump-mapping noise, Standard Surface shader (albedo/SSS shared color mix).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the planar-projection mask HDA and modeled-rim-detail workaround are the standout non-obvious techniques; the shader itself is a straightforward noise-mixing setup).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.331 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+materialx, karma-xpu, hda, decals, vex, boolean, displacement, food, product-viz
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural assets and shading with Houdini and MaterialX](procedural-assets-and-shading-with-houdini-and-materialx.md) — related MaterialX food-shading technique (bananas) from the same channel.
+- [Procedural Tips: Flow Maps, RBD Emit and more](procedural-tips-flow-maps-rbd-emit-and-more.md) — shares product-viz shading tricks (COPs-driven textures) in a similar drink/food-glass context.
