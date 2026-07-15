@@ -131,5 +131,6 @@ uvs, find-shortest-path, vdb, vex, hda, gradient, cake, procedural-uvs
 ---
 
 ## Related Tutorials
+- [Vex Problem Solving in Houdini](vex-problem-solving-in-houdini.md) — revisits this same UV-ing problem with a Cluster-node (normal-based) seam-detection alternative to the Find-Shortest-Path approach used here.
 - [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — deeper, more robust follow-up version of the same gradient/oriented-bounding-box UV-auto-orientation HDA referenced here.
 - [Procedural tips and tricks in Houdini 20.5](procedural-tips-and-tricks-in-houdini-205.md) — shares the Find Shortest Path technique used here, applied there to jewelry stone-holder wire meshes.

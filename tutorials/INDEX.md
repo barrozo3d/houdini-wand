@@ -2054,9 +2054,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Fiw_NedtssQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.410
+- **Tags:** vex, vdb, sdf, cluster, uvs, gradient, quaternion, vines, ivy-generator, procedural-uvs
+- **Summary:** Fixes vine points stuck in concave geometry during a SOP Solver by projecting onto a heavily-smoothed VDB SDF then re-projecting onto a dilated original SDF; also UVs a VDB mesh via a normal-based Cluster node for seams plus a gradient-measured quaternion rotation for correct island orientation.
 - **File:** tutorials/vex-problem-solving-in-houdini.md
 
 

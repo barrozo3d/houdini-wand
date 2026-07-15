@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Fiw_NedtssQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.410"
+tags: [vex, vdb, sdf, cluster, uvs, gradient, quaternion, vines, ivy-generator, procedural-uvs]
+extraction_status: complete
 frames_dir: tutorials/frames/vex-problem-solving-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Vex Problem Solving in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vex-problem-solving-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -37,30 +33,62 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/vex-problem-solving-in-houdini/frame_000.jpg
+- [1:30] tutorials/frames/vex-problem-solving-in-houdini/frame_001.jpg
+- [2:30] tutorials/frames/vex-problem-solving-in-houdini/frame_002.jpg
+- [3:40] tutorials/frames/vex-problem-solving-in-houdini/frame_003.jpg
+- [5:00] tutorials/frames/vex-problem-solving-in-houdini/frame_004.jpg
+- [6:20] tutorials/frames/vex-problem-solving-in-houdini/frame_005.jpg
+- [7:30] tutorials/frames/vex-problem-solving-in-houdini/frame_006.jpg
+- [8:40] tutorials/frames/vex-problem-solving-in-houdini/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Two unrelated VEX problem-solving sessions: (1) fixing vine/ivy growth points that get stuck in concave geometry areas during a SOP Solver by projecting onto a **heavily-smoothed VDB SDF** instead of the raw mesh, then re-projecting onto the original (dilated) SDF afterward to restore surface fidelity; (2) UVing a VDB-derived mesh with no clean seam options by using a **Cluster node keyed on vertex normals** (rather than Find-Shortest-Path) to detect island boundaries, then auto-orienting each resulting UV shell via a **measured mask-gradient → quaternion rotation** technique.
 
 ### Summary
-[PENDING EXTRACTION]
+For an in-progress ivy/vine generator tool, points are scattered on a column surface with target positions to grow toward, constrained via a SOP Solver. The obvious approach — Ray Project (Minimum Distance) directly onto the mesh each solve step — causes points to get permanently stuck in concave crevices. The fix: convert the geometry to VDB, apply a heavy **VDB Smooth** (essentially a large bevel), and output that as an **SDF**; inside the solver, a wrangle moves each traveling point to wherever that smoothed SDF's value is zero (i.e. onto the smoothed surface) — since there are no sharp concavities left to snag on, points travel freely. Because this smoothed-SDF surface no longer respects the original geometry's actual concave detail, a second pass fixes this after the vine paths are grown: points are pushed out along their normal (an "exploded view" offset), new connecting points/curves are added, and a second **Ray Project** — this time against the **original SDF, dilated slightly outward** — snaps everything back onto (near) the true surface without re-introducing the original stuck-in-concavity problem, since dilating the original SDF prevents the newly-added vine geometry from intersecting the mesh. For the second problem — UVing a VDB-derived mesh with no clean manual seam options — the mesh is Remeshed (fewer, easier-to-control polygons) and Ray-projected to sharpen corners; instead of the studio's earlier Find-Shortest-Path seam technique, a **Cluster** node driven by vertex normals (normals computed at a 0° cusp angle, then promoted point-wise using the **Modes** promotion method, then promoted again to primitive) isolates distinct mesh "pieces" purely from normal discontinuity — Group from Attribute Boundary on this cluster attribute directly yields usable UV Flatten seams. To also fix the resulting UV islands' rotation (not just position), a Y-axis relative-point-bounding-box mask is built to encode "which way is up," UVs are split/promoted to points and temporarily swapped into 3D position (`@P = @uv`, with the original position saved to a rest attribute first), then the **gradient of the Y-mask is measured per-cluster/piece** — the gradient vector directly reveals each island's current "up" direction in UV space. A wrangle computes the needed rotation angle (`atan2`-style logic between the gradient's X and Y components, skipped entirely via a `select()`/if-statement if the gradient length is below a ~0.1 threshold, since near-zero gradients mean the piece is already correctly Y-aligned and rotating it would be meaningless/noisy), builds a **quaternion** around the Z axis for that angle, rotates each UV point around its own island center (subtracting/re-adding the pivot), then the original position is restored via Attribute Swap. Since rotation can introduce new overlaps, **UV Layout** (rotations disabled, axis alignment set to none) resolves them without undoing the careful per-island orientation, and the UVs are transferred back to the original (non-remeshed) mesh.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**Problem 1 — vines stuck in concave areas:**
+1. Scatter growth points on a column surface with target positions; constrain via a **SOP Solver**.
+2. Identify the failure mode: Ray Project (Minimum Distance) directly onto the raw mesh each solve step causes points to get permanently stuck in concave crevices.
+3. **Fix**: convert the mesh to VDB, apply a strong **VDB Smooth** (acts like a large bevel), output as an **SDF**; inside the solver wrangle, move each point to the nearest position where this smoothed SDF value equals zero — eliminates concave snag points entirely.
+4. After growth completes, restore original-surface fidelity: push points outward along their normal (exploded-view offset), add connecting points/curves for the vine geometry.
+5. **Re-project onto the original SDF, dilated outward slightly**, via a second Ray Project pass — snaps the vines onto (near) the true mesh surface without reintroducing the stuck-in-concavity problem, since the dilation prevents intersection.
+
+**Problem 2 — UVing a VDB-derived mesh via Cluster + gradient-based orientation:**
+6. Remesh the UV-less VDB-derived mesh (fewer, more controllable polygons); Ray Project to sharpen corners.
+7. Compute vertex **normals at a 0° cusp angle**, promote to points using the **Modes** promotion method (found to work best empirically), then promote again to primitives — this **Cluster** attribute cleanly isolates distinct mesh pieces by normal discontinuity alone, no manual seam picking needed.
+8. **Group from Attribute Boundary** on the cluster attribute directly yields a usable seam group for **UV Flatten** — sufficient on its own if island rotation doesn't matter.
+9. **UV orientation fix**: build a **Y-axis mask** via relative point bounding box (0→1, "which way is up"); run **Connectivity** on the UVs (per-island ID); split/promote UVs to points; save the original position to a **rest** attribute, then temporarily set `@P = @uv` to work in UV-as-3D-space.
+10. **Measure the gradient** of the Y-mask per cluster/piece — the resulting vector directly encodes each island's current "up" direction.
+11. In a wrangle: retrieve the gradient primitive attribute by `primnum`; compute the rotation angle via `atan2`-equivalent logic between the gradient's X/Y components; use a **`select()`** (if-statement equivalent) to **skip rotation entirely** (angle = 0) when the gradient's length is below a ~0.1 threshold (near-zero gradient = already correctly aligned, e.g. pieces facing straight along Y).
+12. Compute the **UV island center** (pivot); build a **quaternion** (angle, Z-axis) and rotate each UV point around its own island's center (subtract pivot → rotate via quaternion → add pivot back).
+13. **Attribute Swap** the temporary `@P` back for the saved rest-position attribute to restore true 3D geometry.
+14. Run **UV Layout** with rotations disabled and axis alignment set to none (to preserve the careful per-island rotation just computed) to resolve any overlaps introduced by the rotation.
+15. Promote the UV attribute back to vertices, Fuse, and transfer the finished UVs back onto the original (pre-remesh) mesh.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOP Solver, Ray Project (Minimum Distance), VDB from Polygons, VDB Smooth, SDF export, wrangle-based zero-value SDF point-snapping, exploded-view normal offset, VDB Dilate (original SDF), second Ray Project pass; Remesh, Normal (0° cusp angle), Attribute Promote (Modes method, point→primitive), Cluster node (normal-based island detection), Group from Attribute Boundary, UV Flatten, relative point-bounding-box Y mask, Connectivity (UV islands), Attribute Promote (UV split to point), rest-position attribute save, `@P = @uv` UV-as-3D-space trick, Measure (gradient of mask per piece), Attribute Wrangle (`primnum`-indexed gradient retrieval, `atan2`-style angle calc, `select()` threshold-based skip, quaternion construction/rotation around Z, pivot subtract/re-add), Attribute Swap (position restore), UV Layout (no rotation, no axis alignment), Attribute Promote (UV to vertices), Fuse, UV transfer to original mesh.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (both problems — SDF-smoothing-then-re-projecting for stuck points, and gradient-based quaternion UV rotation — are sophisticated, non-obvious production solutions).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.410 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vex, vdb, sdf, cluster, uvs, gradient, quaternion, vines, ivy-generator, procedural-uvs
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural UV's In Houdini](procedural-uvs-in-houdini.md) — the earlier Find-Shortest-Path-based approach to the same "UV a VDB-derived cake mesh" problem, contrasted here with the Cluster-based alternative and gradient-orientation technique.
+- [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — deeper, more robust version of the same gradient/quaternion-based UV-auto-orientation technique used here.
+- [Environments in Houdini Part 4 - Vines, Rocks and Fog](environments-in-houdini-part-4---vines-rocks-and-fog.md) — related vine-generation technique (`pcopen()`-based attachment mask) from the same channel.
