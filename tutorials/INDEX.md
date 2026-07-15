@@ -2344,9 +2344,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=PcP9Eieij1g
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.734
+- **Tags:** flip, vex, vdb, distance-along-geometry, materialx, karma, food, density-by-attribute
+- **Summary:** Four combined tricks for a caramel-cookie shot: a density-by-attribute FLIP source for layered caramel flow, sin(curveu)-driven VEX melty-border undulation, Boolean-seam distance-along-geometry edge masks, and VDB-combined swept-curve droplets blurred in with Smooth SDF.
 - **File:** tutorials/procedural-techniques-in-houdini.md
 
 

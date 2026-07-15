@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=PcP9Eieij1g
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.734"
+tags: [flip, vex, vdb, distance-along-geometry, materialx, karma, food, density-by-attribute]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-techniques-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural techniques in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-techniques-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -85,30 +81,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:10] tutorials/frames/procedural-techniques-in-houdini/frame_000.jpg
+- [0:25] tutorials/frames/procedural-techniques-in-houdini/frame_001.jpg
+- [0:55] tutorials/frames/procedural-techniques-in-houdini/frame_002.jpg
+- [1:20] tutorials/frames/procedural-techniques-in-houdini/frame_003.jpg
+- [1:40] tutorials/frames/procedural-techniques-in-houdini/frame_004.jpg
+- [2:10] tutorials/frames/procedural-techniques-in-houdini/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Four combined procedural tricks for a "D"-shaped caramel-covered cookie ice cream: a **density-by-attribute FLIP source** that sections the sim volume by Y-bounds for layered caramel-flow behavior, a `sin(curveu)`-driven VEX undulation for the melty cookie-border look, `distance along geometry` masks (built from Boolean-seam groups) for edge-targeted effects, and VDB-combined swept-curve droplets blurred in with Smooth SDF.
 
 ### Summary
-[PENDING EXTRACTION]
+To get caramel that flows in visible horizontal layers rather than uniformly, a density attribute is authored on the FLIP source points by dividing the point cloud into sections using its own bounding box, blending in noise per-section plus a separate noise at the bottom via `lerp()`, remapping the result to fit the solver's expected density range, and enabling **Density by Attribute** in the FLIP solver so those authored values actually drive local fluid density/behavior. The undulating "melty" look on the cookie border uses `sin()` along the curve-view (`curveu`) attribute, taking the **absolute value** to keep displacement positive-only, multiplied by curve length for consistent bump sizing regardless of curve length, then displacing position along the normal by that value. For edge-targeted effects (e.g. burn/darkening near cutouts), unshared points are saved *before* the Boolean operation, regrouped afterward, and **Group Combine**d to separate holes from the outer border, with an **Attribute Distance Along Geometry** mask built for each group to drive downstream shading/effects with proper falloff from each edge type. Caramel droplets are added after the Boolean seam is formed: a few points are manually selected and a curve is copied to each with randomized p-scale, then Swept with scale-along-curve tuning and Grid end caps; both the main cookie mesh and the droplet meshes are converted to VDB and **VDB Combined**, with a **Smooth SDF** using a mask from the second input to blur the seam transition so droplets blend seamlessly into the surface rather than looking pasted-on. Shading is comparatively simple: for the cookie, the saved distance-along-geometry attribute drives a MaterialX **Mix** node as the mix factor between different colors, plus a random-noise-driven bump map for surface variation.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Density by attribute FLIP setup**: on the FLIP source points, create a density attribute by dividing the point cloud into sections using its own bounding box; add noise per section and blend with `lerp()`, plus a separate noise specifically for the bottom section.
+2. **Remap** the resulting density values to the range the FLIP solver expects, and enable **Density by Attribute** in the FLIP solver so the authored per-point density actually influences the simulation's local behavior — producing visible horizontal caramel layers.
+3. **Undulating cookie-border effect**: use `sin()` on the `curveu` (curve-view) attribute, wrapped in `abs()` to keep only positive displacement values.
+4. Multiply the sine result by the **curve's length** so bump size stays visually consistent regardless of how long the curve segment is, then displace position **along the normal** by that final value.
+5. **Distance-along-geometry masks for edge effects**: before running the Boolean operation that cuts the cookie's holes, save the **unshared points** group; after the Boolean, regroup unshared points again and use **Group Combine** to separate the hole edges from the outer border edges.
+6. Build an **Attribute (Distance Along Geometry)** mask for each of the two groups (holes vs. border), giving downstream shading/effects proper falloff distinguishing edge type.
+7. **VDB droplets**: after the Boolean seam exists, manually select a handful of points and Copy a curve to each with a randomized p-scale.
+8. **Sweep** each curve with scale-along-curve tuning and **Grid** end caps to form drip/droplet shapes.
+9. Convert both the main cookie mesh and the droplet meshes to **VDB**, then **VDB Combine** them together.
+10. Use a **Smooth SDF** node with a mask sourced from the second input to blur the transition seam, so the droplets blend smoothly into the cookie surface instead of looking like pasted-on geometry.
+11. **Shading**: use the saved distance-along-geometry attribute as the mix factor in a MaterialX **Mix** node to blend different colors across the cookie surface, plus a random-noise-driven bump map for surface micro-detail.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+FLIP source (density attribute authoring via bounding-box sectioning, noise, `lerp()`), Remap, FLIP Solver (Density by Attribute enabled), VEX `sin()`/`abs()` on `curveu`, curve-length multiplication, position-along-normal displacement, Boolean (with pre/post unshared-point group saving), Group Combine (hole vs. border separation), Attribute — Distance Along Geometry (per-group masks), manual point selection + Copy (randomized p-scale curves), Sweep (scale-along-curve, Grid end caps), VDB from Polygons, VDB Combine, Smooth SDF (second-input mask blending), MaterialX Mix (distance-mask-driven color blend), random-noise bump map.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (density-by-attribute FLIP control and VDB-combined seam-blurred droplets are both non-trivial, production-level techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.734 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+flip, vex, vdb, distance-along-geometry, materialx, karma, food, density-by-attribute
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural Food in Houdini - Mardini 2026](procedural-food-in-houdini-mardini-2026.md) — likely related food-modeling/shading techniques from the same channel.
+- [How to not Bake Brownies in Houdini](how-to-not-bake-brownies-in-houdini.md) — shares VDB-based food-detail techniques from the same channel.
