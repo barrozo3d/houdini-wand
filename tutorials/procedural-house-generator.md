@@ -186,3 +186,4 @@ procedural-modeling, buildings, vex, xyzdist, boolean, roof, windows, architectu
 - [Procedural Roof Tiles in Houdini](procedural-roof-tiles-in-houdini.md) — much deeper dive into the exact manual UV-flattening + tile-grid technique used here for the roof.
 - [Procedural Buildings in Houdini Tips and Tricks](procedural-buildings-in-houdini-tips-and-tricks.md) — related building-generation techniques from the same channel.
 - [Procedural Favela in Houdini Tips and Tricks](procedural-favela-in-houdini-tips-and-tricks.md) — another full building-generation system with overlapping window/wall techniques.
+- [Procedural Boat in Houdini](procedural-boat-in-houdini.md) — shares the from-scratch VEX uniform-spacing formula used here for windows/doors, applied there to a boat cabin's wall openings.

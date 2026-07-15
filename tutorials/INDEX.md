@@ -1784,9 +1784,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=050av2q2ihg
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** channel-ramp, skin, uv-rectify, connectivity, uv-sample, procedural-modeling, boat, hull
+- **Summary:** Models a full procedural boat (hull, seat, cabin with uniformly-spaced windows/doors via a from-scratch VEX gap-size formula, and sagging rigging wires) using channel-ramp curve shaping, Skin surfacing, and a UV-Connectivity/rectify trick to keep one shell perfectly flat for later UV-Sample-driven seat placement.
 - **File:** tutorials/procedural-boat-in-houdini.md
 
 

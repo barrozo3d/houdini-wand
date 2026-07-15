@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=050av2q2ihg
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [channel-ramp, skin, uv-rectify, connectivity, uv-sample, procedural-modeling, boat, hull]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-boat-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 12
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Boat in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-boat-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -222,30 +218,60 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:55] tutorials/frames/procedural-boat-in-houdini/frame_000.jpg
+- [2:10] tutorials/frames/procedural-boat-in-houdini/frame_001.jpg
+- [4:10] tutorials/frames/procedural-boat-in-houdini/frame_002.jpg
+- [5:40] tutorials/frames/procedural-boat-in-houdini/frame_003.jpg
+- [7:50] tutorials/frames/procedural-boat-in-houdini/frame_004.jpg
+- [10:00] tutorials/frames/procedural-boat-in-houdini/frame_005.jpg
+- [11:20] tutorials/frames/procedural-boat-in-houdini/frame_006.jpg
+- [13:00] tutorials/frames/procedural-boat-in-houdini/frame_007.jpg
+- [15:00] tutorials/frames/procedural-boat-in-houdini/frame_008.jpg
+- [16:30] tutorials/frames/procedural-boat-in-houdini/frame_009.jpg
+- [18:20] tutorials/frames/procedural-boat-in-houdini/frame_010.jpg
+- [20:30] tutorials/frames/procedural-boat-in-houdini/frame_011.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Model a full procedural boat (hull, seat, cabin with uniformly-spaced windows/doors, and hanging rigging wires) from a single deformed base curve, using channel-ramp-driven curve shaping, Skin for hull surfacing, a UV-Connectivity/rectify trick to flatten only part of a UV layout, and from-scratch VEX math for perfectly uniform window/door spacing on a wall of arbitrary length.
 
 ### Summary
-[PENDING EXTRACTION]
+The hull starts from a Line (Z axis, 40-point resample) deformed along Y with a channel ramp to define the base silhouette, with normals computed along X. Side profile curves are built by blasting the first/last points of that base curve, resampling, Sweeping (ribbon, single column) with a width/scale-ramp falloff for curvature, then re-orienting (Orient Along Curve, Y axis) and displacing along the normal via another channel ramp to shape the hull sides. Primitives are sorted by X and Skinned to build the hull surface; the back/stern is added by extending from the base curve's point 0 to point 82 and Resampled with Interpolating Curves. UVs are built by grouping hard edges via max-edge-angle, promoting to edges, and running UV Flatten — but since one section needs to stay perfectly flat (for a later operation), a **Connectivity** pass on the UV shells isolates that specific shell (identified by area — it's reliably the middle one), which is then Rectified with a second UV Flatten (preserving seams) fed that connectivity group — a reusable technique for manipulating only part of a UV layout. A Plank attribute (derived from a 10-segment resample) drives an Explode-by-attribute + Poly Extrude (inset via thickness, side-trim removed) to create the hull's plank/stripe detailing. The seat is built from a Group-by-Range selection of the initial curve (10 of the points, split by connectivity so both sides are selected), the rectified flat hull-shell UVs are copied onto those seat curves via **UV Sample**, then offset along Y using the UV attribute with a per-primitive sign flip (`-1`/`1` based on prim number) so alternating curves move in opposite directions — Skin, Subdivide, and normal/extrude finish the seat. A closing "platform" piece bridges a remaining gap by converting the initial curve setup to a Line (sorted along Z so primitive 0 is always the same piece — kept procedural), blasting primitive 0, resampling, and re-projecting onto the boat, then merging/skinning/fusing to close it. The cabin starts from a box Match-Sized to the seat platform; window/door cutouts are derived from a "shrink-wrapped" 2D silhouette (converted to Line, flat normals computed by zeroing `N.y` after normalizing position) — a dot product between those flat normals and the negative Z axis selects only front-facing points (excluding back windows/doors), plus one manual point selection for a specific door location. Getting **uniform spacing** for an arbitrary number of windows/doors across a wall of any length (rather than clumped-in-the-middle gaps from a naive resample-and-copy) requires a from-scratch VEX formula: given a fixed window count and a window width (mesh X-size × p-scale), the wall's rest-length (via Convert Line) minus the total window width is divided by (window-count + 1) gaps to get an equal gap size, then each point's position is computed by accumulating `gap × (iteration+1) + window-width × iteration`, offset by half a window width to center each window — followed by a Boolean to actually cut the uniformly-spaced holes. Final detailing includes a "rail" built via Shrink Wrap → Convert Line → re-projection with a door-point exclusion, Bevel + Sweep for the rail geometry, and door/window coloring by comparing each hole's area against the max area (the largest is always the door). Hanging/swaying wires are built from the initial curves via Sweep (ribbon/columns), Poly Cut at center points, Resample for wire count, then random Y offsets (via UV-based curve view + sign flip + channel-ramp falloff) on all but the endpoint wires for a natural sag look; a separate straight-wire pass uses Carve + Point Generate + Enumerate to place fixed start/end points with normalized position-based offsets for a gravity-sag curve.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build the hull base: Line along Z, Resample (40 points), deform along Y with a channel ramp for the base silhouette, compute normals along X.
+2. Build side-profile curves: Blast the base curve's first/last points, Resample, Sweep (ribbon, 1 column) with a width/scale-ramp falloff for curvature, Orient Along Curve (Y axis), displace along normal with a second channel ramp.
+3. Sort primitives by X and **Skin** to build the hull surface; extend the back/stern from point 0 to point 82 of the base curve, Resample with Interpolating Curves.
+4. Build UVs: group hard edges by max edge angle, promote to edges, UV Flatten; then isolate one specific UV shell via **Connectivity** (identified reliably by area — the middle shell) and re-flatten just that shell with a second UV Flatten (preserve seams, fed the connectivity group) to keep it perfectly flat for later steps.
+5. Derive a Plank attribute from a 10-segment resample; Explode by that attribute and Poly Extrude (using thickness instead of inset, side trims removed) for the hull's plank/stripe pattern.
+6. **Seat:** Group-by-Range 10 points from the initial curve (split by connectivity for both sides), copy the flat-rectified UVs onto those curves via **UV Sample**, offset along Y using the UV value with a sign flip based on primitive number so alternating curves move oppositely, then Skin/Subdivide/extrude to finish.
+7. **Closing platform:** convert the setup to Line sorted along Z (so primitive 0 is always consistent), blast primitive 0, Resample, re-project onto the boat, merge/Skin/Fuse to close the remaining gap.
+8. **Cabin base:** Box Match-Sized to the platform; derive a flat 2D silhouette via Shrink Wrap → Convert Line → flat normals (normalize position, zero `N.y`); select front-facing points via a dot product against the negative Z axis (plus one manual point for a specific door) to seed window/door placement.
+9. **Uniform window/door spacing (VEX):** given a fixed window count and window width (mesh X-size × p-scale), compute `gapSize = (wallRestLength − windowCount×windowWidth) / (windowCount+1)`, then position each point at `gap×(iteration+1) + windowWidth×iteration + windowWidth/2` (centering offset) — producing perfectly even spacing regardless of wall length or window count, before Booleaning the holes.
+10. Detail the cabin: build a "rail" via Shrink Wrap → Convert Line → re-projection (excluding the door point) → Bevel + Sweep; color windows/doors by comparing each hole's area to the max area (largest = door).
+11. **Hanging wires:** Sweep (ribbon/columns) from the initial curves, Poly Cut at center points, Resample for wire count, then randomize non-endpoint wire positions via UV-based curve view + sign flip + channel-ramp falloff for a natural sag.
+12. **Straight sagging wires:** Carve + Point Generate + Enumerate to fix start/end points, compute normalized position-based normal offsets for a gravity-sag silhouette, Sweep for final wire geometry.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Line, Resample, channel-ramp displacement (×2 for hull profile and side curvature), Sweep (ribbon), Orient Along Curve, Sort (by X, by Z), Skin, Interpolating Curves resample, max-edge-angle Group, UV Flatten (×2), Connectivity (UV-shell isolation by area), UV Sample, sign-flip-by-primitive wrangle, Group by Range + connectivity split, Plank attribute + Explode + Poly Extrude (thickness-based inset), Match Size, Shrink Wrap, flat-normal wrangle (`normalize(P)`, zero Y), dot-product front-face selection, VEX uniform-spacing formula (rest-length via Convert Line, gap-size division, position accumulation), Boolean, Bevel, area-based door/window comparison, Poly Cut, Carve, Point Generate, Enumerate.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the UV-Connectivity/rectify partial-flatten trick and the from-scratch VEX uniform-spacing formula for arbitrary wall lengths/window counts are both non-obvious, reusable production techniques).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+channel-ramp, skin, uv-rectify, connectivity, uv-sample, procedural-modeling, boat, hull
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural House Generator](procedural-house-generator.md) — shares the xyzdist()-based window/door placement approach for architectural openings.
+- [Procedural Favela in Houdini | Tips and Tricks](procedural-favela-in-houdini-tips-and-tricks.md) — shares the Skin-with-second-input technique and vertex-based edge-selection tricks used here.
+- [Procedural Wicker Basket in Houdini](procedural-wicker-basket-in-houdini.md) — shares the Fuse "closest target point" radial bridging and Skin-based hull-surfacing approach.

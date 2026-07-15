@@ -127,3 +127,4 @@ sweep, vex, fuse, weaving, procedural-modeling, orient-along-curve, wicker
 ## Related Tutorials
 - [Procedural Problem Solving in Houdini](procedural-problem-solving-in-houdini.md) — reuses the same "basket effect" alternating-weave technique referenced explicitly in that video.
 - [Handy Houdini Tips - Vellum, UVs, Modeling and More](handy-houdini-tips-vellum-uvs-modeling-and-more.md) — shares related Sweep/curve-based modeling shortcuts from the same channel.
+- [Procedural Boat in Houdini](procedural-boat-in-houdini.md) — shares the Skin-based hull/surface-building approach used here, applied there to a full boat hull.
