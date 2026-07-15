@@ -2184,9 +2184,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=P-2FPlUJO60
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.319
+- **Tags:** python, hou-module, ramp, cops, scripting, automation, quick-tip
+- **Summary:** Short Python script that re-samples any hou.Ramp parameter into evenly-spaced keys by extracting basis/keys/values, generating new evenly-spaced positions, sampling the original ramp's color via lookup() at each, and rebuilding a clean new hou.Ramp with the same gradient.
 - **File:** tutorials/resample-color-ramps-in-houdini.md
 
 
