@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=xz1oNZGq7P0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.319"
+tags: [vex, quaternion, pop-network, pop-fluid, vellum, super-formula, karma, subsurface, food, product-viz]
+extraction_status: complete
 frames_dir: tutorials/frames/spiral-splash-tutorial-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 16
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Spiral Splash Tutorial in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py spiral-splash-tutorial-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -628,30 +624,68 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_000.jpg
+- [1:40] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_001.jpg
+- [3:20] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_002.jpg
+- [4:20] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_003.jpg
+- [6:40] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_004.jpg
+- [9:10] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_005.jpg
+- [10:50] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_006.jpg
+- [13:20] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_007.jpg
+- [15:00] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_008.jpg
+- [17:30] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_009.jpg
+- [20:00] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_010.jpg
+- [22:30] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_011.jpg
+- [25:50] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_012.jpg
+- [27:30] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_013.jpg
+- [30:50] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_014.jpg
+- [33:20] tutorials/frames/spiral-splash-tutorial-in-houdini/frame_015.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a stylized "splashing liquid" hero shot (a chocolate splash arcing over a heart-shaped chocolate piece) by hand-deriving a spiral curve entirely in VEX (quaternion rotation around a tangent basis built from Orient Along Curve), driving a POP network (Pop Noise + a custom min-position attraction wrangle + Pop Fluid) constrained to that spiral guide, meshing the result with Particle Fluid Surface, and separately sculpting a Super Formula heart shape into a balloon-like form via Vellum (rather than manual sculpting) before adding hand-drawn Ray-projected surface decoration.
 
 ### Summary
-[PENDING EXTRACTION]
+A centered Line is Resampled, lightly Mountain-distorted for an organic base curve, Resampled again into a dense subdivision curve, and given an arc-length "spine" UV attribute. The **spiral itself is built entirely in VEX**: Orient Along Curve provides a tangent basis (`tangentU`/`tangentV`, one along the curve direction, one pointing outward along X); a wrangle computes an angle from the UV's U component scaled by a revolutions channel and 2π, normalizes both tangent vectors, builds a **quaternion** (`quaternion(angle, tangentU)`) and uses it to **rotate `tangentV`** around `tangentU`, then displaces position along the rotated `tangentV` by an amplitude parameter — producing a true procedural spiral entirely from VEX rotation math (with the "up" attribute for the following Sweep set from the normalized rotated `tangentV`). The spiral curve is Swept (Ribbon mode) into a thin ribbon guide mesh. A **POP Network** emits 5000 points with a 1-second life (source-interpolated, no inherited velocity), given chaotic motion via **Pop Noise** (Turbulence-style amplitude/swirl-size/offset), then reined in via a **custom Pop Wrangle**: `minpos()` finds the nearest point on the spiral guide, a normalized direction-to-target vector is computed and scaled by a force multiplier and applied as the POP force (constraining points to loosely follow the spiral rather than flying off chaotically), with an additional velocity term added along `tangentU` (scaled by a small multiplier) to make points flow along the spiral's length. A **Pop Fluid** (tight particle separation, increased constraint iterations/stiffness, reduced tensile radius, increased viscosity) turns the constrained points into a cohesive, tendril-forming liquid simulation; a specific frame is Time Shifted and meshed via **Particle Fluid Surface**, converted to polygons and cached as the finished splash geometry. Separately, a **Super Formula** node generates an arc/heart-adjacent profile shape, which is Resampled, thickened (Extrude both directions) into a closed shell, Polyfilled and reversed, then — rather than manually sculpting a rounded, balloon-like form — **Remeshed** for clean Vellum topology, blurred, and inflated via **Vellum Configure Balloon** + Vellum Solver (gravity removed, pressure rest-length-scale increased) until it settles into the desired plump shape; a **Vellum Constraint set to Pin to Target (Soft, stiffness 1)** keeps the shape mostly static while still allowing subtle secondary deformation, and the settled frame is Time Shifted, Vellum Post-Processed (blur + one subdivision, needed since the base mesh is triangulated), and Quad Remeshed (~500) for a clean final "heart" surface. Decorative liquid squiggles on top of this heart shape are added via a **freehand Draw Curve** tool (simpler than trying to script the pattern), Resampled at two densities, moved off-surface slightly, and **Ray**-projected (Minimum Position) onto the heart mesh with an `it_prim` hit-test attribute used to Blast away any curve points that failed to project; the surviving curve is Resampled again, given a noise-driven p-scale (for organic thickness variation), and Swept (round tube, Grid end cap) into raised liquid-drip geometry merged with the heart. Small decorative splash droplets are scattered on the main liquid line (8 points, random scale ~0.65–1, randomized orientation) and Copy-to-Pointed for extra detail. Everything is named uniquely per piece and brought into Solaris, where three simple Karma Standard Surface materials (splash, choc-arc, choc-liquid — each with tuned specular/coat/roughness and small-scale subsurface scattering with distinct SSS colors) are assigned, lit with a Dome Light (Poly Haven HDRI) and a locked viewport-sized camera, and rendered with SSS limit increased and denoiser enabled for the final hero shot.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base spiral curve setup**: centered Line → Resample → light Mountain distortion (zero-centroid, small amplitude) → Resample again (subdivision curves, dense) → UV Texture set to Arc Length / Spine for a `spine`/U attribute along the curve.
+2. **VEX spiral construction**: Orient Along Curve → wrangle computing `angle = @uv.x * ch("revolutions") * 2*PI`; normalize `tangentU`/`tangentV`; build `quaternion(angle, tangentU)` and rotate `tangentV` around `tangentU` with it; displace `@P += rotated_tangentV * ch("amp")` (must run over **points**, not primitives, for this to work); set `up` from the normalized rotated `tangentV` for the following Sweep.
+3. **Sweep** the spiral curve in **Ribbon** mode (small width) into a thin guide ribbon; Normal + Null (`out_spiral`) for downstream reference.
+4. **POP Network setup**: Source from first-context geometry; Birth 5000 points, 1-second life expectancy, source-interpolated (reduces jitter), zero inherited velocity.
+5. Add **Pop Noise** (Turbulence-style amplitude ~0.45, swirl size ~0.3, offset ~50) for chaotic initial motion — unconstrained, this sends points flying in all directions.
+6. **Custom Pop Wrangle constraint**: two-input wrangle (self + Solver targeting the spiral guide); use **`minpos()`** to find the nearest point on the spiral, build a normalized direction-to-target vector, scale by a force multiplier (~0.349) and apply as `@force` — pulling points back toward loosely following the spiral shape.
+7. Add a **flow-along-spiral** term: multiply the guide's `tangentU` vector by a small multiplier (~0.2) and add it to the force/velocity, so particles drift along the spiral's length rather than just clustering at the surface.
+8. **Pop Fluid**: tight particle separation (~0.01), increased constraint iterations/stiffness, reduced tensile radius, increased viscosity (~0.2) — turns the constrained point cloud into a cohesive, tendril-forming liquid look.
+9. **Time Shift** to a chosen frame (found by trial — frame 53 in this session, dependent on exact node values matching), then **Particle Fluid Surface** (tight particle separation ~0.03) to mesh the splash, Convert to Polygons, and File Cache the result as the finished splash geometry.
+10. **Heart/arc shape base**: **Super Formula** node (Arc preset, tuned weight) → Resample → Extrude (both directions, thickness) → Polyfill (single polygon) → Reverse.
+11. **Vellum-based sculpting (instead of manual sculpting)**: Remesh for clean Vellum topology → Attribute Blur → **Vellum Configure Balloon** + Vellum Solver (gravity removed, pressure rest-length-scale increased) — inflates/rounds the shape into the desired plump form.
+12. Add a **Vellum Constraint (Pin to Target, Soft, stiffness 1)** to keep the shape mostly static/pinned while still allowing subtle secondary motion; Time Shift to the settled frame (~60 in this session).
+13. **Vellum Post Process** (blur ~0.16, one subdivision — needed since the working mesh is triangulated) then **Quad Remesh** (~500, X/Z symmetry) for a clean final shape; freeze/cache for reuse.
+14. **Hand-drawn surface decoration**: use the **Draw Curve** tool freestyle (simpler than scripting), Resample at two progressively finer densities, offset slightly off the surface (Z axis), then **Ray** (Minimum Position) project onto the heart mesh, using the `it_prim` hit attribute to **Blast away** any points that failed to find a hit (`it_prim == -1`).
+15. Resample the surviving projected curve densely, add a noise-driven **p-scale** attribute for organic thickness variation, and **Sweep** (round tube, small radius, Grid end cap) into raised liquid-drip geometry merged with the heart shape.
+16. **Small splash droplets**: Scatter ~8 points on the main liquid splash line, pick slightly off-surface, randomize scale (~0.65–1) and orientation, Copy to Points for extra decorative detail; name and merge with the main splash.
+17. **Solaris setup**: import all named pieces, build a Material Library with three Karma **Standard Surface** materials (splash, choc-arc/heart, choc-liquid decoration) — each with tuned specular/coat/roughness and a **small-scale subsurface** contribution (distinct SSS colors/scale per material, e.g. ~0.002–0.005) for a convincing chocolate/liquid look; light with a **Dome Light** (Poly Haven HDRI), lock a viewport-sized camera, increase the SSS sample limit, enable the denoiser, and render the final hero shot.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Line, Resample, Mountain, UV Texture (Arc Length/Spine), Orient Along Curve, Attribute Wrangle (`quaternion()`, tangent-vector rotation, normalize, position displacement along rotated tangent), Sweep (Ribbon mode), POP Network (Source, Birth, life expectancy, source interpolation), Pop Noise (Turbulence-style), Pop Wrangle (`minpos()`-based attraction force, tangent-flow velocity term), Pop Fluid (particle separation, constraint iterations/stiffness, tensile radius, viscosity), Time Shift, Particle Fluid Surface, Convert to Polygons, File Cache, Super Formula (Arc preset), Extrude, Polyfill, Reverse, Remesh, Attribute Blur, Vellum Configure Balloon, Vellum Solver (gravity disabled, pressure rest-length-scale), Vellum Constraint (Pin to Target, Soft), Vellum Post Process (blur + subdivision), Quad Remesh, Draw Curve (freehand tool), Ray (Minimum Position, `it_prim` hit-test), Blast (`it_prim == -1` cleanup), Attribute Randomize (p-scale noise), Sweep (round tube, Grid end cap), Scatter (droplets), Copy to Points, Name, Material Library, Standard Surface (specular/coat/roughness, small-scale SSS per material), Dome Light (Poly Haven HDRI), Karma render settings (SSS limit, denoiser).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the from-scratch VEX quaternion spiral construction and the POP-network min-position/tangent-flow constraint wrangle are both substantial custom-simulation techniques; the Vellum-balloon-as-sculpting-tool approach is a nice alternative-to-manual-sculpting trick).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.319 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vex, quaternion, pop-network, pop-fluid, vellum, super-formula, karma, subsurface, food, product-viz
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [KineFX and Vellum Fluid in Houdini](kinefx-and-vellum-fluid-in-houdini.md) — shares a similar sine/quaternion-driven VEX animation approach combined with Vellum from the same channel.
+- [Vellum Balloon Text in Houdini](vellum-balloon-text-in-houdini.md) — shares the same "Vellum as a sculpting/inflation tool rather than manual sculpting" technique used here for the heart shape.

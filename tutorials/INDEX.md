@@ -2094,9 +2094,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=xz1oNZGq7P0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.319
+- **Tags:** vex, quaternion, pop-network, pop-fluid, vellum, super-formula, karma, subsurface, food, product-viz
+- **Summary:** Builds a chocolate-splash hero shot via a from-scratch VEX quaternion spiral curve, a POP network constrained to it with a custom minpos()-based attraction wrangle plus Pop Fluid for tendrils, meshed with Particle Fluid Surface; a Super Formula heart shape is inflated into a balloon-like form with Vellum instead of manual sculpting.
 - **File:** tutorials/spiral-splash-tutorial-in-houdini.md
 
 
