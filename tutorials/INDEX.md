@@ -2234,9 +2234,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=k7-5PaOccYc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.319
+- **Tags:** wrinkle-deformer, planar-inflate, labs-simple-shapes, cops, vex, prim-intrinsic, headphones, fabric, procedural-modeling
+- **Summary:** Models a headphone earpad using new Houdini 20.5 tools: Planar Inflate for the back cushion volume, and Wrinkle Deformer (masked by a Cops-baked seam texture, scaled by attribute) for realistic fabric stretch at seams, finished with a hand-written VEX undulating-stitch pattern using vertex_curve_param_u() and primintrinsic() perimeter normalization.
 - **File:** tutorials/procedural-modeling-with-houdini-205-tools.md
 
 

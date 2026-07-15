@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=k7-5PaOccYc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.319"
+tags: [wrinkle-deformer, planar-inflate, labs-simple-shapes, cops, vex, prim-intrinsic, headphones, fabric, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-modeling-with-houdini-205-tools/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 14
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Modeling with Houdini 20.5 Tools
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-modeling-with-houdini-205-tools <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -37,30 +33,64 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_000.jpg
+- [2:30] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_001.jpg
+- [3:40] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_002.jpg
+- [5:20] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_003.jpg
+- [7:00] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_004.jpg
+- [8:40] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_005.jpg
+- [10:50] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_006.jpg
+- [13:00] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_007.jpg
+- [14:40] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_008.jpg
+- [16:40] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_009.jpg
+- [19:10] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_010.jpg
+- [21:40] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_011.jpg
+- [24:10] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_012.jpg
+- [27:30] tutorials/frames/procedural-modeling-with-houdini-205-tools/frame_013.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Model a headphone earpad by chaining several **new Houdini 20.5 tools**: Labs Simple Shapes for the base quad-ring profile, the new **Planar Inflate** node (instead of a simulation) to puff out the cushion's back volume, and the new **Wrinkle Deformer** node — masked by a UV-space attribute and a COPs-stamped seam mask, with rest-length scaled by attribute — to create realistic fabric stretch/wrinkling concentrated exactly at the seams, finished with a hand-written VEX undulating-stitch pattern swept into 3D thread geometry.
 
 ### Summary
-[PENDING EXTRACTION]
+The earpad ring starts from a **Labs Simple Shapes** node (Quad shape, XY plane, unequal base/top sizes, rounded corners with 5 divisions), fused, Resampled (subdivision curves), then Swept (Ribbon mode, 1 column/division, weight 0.45), Extruded and Beveled (ignoring flat edges) for the front cushion rim. UVs are built by finding the boundary-point group via **Find Point/Prim Group** (rather than manual selection) promoted to an edge group, fed into UV Flatten (rectified, no manual layout) and optionally UV Unitize to stretch the shell to fill available UV space. For the back cushion volume, unshared-edge boundary groups (Create Boundary Groups gives two separate groups automatically) are Poly Filled and the new **Planar Inflate** node pushes the cap outward (reversed for negative-direction inflation) with iteration/target-length tuning for subdivision density, followed by Quad Remesh, a light Attribute Blur (position, once) to clean stray polygons, a single Subdivide, and Polish. Wrinkles use the new **Wrinkle Deformer** node: a UV-space bounding-box-derived "mask_uv" float attribute (contrasted so only the desired region is affected) combined with a Mountain-driven noise-deformed target mesh feeds the deformer (Cloth constraint type, increased iterations/rest-length-scale, ring-scale ~0.75), masked by mask_uv so only intended areas stretch, followed by Delta Smooth (~3) and a final Subdivide. To get directional stretch concentrated at seams (rather than uniform wrinkling), a **seam mask is baked in Cops**: the seam edge group is converted to a line, connected pieces merged, and a simple Copnet stamps points along that curve (SDF import, scale ~0.67, blurred, inverted so seams themselves stay unaffected) into a texture, imported back via **Attribute from Map** (op: reference) into a "mask_sims" attribute, which then drives the Wrinkle Deformer's **rest-length scale-by-attribute** input — producing visible fabric-stretch concentrated exactly along the seams. A Connectivity + per-class p-scale attribute (`class==0 → 1.4`) adds subtle size variation between wrinkle regions. Stitching is built by Resampling the seam curve densely (0.005, subdivision curves), aligning to the surface via a **Ray** node (Min P mode, importing the transferred surface normal), then in a wrangle computing a **curve-view parameter via `vertex_curve_param_u()`** (the primitive-intrinsic UV function) combined with a per-primitive **measured perimeter** (`primintrinsic(..., "measuredperimeter", ...)` promoted point→primitive) so the undulation pattern repeats consistently regardless of curve length; a `sin(u * frequency)` pattern (frequency ~100, small multiplier ~0.012) displaces points along the normal, with `abs()` applied so the stitch only bulges forward (not back-and-forth) for a believable raised-thread look, then a small round-tube **Sweep** (~0.04 radius) with a final Pick (no-recompute) nudge and merge completes the earpad.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base ring profile**: Labs Simple Shapes (Quad, XY plane, unequal base 1.19/top 1.6-ish sizing, rounded corners with 5 divisions) → Fuse → Resample (subdivision curves) → Sweep (Ribbon, 1 column/division, weight 0.45) → Extrude (~2.25) → Bevel (ignore flat edges, ~0.8 amount, 3 divisions).
+2. **UVs**: use **Find Point/Prim Group** to procedurally get the boundary point group (rather than manual selection) → Group Promote to edges (boundary-only) → UV Flatten (rectified, disable manual layout) → optional **UV Unitize** to stretch the shell to fill available UV tile space.
+3. **Back cushion volume**: Group unshared edges (Create Boundary Groups gives two distinct groups automatically since only the inner cap needs filling) → Group Promote to edges → Poly Fill → new **Planar Inflate** node (reversed faces for negative-direction inflation, iterations tuned, target length ~0.1 for subdivision density).
+4. **Quad Remesh** (~2000 target), light **Attribute Blur** (position, 1 iteration, cleans stray polygons), Subdivide (1), Polish for a clean quad-grid result; merge with the front piece.
+5. **Wrinkle setup — mask**: create a **mask_uv** attribute using the bounding box of the Z axis (contrast-adjusted) so only the desired region gets deformed.
+6. Build the deformation target: **Mountain** noise (element size ~31, tuned offset/value ~0.03) applied to a subdivided copy of the mesh, connected as the Wrinkle Deformer's "deformed mesh" input.
+7. Configure **Wrinkle Deformer**: constraint type Cloth, increase iterations and rest-length scale, ring scale ~0.75; mask the effect by **mask_uv** so unaffected areas stay intact; add Delta Smooth (~3) and a final Subdivide.
+8. **Seam mask via Cops** (for directional/seam-concentrated stretch): manually group the seam edges, Convert Line, Connect Pieces (single primitives); build a simple **Copnet** — Sub Import the geometry, Rasterize Setup (moves to UV space), Stamp Points along the seam curve (SDF shape imported, scale ~0.67), Blur (soften transition), invert (keep everything except the seam edges themselves).
+9. Import the baked Cops mask back onto the mesh via **Attribute from Map** (op: reference to the Copnet, output attribute named "mask_sims").
+10. Feed **mask_sims** into the Wrinkle Deformer's **rest-length scale-by-attribute** input — this produces visible directional fabric-stretch concentrated exactly along the seams rather than uniform wrinkling.
+11. **Size variation**: Connectivity (on primitives) → per-class **Attribute (float)** with default 1.0 but `class==0 → 1.4` for the p-scale attribute, giving one wrinkle region a slightly larger scale.
+12. **Stitching path prep**: Resample the seam curve densely (~0.005, subdivision curves) → **Ray** (Min P mode) to snap points onto the deformed surface, importing the transferred point normal (Attribute Blur on Y, ~100 iterations, for smoothing).
+13. **VEX undulating stitch pattern**: in a wrangle, compute `f@u = vertex_curve_param_u(0, @primnum, @vtxnum)` (or equivalent) for a curve-view parameter; separately compute and **promote (primitive→point)** the primitive's `primintrinsic(0, "measuredperimeter", @primnum)` for perimeter-normalized frequency.
+14. Build the pattern: `float pattern = sin(u * freq)`, then `@P += @N * pattern * multiplier` (frequency ~100, multiplier ~0.012); apply **`abs()`** to the pattern so the stitch only bulges forward (not oscillating back-and-forth), and multiply `u` by the perimeter so the pattern repeats consistently regardless of curve length.
+15. **Sweep** the resulting undulating curve with a small **round tube** profile (~0.04 radius); Pick (disable recompute-normals) to nudge stitches slightly inward, merge everything for the finished earpad.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Labs Simple Shapes, Fuse, Resample (subdivision curves), Sweep (Ribbon mode), Extrude, Bevel, Find Point Group / Find Prim Group, Group Promote, UV Flatten, UV Unitize, Group (unshared edges, Create Boundary Groups), Poly Fill, **Planar Inflate** (new H20.5 node), Quad Remesh, Attribute Blur (position), Subdivide, Polish, bounding-box-derived UV mask attribute, Mountain (noise-driven target mesh), **Wrinkle Deformer** (new H20.5 node: Cloth constraint, iterations, rest-length scale, ring scale, mask-by-attribute, scale-by-attribute), Delta Smooth, Cops (Sub Import, Rasterize Setup, Stamp Points, Blur, invert), Attribute from Map (`op:` texture reference), Connectivity + per-class Attribute (p-scale variation), Ray (Min P mode, normal import), Attribute Blur (normal smoothing), Attribute Wrangle (`vertex_curve_param_u()`, `primintrinsic(..., "measuredperimeter", ...)`, promoted perimeter, `sin()`+`abs()` undulating displacement along normal), Sweep (round tube, small radius), Pick (no-recompute nudge).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (showcases several brand-new Houdini 20.5 nodes — Planar Inflate, Wrinkle Deformer — combined with a from-scratch VEX stitch pattern using primitive intrinsics).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.319 (visible in viewport title bar) — explicitly built to showcase new Houdini 20.5 modeling tools.
 
 ### Tags
-[PENDING EXTRACTION]
+wrinkle-deformer, planar-inflate, labs-simple-shapes, cops, vex, prim-intrinsic, headphones, fabric, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [The Donut Tutorial in Cops - Houdini 20.5](the-donut-tutorial-in-cops-houdini-205.md) — shares the Cops Stamp Points/Rasterize workflow used here to bake the seam mask.
+- [Procedural Duct Tape in Houdini](procedural-duct-tape-in-houdini.md) — related fabric/cloth-like procedural deformation technique from the same channel.
