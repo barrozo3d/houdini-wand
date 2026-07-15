@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Nmnf_3mp1OU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vertex-selection, skin, wrinkle-deformer, cops, tile-pattern, height-blend, architecture, favela]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 12
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Favela in Houdini  | Tips and Tricks
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-favela-in-houdini-tips-and-tricks <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -116,30 +112,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:05] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_000.jpg
+- [2:10] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_001.jpg
+- [3:30] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_002.jpg
+- [5:40] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_003.jpg
+- [8:00] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_004.jpg
+- [9:30] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_005.jpg
+- [11:40] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_006.jpg
+- [14:10] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_007.jpg
+- [16:30] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_008.jpg
+- [18:50] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_009.jpg
+- [20:50] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_010.jpg
+- [22:40] tutorials/frames/procedural-favela-in-houdini-tips-and-tricks/frame_011.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a favela-style house entirely with procedural edge/vertex selections instead of manual picking — a vertex-modulo trick to reliably select alternating edges on both separated and connected geometry — plus a Skin-with-second-input technique for roof creation, a corrected (rest-space) Wrinkle Deformer workflow, and a from-scratch height-blend (Substance-Painter-style) COPs texturing pass.
 
 ### Summary
-[PENDING EXTRACTION]
+The house starts from a box with primitives sorted by Y and reversed so primitive 0 is reliably the top face — this predictable indexing lets later selections stay procedural rather than manual. A "corner" selection (for later downward transform) is made via a point wrangle constrained to the top-face group, selecting only points on the negative X axis. For selecting alternating roof edges, edges are hard to target directly in VEX (usually requiring for-loops), so the trick is to select **vertices** instead: constrained to the top-face group, a `vertexnumber % 2` wrangle picks every-other vertex per quad face, which is then promoted to edges — with an important nuance: adding an offset of 1 to the modulo selects the *other* alternating set, letting the same technique target either diagonal. A `mean edge angle`-based hard-edge group plus this vertex-modulo pattern generalizes to picking every-other-vertex on any newly extruded/divided face for further alternating operations. For the roof, two selected edges are converted to Lines, and **Skin's second input** is fed the *start points* of both lines — this lets Skin respect independent subdivision/resample settings on each line while still connecting them (rather than requiring both curves to already match in point count) — a technique reusable anywhere two curves of differing resolution need bridging. Corner "cement" reinforcement geometry (ultimately unused in the final build but demonstrated) is built by selecting side edges (by X/Z normal, both directions, excluding top/bottom), converting to Line, resampling, and re-projecting onto the deformed base geometry to get the correct silhouette; two offset "following normal" vectors (`N1`/`N2`, computed via a subtract-normalize-and-rotate-90° trick between consecutive primitive-center positions) drive point-normal-attribute extrusions on each side, followed by VDB operations to fuse them. Windows/doors are cut via Connectivity + measured area/volume sorted so the smallest piece is reliably the window and the larger is the door (no manual identification needed); the window frame gets subdivided (13×2), grouped by angle, with "muntins" (the small cross-bars, name uncertain in the video) built by finding true center edges (via centroid + position X comparison), scaling them down slightly, and Skinning for thickness. For the roof's tarp/rope detail, the tutorial revisits the **Wrinkle Deformer** with a corrected setup versus a previous mistaken video: the geometry to be distorted (with a Mountain-added distortion) is the *deform* input, while the truly-flat, undistorted geometry is the *rest* input — reversed from an earlier mistake — plus a VDB-based collision shape and a **custom normal** (sampled from the roof surface rather than the default per-point normal) so the deformer's Pick operation doesn't distort geometry sideways, only along the intended uniform direction. The trash-bag detail reuses the same Wrinkle Deformer approach with a scaled-down rest geometry (to create stretch) and a double-cross-product custom normal (with added randomness) so extrusion varies naturally per area. For texturing (in COPs), a repeated/quantized ramp plus Scatter-Shapes-driven brick pattern (matched in scale/stretch to a Tile Pattern UV sample) is blended with cement/grout via rasterized curves and a **height-based blend node** (explicitly inspired by a Blender tutorial, functioning like Substance Painter's height-blend) that composites two texture layers based on their respective height/displacement maps rather than a flat alpha mask, with adjustable softness and an optional custom mask texture input.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Sort box primitives by Y and reverse so primitive 0 is always the top face — enables reliable, index-based procedural selections downstream.
+2. Select a "corner" group via a point wrangle constrained to the top-face group, testing for points on the negative X axis (for a later downward transform).
+3. **Alternating-edge selection trick:** since edges are hard to select directly in VEX, work on **vertices** instead — constrained to the top-face group, use `vertexnumber % 2` to pick every-other vertex per quad, then promote to edges; add an offset of 1 to the modulo to select the opposite alternating set when needed.
+4. Reuse the same vertex-modulo pattern (after a hard-edge `mean edge angle` Group) on any newly extruded/divided face to keep picking alternating edges procedurally rather than manually.
+5. **Roof via Skin-with-second-input:** convert the two selected roof edges to Lines, feed **Skin's second input** the start points of both lines so Skin can bridge curves with independent subdivision/resample settings instead of requiring matching point counts.
+6. (Optional/unused) Build corner reinforcement geometry: select side edges by X/Z normal (both directions, excluding top/bottom), Convert Line, Resample, re-project onto the deformed base; compute two "following normal" vectors (`N1`/`N2` via subtract-normalize-rotate-90°) to point-normal-extrude on each side, then VDB-fuse.
+7. **Window/door identification without manual picking:** Connectivity + measured area/volume, sorted so the smallest fractured piece is reliably the window and the largest is the door.
+8. Subdivide the window frame (13×2), group by angle, and build muntins/cross-bars by finding true-center edges (centroid + position-X comparison), scaling them down, and Skinning for thickness.
+9. **Corrected Wrinkle Deformer setup:** feed the Mountain-distorted geometry as the *deform* input and the flat, undistorted geometry as the *rest* input (reversed from a prior mistaken video); add a VDB collision shape and use a **custom normal** sampled from the roof surface (not the default point normal) so Pick extrudes uniformly instead of sideways.
+10. Apply the same corrected Wrinkle Deformer to a trash-bag asset, using a scaled-down rest geometry for extra stretch and a double-cross-product custom normal with added randomness for natural per-area variation.
+11. **COPs texturing:** build a repeated/quantized ramp + Scatter-Shapes brick pattern matched (via scale/stretch) to a Tile-Pattern UV sample; composite brick and cement/grout layers using a **height-based blend node** (Substance-Painter-style, height maps drive the blend rather than a flat alpha mask) with adjustable softness and optional custom mask input.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Box, Sort (by Y, reversed), point wrangle (top-face-constrained corner selection), vertex wrangle (`vertexnumber % 2` alternating selection + offset variant), Group Promote (vertex→edge), mean-edge-angle Group, Convert Line, **Skin** (second-input start-points bridging technique), Resample, re-projection, VDB (fuse/collision), point-normal-attribute extrusion (N1/N2 rotate-90° trick), Connectivity, area/volume measurement + sort, Group by angle, Subdivide, centroid/position-X center-edge detection, Wrinkle Deformer (corrected deform/rest input order, VDB collision, custom surface-sampled normal), Mountain (distortion source), double-cross-product custom normal with randomness, COPs: Ramp (repeat/quantize), Scatter Shapes, Tile Pattern (UV-matched scale/stretch), rasterized curves, height-based blend node (Substance-Painter-style), custom mask texture input.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines several non-obvious VEX selection tricks, a corrected/reversed Wrinkle Deformer workflow, and a from-scratch COPs height-blend compositing technique).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vertex-selection, skin, wrinkle-deformer, cops, tile-pattern, height-blend, architecture, favela
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural House Generator](procedural-house-generator.md) — another full building-generation system with overlapping window/wall techniques.
+- [Procedural Boat in Houdini](procedural-boat-in-houdini.md) — shares the Skin-with-second-input bridging technique and vertex-based edge-selection tricks used here.
+- [Procedural Problem Solving in Houdini](procedural-problem-solving-in-houdini.md) — shares the boundary-group separation and Sort-based alternation-fix approach used here for edge/vertex selection.

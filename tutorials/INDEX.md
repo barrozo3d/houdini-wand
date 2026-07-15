@@ -1684,9 +1684,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Nmnf_3mp1OU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vertex-selection, skin, wrinkle-deformer, cops, tile-pattern, height-blend, architecture, favela
+- **Summary:** Builds a favela house using a vertex-modulo trick for alternating edge selection (works on both separated and connected geometry), a Skin-with-second-input bridging technique, a corrected (rest-space) Wrinkle Deformer workflow with custom surface normals, and a from-scratch Substance-Painter-style height-blend COPs texturing pass.
 - **File:** tutorials/procedural-favela-in-houdini-tips-and-tricks.md
 
 

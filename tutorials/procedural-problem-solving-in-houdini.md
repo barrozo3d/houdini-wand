@@ -151,3 +151,4 @@ groups, vex, boundary-groups, orient-along-curve, connectivity, hot-air-balloon,
 ## Related Tutorials
 - [Procedural Wicker Basket in Houdini](procedural-wicker-basket-in-houdini.md) — source of the alternating-weave Sweep/Orient-Along-Curve technique reused (and fixed) in this video.
 - [Groups, Patterns in Houdini](groups-patterns-in-houdini.md) — deeper dive into boundary-group and other group-selection patterns used throughout this video.
+- [Procedural Favela in Houdini | Tips and Tricks](procedural-favela-in-houdini-tips-and-tricks.md) — shares the vertex-modulo alternating-edge-selection trick used here for another architectural build.
