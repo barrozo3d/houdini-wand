@@ -2804,9 +2804,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=RQ3kSr5u16A
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.303
+- **Tags:** python, hou-module, automation, solaris, geometry-variants, asset-loading, scripting
+- **Summary:** Python script batch-imports 3D files from a folder (filtered by variant-subfolder naming, LOD 0 only) into individually named subnets via collapseIntoSubnet(), producing a clean per-asset network ready for Solaris Component Geometry Variants.
 - **File:** tutorials/python-multi-asset-loader-in-houdini.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=RQ3kSr5u16A
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.303"
+tags: [python, hou-module, automation, solaris, geometry-variants, asset-loading, scripting]
+extraction_status: complete
 frames_dir: tutorials/frames/python-multi-asset-loader-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Python multi asset loader in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py python-multi-asset-loader-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -70,30 +66,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/python-multi-asset-loader-in-houdini/frame_000.jpg
+- [0:55] tutorials/frames/python-multi-asset-loader-in-houdini/frame_001.jpg
+- [1:35] tutorials/frames/python-multi-asset-loader-in-houdini/frame_002.jpg
+- [2:15] tutorials/frames/python-multi-asset-loader-in-houdini/frame_003.jpg
+- [2:55] tutorials/frames/python-multi-asset-loader-in-houdini/frame_004.jpg
+- [3:30] tutorials/frames/python-multi-asset-loader-in-houdini/frame_005.jpg
+- [3:50] tutorials/frames/python-multi-asset-loader-in-houdini/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A Python script that batch-imports every 3D file from a selected folder (filtering by an LOD/variant naming convention) into individually named subnets — one per asset — so the result can be directly consumed by Solaris's Component Geometry Variants workflow without manual per-file File node creation.
 
 ### Summary
-[PENDING EXTRACTION]
+Rather than accepting Houdini's built-in multi-file import (which dumps everything into separate Geometry containers with no folder/naming-convention support), the script opens a folder-browser dialog, creates a Geometry container, and iterates the selected folder's subfolders. It filters to subfolders starting with a configurable prefix (e.g. "var"), dives into each variant folder to grab only the **LOD 0** file (stripping the extension for use as a clean node name), reconstructs the absolute file path from stored path variables, creates a **File SOP** per asset with the file path parameter set, then uses `collapseIntoSubnet()` to wrap each File node into its own appropriately-named subnet — producing a tidy per-asset network instead of a pile of loose File nodes. The result is demonstrated loading directly into a Solaris **Component Geometry** with **Component Geometry Variants** set to the matching variant count, verified via an Explore Variants node cycling through all loaded assets.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Import `hou` and `os`; optionally set a default starting folder for the file-browser dialog.
+2. Launch a **folder-select** file browser (`hou.ui.selectFile()` with type set to folder) with the default starting location; if the user doesn't cancel, continue.
+3. Set the working context to `/obj` and create a **Geometry** container node.
+4. Iterate the files/subfolders in the selected root folder; print results to confirm the target subfolders (asset variations) are being found.
+5. Filter subfolders to only those **starting with a specific prefix** (e.g. "var") — adaptable per project naming convention.
+6. Dive into each variant subfolder and grab only the **LOD 0** file (the resolution level used for this workflow), confirmed via printed output showing the correctly selected 3D files.
+7. Strip the file extension to get a clean base name for the node, and reconstruct the **absolute file path** from previously stored path variables.
+8. Create a **File SOP** per asset via `createNode()`, setting its `file` parameter to the reconstructed path.
+9. Since this produces a cluttered network of loose File nodes, use **`collapseIntoSubnet()`**, passing the nodes to collapse and the desired subnet name, to wrap each asset's File node into its own clean, appropriately-named subnet.
+10. Lay out the resulting network for readability.
+11. In Solaris: create a **Component Geometry**, dive in, load a single variation to start; use the `geovariant_index` global variable together with **Component Geometry Variants** (set to the correct variant count) to load all variations at once, and verify with an **Explore Variants** node cycling through each.
+12. Author notes their paid Patreon tool extends this with subfolder prefix filters, LOD selection UI, and a "load all files in a folder" simple mode.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+`hou` module (`hou.ui.selectFile()` folder mode, `hou.node()`/`createNode()`, `collapseIntoSubnet()`), `os` module (`os.listdir`, path/extension parsing, path reconstruction), File SOP (per-asset geometry import), Component Geometry (Solaris/LOPs), Component Geometry Variants (variant count), `geovariant_index` global variable, Explore Variants node.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (straightforward Python/os iteration; the useful non-obvious trick is `collapseIntoSubnet()` for clean per-asset organization).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.303 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+python, hou-module, automation, solaris, geometry-variants, asset-loading, scripting
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Python in Houdini | Create a texture importer for Solaris](python-in-houdini-create-a-texture-importer-for-solaris.md) — companion Python-automation tutorial from the same channel using similar `hou`/`os`/folder-iteration patterns.
+- [Quick Object Merge with Python in Houdini](quick-object-merge-with-python-in-houdini.md) — related Python scripting shortcut from the same channel.
