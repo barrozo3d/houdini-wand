@@ -1454,9 +1454,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=VjX9v92PJNU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** volume-cloth, rbd, flip, packed-primitives, matrix, cops, food, mardini
+- **Summary:** Full French-toast-and-fruit Mardini breakdown: Volume Cloth used as a modeling tool for puffed toast deformation, a from-scratch transform-matrix pipeline for stacking pieces, RBD Bullet fruit-drop simulation, a FLIP chocolate drizzle using volume colliders rebuilt from shared static geometry, and Cops-based food shading with fake bump/drop-shadow tricks.
 - **File:** tutorials/procedural-food-in-houdini-mardini-2026.md
 
 

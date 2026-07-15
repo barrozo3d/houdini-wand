@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=VjX9v92PJNU
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [volume-cloth, rbd, flip, packed-primitives, matrix, cops, food, mardini]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-food-in-houdini-mardini-2026/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Food in Houdini | Mardini 2026
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-food-in-houdini-mardini-2026 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -37,30 +33,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:00] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_000.jpg
+- [3:00] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_001.jpg
+- [5:20] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_002.jpg
+- [8:00] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_003.jpg
+- [10:20] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_004.jpg
+- [13:00] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_005.jpg
+- [15:20] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_006.jpg
+- [18:00] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_007.jpg
+- [20:20] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_008.jpg
+- [22:40] tutorials/frames/procedural-food-in-houdini-mardini-2026/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Full breakdown of a Mardini (Houdini + Mardi Gras-themed) speed-modeling entry: a French-toast stack modeled with **Volume Cloth** (used as a modeling/wrinkling tool, not a real cloth sim) for the fried-bread deformation, hand-built fruit assets (berry, blackberry via Remesh Bubbles, strawberry with a half-cut variant), an **RBD Bullet drop simulation** to naturally scatter the fruit onto the toast stack and plate, a matching **FLIP fluid** chocolate-drizzle sim using volume colliders built from the same static geometry, and Cops-based food shading (bump-faked normal noise, ambient-occlusion-driven background removal via negative-ID trick, and a from-scratch pixel-extension feedback loop for a fake drop-shadow in OpenCL).
 
 ### Summary
-[PENDING EXTRACTION]
+The French toast starts as a Box, using inverted-normal-comparison selections (`abs(N.y) > abs(N.y)`) to separately grab the top and sides, an alternating-vertex Poly Bevel for the crust edges, then Poly Extrude with **thickness** (instead of inset) to get evenly-spaced edge segments before a UV unwrap/layout. A Remesh + a **Volume Cloth** simulation (edge-length scale, pinned-point group excluding the center, increased stiffness dropoff, high constraint iterations/substeps, no gravity, increased velocity damping, and a manually-added Rest Scale for extra "give") produces the characteristic puffed/wrinkled fried-toast deformation, cached and cleaned up (delete most attributes, keep an ID for later Cops import). Three toast slices are packed and stacked using a from-scratch **transform-matrix pipeline** (packed transform read-out, save centroid as pivot, build a per-piece rotation matrix using the same golden-angle/step-rotation trick from an earlier stone-wall exercise, random-vector angle measurement, random rotation/translation scaled by normalized point-number position, apply scale/rotate/translate to the matrix, unpack). A Voronoi-Fractured version of the stacked toast (plus a circular plate mesh, also Voronoi-Fractured) serves purely as **RBD collision geometry** — simpler/cheaper than using the real toast mesh directly. Fruit assets: a berry (sphere → Poly Extrude → Poly Bevel → Subdivide → manual Grab/Move sculpt → Mountain → UV Flatten with seam grouping); a blackberry (sphere → Bend + Edit → Lattice-deform → Clip at top → Scatter → **Remesh Bubbles** → scale back to size); a strawberry (sphere → sculpt → Mountain → Subdivide → Clip on Z and top → UV Flatten from the clip-saved edges) with a second half-cut variant for visual variety — all merged with `merge_packed` and named attributes. Fruit placement onto the plate/toast uses **Align and Distribute** for initial positioning, a `sin(time)`-based (not random) rotation so the pre-drop pose is deterministic and repeatable, per-frame p-scale/seed randomization (seeded by frame number) for size variation across sims, and a bounding-box-center-relative scale-matrix trick (get pack transform → translate to centroid → scale → translate back) to apply uniform scaling from each piece's own center. A **DOP network** drops the fruit via a **POP Source** (packed RBD objects only, emitting every 3rd frame up to frame 96), colliding against the fractured toast/plate as static geometry, bounded by a Pop Kill sphere to cull escaped debris, using a default Rigid Body Solver + Ground Plane + Gravity — cached to frame 40 and cleaned to just velocity/name attributes for shading. Separately, a **FLIP fluid chocolate drizzle** is built from a spiral curve (Carve 0→1 over 10 seconds to animate an inward-then-outward drip path) copied with a small sphere as the emission source, feeding a POP Source-driven FLIP object (surface tension, viscosity ~14, "swirly" volume-motion, reduced time scale, increased sub-steps) colliding against **volume colliders built from the same static plate/toast/fruit geometry** (merged and Object-Merged back in as a collision source to avoid duplicating/rebuilding geometry) — Fluid Compress caching keeps the cache size small, and a Particle-Fluid-Surface → VDB Reshape/Smooth/Convert (adaptivity enabled) produces the final drizzle mesh. For shading (in Cops): the toast uses rasterized sides-mask + original-position data, layered Alligator fractal noise blended with bubble noise for bump, a multi-directional-warp fractal noise for the diffuse bread pattern, and masking to exclude the side faces; the strawberry/plum/other fruits reuse the same fractal-noise/directional-warp/color-blend recipe with fruit-specific color ramps; the tablecloth reuses a previously-shared 4-point stamped-color technique. All final assets are brought directly into **Solaris/LOPs** without an intermediate USD export step, lit with a Gobo light (borrowed, credited to Greyscalegorilla) plus a Polyhaven dome light and a depth-of-field camera, then finished with a slap-comp pass (contrast, selective desaturation via a circular mask, sharpening, vignette).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model the toast base from a **Box**: select top/sides via inverted normal-Y comparisons, alternate-vertex Poly Bevel the crust edges, Poly Extrude with **thickness** (not inset) for evenly-spaced segments, UV unwrap + layout.
+2. Remesh and run a **Volume Cloth** simulation (pinned center-excluding group, increased stiffness dropoff, high constraint iterations/sub-steps, no gravity, increased velocity damping, manual Rest Scale) purely as a deformation/modeling tool for the puffed fried-toast look.
+3. Cache the deformed toast, clean attributes (keep only an ID for later Cops shading), then stack **three toast pieces** using a from-scratch transform-matrix pipeline: packed-transform readout, centroid-as-pivot, golden-angle/step-rotation matrix (reused from an earlier stone-wall technique), random rotation/translation scaled by normalized point-number position.
+4. Build simplified **RBD collision geometry**: Voronoi-Fracture both the stacked toast and a circular plate mesh (cheaper collision shapes than the real detailed meshes).
+5. Model three fruit assets by hand: a berry (Sphere → Poly Extrude → Poly Bevel → Subdivide → manual sculpt → Mountain → UV Flatten), a blackberry (Sphere → Bend/Edit/Lattice deform → Clip → Scatter → **Remesh Bubbles** → scale to size), and a strawberry (Sphere → sculpt → Mountain → Subdivide → Clip on Z/top → UV Flatten from clip-saved edges), plus a half-cut strawberry variant.
+6. Place fruit onto the plate with **Align and Distribute**, a `sin(time)`-driven (deterministic, not random) initial rotation, frame-seeded p-scale randomization, and a bounding-box-center-relative scale-matrix trick for uniform per-piece scaling from each piece's own centroid.
+7. Set up a **DOP network**: POP Source emitting packed RBD fruit objects every 3rd frame (up to frame 96), static-collide against the fractured toast/plate, Pop Kill sphere to cull escaped debris, default Rigid Body Solver + Ground Plane + Gravity; cache to frame 40 and strip to velocity/name attributes.
+8. Build the **FLIP chocolate drizzle**: animate a spiral curve's Carve (0→1 over 10 seconds) for an in-then-out drip path, copy a small sphere along it as the FLIP emission source.
+9. Simulate the FLIP object (surface tension, viscosity ~14, "swirly" volume motion, reduced time scale, more sub-steps) colliding against **volume colliders rebuilt from the same static plate/toast/fruit geometry** (merged + Object-Merged back in to avoid duplicate geometry work); use Fluid Compress caching to keep cache size manageable.
+10. Mesh the drizzle: Particle Fluid Surface → VDB Reshape/Smooth → Convert to Polygons (adaptivity enabled for lighter geometry).
+11. Shade in **Cops**: rasterize sides-mask/position for the toast, layer Alligator fractal + bubble noise for bump, multi-directional-warp fractal for the bread diffuse pattern; reuse a similar fractal/warp/color-ramp recipe for the fruit materials; reuse the channel's existing 4-point stamped-color technique for the tablecloth.
+12. Bring everything directly into **Solaris/LOPs** (no intermediate USD export), light with a borrowed Gobo (Greyscalegorilla) + Polyhaven dome + depth-of-field camera, then finish with a slap-comp (contrast, circular-mask selective desaturation, sharpening, vignette).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Box, normal-comparison selection wrangles, Poly Bevel (alternating vertex), Poly Extrude (thickness mode), UV unwrap/layout, Remesh, Volume Cloth (pinned group, stiffness dropoff, constraint iterations/sub-steps, Rest Scale, no gravity, velocity damping), Time Shift + cache, packed-transform matrix pipeline (golden-angle rotation, random translation/rotation via normalized point-number scaling), Voronoi Fracture (collision-simplification use), Sphere/Poly Extrude/Poly Bevel/Subdivide/Mountain sculpt chain (berry), Bend + Edit + Lattice + Clip + Scatter + Remesh Bubbles (blackberry), Clip (Z + top) + UV Flatten from saved edges (strawberry), `merge_packed`, Align and Distribute, `sin(time)`-driven rotation, frame-seeded p-scale randomization, bounding-box-centroid scale-matrix wrangle, DOP Network: POP Source (packed RBD, staggered emission), Pop Kill (bounding sphere), Rigid Body Solver, Ground Plane, Gravity, cache + attribute cleanup, FLIP: Carve (animated 0→1), Copy to Points (sphere emission source), FLIP Solver (surface tension, viscosity, swirly volume motion, sub-steps, time scale), volume colliders (Object-Merge-rebuilt static geometry), Fluid Compress, Particle Fluid Surface, VDB Reshape/Smooth/Convert (adaptivity), Cops: rasterize sides-mask/position, Alligator fractal + bubble noise bump, multi-directional-warp fractal diffuse, color-ramp fruit shading, stamped-color tablecloth reuse, Solaris/LOPs Gobo + Dome Light + DOF camera, slap-comp (contrast/desaturation mask/sharpen/vignette).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines Volume Cloth as a deformation tool, a from-scratch transform-matrix stacking pipeline, RBD/FLIP simulation with shared volume-collider geometry, and a full Cops shading/compositing pass — a comprehensive, multi-domain production breakdown).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+volume-cloth, rbd, flip, packed-primitives, matrix, cops, food, mardini
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [RBD Procedural Animations in Houdini | Mardini 2026](rbd-procedural-animations-in-houdini-mardini-2026.md) — companion Mardini 2026 breakdown from the same channel, covering a barrel-breaking RBD/glass animation instead of food.
+- [Sushi Modeling and Rendering in Houdini](sushi-modeling-and-rendering-in-houdini.md) — shares the RBD-pack-transform/high-poly-swap and food-modeling/shading techniques used here.
+- [Procedural Duct Tape in Houdini](procedural-duct-tape-in-houdini.md) — shares the Wrinkle/Volume-Cloth-as-modeling-tool philosophy used here for the puffed toast deformation.

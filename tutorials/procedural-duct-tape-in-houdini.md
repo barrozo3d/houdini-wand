@@ -366,3 +366,4 @@ wrinkle-deformer, uv-flatten, area-scale-factor, xyzdist, object-merge, tape, pr
 - [Quick object merge with Python in Houdini](quick-object-merge-with-python-in-houdini.md) — the Python shelf-tool used here to quickly create the Object Merge node for the rest/deform reference geometry.
 - [Vellum Balloon Text in Houdini](vellum-balloon-text-in-houdini.md) — shares the Wrinkle-Deformer-for-fake-cloth-wrinkles approach used here, applied there to inflated text.
 - [Procedural Favela in Houdini | Tips and Tricks](procedural-favela-in-houdini-tips-and-tricks.md) — shares the corrected (rest/deform input order) Wrinkle Deformer workflow with a custom surface normal, applied there to a roof tarp and trash bag.
+- [Procedural Food in Houdini | Mardini 2026](procedural-food-in-houdini-mardini-2026.md) — shares the deformer-as-modeling-tool philosophy used here, applied there via Volume Cloth for puffed French-toast deformation.
