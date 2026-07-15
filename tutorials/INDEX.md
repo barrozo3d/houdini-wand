@@ -2154,9 +2154,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=VL5N4jKidVA
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.302
+- **Tags:** uvs, solaris, opacity-to-mesh, make-transform, rest-position, time-dependency, karma, workflow
+- **Summary:** Five tips: clip-and-flatten UVs transferred back via Labs UV Transfer, a null-driven 360°-loop camera rig for parented look-dev objects, an xyzdist()-matched For-Each opacity-to-mesh conversion, a VEX maketransform()-based rotate-pivot solution, and Solaris rest-position/Cache-node performance fixes.
 - **File:** tutorials/tips-and-tricks-for-a-better-houdini-time.md
 
 

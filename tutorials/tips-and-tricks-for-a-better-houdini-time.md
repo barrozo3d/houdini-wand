@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=VL5N4jKidVA
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.302"
+tags: [uvs, solaris, opacity-to-mesh, make-transform, rest-position, time-dependency, karma, workflow]
+extraction_status: complete
 frames_dir: tutorials/frames/tips-and-tricks-for-a-better-houdini-time/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Tips and Tricks for a better Houdini Time
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py tips-and-tricks-for-a-better-houdini-time <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### UVS [0:00]
@@ -98,30 +94,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/tips-and-tricks-for-a-better-houdini-time/frame_000.jpg
+- [0:55] tutorials/frames/tips-and-tricks-for-a-better-houdini-time/frame_001.jpg
+- [1:40] tutorials/frames/tips-and-tricks-for-a-better-houdini-time/frame_002.jpg
+- [2:25] tutorials/frames/tips-and-tricks-for-a-better-houdini-time/frame_003.jpg
+- [3:10] tutorials/frames/tips-and-tricks-for-a-better-houdini-time/frame_004.jpg
+- [3:50] tutorials/frames/tips-and-tricks-for-a-better-houdini-time/frame_005.jpg
+- [4:20] tutorials/frames/tips-and-tricks-for-a-better-houdini-time/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Five varied production tips: clip-and-flatten UV workflow using **Labs UV Transfer** to move seams off the final mesh, a null-driven 360°-loop camera rig for parenting look-dev objects (color checkers, chrome/gray balls) to the corner of frame, a from-scratch VEX **Make Transform**-based rotate-pivot solution for a texture-projector tool, and a two-in-one Solaris performance tip covering rest-position-driven sliding-texture fixes and cache-node time-dependency removal.
 
 ### Summary
-[PENDING EXTRACTION]
+For UV work on a symmetrical asset, a Clip node slices the mesh in half (using Group by Normal to isolate one side for the seam), clips top/bottom, and saves the clip-edges group directly on the Clip node itself; UV Flatten then uses that saved group as its seam input, and since the resulting cuts shouldn't remain on the final render mesh, **Labs UV Transfer** copies the computed UVs back onto the original, uncut geometry. For camera-relative look-dev objects (color checkers, gray/chrome spheres), a null is animated with a Transform rotating 360° on Y, with the loop made frame-accurate via `(frame / final_frame) * 360`; a camera is added under that null with framing set, then look-dev objects are manually positioned in the bottom-left of frame and parented to the null via the LOP graph's second input — critically, the camera's primitive path must live under the null in the scene graph, and it's the null (not the camera directly) that gets transformed, so the look-dev props stay glued to the same screen-space corner as the camera moves/rotates. For opacity-to-mesh foliage conversion (to avoid Karma's slow opacity-map path-tracing), the opacity map is traced, Remeshed (needed since it will be deformed), given a Connectivity ID per leaf/piece (reversed), and UVs copied onto position so the atlas aligns with the UV layout; a For-Each loop over connected pieces (with a second Fetch-Input begin node loading the atlas) samples the atlas's class attribute per point via a wrangle using the `xyzdist()` function to find the correct match, keeping only matching points, then samples position from the original mesh piece — compiling the loop for extra speed, similar to a referenced YouTube video's approach; this trades slow opacity-map path tracing for much faster real-geometry rendering. An unfinished texture-projector tool places a point on geometry and copies a plane to it, with a custom **rotate-pivot** solution: a VEX wrangle uses `maketransform()` from the point's N and up vectors to build an orientation matrix, converts it to Euler angles, and outputs it in degrees to feed the Transform node's rotate-pivot parameter — letting the user rotate the projected plane/texture around a correctly-oriented pivot rather than the world axes. Finally, a two-in-one Solaris tip: connecting a **rest position attribute** to a Triplanar/texture node's position input prevents animated-but-not-actually-moving geometry (e.g. a sphere with only surface deformation) from having its texture visibly slide across the surface; separately, enabling/disabling a **Cache** node in Solaris (and similarly Transform or other LOPs) dramatically changes playback speed, because caching removes time-dependency evaluation from the stage — a significant performance win when working interactively in LOPs.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **UV clip-and-transfer workflow**: Clip a symmetrical mesh in half, use **Group by Normal** to isolate the seam-relevant side, Clip top/bottom, save the clip-edges group directly on the Clip node.
+2. Feed that saved group into **UV Flatten** as the seams input, then use **Labs UV Transfer** to copy the resulting UVs back onto the original, un-cut mesh so the clip seams don't remain visible on the final geometry.
+3. **Camera-parented look-dev rig**: create a Null, animate a Transform rotating 360° on Y, made frame-accurate with `(current_frame / final_frame) * 360` for a perfect loop; add a Camera under the null with desired framing.
+4. Manually place look-dev reference objects (color checker, gray/chrome spheres) in the bottom-left corner of frame, then parent them to the null via the LOP graph's second input — ensure the camera's primitive path is nested under the null in the scene graph, and that the **null** (not the camera) is what's being transformed, so the props stay glued to the camera's corner of frame through the rotation.
+5. **Opacity-to-mesh for faster rendering**: trace the opacity map, Remesh (needed for the deformation that follows), assign a **Connectivity** ID per leaf/piece (reversed), copy UVs onto position so the atlas aligns spatially with the UV layout.
+6. Run a **For-Each loop over connected pieces**, with a second Fetch-Input begin node loading the atlas texture/geometry; in a wrangle, sample the atlas's class attribute per point using **`xyzdist()`** to find the correct positional match, keep only matching points, then sample position from the original mesh piece.
+7. **Compile** the loop for additional speed (referenced as similar to another YouTube tutorial's approach) — result: real geometry that renders far faster in Karma than opacity-map path tracing.
+8. **Custom rotate-pivot for a texture projector tool**: place a point on target geometry, Copy a plane to it; in a VEX wrangle, use **`maketransform()`** fed by the point's N and up vectors to build an orientation matrix.
+9. Convert that matrix to **Euler angles**, output in degrees, and feed it into the Transform node's **rotate pivot** parameter — enabling correct plane/texture rotation around a properly-oriented pivot instead of world axes.
+10. **Solaris rest-position fix**: for animated-but-non-translating geometry (e.g. a deforming sphere), connect a **rest position** attribute to the Triplanar/texture node's position input to prevent the texture from visibly sliding across the surface as it deforms.
+11. **Solaris time-dependency removal**: enable a **Cache** node (and similarly Transform or other LOPs) on animated stage content — this removes time-dependent re-evaluation from that point in the stage, drastically increasing playback/interaction speed when working in Solaris.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Clip (with saved clip-edges group), Group by Normal, UV Flatten, Labs UV Transfer, Null + Transform (frame-based 360° loop expression), Camera, LOP graph parenting (second input), Opacity Trace, Remesh, Connectivity (reversed), UV-to-position copy, For-Each loop (Fetch Input second begin node), Attribute Wrangle (`xyzdist()`-based atlas matching), Compile Block, custom point-placement + Copy-to-plane tool, VEX `maketransform()` (N/up-vector orientation matrix), Euler-angle conversion, Transform (rotate pivot from custom attribute), rest-position attribute (Triplanar/texture position input), Cache node (Solaris/LOPs time-dependency removal).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced (the opacity-to-mesh connectivity-matched For-Each loop and the VEX-driven rotate-pivot solution are the more advanced items; the Solaris cache/rest-position tips are simple but high-impact).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.302 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+uvs, solaris, opacity-to-mesh, make-transform, rest-position, time-dependency, karma, workflow
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Optimizing Baked Trees with Instancing in Houdini](optimizing-baked-trees-with-instancing-in-houdini.md) — shares the same author's Opacity-to-Mesh HDA/workflow referenced here for foliage conversion.
+- [Interactive Tools with Houdini Python States - Draw Pts on Geo](interactive-tools-with-houdini-python-states-draw-pts-on-geo.md) — related point-placement + copy-to-geometry tool-building technique, relevant to the unfinished texture-projector tool mentioned here.
