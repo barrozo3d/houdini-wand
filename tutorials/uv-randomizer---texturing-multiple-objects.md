@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=FK6IRzxYHiY
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.493"
+tags: [uvs, texturing, connectivity, sort, vex, procedural-uvs, tiling]
+extraction_status: complete
 frames_dir: tutorials/frames/uv-randomizer---texturing-multiple-objects/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # UV Randomizer - Texturing multiple objects
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py uv-randomizer---texturing-multiple-objects <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -66,30 +62,47 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/uv-randomizer---texturing-multiple-objects/frame_000.jpg
+- [0:45] tutorials/frames/uv-randomizer---texturing-multiple-objects/frame_001.jpg
+- [1:05] tutorials/frames/uv-randomizer---texturing-multiple-objects/frame_002.jpg
+- [1:40] tutorials/frames/uv-randomizer---texturing-multiple-objects/frame_003.jpg
+- [2:10] tutorials/frames/uv-randomizer---texturing-multiple-objects/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Break up obvious texture repetition across many duplicated objects (e.g. railway sleepers/planks) by assigning each piece to one of N UV "islands" via an integer ID attribute, then using UV Layout's island-stacking behavior so same-ID pieces share space while different-ID pieces get laid out separately — randomizing the ID assignment for a natural, non-repeating look.
 
 ### Summary
-[PENDING EXTRACTION]
+Instead of stacking every duplicate's UVs on top of each other for maximum texture density (which causes obvious pattern repetition), a wrangle assigns each piece an integer ID within a chosen range (the "how many distinct UV islands" control). UV Layout then stacks pieces sharing the same ID on top of each other, but lays out different IDs into separate regions — trading a bit of texture resolution for visible variation. Randomizing the piece order with a Sort node (set to random, with a seed) before ID assignment removes any leftover visual pattern from nearby pieces sharing IDs.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start with the base geometry duplicated many times (example: a box duplicated 20 times to look like railway sleepers), each with basic UVs applied.
+2. In a wrangle, create an **integer attribute** that divides the pieces into different IDs within a chosen range — the total number of distinct values is how many separate UV islands/regions will exist; any pieces sharing the same ID get stacked on top of each other.
+3. Run **UV Layout** with default settings first to show the baseline problem: laying out every piece separately gets crowded and hurts effective texture resolution.
+4. Use **Connectivity**'s island attribute together with the ID attribute created above: promote the point-level ID attribute to a **primitive attribute** (required by UV Layout to read it correctly).
+5. With the primitive-level ID attribute now feeding UV Layout, pieces sharing an ID stack on top of each other while different IDs get laid out into separate regions — giving a balance between texture resolution and variation.
+6. To randomize which pieces share which ID (avoiding a still-visible repeating pattern), insert a **Sort node** set to random (with a seed) before the ID-assignment wrangle, so the ID distribution across pieces is shuffled rather than sequential.
+7. Fine-tune by adjusting the random offset/seed, or removing it if repeating patterns are still noticeable next to each other.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Box (duplicated), UV unwrap, Attribute Wrangle (integer ID attribute within a range), UV Layout (default packing vs. island-stacking via attribute), Connectivity (island attribute), Attribute Promote (point → primitive for the ID attribute), Sort (random, with seed).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner–Intermediate (simple attribute + UV Layout combination, easy to adapt to other repeated-asset scenes).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.493 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+uvs, texturing, connectivity, sort, vex, procedural-uvs, tiling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural UVs - UV Layout Node in Depth](procedural-uvs---uv-layout-node-in-depth.md) — deep dive into UV Layout's island/UDIM/scale attributes, including the same island-stacking-by-attribute technique used here.
+- [Orient UVS like a PRO in Houdini 21](orient-uvs-like-a-pro-in-houdini-21.md) — related procedural UV-manipulation tooling from the same channel.

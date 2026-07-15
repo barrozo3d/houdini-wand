@@ -3254,9 +3254,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=FK6IRzxYHiY
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.493
+- **Tags:** uvs, texturing, connectivity, sort, vex, procedural-uvs, tiling
+- **Summary:** Breaks up texture repetition across many duplicated objects (railway sleepers) by assigning each piece an integer ID and promoting it to primitive so UV Layout stacks same-ID pieces while separating different IDs, then randomizing ID assignment with a Sort node to avoid visible patterns.
 - **File:** tutorials/uv-randomizer---texturing-multiple-objects.md
 
 
