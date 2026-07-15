@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=8hUjc7BEI9g
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.724"
+tags: [vdb, poly-bridge, lattice, vex, volume-vop, organic-modeling, sculpture, karma]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-and-organic-modeling-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 13
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural and Organic Modeling in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-and-organic-modeling-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -192,30 +188,63 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_000.jpg
+- [1:40] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_001.jpg
+- [3:20] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_002.jpg
+- [6:20] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_003.jpg
+- [8:40] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_004.jpg
+- [10:50] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_005.jpg
+- [13:20] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_006.jpg
+- [15:50] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_007.jpg
+- [18:00] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_008.jpg
+- [19:40] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_009.jpg
+- [22:30] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_010.jpg
+- [24:30] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_011.jpg
+- [26:20] tutorials/frames/procedural-and-organic-modeling-in-houdini/frame_012.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build an abstract organic hourglass/vase sculpture (crown-and-trunk form) from a masked sphere clipped into two rings, **Poly Bridge**d together with a thickness ramp, then roughened via VDB volume noise (masked by an "inside" vs. edge distance-along-geometry attribute for different density per region), refined with Smooth SDF + a Lattice-based pinch deformation, and finished with a bent-line-and-Sweep stem.
 
 ### Summary
-[PENDING EXTRACTION]
+A frequency-30 Sphere gets a top/bottom mask via a Point VOP computing the relative bounding-box Y component, mirrored (`abs(y - 0.5)`) and range-expanded, then distorted with a sparse-convolution 3D Turbulence noise on position. A rest-position + random attribute drives a **Clip** operation (comparing `v@P.y` to `@Cd.r`) to cut the sphere into a jagged ring boundary; the boundary is split into "above"/"below" groups, unshared edges converted to curves, resampled, and grouped into boundary-group pairs. **Poly Bridge** connects the two ring curves with high subdivision count and a customized **thickness ramp** (points moved to shape a pinched-waist profile), followed by a VEX snippet to remove leftover open-curve primitives, then a heavy **Attribute Blur** (~500 iterations, edge line mode) smooths the bridged shape while preserving its overall silhouette. Two attribute masks are built: a **distance-along-geometry** mask from the unshared/boundary points (inverted, offset) for edge-region control, and a separate uniform "inside" attribute (~1) covering the whole interior for a different noise density. Converting to VDB (density type, fill interior, thicker exterior band) and blending in a masked **Turbulence** noise (sparse convolution, tuned frequency/amplitude/offset) roughens the surface — reduced by multiplying with the mask so only intended regions get noise. A second, higher-frequency noise variant is duplicated and stretched (via a reused relative-bounding-box setup, `abs()` on tracked point components) then **mixed** with the first noise using a Fit-Ranged version of the edge mask as the mixing factor, blended so the stretched detail only shows in the middle rather than top/bottom. A **Smooth SDF** (one iteration, mean curvature flow) softens the sharp VDB transition before converting back to polygons; an **Attribute from Volume** re-imports the "inside" mask onto the polygon mesh. A **Lattice** deformer (driven by manually-edited points with a soft-radius move tool) creates a pinched indentation specifically at the top, tuned via Lattice's Kernel Function/Radius/Normalize Threshold parameters. Color variation uses the "inside" attribute (layered/blurred) to assign red (crown) vs. tan/beige (trunk) colors via Color nodes, usable later for material assignment. Finally, a stem/trunk-topper element is built from a short **Line** (0.15 length, 20 points) with normals reset, **Bent** toward the top, then given attribute-based orientation/Sweep (round tube profile, grid end cap, adjusted repeat/roundness), copied to a target point, and merged into the final sculpture.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Base sphere + top/bottom mask**: Sphere (frequency 30) → Point VOP computing relative bounding-box Y, subtract 0.5 and `abs()` to mirror, then Fit Range to expand the effect.
+2. **Distortion**: connect position to a **Turbulence** noise set to sparse convolution / 3D noise (frequency 6, small amplitude ~0.11, offset tuned).
+3. **Clip boundary**: create a rest-position attribute and a random attribute per point; use a wrangle comparing `v@P.y == @Cd.r`-style logic to build a clip test, then Clip the polygons around this jagged mask boundary.
+4. **Split and curve extraction**: Split above/below the clip plane into two node streams; on one, keep bytes small for VDB feeding; group unshared edges, Convert Line, remove unused points, Connect Pieces (single primitive per curve), Resample, and group boundary points per curve (unshared, create boundary groups) — promoting to edges for the bridge input groups.
+5. **Poly Bridge**: bridge group 0 to group 1, increase subdivisions (~60), and customize the **thickness ramp** by adding/moving ramp points to shape a pinched-waist profile.
+6. **Cleanup**: remove leftover curve primitives with a VEX snippet checking if the primitive is closed (removes open curve primitives), then apply a heavy **Attribute Blur** (~500 iterations, edge-line mode) to smooth the bridged mesh while preserving the silhouette.
+7. **Masks**: build a **distance-along-geometry** mask from the unshared/boundary point group (inverted, offset ~1), and a separate uniform **"inside"** attribute (~1) spanning the whole interior for differentiated noise density.
+8. **VDB conversion**: VDB from Polygons (density type, fill interior, exterior band increased ~0.1); duplicate for the mask-driven density variant.
+9. **Volume noise**: in a Volume VOP, add a **Turbulence** noise (position input, sparse convolution type, tuned frequency/amplitude/offset) to density, multiplied by the mask via Bind so the noise only affects intended regions.
+10. **Stretched secondary noise**: duplicate the noise setup with a different frequency (~5), reuse the relative-bounding-box computation, track/`abs()` a point component, and **Mix** the two noises together using a Fit-Ranged version of the edge mask as the mixing factor — concentrating the stretched-noise look in the middle section only.
+11. **Smooth SDF**: apply one iteration of mean curvature flow to soften the sharp VDB transition, then convert back to polygons.
+12. **Attribute from Volume**: re-import the "inside" mask attribute from the volume onto the new polygon mesh.
+13. **Lattice-based pinch**: Remesh lightly, build a **Lattice** deformer, manually edit specific lattice points (soft-radius move tool) to create a pinched indentation at the top (author leaves the bottom as a reader exercise), tuning Kernel Function/Radius/Normalize Threshold as needed.
+14. **Coloring by region**: layer/blur the "inside" attribute, then use **Color** nodes keyed to point ranges (e.g. point 5-6 vs. others) to assign a red crown color and a tan/beige trunk color for later material targeting.
+15. **Stem**: build a short **Line** (length ~0.15, 20 points), reset normals, **Bend** it toward the top of the shape, attribute-lathe the orientation, then **Sweep** (round profile, Grid end cap, adjusted repeat count and roundness), Copy to a target point, and merge into the final sculpture.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Sphere, Point VOP (relative bounding-box Y, mirror/`abs()`, Fit Range), Turbulence noise (sparse convolution, 3D, position-driven), rest position + random attribute, Clip (jagged boundary), Split, Group (unshared edges), Convert Line, Connect Pieces, Resample, Group (boundary groups), Poly Bridge (thickness ramp customization), VEX snippet (closed-primitive check for curve cleanup), Attribute Blur (edge-line mode, ~500 iterations), Distance Along Geometry mask, uniform "inside" attribute, VDB from Polygons (density, fill interior, exterior band), Volume VOP (Turbulence noise, Bind mask multiply, dual-noise Mix with Fit-Ranged mixing factor), Smooth SDF (mean curvature flow), Convert VDB to polygons, Attribute from Volume, Remesh, Lattice (manual point edits, soft-radius move, Kernel Function/Radius/Normalize Threshold), Color (point-range-keyed), Line, Bend, attribute lathe, Sweep (round profile, Grid end cap), Copy to Points, Merge.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines VDB volume-noise masking, Poly Bridge with custom thickness ramps, and Lattice-based sculptural deformation into a single organic-modeling pipeline).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.724 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vdb, poly-bridge, lattice, vex, volume-vop, organic-modeling, sculpture, karma
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [VDB Procedural Modeling in Houdini](vdb-procedural-modeling-in-houdini.md) — related VDB volume-noise-based organic modeling technique from the same channel.
+- [Procedural and organic modeling tips](procedural-modeling-with-vex-vdb-and-vellum.md) — shares overlapping VDB/VEX organic-shaping techniques.

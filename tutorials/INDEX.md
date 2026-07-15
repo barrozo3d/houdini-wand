@@ -2324,9 +2324,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=8hUjc7BEI9g
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.724
+- **Tags:** vdb, poly-bridge, lattice, vex, volume-vop, organic-modeling, sculpture, karma
+- **Summary:** Builds an abstract hourglass/vase sculpture from a masked-and-clipped sphere Poly Bridged with a custom thickness ramp, roughened via masked VDB volume noise (dual-noise Mix for stretched mid-section detail), refined with Smooth SDF and a Lattice pinch deformation, finished with a bent Sweep stem.
 - **File:** tutorials/procedural-and-organic-modeling-in-houdini.md
 
 
