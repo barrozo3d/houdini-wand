@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ntf3zMAez50
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vex, surface-deform, cluster, minpos, flood-fill, croissant, spiral, vex-showcase]
+extraction_status: complete
 frames_dir: tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 9
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Why you need to learn vex in Houdini #1
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py why-you-need-to-learn-vex-in-houdini-1 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -103,30 +99,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/frame_000.jpg
+- [1:00] tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/frame_001.jpg
+- [1:40] tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/frame_002.jpg
+- [2:10] tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/frame_003.jpg
+- [2:40] tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/frame_004.jpg
+- [3:20] tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/frame_005.jpg
+- [4:00] tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/frame_006.jpg
+- [4:30] tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/frame_007.jpg
+- [5:00] tutorials/frames/why-you-need-to-learn-vex-in-houdini-1/frame_008.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Build a croissant's laminated/swirled interior cross-section using a **Surface Deform**-driven spiral (a flat unit circle sampled via `sampleCircleUniform()` transformed onto the actual croissant silhouette), then generate an organic honeycomb-like cell pattern along that spiral with a **random flood-fill clustering** algorithm (nearest-point search + `minpos()`) run inside a **Fetch Feedback** loop instead of a Sub-Solver — a first-principles VEX showcase demonstrating how far basic point/curve functions can go without any simulation.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a pre-sliced croissant cross-section (built earlier with a bunch of extrusions and a Sculpt node, covered in a prior video), the interior detail begins by blasting away the filled polygons and resampling the resulting simple boundary curve. The core trick is building a "rest geometry" spiral: a unit circle sampled with **`sampleCircleUniform()`** by manipulating the U parameter creates a perfect flat spiral of the desired size (matched via Match Size to the croissant's own silhouette). **Surface Deform** then takes that flat spiral rest geometry and the croissant's actual cross-section as the deforming target, warping the spiral into the croissant's real silhouette shape — after scaling with a Primitive node and re-sampling with Subdivision Curves to smooth it, an **Orient Along Curve** derives stable tangent-based normals for the single resulting curve. The organic cell/honeycomb pattern is grown next: a `cluster` int attribute is initialized to -1 everywhere (so it can later be tested for "unclaimed"), then random single-point clusters are seeded via a for-loop over numbers (128 clusters by default) — each iteration picks a random U value (0–1, zero-centered/scaled by a small amplitude and offset so seed points aren't perfectly evenly spaced, excluding the very start/end of the curve), samples that position on the rest curve via `primuv()`, then uses **`nearpoint()`** to snap the random position to the actual nearest real point and assigns that point its own unique cluster ID. To grow (flood-fill) these random seed clusters across all remaining points, a **detail-level loop over all points on the curve** initializes a running "current cluster" variable to -1, then — since points are already ordered along the curve — walks through them in order, using **`max()`** to carry the last-seen valid cluster ID forward through any still-`-1` points, filling every gap with whichever cluster was most recently established upstream (a simple, elegant flood-fill via monotonic max-carry rather than any actual pathfinding/BFS). A second curve is then copied directly on top of the first (offset via a normal-cross-product-with-Z "out" vector for a slight radial separation so the two curves aren't perfectly coincident), and points are matched/fused **by their shared cluster attribute** (not spatial proximity) so cells only connect to same-cluster neighbors, producing a honeycomb/vein-like connectivity pattern purely from the flood-filled IDs. Rather than a Sub-Solver (which would need actual DOP context), the entire multi-pass refinement (Polypath to unify, then repeated resample+relax) is wrapped in a **Fetch Feedback** loop — set to iterate "by count" — which repeatedly re-feeds the previous iteration's output back into a light Attribute Blur, over 10 iterations, progressively smoothing/relaxing the pattern into a natural, organic result matching the reference. A final Fuse + Polypath + a bit more cleanup yields the finished honeycomb interior mesh, ready to be meshed (left as "a project for another time" in this video, since the meshing pass wasn't covered here).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start from a pre-built, sliced croissant cross-section (interior polygons already Blasted away), Resample the remaining simple boundary curve.
+2. Build a flat "rest geometry" spiral by sampling a unit circle with **`sampleCircleUniform()`**, manipulating the U parameter to generate the spiral shape; Match Size it to match the croissant silhouette's scale.
+3. Run **Surface Deform** using the flat spiral as rest geometry and the croissant's actual cross-section shape as the deforming target — warps the flat spiral into the croissant's real, organic silhouette.
+4. Scale with a Primitive node, Resample with Subdivision Curves for smoothness, then run **Orient Along Curve** to derive stable tangent-based normals on the single resulting curve.
+5. Initialize a `cluster` int attribute to **-1** everywhere (marks "unclaimed"), then in a for-loop over numbers (e.g. 128 iterations), generate a random U value (zero-centered, scaled/offset so seeds aren't perfectly even, excluding curve start/end), sample that position via `primuv()`, and use **`nearpoint()`** to snap it to the actual nearest real point — assign that point a unique cluster ID (the loop iteration number).
+6. **Flood-fill the clusters**: in a detail-level loop over all ordered points along the curve, initialize a running "current cluster" variable to -1, and at each point use **`max()`** to carry forward the last valid (non–1) cluster ID seen — filling every still-unclaimed (-1) point with whichever cluster was most recently established, producing a complete, organically-partitioned pattern with zero pathfinding.
+7. Copy a second curve directly onto the first, offset slightly outward via a normal-cross-Z "out" vector for radial separation, then **fuse points by the shared cluster attribute** (not spatial distance) so only same-cluster points connect — producing the honeycomb/vein connectivity.
+8. Wrap the multi-pass refinement (Polypath unify → resample → relax) in a **Fetch Feedback** loop (iterate by count, ~10 iterations) instead of a Sub-Solver, repeatedly feeding the previous pass's output through a light Attribute Blur for progressive, organic smoothing.
+9. Finish with a Fuse + Polypath cleanup pass to produce the final honeycomb-interior curve network (left un-meshed as a follow-up project).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Blast, Resample, `sampleCircleUniform()` (spiral generation via U manipulation), Match Size, Surface Deform (rest geometry → target-shape warp), Primitive (scale), Subdivision Curves resample, Orient Along Curve, cluster-initialization wrangle (`cluster = -1`), for-each-over-numbers random seed wrangle (`random()`, zero-centered/scaled U, `primuv()`, `nearpoint()`, unique cluster assignment), detail-level flood-fill wrangle (`max()`-based running-cluster carry-forward), normal-cross-Z "out" vector offset, Fuse (match by cluster attribute, not distance), Polypath, Fetch Feedback (iterate by count, Attribute Blur per pass).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the `nearpoint()`+`max()`-carry flood-fill clustering algorithm and the Surface-Deform-driven spiral-to-silhouette warp are both non-obvious, from-scratch VEX techniques built without any simulation or default node shortcuts).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vex, surface-deform, cluster, minpos, flood-fill, croissant, spiral, vex-showcase
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Spiral Splash Tutorial in Houdini](spiral-splash-tutorial-in-houdini.md) — shares the from-scratch VEX quaternion/curve-parameter spiral-construction approach used here.
+- [Procedural tips and tricks in Houdini 20.5](procedural-tips-and-tricks-in-houdini-205.md) — shares the `sample_circle()`-based circular-group and Lab-Sort circular-ordering techniques used here for the spiral rest geometry.
+- [Vex Problem Solving in Houdini](vex-problem-solving-in-houdini.md) — shares this channel's from-scratch VEX-first problem-solving philosophy (Cluster-node-style seam detection, custom flood-fill logic).

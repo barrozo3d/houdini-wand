@@ -690,3 +690,4 @@ vex, quaternion, pop-network, pop-fluid, vellum, super-formula, karma, subsurfac
 - [KineFX and Vellum Fluid in Houdini](kinefx-and-vellum-fluid-in-houdini.md) — shares a similar sine/quaternion-driven VEX animation approach combined with Vellum from the same channel.
 - [Vellum Balloon Text in Houdini](vellum-balloon-text-in-houdini.md) — shares the same "Vellum as a sculpting/inflation tool rather than manual sculpting" technique used here for the heart shape.
 - [Procedural Modeling with VEX, VDB and Vellum](procedural-modeling-with-vex-vdb-and-vellum.md) — shares the from-scratch VEX curve-parameter/quaternion math approach used here, applied there to the couch's ramp-driven profile assembly.
+- [Why you need to learn vex in Houdini #1](why-you-need-to-learn-vex-in-houdini-1.md) — shares the from-scratch VEX spiral-construction approach used here, applied there to a croissant's interior lamination.

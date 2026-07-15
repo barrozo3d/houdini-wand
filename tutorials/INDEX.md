@@ -1364,9 +1364,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ntf3zMAez50
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vex, surface-deform, cluster, minpos, flood-fill, croissant, spiral, vex-showcase
+- **Summary:** Builds a croissant's laminated interior using a sampleCircleUniform()-based spiral warped onto the real silhouette via Surface Deform, then grows an organic honeycomb cell pattern with a from-scratch nearpoint()+max()-carry flood-fill clustering algorithm run inside a Fetch Feedback loop instead of a Sub-Solver.
 - **File:** tutorials/why-you-need-to-learn-vex-in-houdini-1.md
 
 
