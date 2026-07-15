@@ -2354,9 +2354,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ObBXMX-VH90
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.734
+- **Tags:** heightfields, substance-designer, third-party-plugin, pegasus, vex, texturing, rocks, karma
+- **Summary:** Sculpts a rock heightfield using ported Substance Designer nodes (Tile Sampler, Blend, Voronoise, Slope Blur) for the ID map, combined with Pegasus-loaded Megascans textures masked by Heightfield Mask by Feature (Occlusion), packing RGB diffuse and alpha ID map into one texture for Solaris.
 - **File:** tutorials/using-substance-designer-nodes-for-houdini.md
 
 
