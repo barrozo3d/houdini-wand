@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Ue-Wuo87YJI
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.593"
+tags: [heightfields, vdb, terrain, vex, volumes, optimization, masks]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-tips-heightfields-and-vdb/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural tips | Heightfields and VDB
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-tips-heightfields-and-vdb <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -65,30 +61,48 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/procedural-tips-heightfields-and-vdb/frame_000.jpg
+- [0:40] tutorials/frames/procedural-tips-heightfields-and-vdb/frame_001.jpg
+- [1:10] tutorials/frames/procedural-tips-heightfields-and-vdb/frame_002.jpg
+- [1:40] tutorials/frames/procedural-tips-heightfields-and-vdb/frame_003.jpg
+- [2:10] tutorials/frames/procedural-tips-heightfields-and-vdb/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A grab-bag of five Heightfield/VDB tips: masking terrain with Heightfield Pattern, masking Erosion with noise so cliffs aren't everywhere, using noise bias instead of Mask Expand to grow/shrink an area, clipping a VDB with a box before Volume VOP for speed, and previewing a volume noise attribute via a Color-node/Attribute-from-Volume round-trip.
 
 ### Summary
-[PENDING EXTRACTION]
+Heightfield Pattern combined with Remap creates elevation masks (height/center controls). A second Heightfield Pattern (Chippy Shapes) masks where Erosion is applied so cliff-like breakup only appears in some areas rather than uniformly, since Erosion's default look isn't great everywhere. For growing/shrinking a masked area, playing with a noise's **bias** works better than Mask Expand. For performance, VDB Clip lets you cut a box-bounded section of a volume before running expensive Volume VOP noise, speeding up iteration while preserving the noise's scale/resolution. Finally, to preview a volume attribute (e.g. a mixed-noise factor) without exporting it formally, a Color node writes it into `Cd` before VDB from Polygons, then Attribute from Volume reads it back as a visible attribute after conversion.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Terrain masking**: use Heightfield Pattern's mask output with a Ramp, playing with height and center parameters, then feed it into Remap to shape elevation.
+2. **Selective cliff detail**: apply Erosion for cliff-like sections, but mask it using a Heightfield Pattern noise (Chippy Shapes) so cliffs don't appear everywhere — default Erosion coverage looks poor across a whole terrain.
+3. **Section masking with Ramp + multiply**: for a bigger cliff face at the front, use a Ramp to mask that region and multiply the noise on top of it.
+4. **Growing/shrinking masks — the "obvious in hindsight" tip**: rather than Mask Expand, adjusting the **bias** of the underlying noise grows/shrinks the masked area more naturally and with better control.
+5. **VDB Clip for optimization**: when iterating on a Volume VOP setup, connect a box into **VDB Clip** to cut down the working volume section before running expensive noise calculations — speeds up feedback while preserving the same noise scale/resolution as the full volume.
+6. **Previewing a volume attribute as color**: add a `Cd` attribute via a **Color node**, pass it through in VDB from Polygons with a VDB name, then hide the resulting fog-like preview with a Visibility node.
+7. **Reading the attribute back**: inside the Volume VOP, mix two noises using a third as the mix factor, Bind Export the resulting vector, then after conversion use **Attribute from Volume** to see the final mixed-noise result as a real point/primitive attribute.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Heightfield Pattern (mask, Chippy Shapes), Heightfield Remap, Ramp, Heightfield Erosion (mask-controlled), noise bias parameter (vs. Mask Expand), VDB Clip (box-bounded optimization), Color node (Cd export), VDB from Polygons (named VDB attribute), Visibility node, Volume VOP (Bind Export, noise mixing), Attribute from Volume.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (assumes familiarity with Heightfields and Volume VOPs; the tips themselves are quick/practical).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.593 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+heightfields, vdb, terrain, vex, volumes, optimization, masks
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural VDB Cookies](procedural-vdb-cookies.md) — shares the same Color-node/Attribute-from-Volume attribute-preview trick used here.
+- [Rock formations with heightfields](rock-formations-with-heightfields.md) — fuller heightfield workflow building on the masking techniques covered here.
+- [Houdini Heightfields and Cliffs](houdini-heightfields-and-cliffs.md) — related heightfield erosion/masking techniques from the same channel.

@@ -3214,9 +3214,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Ue-Wuo87YJI
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.593
+- **Tags:** heightfields, vdb, terrain, vex, volumes, optimization, masks
+- **Summary:** Five heightfield/VDB tips: masking terrain elevation with Heightfield Pattern+Remap, masking Erosion with noise so cliffs aren't uniform, using noise bias instead of Mask Expand to grow/shrink masks, VDB Clip for faster Volume VOP iteration, and previewing volume attributes via a Color-node/Attribute-from-Volume round-trip.
 - **File:** tutorials/procedural-tips-heightfields-and-vdb.md
 
 
