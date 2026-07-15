@@ -2574,9 +2574,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=68WNINd8vE0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.590
+- **Tags:** materialx, karma, anisotropy, uvs, orient-along-curve, procedural-shading, spiral-ramp, metal, product-viz
+- **Summary:** Recreates brushed-metal circular anisotropic reflections on a modeled cake pan using a hand-built MaterialX "spiral ramp" (Rotate→Distance→Remap to ±π→Combine) that drives both specular rotation and circularly-tiled noise, finished with a Triplanar dirt-mixed roughness pass.
 - **File:** tutorials/procedural-anisotropy-in-karma.md
 
 

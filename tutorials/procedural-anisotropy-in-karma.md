@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=68WNINd8vE0
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.590"
+tags: [materialx, karma, anisotropy, uvs, orient-along-curve, procedural-shading, spiral-ramp, metal, product-viz]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-anisotropy-in-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Anisotropy in Karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-anisotropy-in-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -338,30 +334,60 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/procedural-anisotropy-in-karma/frame_000.jpg
+- [3:10] tutorials/frames/procedural-anisotropy-in-karma/frame_001.jpg
+- [7:40] tutorials/frames/procedural-anisotropy-in-karma/frame_002.jpg
+- [10:20] tutorials/frames/procedural-anisotropy-in-karma/frame_003.jpg
+- [14:10] tutorials/frames/procedural-anisotropy-in-karma/frame_004.jpg
+- [18:00] tutorials/frames/procedural-anisotropy-in-karma/frame_005.jpg
+- [20:50] tutorials/frames/procedural-anisotropy-in-karma/frame_006.jpg
+- [25:00] tutorials/frames/procedural-anisotropy-in-karma/frame_007.jpg
+- [27:30] tutorials/frames/procedural-anisotropy-in-karma/frame_008.jpg
+- [30:00] tutorials/frames/procedural-anisotropy-in-karma/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Recreate brushed-metal circular anisotropic reflections (like a cake pan) procedurally in MaterialX/Karma using a hand-built "spiral ramp" (Texture Coordinate → Rotate → Distance → Vector-to-Float → Remap to ±π → Combine) that outputs both a radial specular-rotation map and a circularly-tiled noise coordinate, avoiding the need for a baked texture.
 
 ### Summary
-[PENDING EXTRACTION]
+The pan is modeled from a reversed 64-sided Circle (ZX plane) through several Extrude/Insert passes to build the rim and inner cup profile, with a tapering effect created by blending two Orient-Along-Curve-derived normal sets via Attribute Combine (Copy blend mode). UVs are split by normal (Y-axis) into a cylindrical UV set for the vertical wall and an orthographic Y-projection for the flat bottom, with manual seam creation (range-selected points promoted to an edge group) feeding UV Flatten. Extruding for thickness later breaks the UVs in specific spots, requiring a Split-after-Extrude fix and copy-pasting the UV Texture node's settings onto the newly split piece. The geometry is subdivided (to avoid faceted anisotropic reflections) and a "sides" flag attribute is created for shading, with normals softened as a general best practice. In Solaris, a Karma Material Builder is assigned with a Dome Light (turned off as a visible background) and Karma XPU. The key procedural-shading trick — the **spiral ramp** — is built from a Texture Coordinate node → Rotate (procedural formula, technique explicitly borrowed from Blender-procedural-texturing tutorials and reimplemented in MaterialX) → Distance-from-center (0.5) → Vector-to-Float separation → Remap to the range **-$PI to $PI** → recombined into a two-channel output: one channel becomes the **specular rotation** input (via Geometry Property Value reading the "sides" attribute mixed with this radial map), and the other becomes a circularly-correct coordinate space for a **Unified Noise** bump/detail texture (tiled ~10×600 for the sides, ~6×400 for the top). The two noise/UV domains (circular top vs. cylindrical sides) are combined via the "sides" attribute mix. A subtle **MaterialX Bump** node (height ~0.001–0.005) reinforces the anisotropic streaking. Finally, a Triplanar-projected dirt texture is separated and mixed into specular roughness (remapped between 0.25 and 0.45) to sell the worn-metal look.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Model the pan**: reversed 64-sided Circle (ZX plane) → Extrude/Insert passes to build the rim and cup profile → extract unshared/outside edges for the rim taper.
+2. **Tapering via blended normals**: compute a second normal set via **Orient Along Curve** (named `N2`), then **Attribute Combine** with destination set to `normal`, blend mode set to **Copy** (not Add), mixing the original normal with `N2` by an adjustable amount for the taper look.
+3. Continue extruding (Point Normal / existing normals mode) matching heights via a copied Extrude node set consistently to Edge mode so height stays uniform.
+4. **Dual UV projection**: split geometry by normal (Y-axis) into cylindrical-wall and orthographic-Y-projection groups; build UVs via UV Texture per group, fixing orientation/flip as needed.
+5. **Manual seam creation**: use a Range selection (point 1 and point 1-of-64) promoted to an edge group, feed it into **UV Flatten**'s seam input to rectify/lay out the UVs correctly.
+6. **UV breakage fix after thickness extrude**: since extruding for shell thickness (~0.44, output back) breaks UVs at specific overlap points, **Split** the geometry right after the Poly Extrude (by side/room), then copy-paste the working UV Texture node's settings onto the newly split problem piece.
+7. Fuse, Bevel, and **Subdivide** (×2) the final geometry — subdividing specifically to avoid faceted/blocky anisotropic reflections at render time.
+8. Create a **"sides"** boolean/flag attribute (via Group + attribute create) for later shading use; **soften normals** as a general modeling best practice.
+9. **Solaris setup**: Material Library + Karma Material Builder, Dome Light (HDRI, set to not visible as background — dark backdrop), Karma render engine set to **XPU**.
+10. **Spiral ramp construction** (the core anisotropy trick): Texture Coordinate → **Rotate** node (custom formula) → **Distance** node set to 0.5 (radiating from center) → separate the vector into floats (Vector-to-Float) → **Remap** each to the range **-$PI to $PI** → **Combine** back into a 2-channel output — one channel drives specular rotation, the other feeds circularly-correct noise coordinates.
+11. **Specular rotation**: **Geometry Property Value** reads the "sides" attribute; **Mix** it with the spiral-ramp rotation channel, then connect the result to the Standard Surface's **specular rotation** input, with metalness/roughness increased to taste — this alone produces the classic radiating anisotropic-drop look, and its direction/rotation is further tunable.
+12. **Bump/noise detail**: connect a **Unified Noise** for the flat top, tiled using the spiral-ramp's circular coordinates (~6×400) so the noise wraps correctly around the center instead of stretching; a separate Unified Noise (~10×600, Perlin) handles the cylindrical side walls using plain Texture Coordinates (seams tolerated since the anisotropy effect masks them).
+13. **Combine both noise domains** using the "sides" attribute as the mix factor (Combine/Mix node) so sides and top each get their appropriate noise pattern.
+14. Add a **MaterialX Bump** node (height input, values as small as 0.001–0.005) connected to the shader's normal input to reinforce the streaked-metal look; increase render samples/denoiser as bump values are very subtle and can introduce noise.
+15. **Selling the material**: add a **Triplanar** node with a dirt texture, separate its channels, and **Mix** it into the specular roughness input (remapped between 0.25 and 0.45) for worn/aged variation across the surface.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Circle (ZX plane, 64 subdivisions, reversed), Extrude/Insert (rim/cup profile), Orient Along Curve (`N2` normal set), Attribute Combine (Copy blend mode for taper), Group (normal-based UV-domain split), UV Texture, Range (seam point selection), Group Promote (edge seam group), UV Flatten, Split (post-extrude UV fix), Fuse, Bevel, Subdivide, Group/Attribute Create ("sides" flag), soft normals, Material Library, Karma Material Builder, Dome Light, Karma XPU, Texture Coordinate, Rotate (MaterialX procedural formula), Distance (0.5 center-radiating), Vector-to-Float separation, Remap (-$PI to $PI), Combine (2-channel spiral-ramp output), Geometry Property Value ("sides" attribute read), Mix, Standard Surface (specular rotation input), Unified Noise (circular-tiled top, cylindrical-tiled sides), MaterialX Bump (subtle height), Triplanar (dirt texture), Mix (roughness variation, 0.25–0.45 remap).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the hand-derived spiral-ramp math and dual-domain UV/noise combination are non-obvious procedural-shading techniques requiring MaterialX VOP fluency).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.590 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+materialx, karma, anisotropy, uvs, orient-along-curve, procedural-shading, spiral-ramp, metal, product-viz
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedural UVs in Houdini](procedural-uvs-in-houdini.md) — related UV-construction techniques (seam creation, UV Flatten) from the same channel.
+- [Custom Procedural Materials with Houdini and Karma](custom-procedural-materials-with-houdini-and-karma.md) — shares this channel's approach of hand-building MaterialX node networks for specific reflection/material looks.
