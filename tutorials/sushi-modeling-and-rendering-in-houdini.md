@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=c1tO7581nOM
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.701"
+tags: [vellum, shape-match, quad-remesh, materialx, karma, subsurface, food, connectivity, product-viz]
+extraction_status: complete
 frames_dir: tutorials/frames/sushi-modeling-and-rendering-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 9
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Sushi Modeling and Rendering in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py sushi-modeling-and-rendering-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -251,30 +247,64 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:30] tutorials/frames/sushi-modeling-and-rendering-in-houdini/frame_000.jpg
+- [1:30] tutorials/frames/sushi-modeling-and-rendering-in-houdini/frame_001.jpg
+- [2:55] tutorials/frames/sushi-modeling-and-rendering-in-houdini/frame_002.jpg
+- [4:10] tutorials/frames/sushi-modeling-and-rendering-in-houdini/frame_003.jpg
+- [6:40] tutorials/frames/sushi-modeling-and-rendering-in-houdini/frame_004.jpg
+- [9:10] tutorials/frames/sushi-modeling-and-rendering-in-houdini/frame_005.jpg
+- [10:10] tutorials/frames/sushi-modeling-and-rendering-in-houdini/frame_006.jpg
+- [12:30] tutorials/frames/sushi-modeling-and-rendering-in-houdini/frame_007.jpg
+- [15:00] tutorials/frames/sushi-modeling-and-rendering-in-houdini/frame_008.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Grow a pile of rice grains intersection-free by animating each grain's p-scale from tiny to full size while a **Vellum Shape Match** simulation (with a low-poly proxy driving a high-poly replacement via Vellum Transform Pieces + a saved connectivity/piece attribute) resolves the resulting overlaps naturally, using collision colliders extruded from the base rice-mound shape.
 
 ### Summary
-[PENDING EXTRACTION]
+A single rice grain is built from a Line swept with scale-along-curve (thicker in the middle, grid end caps for rounded tips), Bent for shape, then blended between the bent version and a straight version via a bounding-box-X mask and `lerp()` so the underside stays flat. Subdivide + Exoside QuadRemesher clean up the pole artifact left by the sweep/bend. Since simulating the full-resolution grain is too slow, a 50%-PolyReduced proxy ("low poly") is created alongside the high-poly ("i-poly") for the actual sim. A rice-mound base shape (Circle → Clip → thickness → remove bottom → Bevel) is Scattered with points (normals randomized to Inside Sphere), each grain's **p-scale animated from frame 1 (tiny) to frame 12 (full size)** with some random per-grain scale, and a **Connectivity** attribute saved per piece (critical for later swapping low-poly back to high-poly). After Copy to Points, the low-poly grains are split off to drive the simulation; collision geometry ("colliders") is built from the mound's boundary (fill, normal, extrude out/in) then remeshed with noise added to avoid uniform collider distribution. Since the colliders and grains all intersect at spawn, a **Vellum Shape Match** constraint (default settings) plus a **Vellum Solver** starting at frame 1 (using Vellum Rest Blend to load the animated p-scale copy-to-points result each substep) runs the sim for just 12 frames, and the growing p-scale naturally pushes overlapping grains apart, resulting in an intersection-free pile. The final frame is cached via **Vellum I/O**, then the low-poly grains are swapped back for the high-poly originals using **Vellum Transform Pieces** (unique to shape-match constraints, similar to regular Transform Pieces) driven by the saved piece/connectivity attribute and a Time Shift to frame 12 on the high-poly source, before deleting unneeded attributes and filling any resulting holes with a merged interior shape underneath. The nori wrap is a separate rectangular shape (extracted bound from the rice, rolled, remeshed) simulated with default **Vellum Cloth** settings, then Time-Shifted, Quad-Remeshed, given rest attributes, and flattened; a distance-along-geometry mask drives a thicker-middle/thinner-edge blend between two Extrude passes, a Mountain-along-Peak creates jagged torn edges, and Beveling (before Subdivide) keeps edge transitions sharp rather than overly rounded; UVs use the extrude-back group promoted via Group from Attribute Boundary as the UV Flatten seam group. Shading: the salmon uses a found PBR texture set (Place2D scaling, inverted/remapped displacement between -0.5/0.5, masked by the same edge-distance attribute for reduced displacement at the edges) with a glossy/high-SSS Standard Surface (scale ~0.02); the rice material mixes two colors (darker/lighter) as both base color and SSS color/radius, roughness ~0.1, with subtle bump for grain texture. Lighting uses a low-intensity Dome Light for ambience plus top/front/back lights; render settings use Karma XPU at 512 samples with increased SSS limit and the built-in denoiser.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Rice grain base**: Line → Sweep (scale-along-curve, grid end caps) → Bend, then blend the bent shape against a straight copy using a bounding-box-X mask and `lerp()` so the bottom stays flat.
+2. **Topology cleanup**: Subdivide, then run **Exoside QuadRemesher** to eliminate the pole artifact from the sweep/bend that would otherwise cause smoothing issues.
+3. **Proxy for sim performance**: PolyReduce the grain to ~50% ("low poly"/proxy) alongside the original high-poly ("i-poly"), merging both streams for later use.
+4. **Rice-mound base shape**: Circle → Clip → thicken → remove bottom primitive → Bevel.
+5. **Scatter and animate grains**: Scatter points on the mound, randomize normals (Inside Sphere distribution), **animate p-scale from frame 1 (tiny) to frame 12 (full)** plus random per-grain scale, and save a **Connectivity** attribute per grain (essential for the later low-poly→high-poly swap).
+6. **Copy to Points** the low-poly grain onto the animated points; split off this low-poly stream to feed the simulation.
+7. **Colliders**: from the base mound shape, Fill polygons, add normals, Extrude outward and inward to build bounce/collision geometry, Remesh, and add noise to avoid a too-uniform collider distribution.
+8. **Vellum simulation**: create a **Vellum Shape Match** constraint (default settings) on the grains, connect to a **Vellum Solver** starting at frame 1, using **Vellum Rest Blend** to load the animated Copy-to-Points result at each substep; run for 12 frames — the growing p-scale pushes overlapping grains apart, producing an intersection-free pile.
+9. Cache the final (frame 12) simulation state via **Vellum I/O**.
+10. **Swap low-poly for high-poly**: load the high-poly stream from the earlier split, Time Shift it to frame 12 (fully grown reference pose), then use **Vellum Transform Pieces** (a shape-match-specific equivalent of Transform Pieces) driven by the saved piece/connectivity attribute to replace each simulated low-poly grain with its high-poly counterpart via the Vellum geometry/constraints.
+11. Delete unneeded attributes, then fill any resulting gaps with a simple interior filler shape merged under/over the rice pile.
+12. **Nori wrap**: extract a rectangular Bound from the rice shape, roll it slightly, Remesh, simulate with default **Vellum Cloth** settings, Time Shift to frame 30, **Quad Remesh** (works well for this shape type), create rest attributes and flatten.
+13. Build a **distance-along-geometry mask** for thicker-middle/thinner-edges; use a **Mountain along Peak** for jagged torn edges; Point Deform back to the shape, Peak slightly, then run two Extrude passes (thick/thin) blended by the mask.
+14. **Bevel before Subdivide** to keep edge transitions sharp rather than overly rounded once smoothed.
+15. **UVs**: save the extrude-back group, run **Group from Attribute Boundary** on it, and feed that into **UV Flatten** as the seams group — works well with default settings.
+16. Subdivide, add normals, assign name attributes to both sushi pieces; scatter some loose rice grains on the table and add chopsticks for the final composed shot.
+17. **Salmon shading**: load a found PBR texture set, scale with Place2D, invert and remap the default displacement texture to -0.5/0.5, multiply by the same edge-distance mask (reduces displacement near edges), and use a glossy Standard Surface with a large subsurface contribution (scale ~0.02).
+18. **Rice shading**: load a base texture, use MaterialX Range to shape it, mix two colors (darker/lighter) as both base color and SSS color/radius, roughness ~0.1, plus subtle bump for the characteristic grainy look.
+19. **Lighting/render**: low-intensity Dome Light for ambience plus top/front/back area lights; Karma XPU render settings at 512 samples, increased SSS limit, and the built-in Houdini/Karma Denoiser.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Line, Sweep (scale-along-curve, grid end caps), Bend, bounding-box-X mask + `lerp()` blend, Subdivide, Exoside QuadRemesher, PolyReduce (proxy geometry), Circle, Clip, Bevel, Scatter, Attribute Randomize (normals: Inside Sphere), animated p-scale (frame 1→12), Connectivity (piece attribute), Copy to Points, Fill, Extrude (collider bounce geometry), Remesh + noise, Vellum Shape Match constraint, Vellum Solver, Vellum Rest Blend, Vellum I/O (cache), Time Shift, Vellum Transform Pieces (shape-match-specific piece swap), Bound (nori rectangle extraction), Vellum Cloth (default settings), Quad Remesh, rest attributes + Flatten, distance-along-geometry mask, Mountain (along Peak), Point Deform, Peak, dual Extrude + mask blend, Bevel-before-Subdivide (sharp edges), Group from Attribute Boundary + UV Flatten (seams group), Name attributes, MaterialX PBR texture set, Place2D, displacement invert/remap (-0.5/0.5) + edge-mask multiply, Standard Surface (glossy + high SSS scale ~0.02 for salmon; roughness ~0.1 + bump for rice), Dome Light + area lights, Karma XPU (512 samples, SSS limit, Denoiser).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the Vellum-Shape-Match-driven grain-growth + low-poly/high-poly connectivity-based swap is a sophisticated, non-obvious production technique).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.701 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, shape-match, quad-remesh, materialx, karma, subsurface, food, connectivity, product-viz
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares this channel's broader pattern of using Vellum (Shape Match/Cloth) as a modeling/de-intersection tool.
+- [Procedural Grapes and how to avoid intersections](procedural-grapes-and-how-to-avoid-intersections.md) — same core idea (animated scale-growth inside a Vellum sim to resolve intersections) applied to a different food asset.
+- [How to not Bake Brownies in Houdini](how-to-not-bake-brownies-in-houdini.md) — related food-modeling techniques (near-point clustering, VDB) from the same channel.

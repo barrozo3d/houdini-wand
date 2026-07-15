@@ -2374,9 +2374,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=c1tO7581nOM
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.701
+- **Tags:** vellum, shape-match, quad-remesh, materialx, karma, subsurface, food, connectivity, product-viz
+- **Summary:** Grows an intersection-free rice pile by animating each grain's p-scale inside a Vellum Shape Match sim, then swaps simulated low-poly grains for high-poly originals via Vellum Transform Pieces keyed by a saved connectivity attribute; nori wrap uses Vellum Cloth + Quad Remesh; shaded with SSS salmon/rice materials in Karma XPU.
 - **File:** tutorials/sushi-modeling-and-rendering-in-houdini.md
 
 

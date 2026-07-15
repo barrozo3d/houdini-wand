@@ -101,5 +101,6 @@ vellum, vex, quaternion, branching, procedural-modeling, simulation, food, inter
 ---
 
 ## Related Tutorials
+- [Sushi Modeling and Rendering in Houdini](sushi-modeling-and-rendering-in-houdini.md) — same core idea (animated scale-growth inside a Vellum sim to resolve intersections) applied to rice grains instead of grapes.
 - [Modeling Assets with Vellum](modeling-assets-with-vellum.md) — shares this channel's broader pattern of using Vellum as a modeling/de-intersection tool rather than pure simulation.
 - [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — parallel technique using RBD instead of Vellum to resolve overlapping-geometry intersections naturally via simulation.
