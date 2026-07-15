@@ -1804,9 +1804,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=oDXQsMo2aaQ
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** vex, quick-tips, golden-angle, quaternion, look-at, transform-attribute, sweep, pineapple, plant-generator
+- **Summary:** Builds a pineapple crown's spiraling leaf arrangement with golden-angle (137.5°) rotation, a from-scratch lookat()-based transform-attribute fix for Copy-to-Points' attribute-priority behavior, and a double-cross-product curve-relative local axis so serrated leaf-edge teeth displace consistently regardless of each leaf's individual bend.
 - **File:** tutorials/vex-quick-tips-4---pineapple-crown.md
 
 

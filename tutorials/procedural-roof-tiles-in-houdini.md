@@ -342,3 +342,4 @@ vex, uvs, divide, for-each-loop, compile-block, roof, architecture, procedural-m
 ## Related Tutorials
 - [Procedural House Generator](procedural-house-generator.md) — reuses this exact roof-tile system (manual UV-space flattening, Divide-based tile grid, Path Deform) as part of a larger house-generation pipeline.
 - [Procedural Tips #3 VEX Shading and Loops](procedural-tips-3-vex-shading-and-loops.md) — offers a simpler VEX shortcut (bbox_max-based normal derivation) for the same roof-tile orientation problem tackled here from scratch.
+- [Vex Quick Tips #4 - Pineapple Crown](vex-quick-tips-4---pineapple-crown.md) — shares the hand-derived double-cross-product curve-relative local-axis technique used here, applied there to pineapple-leaf serration.

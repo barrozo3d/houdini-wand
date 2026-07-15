@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=oDXQsMo2aaQ
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vex, quick-tips, golden-angle, quaternion, look-at, transform-attribute, sweep, pineapple, plant-generator]
+extraction_status: complete
 frames_dir: tutorials/frames/vex-quick-tips-4---pineapple-crown/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Vex Quick Tips #4 - Pineapple Crown
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py vex-quick-tips-4---pineapple-crown <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -492,30 +488,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:35] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_000.jpg
+- [3:25] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_001.jpg
+- [5:35] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_002.jpg
+- [8:00] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_003.jpg
+- [10:55] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_004.jpg
+- [15:00] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_005.jpg
+- [18:10] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_006.jpg
+- [20:50] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_007.jpg
+- [24:50] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_008.jpg
+- [28:10] tutorials/frames/vex-quick-tips-4---pineapple-crown/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Generate a pineapple crown's spiraling leaf arrangement entirely with hand-written VEX: golden-angle (137.5°) point rotation for the classic phyllotactic spiral, a from-scratch `lookat()`-based transform-attribute calculation to fix Copy-to-Points' failure to respect per-point normal/p-scale/orient priority, and a curve-relative local-axis wrangle so leaf-edge "teeth" displace consistently outward regardless of each leaf's individual bend/orientation.
 
 ### Summary
-[PENDING EXTRACTION]
+Leaves are placed by copying two-point lines onto a circle of instance points, with p-scale shrinking progressively along a resampled base line (cascading effect). A **class** attribute (point number) tags each leaf for later per-piece transforms. Leaves are first bent upward using a cross product between the surface normal and the Y axis (an "up" vector), then rotated via `qrotate()`; p-scale is driven again along the bounding-box Y for a tapering profile. To create a natural drooping/bending silhouette, a **rig wrangle** computes a per-point rotation matrix from a channel-driven `angle` (clamped by an offset/falloff along curve view) and applies it as a local transform (`prerotate`) — but the naive Oriented-along-Curve transform attribute doesn't work correctly here, so instead the tutorial derives the transform manually: `golden_angle = radians(137.5) * class` gives the classic phyllotactic rotation per leaf, applied via `qrotate()` to position; critically, the **surface normals must be rotated too** (a common gotcha — rotating positions without rotating attached normals desyncs the visualization/orientation). The actual **transform attribute** needed by Copy-to-Points is then built from scratch with `lookat(from, to, up)` (using the leaf's rotated normal as the "look" direction, an inverted axis, and Y-up) producing a 3×3 matrix that is swapped in via **Attribute Swap** (renaming the computed `xform` to `transform`) — necessary because if `transform` were computed directly under the same name, Copy-to-Points would ignore normal/p-scale/orient inputs and only honor the transform attribute. With bending/orientation solved, the individual leaf curves are meshed via **Sweep** with a ribbon/flat preset. For serrated leaf-edge "teeth" (typical of pineapple crowns), the leaf outline curve is resampled and displaced along its normal using `sin(curveVal * reps) * amp` (an absolute-value clamp keeps displacement one-directional) — but this requires a **stable, curve-relative local X axis** rather than the raw curve tangent/normal, since a naive normal is inconsistent once each leaf has already been individually rotated/bent. This local axis is derived via a double cross-product: first `side = normalize(cross(N, _N))` (where `_N` is a saved copy of the pre-rotation normal), then `local_x = normalize(cross(side, N))`, giving a normal that "follows the shape of the curve" regardless of prior transforms — the displacement is then applied along this local X, with a `sign(frame % 2)` (or similar odd/even) flip needed to invert the direction on alternating sides so teeth don't all point the same way, plus an `asin()`-style remap to convert the naturally-rounded sine wave into a sharper, more serrated/flat-topped tooth shape. Final geometry is assembled with a Skin node connecting all leaf primitives.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Copy two-point lines onto a circle (instance points), shrinking p-scale progressively along a resampled base curve for a cascading leaf-size effect; tag each leaf with a `class` (point-number) attribute.
+2. Bend each leaf upward via a cross product between the surface normal and the Y axis (an "up" vector), rotate with `qrotate()`, and drive p-scale along the bounding-box Y for tapering.
+3. In a **rig wrangle**, compute a per-point rotation from a channel-driven `angle` clamped by an offset/falloff along curve view, and apply as a local transform (`prerotate`) — note the naive Orient-Along-Curve transform doesn't work here and needs a manual fix (next steps).
+4. Compute `golden_angle = radians(137.5) * class` for classic phyllotactic spiral rotation per leaf; rotate position with `qrotate()` — and make sure to **also rotate the surface normals** with the same quaternion, otherwise normal/position desync causes visible errors.
+5. Manually build the **transform attribute** needed by Copy-to-Points using `lookat(from, to, up)` (leaf's rotated/inverted normal as the look axis, Y as up) to produce a 3×3 matrix — compute it under a different name (e.g. `xform`) then rename via **Attribute Swap** to `transform`, since a directly-named `transform` attribute would make Copy-to-Points ignore normal/p-scale/orient and use only the transform.
+6. Mesh each leaf curve with **Sweep** (ribbon/flat preset), reducing size as needed.
+7. To fix over-rotation at the crown top vs. more-upright leaves at the bottom, multiply the rotation amount by a relative-bounding-box-Y-driven attribute (inverted) so leaves rotate more at the base and less at the tip.
+8. For serrated leaf-edge teeth: resample the leaf outline finely, output curve view, and orient normals along the curve's tangent via Orient Along Curve.
+9. Derive a **curve-relative local X axis** stable under prior per-leaf rotations: save the original ("_N") normal before rotation, then compute `side = normalize(cross(N, _N))` and `local_x = normalize(cross(side, N))` — this local axis "follows the shape of the curve" regardless of how much the leaf has already been bent/rotated.
+10. Displace along this local axis with `sin(curveView * reps) * amp`, invert direction on alternating sides via a frame/index-based sign flip (e.g. `frame % 2`), and apply an `asin()`-based remap to sharpen the sine wave into a flatter, more tooth-like serration.
+11. Skin the leaf primitives together (connect end primitives, compute normals) for the final crown mesh.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Circle (instance points), Line (leaf base), copy-to-points p-scale ramp, `class` attribute (point number), cross-product up-vector bend, `qrotate()`, rig wrangle (`prerotate`, local transform, channel-driven angle + clamp), `radians(137.5)` golden-angle rotation, normal co-rotation, `lookat(from, to, up)` transform-matrix construction, Attribute Swap (rename to `transform`), Sweep (ribbon preset), relative-point-bounding-box Y falloff, Resample + curve view output, Orient Along Curve, double cross-product for curve-relative local axis (`side`, `local_x`), `sin()`/`asin()` tooth-serration wrangle, sign-flip for alternating direction, Skin.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (the manual `lookat()`-based transform-attribute construction to work around Copy-to-Points' attribute-priority behavior, plus the double-cross-product curve-relative local-axis derivation, are both sophisticated, non-obvious VEX solutions).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+vex, quick-tips, golden-angle, quaternion, look-at, transform-attribute, sweep, pineapple, plant-generator
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vex quick tips | Overhang look with channel ramps](vex-quick-tips-overhang-look-with-channel-ramps.md) — same quick-tips series, shares the quaternion-based normal-rotation approach applied there to a leaf-overhang profile instead of crown-leaf arrangement.
+- [Vex Quick Tips #2 | Iterating over numbers](vex-quick-tips-2-iterating-over-numbers.md) — same series, focused on for-each/group patterns instead of transform-attribute math.
+- [Procedural Roof Tiles in Houdini](procedural-roof-tiles-in-houdini.md) — shares the hand-derived VEX cross-product orientation-basis technique used here for the leaf's curve-relative local axis.
