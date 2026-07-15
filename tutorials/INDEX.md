@@ -3234,9 +3234,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=WKs4KHfHpyA
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5.534
+- **Tags:** vdb, volumes, vex, noise, cops, food, karma, solaris, procedural-modeling
+- **Summary:** Models a cookie's cracked surface via cascading VDB noises (Worley F2F1/F1, Complement, Fit Range, Turbulence distortion), using a bounding-box-derived mask fed through a Color-node/Attribute-from-Volume round-trip to keep the bottom flat despite the noise, then renders in Karma.
 - **File:** tutorials/procedural-vdb-cookies.md
 
 

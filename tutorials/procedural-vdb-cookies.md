@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=WKs4KHfHpyA
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5.534"
+tags: [vdb, volumes, vex, noise, cops, food, karma, solaris, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-vdb-cookies/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural VDB Cookies
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-vdb-cookies <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -76,30 +72,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/procedural-vdb-cookies/frame_000.jpg
+- [0:40] tutorials/frames/procedural-vdb-cookies/frame_001.jpg
+- [1:10] tutorials/frames/procedural-vdb-cookies/frame_002.jpg
+- [1:35] tutorials/frames/procedural-vdb-cookies/frame_003.jpg
+- [2:10] tutorials/frames/procedural-vdb-cookies/frame_004.jpg
+- [2:55] tutorials/frames/procedural-vdb-cookies/frame_005.jpg
+- [3:40] tutorials/frames/procedural-vdb-cookies/frame_006.jpg
+- [4:30] tutorials/frames/procedural-vdb-cookies/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Model a cookie's characteristic broken/cracked surface procedurally using a stack of cascading VDB noises, while specifically flattening the bottom (which real dough noise wouldn't do on its own) via a bounding-box-derived mask, and previewing color/attribute data on volumes using a Color-node + Attribute-from-Volume round-trip before final detail.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting from a clipped, flattened sphere closed with Polyfill and beveled/subdivided for a smooth VDB input, the cookie shape is converted to a VDB and detailed inside a Volume VOP with four layered noises of increasing fineness. A key trick is exporting the relative-bounding-box Y-component as a visualizable mask (via a Color node feeding CD into VDB from Polygons, then Attribute from Volume to read it back after Convert to Polygons) so the bottom of the cookie can be kept flat despite the noise — done by multiplying the noise contribution by this bottom mask inside the VOP. The main noise uses Worley F2F1 with Complement inversion and Fit Range clamping to create the classic "broken parts" look, and a final Turbulence-distorted fine-detail pass adds surface roughness. The result is exported to Solaris for material/scene composition and Karma rendering.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Base shape: Sphere → Clip (flatten via Y-axis transform) → Polyfill (closing the mesh, saving the patch group) → Extrude the patch group → Bevel the front seam → Subdivide for a smooth VDB input.
+2. **VDB from Polygons**: increase resolution (higher for the final pass), rename the attribute to `density`, enable Fill Interior, then **Smooth VDB** before the Volume VOP.
+3. First noise layer: a basic noise deforms the overall shape, added to density and scaled down with a Multiply Constant; increase the **exterior band** to avoid holes forming in the volume.
+4. **Flat-bottom mask**: export the relative bounding-box Y-component as an attribute so the effect can be visualized; use a **Color node** before VDB from Polygons to save this value into `Cd`, then after Convert to Polygons use **Attribute from Volume** to read the color back as a real attribute — adjust a Ramp to mask out just the bottom, then multiply the main noise by this mask inside the VOP so the bottom stays flat despite the noise.
+5. Main "broken parts" noise: a Unified Static noise connected to position, with user-facing frequency/amount controls; use **Worley F2F1**, reduce intensity, and invert with the **Complement** checkbox.
+6. Use **Fit Range** to clamp the noise inputs, producing the characteristic broken/cracked parts, then add fractal distortion on top; switch nodes are used to toggle each noise layer on/off individually for isolated tuning.
+7. Second noise layer: duplicate the first noise setup, clamp the inputs more aggressively, adjust frequency, and remove the fractal component — instead distort this noise's position with a **Turbulence** node to add fine surface detail directly on the cookie surface.
+8. Final fine-detail noise: another Unified Static copy using **Worley F1**, shaped with Fit Range and scaled down for very fine, close-up detail.
+9. Enable all noise layers together and set the final production resolution on the VDB — details become far more pronounced at full res.
+10. Take the finished mesh to Solaris, compose the scene with procedural noises/masks for material variation, assign cookie materials, and render with Karma.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Sphere, Clip, Polyfill (patch group), Extrude, Bevel, Subdivide, VDB from Polygons (density attribute, resolution, Fill Interior), VDB Smooth, Volume VOP (Bounding Box relative-Y export, Ramp mask, Multiply-by-mask for flat bottom, Unified Static noise, Worley F2F1/F1, Complement inversion, Fit Range clamping, Fractal distortion, Turbulence distortion, Switch nodes for isolating layers), Color node (CD export for volume preview), Attribute from Volume (reading baked attributes back after Convert to Polygons), Convert VDB to Polygons; Solaris/LOPs scene composition and Karma render.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the cascading-noise VDB pattern is approachable, but the bounding-box-mask flat-bottom trick and color-round-trip preview technique require some VOP fluency).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5.534 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+vdb, volumes, vex, noise, cops, food, karma, solaris, procedural-modeling
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [VDB Procedural Cliffs](vdb-procedural-cliffs.md) — same cascading noise-in-Volume-VOP technique applied to rock surfaces instead of food.
+- [Procedural tips | Heightfields and VDB](procedural-tips-heightfields-and-vdb.md) — covers the same color-node/Attribute-from-Volume preview trick for visualizing volume noise attributes.
