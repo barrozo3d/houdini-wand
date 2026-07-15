@@ -2204,9 +2204,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=1SXCz_Ta4Lc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.319
+- **Tags:** materialx, karma, uvw-randomizer, cell-noise, place2d, tiling, texturing
+- **Summary:** Recreates a V-Ray-style UVW Randomizer in MaterialX/Karma by flooring tiled UVs into per-cell IDs, feeding Cell Noise + Random Float for seeded randomization, quantizing into rotation steps, and feeding the result into a center-pivoted Place2D's rotate input to break up obvious texture tiling.
 - **File:** tutorials/uvw-randomizer-in-karma.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=1SXCz_Ta4Lc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.319"
+tags: [materialx, karma, uvw-randomizer, cell-noise, place2d, tiling, texturing]
+extraction_status: complete
 frames_dir: tutorials/frames/uvw-randomizer-in-karma/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # UVW randomizer in karma
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py uvw-randomizer-in-karma <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -62,30 +58,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/uvw-randomizer-in-karma/frame_000.jpg
+- [1:00] tutorials/frames/uvw-randomizer-in-karma/frame_001.jpg
+- [1:40] tutorials/frames/uvw-randomizer-in-karma/frame_002.jpg
+- [2:30] tutorials/frames/uvw-randomizer-in-karma/frame_003.jpg
+- [3:15] tutorials/frames/uvw-randomizer-in-karma/frame_004.jpg
+- [3:40] tutorials/frames/uvw-randomizer-in-karma/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Recreate a V-Ray-style **UVW Randomizer** in MaterialX/Karma: per-tile-cell random rotation is derived by flooring the repeated/tiled UV coordinates into integer cell IDs, feeding those into a **Cell Noise** (for spatial variation) and a **Random Float** (for seed control), then quantizing the resulting random angle into fixed rotation steps (e.g. 90°) before feeding it into a **Place2D** node's rotate input with its pivot centered — breaking up obvious tiling repetition without any extra textures or geometry changes.
 
 ### Summary
-[PENDING EXTRACTION]
+Standard UV tiling (Texture Coordinates → Multiply Constant for repetition count → Modulo set to 1 to wrap the UVs) produces the classic obviously-repeating look. To randomize per-tile, the pre-modulo repeated UV value is **floored**, collapsing each tile into a single discrete integer-pair value; feeding that into **Cell Noise** gives each tile cell a distinct pseudo-random value, and a **Random Float** node (fed by the cell noise, with an adjustable seed) provides controllable per-cell randomization. This random value is Remapped from 0–360 to cover a full rotation range, then **quantized into discrete steps** (e.g. 90°) by dividing by the step angle, flooring, and multiplying back by the step angle — producing a stepped, non-continuous rotation value per tile. That final angle feeds the **rotate input of a Place2D node** (with its pivot set to center, essential so rotation happens around each tile's own center rather than the UV origin) which drives the texture-coordinate lookup feeding the shader — the result: what was an obviously tiled pavement texture becomes a much less repetitive, naturally varied surface. The technique responds well to tuning: changing the random seed changes which specific rotation each tile gets, and changing the tiling repetition count (e.g. from 15 down to 12) can reveal whether the randomization is enough to hide repeating patterns at that scale — lower repetition counts may still show obvious lines even with randomization active.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build standard tiling: **Texture Coordinates** → **Multiply Constant** (repetition count, e.g. 15) → **Modulo** (set to 1) to wrap UVs into repeating 0–1 tiles for the actual texture lookup.
+2. Take the **pre-modulo repeated UV value** (before wrapping) and **Floor** it — this collapses all UV positions within a single tile into one shared integer-pair value identifying that tile cell.
+3. Feed the floored per-cell value into a **Cell Noise** node for spatial per-cell variation, then into a **Random Float** node with an adjustable **seed** parameter for controllable randomization.
+4. **Remap** the random output from its native range to **0–360** degrees, covering the full rotation range needed.
+5. **Quantize into discrete rotation steps**: divide the remapped angle by a chosen step size (e.g. 90°), **Floor** the result, then multiply back by the step size — producing a stepped (not continuous) rotation value per tile.
+6. Connect this final stepped angle to the **rotate input of a Place2D node**, making sure the **pivot is set to center** so each tile rotates around its own middle rather than the UV-space origin.
+7. Feed the rotated Place2D output into the shader's texture lookup — verify the result: obvious tiling repetition becomes a randomized, natural-looking surface.
+8. **Tune to taste**: adjust the random seed to change which rotation each cell gets if the result doesn't look right; adjust the tiling repetition count and re-check whether randomization sufficiently hides repeating patterns at that particular scale (lower repetition counts can still show obvious lines even with the randomizer active).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+MaterialX Texture Coordinates, Multiply Constant (tiling repetition), Modulo (UV wrap), Floor (per-cell ID collapse), Cell Noise (2D), Random Float (seed-controllable), Remap (0–360 range), Floor + Multiply (rotation-step quantization), Place2D (rotate input, center pivot).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (a compact, reusable MaterialX node pattern; the floor-based cell-ID trick is the key non-obvious piece).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+20.5.319 (visible in viewport title bar).
 
 ### Tags
-[PENDING EXTRACTION]
+materialx, karma, uvw-randomizer, cell-noise, place2d, tiling, texturing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Materialx and Karma Procedural Networks](materialx-and-karma-procedural-networks.md) — related MaterialX node-level procedural texturing techniques from the same channel.
+- [Houdini and Karma Tips and Tricks](houdini-and-karma-tips-and-tricks.md) — shares other quick Karma/MaterialX shading workflow tips.
