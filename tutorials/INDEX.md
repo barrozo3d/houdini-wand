@@ -3399,6 +3399,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-usd-rbd-procedural-lop-in-under-5-minutes.md
 
+
+### Techniques for Fast Disintegration FX in Houdini – A Particle & Attribute Approach
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Syn7XjeCH_8
+- **Author:** the point and prim
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/techniques-for-fast-disintegration-fx-in-houdini-a-particle-attribute-approach.md
+
 ---
 
 ## Tag Reference
