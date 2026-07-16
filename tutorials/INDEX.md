@@ -3359,6 +3359,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/particle-rotations-in-houdini-how-to-rotate-orient.md
 
+
+### Procedurally mask deforming / animated geometry - Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=UL-VdOBmXgE
+- **Author:** the point and prim
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedurally-mask-deforming-animated-geometry---houdini.md
+
 ---
 
 ## Tag Reference
