@@ -3379,6 +3379,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-how-to-mask-with-the-smooth-function.md
 
+
+### Art directing large scale RBD sims in Houdini using the up-res method
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=M6E3f3yY824
+- **Author:** the point and prim
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method.md
+
 ---
 
 ## Tag Reference
