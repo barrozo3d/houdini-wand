@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=M6E3f3yY824
 author: the point and prim
 ingested: 2026-07-16
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [rbd, up-res, voronoi-fracture, solaris, karma-cpu, usd, procedural-lop, art-direction, the-point-and-prim]
+extraction_status: complete
 frames_dir: tutorials/frames/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Art directing large scale RBD sims in Houdini using the up-res method
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -196,30 +192,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:16] tutorials/frames/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method/frame_000.jpg
+- [2:47] tutorials/frames/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method/frame_001.jpg
+- [3:59] tutorials/frames/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method/frame_002.jpg
+- [4:41] tutorials/frames/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method/frame_003.jpg
+- [6:45] tutorials/frames/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method/frame_004.jpg
+- [8:02] tutorials/frames/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method/frame_005.jpg
+- [9:18] tutorials/frames/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method/frame_006.jpg
+- [10:16] tutorials/frames/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+The **RBD "up-res" method**: iterate art direction on a very cheap, low-resolution proxy RBD simulation, then drive a second, much higher-resolution fracture/simulation using dynamically-computed neighbor-distance thresholds so that only the pieces that actually need to separate get activated — followed by an efficient USD/Solaris/Karma CPU pipeline (RBD Procedural LOP, subsets) to render the resulting large-scale destruction shot.
 
 ### Summary
-[PENDING EXTRACTION]
+This is a follow-up to the author's RBD up-res R&D video, focused on the core concepts rather than every node in the (large) project file: base fracture, guide/proxy sim, secondary (high-res) fracture, and — most importantly — the "up-res system" that decides which high-res pieces activate, plus a Solaris/Karma CPU rendering pass. The motivating problem: standard RBD iteration (sim at final resolution, evaluate, repeat) is slow (the video cites a ~42-minute feedback loop in a theoretical example) and hardware-bound. Up-res instead spends most iteration time on a cheap low-poly guide sim, then submits one high-confidence high-res sim once the motion is dialed in — not a speed guarantee for the final sim, but a way to maximize artist iteration time. The base fracture starts with a displaced grid terrain (author uses a Gaea height texture; Houdini heightfields work too), frustum-culled to the camera to maximize in-camera resolution, fractured with the classic **rest-noise-rest + Voronoi Fracture** technique (fracturing the flat/planar geometry before extrusion to avoid Houdini cooking a full 3D fracture). A for-loop over the resulting chunks remeshes the "inside" faces and adds noise displacement while lerping the "outside" group's points back to their original position (so the terrain surface itself isn't modified); a blurred mask of the same outside group is used with a second lerp toward a slightly shrunk version of the chunk to create a tapered, overhanging edge — useful both for looks and for how the up-res sim later "eats into" that edge. For the **proxy/guide sim**: proxy geometry is built by looping over pieces, shrink-wrapping them, and pulling each piece's `name` attribute from its loop iteration (author found this manual loop out-performs the Convex Decomposition node); pieces are Assembled/packed, then unpacked (via Add SOP in a separate stream) to work with points for activation/velocity setup. A wrangle computes a **mask** using `relbbox()`'s X component fed into the **smooth function** (animating range-bottom, offsetting range-top by a tiny amount, for a tight animatable mask — same core technique as the channel's dedicated smooth-function videos); a Time Shift compares the mask one frame back against the current frame to isolate/group points that "just gained" the mask, which get an added velocity impulse, while the mask itself drives `active` from 0→1. Border points (grouped by distance from the terrain edge) are explicitly deactivated so the terrain boundary doesn't fracture. Proxy attributes are copied back onto the packed prims, validated, and simmed in DOPs with a simple POP Wrangle each frame setting `active`/`v`. For the **up-res** step, the high-res pieces are fractured a second time; since the second sim needs its own independent `name` attribute per new piece while still needing the original proxy transforms, the proxy's `name` is renamed to a second attribute (e.g. `xform_name`) on both pieces and points before re-fracturing, and a **Connectivity** node generates a `chunk` attribute used later. The up-res fracture itself reuses the same rest-noise-rest + Voronoi technique on points scattered on the outside group (called out as slow, "go get a coffee"). After validating the new fracture against proxy transforms, proxy geometry is rebuilt again for the up-res pieces (retrieving `name`, `xform_name`, and `chunk`). The core "cornerstone" wrangle: an `id` is set per up-res piece, then for each point a `nearpoints()` point-cloud lookup gathers nearby points within a radius, looping through the results to find the first neighbor whose `chunk` attribute differs from the current point's (skipping same-chunk neighbors) — that neighbor becomes the point's "pair," registering a pair ID and breaking the loop (not accounting for unique/mutual pairing, called out as an option to add if needed). The pair's position is compared against the current position to compute a **pair distance** attribute measuring separation between neighboring chunks; a Time Shift to frame 1 provides a baseline so the pair distance can be normalized (subtracting the frame-1 baseline so values start at 0 and grow as pieces separate) — the same time-shift-baseline trick used in the proxy sim, but comparing length/velocity this time. An integer attribute forces some pieces active on frame 1 for immediate visual impact. All of this feeds a **DOP Solver** that reads the current pair distance against a threshold, accumulates a value driven by a rate parameter multiplied by random per-piece resistance whenever the distance crosses the threshold, and once the accumulator passes a limit, sets `active = 1` and `animated = 0` for that piece (prior to that, all pieces are `animated`, meaning they simply follow the proxy sim's transform). DOPs then reads `active`/`animated` exactly as in the proxy sim. For **rendering**: in Solaris, RBD pieces are sub-imported with a fixed layer save path (important for RBD Procedural LOP speed) and "enable subset groups" is turned on so the fracture's inside/outside groups become USD subsets for separate material assignment. The **Houdini RBD Procedural LOP** is used (pointing at the prim and reading points directly from disk, cited as significantly more optimized for large datasets — credited to "her and Yanno"'s tip), validated with quick flat-shader tests on the subsets, then cached to disk and sublayered back in. Debris (separately point-instanced, simmed, and cached, plus the terrain converted to USD) is not covered in depth. The **Houdini Preview Procedural** LOP is used to visualize the RBD in viewport (disabling it for performance since RBDs won't move in viewport without it). Shading mixes a Gaea color map with noise-randomized UV rotation for triplanar-style displacement texturing (disabled in IPR for speed); a second material for the "inside" subset uses the `rest` attribute as the triplanar position input. Final tips: use a **Render Geometry Settings** LOP to dial down dicing (0 = fully disabled, useful while lighting/shading) since the default is often too aggressive for lower-spec hardware, and use an **LPE Tag** node with standard render variables to split lights into separate comp passes.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build the base fracture on a frustum-culled, displaced terrain grid using the **rest-noise-rest + Voronoi Fracture** technique on planar geometry (fracture before extrusion to avoid a full 3D Houdini fracture cook).
+2. For-loop over chunks: remesh + noise-displace the "inside" faces, lerp the "outside" group's points back to original position, then use a blurred outside mask + a second lerp toward a shrunk chunk copy to create a tapered/overhanging edge.
+3. Build **proxy geometry**: loop over pieces, shrink-wrap each, retrieve its `name` from the loop iteration, Assemble/pack, then unpack in a separate stream for point-level activation work.
+4. Write a mask wrangle using `relbbox()`.x fed into the **smooth function** (animated range-bottom, tiny range-top offset) for a tight animatable activation mask; Time Shift one frame back to isolate newly-masked points for a velocity impulse, and drive `active` 0→1 from the mask; deactivate distance-grouped border points at the terrain edge.
+5. Copy proxy attributes back onto packed prims, validate, then simulate in DOPs with a simple POP Wrangle setting `active`/`v` per frame.
+6. **Up-res fracture**: rename the proxy `name` attribute to a second attribute (e.g. `xform_name`) on both pieces and points, generate a `chunk` attribute via **Connectivity**, then re-run the rest-noise-rest + Voronoi fracture on the outside group's scattered points for the high-res pieces; validate against proxy transforms.
+7. Rebuild proxy geo for the up-res pieces (retrieving `name`, `xform_name`, `chunk`) and cache.
+8. Write the "cornerstone" wrangle: set an `id`, use `nearpoints()` to find nearby points, loop to find the first neighbor on a **different** `chunk`, register it as a pair, compute **pair distance** between the pair, and normalize against a frame-1 Time Shift baseline; add an integer attribute to force some pieces active on frame 1.
+9. Feed pair distance into a **DOP Solver**: compare against a threshold, accumulate via a rate × random-resistance value, and once past a limit, flip `active = 1` / `animated = 0` for that piece (otherwise pieces stay `animated`, following the proxy).
+10. In Solaris: sub-import RBD pieces with a fixed layer save path, enable subset groups (inside/outside → USD subsets), wire up the **Houdini RBD Procedural LOP** (reading points from disk for speed), validate with flat shaders on subsets, cache and sublayer back in.
+11. Instance/cache debris separately and import the terrain as USD; use **Houdini Preview Procedural** to preview RBD motion in viewport (disable for performance).
+12. Shade with a Gaea color map + noise-randomized UV rotation for triplanar displacement (IPR-disabled for speed); use `rest` as the position input for the "inside" subset's triplanar material; dial dicing via **Render Geometry Settings**, and split lights into passes with **LPE Tag**.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Voronoi Fracture (rest-noise-rest technique, planar-then-extrude), For-Each loop (per-chunk remesh/noise/lerp), Shrink Wrap (proxy geo), Assemble (pack), Add SOP (unpack/validate), `relbbox()` + smooth function (activation mask wrangle), Time Shift (frame-1 baseline / one-frame-back comparison), POP Wrangle (`active`, `v` per frame in DOPs), Connectivity (`chunk` attribute), `nearpoints()` point-cloud lookup (pair-ID wrangle), DOP Solver (threshold-accumulator `active`/`animated` logic), Houdini RBD Procedural LOP, Sub-import LOP (fixed layer save path, subset groups), Houdini Preview Procedural LOP, Render Geometry Settings LOP (dicing control), LPE Tag (light-pass splitting), Karma CPU, USD subsets, triplanar texturing (`rest`-attribute-driven).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (combines a multi-stage proxy/up-res RBD pipeline with custom neighbor-pairing VEX, a DOP-solver-driven activation system, and a production USD/Solaris/Karma rendering setup).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+#rbd #up-res #voronoi-fracture #solaris #karma-cpu #usd #procedural-lop #art-direction #dop-solver #the-point-and-prim
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini USD RBD Procedural LOP in under 5 minutes](houdini-usd-rbd-procedural-lop-in-under-5-minutes.md) — same channel/author; a focused deep-dive on the exact RBD Procedural LOP node setup used briefly here for the Solaris rendering pipeline.
+- [RBD Procedural Animations in Houdini | Mardini 2026](rbd-procedural-animations-in-houdini-mardini-2026.md) — different author (cgside), but directly overlapping RBD Procedural LOP / USD workflow territory.
+- [Cleaning fractured geometry in Houdini](cleaning-fractured-geometry-in-houdini.md) — different author (cgside); complementary fracture-preparation techniques relevant to the base/up-res fracture stages here.

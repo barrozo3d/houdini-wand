@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=gmN76ZeObsA
 author: the point and prim
 ingested: 2026-07-16
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [quaternions, particle-rotation, orient-attribute, vex, vops, point-vop, the-point-and-prim]
+extraction_status: complete
 frames_dir: tutorials/frames/particle-rotations-in-houdini-how-to-rotate-orient/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Particle rotations in Houdini (how to rotate orient)
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py particle-rotations-in-houdini-how-to-rotate-orient <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -134,30 +130,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:32] tutorials/frames/particle-rotations-in-houdini-how-to-rotate-orient/frame_000.jpg
+- [0:59] tutorials/frames/particle-rotations-in-houdini-how-to-rotate-orient/frame_001.jpg
+- [1:14] tutorials/frames/particle-rotations-in-houdini-how-to-rotate-orient/frame_002.jpg
+- [2:15] tutorials/frames/particle-rotations-in-houdini-how-to-rotate-orient/frame_003.jpg
+- [3:42] tutorials/frames/particle-rotations-in-houdini-how-to-rotate-orient/frame_004.jpg
+- [4:37] tutorials/frames/particle-rotations-in-houdini-how-to-rotate-orient/frame_005.jpg
+- [5:43] tutorials/frames/particle-rotations-in-houdini-how-to-rotate-orient/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Sim-free rotation of particles (and, in a follow-up video, packed primitives) by directly constructing and multiplying **Quaternions** from an angle/axis pair inside a Point VOP or VEX wrangle, driven by attributes or channel parameters instead of a DOP simulation.
 
 ### Summary
-[PENDING EXTRACTION]
+The video explains how to rotate large numbers of particles procedurally, without simulating anything, by manipulating the native Houdini `orient` attribute (a Vector4/Quaternion) directly. Starting from a single point, an **Attribute Randomize** node creates the `orient` attribute as a 4-component vector (a Quaternion — described as the least ambiguous way to store 3D rotation). Inside a **Point VOP**, the existing `orient` is bound in (set to Vector4), and a second Quaternion is built with a **Quaternion VOP** from an angle and an axis, since rotating one quaternion means multiplying it against another via **Q Multiply**. The axis input just needs to be a normalized vector; the angle input is trickier because it expects radians, and working directly in radians/degrees is called out as "obnoxious" — instead the angle parameter is authored as a normalized 0–1 value (1 = one full revolution) and multiplied by a constant `2*pi` before it reaches the Quaternion node, so artists only ever deal with values like 0–1 (or values >1 for multiple revolutions). Once this is set up on a single point, the technique scales to many points: the rotation axis is randomized per-point with an **Attribute Adjust Vector** (random, "0 centred," meaning vector length averages ~0.5) piped through a **Normalize** (since quaternions require normalized axes), and the angle is driven by global attributes like `$T`/frame or by a custom attribute for spatially-varying rotation (e.g. a linear gradient attribute animated via the **smooth function**, referenced from two earlier videos on that topic) — useful for effects like snow, where added rotation sells turbulence, and for post-sim adjustments since this all works independent of any simulation. A worked render example follows: a sphere is VDB'd, ~1M points scattered inside, 1,000 blasted out with random velocity, then converted via VDB-from-particles into a single cached frame of a Pyro sim's velocity field (sourced only on `$FSTART` so it stays a static single-frame smoke puff) purely to get an interesting velocity field to advect a separate POP particle sim through (mixed with curl noise, drag, and POP Force noise) rather than running a full evolving smoke sim. The emission type is set to "All Geometry" so points and packed primitives (fractured shell pieces, rotated with the technique covered in the follow-up video) emit together. Finally, the same angle/axis quaternion-construction logic is reimplemented directly in **VEX** on the particles: initial orientation is randomized with `sample_orientation_uniform()`, the rotation axis is a constant Y-axis vector `{0,1,0}`, the angle is `frame * random(@id)` (giving each particle a unique, ID-seeded rotation speed), the rotation quaternion is constructed from angle+axis exactly as in the VOP example, and it's multiplied against the initial orient. Instanced geometry (irregular "strand" shapes, assigned per point via a class attribute) is then driven by the resulting `orient` attribute. The stated benefit throughout is avoiding the unpredictable axis-flipping that plain vector-based rotation math can produce.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. On a single point, add **Attribute Randomize** to create the native `orient` attribute, set to Vector4 (a Quaternion) with an arbitrary seed.
+2. Inside a **Point VOP**, bind in `orient` (Vector4), then build a second Quaternion via a **Quaternion VOP** node fed by a normalized axis vector and an angle in radians; multiply the two quaternions together with **Q Multiply VOP**.
+3. Avoid working in raw radians/degrees by driving the angle input with a 0–1 parameter multiplied by a constant `2 * pi` (1.0 = one full revolution, values above 1 = multiple revolutions).
+4. Scale to many points: randomize the rotation axis per-point with **Attribute Adjust Vector** (random, 0-centered) piped through **Normalize** before it reaches the Quaternion node.
+5. Drive the normalized angle input with global attributes (`$T`/frame, useful for e.g. snow turbulence) or with a custom attribute animated via the **smooth function** (from the channel's earlier smooth-function videos) for spatially varying rotation.
+6. Build the render-example particle source: VDB a sphere, scatter ~1M points, blast 1,000 with random velocity, convert to VDB-from-particles, run one frame of a Pyro sim (sourced only on `$FSTART`) purely to bake a usable velocity field.
+7. Advect a separate POP simulation (curl noise + drag + POP Force noise) through that single cached velocity field so particles move along fixed vectors rather than a constantly-updating sim; set **emission type to "All Geometry"** so points and packed pieces emit together.
+8. Reimplement the rotation in VEX on the particles: `sample_orientation_uniform()` for initial orient, axis `{0,1,0}`, angle `= frame * random(@id)` for per-particle speed variation, construct the rotation quaternion from angle+axis, and multiply it against the initial orient attribute.
+9. Instance geometry onto the rotated points via a class attribute for per-point shape variation.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Attribute Randomize (`orient`, Vector4/Quaternion), Point VOP, Quaternion VOP (angle + axis construction), Q Multiply VOP, Normalize VOP, Attribute Adjust Vector (random, 0-centered axis), smooth function (angle-over-attribute animation), VDB from Polygons/scatter, VDB from Particles, Pyro Solver (`$FSTART`-only sourcing for a single-frame velocity field), POP Network (POP Force with curl noise, drag, "All Geometry" emission type), VEX wrangle (`sample_orientation_uniform()`, `quaternion(angle, axis)`, `qmultiply()`-equivalent, `@id`-seeded `random()`), class-attribute-driven instancing.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (requires understanding quaternion rotation math and VOP/VEX attribute wiring, but the actual node graph is compact and the author explains the theory step by step).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+#quaternions #particle-rotation #orient-attribute #vex #vops #point-vop #curl-noise #pop-network #the-point-and-prim
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini: How to mask with the smooth function](houdini-how-to-mask-with-the-smooth-function.md) — same channel/author; directly referenced here as the source of the smooth-function angle-remap technique used to drive spatially-varying rotation.
+- [Procedurally mask deforming / animated geometry - Houdini](procedurally-mask-deforming-animated-geometry---houdini.md) — same channel/author, continuing the smooth-function masking series referenced in this video.
+- [Techniques for Fast Disintegration FX in Houdini](techniques-for-fast-disintegration-fx-in-houdini-a-particle-attribute-approach.md) — same channel/author; reuses this exact rest-to-spinning quaternion blend technique for particle rotation in its disintegration effect.

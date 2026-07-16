@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=UL-VdOBmXgE
 author: the point and prim
 ingested: 2026-07-16
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [smooth-function, distance-along-geometry, masking, procedural-animation, rest-attribute, performance-optimization, the-point-and-prim]
+extraction_status: complete
 frames_dir: tutorials/frames/procedurally-mask-deforming-animated-geometry---houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedurally mask deforming / animated geometry - Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedurally-mask-deforming-animated-geometry---houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -158,30 +154,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:43] tutorials/frames/procedurally-mask-deforming-animated-geometry---houdini/frame_000.jpg
+- [1:45] tutorials/frames/procedurally-mask-deforming-animated-geometry---houdini/frame_001.jpg
+- [3:10] tutorials/frames/procedurally-mask-deforming-animated-geometry---houdini/frame_002.jpg
+- [4:31] tutorials/frames/procedurally-mask-deforming-animated-geometry---houdini/frame_003.jpg
+- [4:49] tutorials/frames/procedurally-mask-deforming-animated-geometry---houdini/frame_004.jpg
+- [5:07] tutorials/frames/procedurally-mask-deforming-animated-geometry---houdini/frame_005.jpg
+- [6:52] tutorials/frames/procedurally-mask-deforming-animated-geometry---houdini/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Extends the channel's single-axis "smooth function" masking technique (from the previous video) to arbitrary curved/deforming surfaces using the **Distance Along Geometry** SOP to measure geodesic (surface-respecting) distance from procedurally-chosen start points, then re-ordering the node graph so the expensive distance calculation runs once on a static pose instead of every frame of an animated/deforming mesh.
 
 ### Summary
-[PENDING EXTRACTION]
+Building on a prior video's flat, single-axis smooth-function mask, this tutorial shows how to art-direct a mask that spreads outward from arbitrary points across curved or deforming geometry — demonstrated first on a subdivided/remeshed triangulated bust model (with a callout that the USD Import LOP re-imports every frame unless pinned to a static frame number). The key node is **Distance Along Geometry**: given start points, it measures the shortest path *along the mesh's connectivity* (respecting topology/edges/surface, unlike world-space methods like point-cloud Attribute Transfer or straight point-distance, which ignore connectivity entirely) and outputs a `dist` attribute that visibly follows the surface's contours. Because `dist` isn't naturally bounded to 0–1 (it returns raw distance, e.g. 0 to ~0.6 in the demo), it's remapped: **Attribute Promote** (detail, maximum) captures the true max distance, an **Attribute VOP**/Point VOP imports that promoted detail value, and a **Fit Range** node maps `dist` into a clean 0–1 range using the promoted max as the new source-max — the same smooth-function mask logic from the previous video (animated min/range-top parameter, noise-broken edge) is then applied on top of this normalized distance. A major advantage of this approach is that changing *where* the mask spreads from is just a matter of changing which points feed Distance Along Geometry, enabling easy art direction — including a procedural method for auto-selecting start points: set an `id` on all points, randomly sort them, blast out a range, group the result (e.g. named "start"), then copy that group back onto the main stream by matching on `id` (via the copy/group node's "match by attribute" field) rather than by manual selection. The video's second major topic is **performance on deforming geometry**: remeshing a grid to ~1M points and applying a Twist deformer reveals that recomputing Distance Along Geometry every frame is extremely slow (the demo footage is sped up 300% and still looks sluggish) because the node performs an expensive per-frame graph-distance calculation. The fix is to reposition the node graph so distance is calculated **once**, before the Twist deformer, and the resulting `dist` attribute is simply copied onto the already-deformed/animated stream afterward — instantly restoring real-time playback since the expensive calculation is no longer re-run per frame. A secondary artifact this surfaces is "noise buzzing," caused by the noise field sampling world-space `P` while the geometry moves underneath it; the fix is the same **rest-attribute pattern** used elsewhere on the channel: cache a `rest` attribute before any animation is applied and drive the noise from `rest` instead of `P` so it stays locked to the surface. The remainder of the video is a faster, less-detailed walkthrough of the actual "scales" effect used to showcase the technique: animated circles are swept into curved rows/profiles, given a `class` attribute via Connectivity, then for each curve (looped by class) a "distance-along-geometry"-driven scale/extrude system builds individual scale geometry (using Divide-with-Compute-Dual and Primitive Split to scale each primitive independently), computes a per-scale outward-displacement vector from a point-cloud lookup back to the curve's centerline, and drives per-scale reveal/growth with the same normalized-distance smooth-function mask (offset randomly per curve via the class attribute), finished with class-aware Point Deform so each curve deforms its own scales independently, some intentional shearing left in from an un-updated displacement direction attribute, and a separate (out-of-scope) particle sim credited as a modified VEX version of a technique by Simon Fiedler/Antagonist Studio.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start from a triangulated/remeshed deforming mesh (watch for USD Import LOPs re-cooking every frame — pin them to a static frame).
+2. Wire up **Distance Along Geometry** from manually (or later procedurally) selected start points and visualize the resulting `dist` attribute to confirm it follows surface contours rather than world-space straight lines.
+3. Normalize `dist` to 0–1: **Attribute Promote** (detail, maximum) to get the true max distance value, then a **Fit Range** using that promoted max as source-max to remap `dist` cleanly into 0–1.
+4. Apply the previously-covered smooth-function mask logic (animated range-top parameter, noise added to the min value for edge break-up, optionally with a second noise driving the first noise's input position for more interesting patterns) on top of the normalized distance.
+5. Procedurally select start points instead of manual picks: set an `id` attribute, **Sort** randomly, **Blast** out a range, group the result (e.g. "start"), then copy that group back onto the main stream matching by the `id` attribute so it survives topology changes.
+6. To test performance, remesh a grid to ~1M points and add a **Twist** SOP with keyframes; observe that Distance Along Geometry recalculating every frame is very slow on deforming geometry.
+7. **Fix the performance issue** by moving the Distance Along Geometry node earlier in the graph (before the Twist/deformer) so it computes `dist` once on the static pose, then copy that attribute onto the animated/deformed stream afterward for instant real-time playback.
+8. Fix any resulting "noise swimming" by caching a `rest` attribute before the deformation and driving the mask-breakup noise from `rest` instead of `P`.
+9. (Showcase effect) Build curved scale rows via animated circle sweeps + noise, tag each curve with a `class` attribute (Connectivity), loop per-class to build scale geometry (Divide/Compute Dual + Primitive Split + Extrude), compute an outward vector via a point-cloud lookup to the curve center, drive reveal via the same distance-along-geometry mask (with per-class random offset), and Point Deform the scales onto the animated curves per-class.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Distance Along Geometry (start-point-based geodesic distance), USD Import (static-frame pinning caveat), Attribute Promote (detail, maximum), Point VOP / Attribute VOP (Import Detail, Fit Range), Fit Range, smooth function (mask remap, from the prior video in the series), Sort (random), Blast, Group (copy-with-match-by-attribute for procedural start points), Twist SOP (deformation test case), rest attribute (pre-deformation caching to fix noise-swimming), Connectivity (`class` attribute), Divide (Compute Dual), Primitive Split, Extrude, Point Cloud lookup (`pcopen`/`pcfilter`-style, centerline direction vector), Point Deform (per-class), Time Shift.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate to Advanced (the core masking concept is approachable, but the node-graph-reordering performance fix and the full scales showcase involve non-obvious attribute/point-cloud tricks).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+#smooth-function #distance-along-geometry #masking #procedural-animation #rest-attribute #performance-optimization #point-cloud #connectivity #the-point-and-prim
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini: How to mask with the smooth function](houdini-how-to-mask-with-the-smooth-function.md) — the direct prequel; this video explicitly builds on that video's single-axis smooth-function mask technique.
+- [Particle rotations in Houdini (how to rotate orient)](particle-rotations-in-houdini-how-to-rotate-orient.md) — same channel/author; shares the smooth-function-driven-by-attribute approach for procedural animation without simulation.
+- [Techniques for Fast Disintegration FX in Houdini](techniques-for-fast-disintegration-fx-in-houdini-a-particle-attribute-approach.md) — same channel/author; reuses the Distance Along Geometry + smooth-function mask + rest-attribute pattern from this video as the basis for its disintegration mask.

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=XLiXackQH_k
 author: Tim van Helsdingen
 ingested: 2026-07-16
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5"
+tags: [tendrils, curl-noise, curve-view, redshift-strands, random-walk-sss, pop-network, compositing, fusion, tim-van-helsdingen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-tutorial-daily-fun-alien-tendrils/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini Tutorial // Daily Fun / Alien Tendrils
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-tutorial-daily-fun-alien-tendrils <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### <Untitled Chapter 1> [0:00]
@@ -655,30 +651,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [2:52] tutorials/frames/houdini-tutorial-daily-fun-alien-tendrils/frame_000.jpg
+- [4:36] tutorials/frames/houdini-tutorial-daily-fun-alien-tendrils/frame_001.jpg
+- [6:39] tutorials/frames/houdini-tutorial-daily-fun-alien-tendrils/frame_002.jpg
+- [7:19] tutorials/frames/houdini-tutorial-daily-fun-alien-tendrils/frame_003.jpg
+- [9:06] tutorials/frames/houdini-tutorial-daily-fun-alien-tendrils/frame_004.jpg
+- [14:08] tutorials/frames/houdini-tutorial-daily-fun-alien-tendrils/frame_005.jpg
+- [14:47] tutorials/frames/houdini-tutorial-daily-fun-alien-tendrils/frame_006.jpg
+- [30:57] tutorials/frames/houdini-tutorial-daily-fun-alien-tendrils/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A no-simulation "alien tendril" scene built by scattering and copying curl-noise-displaced curves onto a mountain-displaced grid, then rendering them as Redshift Strands (procedural curve geometry) with random-walk subsurface scattering, plus a companion camera-facing particle/POP system for floating dust and a Fusion-based compositing pass with position-pass-driven relighting.
 
 ### Summary
-[PENDING EXTRACTION]
+This is a scene breakdown of a quick "daily render" (not a formal step-by-step tutorial). The base look comes from a 10-node "tendrils" subnetwork that is instanced ("Copy to Points" via a Fast Point Instance-style instance node) around the scene rather than modeled once at full scale. Inside the patch: a grid gets displaced with a mountain SOP for base relief, then two separate scatters (each with relax iterations) generate a denser top layer and a sparser bottom layer of points, each randomized in scale via an Attribute Randomize on `pscale`. Lines are copied to the scattered points, and the actual tendril motion comes entirely from a Point VOP: grab `P`, add a **Curl Noise** displacement to it, and separately compute a **Curve View** attribute (via a Resample node set to output curve-U, 0-1 along each line) which is fed into a ramp to mask where the noise is allowed to appear (kept off the rooted/bottom end). The noise amplitude is multiplied by the ramp lookup before being added to position, and the noise's time offset is animated (author used a curve rather than `$T`, but says either works) to produce a waving motion. Curves are smoothed afterward and kept to roughly 30,000 points to avoid overloading the renderer. Two render paths are shown: sweeping the curves into round tubes with end caps (geometry-heavy, ~1.3M points, not the path used) versus rendering natively as **Redshift Strands** (Redshift geometry tab → "Render Object As: Strands"), which reads `pscale` for thickness (0.5 = half thickness) with a low tessellation to save memory — slower per-strand but visually better than swept/instanced tubes. A secondary **POP Network** drives floating dust: points are gathered from a VDB-from-box source using a `$T`-seeded global seed (so the source set changes every frame), two curl-noise-based POP Forces of different scale move them, POP Wind/time-blend (keyed off point ID, not point number, since the source set changes every frame) smooths the motion, and disc geometry with a smoke-puff texture is copied to the points. A camera-relative normal (`normalize(camera_position - P)`) plus a randomized Orient attribute is used to bias the discs to face the camera without being perfectly billboarded. Particle lifetime fades in/out via `fit(age, 0, life, 0, 1)` piped into an alpha ramp. Shading is a simple base-gray material (reflective, slight roughness, some transmission) whose color mostly comes from Redshift's newer **Random Walk Subsurface Scattering** algorithm (vs. the older point-based and ray-traced diffusion models) for a soft, glassy look. Volumetrics (a god-ray-ish fill volume) and depth of field are rendered in-camera rather than faked in comp because DOF was too slow to composite convincingly at this random-walk-SSS sample count. Final compositing is done in **Fusion** (color grade, brighten, glow, grain, plus a manual multi-crop for Instagram/Story/16:9 exports) with a bonus digression showing how to build a **position-pass-driven relight mask**: extract the render's Position AOV (RGB = world XYZ) via channel Booleans into a usable RGB position channel, feed that into a Volume Mask node set to "mask only," and use the resulting spatial mask with a Color Corrector to selectively brighten/darken specific regions of 3D space post-render — useful for local grading without re-rendering.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a grid, add relief with a **Mountain** SOP, then run two **Scatter** nodes (with relax iterations) — a denser top-layer scatter and a sparser, larger-scale bottom-layer scatter — each with `pscale` randomized via **Attribute Randomize**.
+2. Copy line primitives onto both point sets to form the tendril "seed" curves for one patch.
+3. Inside a **Point VOP**: pull in Curl Noise and add it to `P`; separately **Resample** each curve (to add resolution) with **"Add Curve U"/curve-view attribute** output enabled, bind that 0–1 attribute into a **Ramp** so the noise amplitude can be masked off near the root/bottom of each tendril.
+4. Multiply the noise amplitude by the ramp lookup, add to `P`, and animate the noise's time/offset input (curve or `$T`) for a waving motion; smooth the resulting curves and keep point count near 30k.
+5. Instance the single finished tendril patch around the scene via a Copy-to-Points/instance node rather than modeling more tendrils directly.
+6. Render the curves as **Redshift Strands** (Geometry tab → Render Object As Strands) using `pscale` for per-strand thickness and a reduced tessellation setting for memory.
+7. Build the floating-dust layer: VDB-from-box point source seeded by `$T` for per-frame variation → **POP Network** with two curl-noise **POP Forces** at different scales → time-blend/POP Wind keyed on point ID → copy textured discs to points.
+8. Orient the discs toward camera: load the camera position, compute `normalize(camera_pos - P)` as a facing normal, then bias with a randomized **Orient** attribute so discs aren't perfectly billboarded.
+9. Fade particle opacity with `fit(age, 0, life, 0, 1)` piped through an alpha ramp in the shader; multiply the popped opacity output by this alpha.
+10. Shade tendrils with a basic reflective/rough/transmissive material driven mostly by Redshift's **Random Walk Subsurface Scattering** for color.
+11. Render volumetrics and depth of field directly in-camera (not composited) due to slow DOF-in-comp results at this SSS sample count; render dust particles at high sample counts since small particles need more samples to resolve cleanly in passes.
+12. Composite in Fusion: color correct/brighten/glow/grain, crop to Instagram/Story/16:9 variants, and (optional technique shown) extract a Position AOV into an RGB channel via Channel Booleans, feed to a **Volume Mask** node ("mask only") and use it with Color Corrector for spatial relighting without re-rendering.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Mountain SOP, Scatter (x2, relax iterations), Attribute Randomize (`pscale` on both point sets), Copy to Points (lines), Point VOP (Curl Noise displacement of `P`), Resample (curve-U / curve view attribute output), Ramp (noise-amplitude mask), Smooth, Copy-to-Points/instance node (tendril patch instancing), Redshift geometry tab "Render Object As Strands" (pscale-driven thickness, low tessellation), VDB from box (particle source), global seed via `$T`, POP Network, POP Force (curl noise, two scales), POP Wind, time-blend by point ID, camera position lookup + `normalize()` facing-normal VEX, Orient attribute randomization, `fit(age,0,life,0,1)` alpha ramp, Redshift Random Walk Subsurface Scattering, Fusion compositing (Channel Booleans on Position AOV, Volume Mask "mask only", Color Corrector).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (no simulation is used — the core look is VOP-driven curl noise plus a ramp mask — but it combines curve-attribute tricks, Redshift Strands rendering settings, POP networks, and a non-obvious position-pass relighting technique in comp).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+19.5 (stated directly — author mentions starting the project in "19.5" and that Deadline didn't support it yet at the time).
 
 ### Tags
-[PENDING EXTRACTION]
+#tendrils #curl-noise #curve-view #redshift-strands #random-walk-sss #pop-network #compositing #fusion #tim-van-helsdingen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Vellum Fundamentals - Week 5: Cell Splitting Part 1](vellum-fundamentals---week-5-cell-splitting-part-1.md) — another Tim van Helsdingen tutorial; shares the channel's emphasis on lightweight, art-directable procedural setups over heavy simulation.
+- [Vellum Fundamentals - Week 5: Cell Splitting Part 2](vellum-fundamentals---week-5-cell-splitting-part-2.md) — continuation of the same Vellum series by this author.
+- [Gestation Effect in Houdini. Scene Breakdown.](gestation-effect-in-houdini-scene-breakdown.md) — another scene-breakdown-style video (by a different author) referencing this author's Vellum cell-splitting technique; similar breakdown format and organic-effect territory.

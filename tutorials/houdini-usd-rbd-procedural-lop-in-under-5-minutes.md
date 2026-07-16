@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ixJvo0iShiM
 author: the point and prim
 ingested: 2026-07-16
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [rbd, usd, solaris, procedural-lop, transform-pieces, piece-name, karma, the-point-and-prim]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-usd-rbd-procedural-lop-in-under-5-minutes/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini USD RBD Procedural LOP in under 5 minutes
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-usd-rbd-procedural-lop-in-under-5-minutes <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -72,30 +68,51 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:26] tutorials/frames/houdini-usd-rbd-procedural-lop-in-under-5-minutes/frame_000.jpg
+- [1:08] tutorials/frames/houdini-usd-rbd-procedural-lop-in-under-5-minutes/frame_001.jpg
+- [2:22] tutorials/frames/houdini-usd-rbd-procedural-lop-in-under-5-minutes/frame_002.jpg
+- [2:43] tutorials/frames/houdini-usd-rbd-procedural-lop-in-under-5-minutes/frame_003.jpg
+- [3:18] tutorials/frames/houdini-usd-rbd-procedural-lop-in-under-5-minutes/frame_004.jpg
+- [3:45] tutorials/frames/houdini-usd-rbd-procedural-lop-in-under-5-minutes/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Correctly wiring the **Houdini RBD Procedural LOP** in Solaris to replicate SOP-level "Transform Pieces" efficiency (load render geometry once, apply per-frame transforms from a lightweight point cloud) by manually constructing the reserved **`piece_name`** attribute with two simple wrangles, working around USD's reservation of both the `path` and `name` attributes.
 
 ### Summary
-[PENDING EXTRACTION]
+A short, practical breakdown (part of the author's larger RBD up-res R&D work) on why RBD rendering gets awkward once it moves into Solaris/USD, and how to fix it in two wrangles. The setup problem: **Transform Pieces** (a SOP-level node any experienced RBD artist knows) loads a render-resolution fracture once and applies per-frame orientation/translation from a much lighter point cloud, avoiding the cost of writing full geometry to disk every frame — cited as hitting over 2 million points even in early R&D tests. The catch is that Karma/Solaris converts imported SOP geometry into USD on import, and unlike a static frame, a full heavy animated sequence gets re-converted **every single frame**, which is very slow. Side FX's answer is the **Houdini RBD Procedural LOP**, which emulates Transform Pieces' behavior inside Solaris — but it doesn't work out of the box the way Transform Pieces does, and its documentation is described as "convoluted." The whole workaround boils down to two wrangles because of a USD-specific quirk: normally Transform Pieces matches `name` on both the render geometry and RBD points, but when importing into Solaris, **both `path` and `name` are reserved attributes** used by Houdini to build the USD prim hierarchy (`path` takes precedence, `name` is a fallback), so the RBD Procedural can't simply reuse `name` — it instead expects a `piece_name` attribute (documented at length, but reducible to two small wrangles). On the render geometry (unpacked): one wrangle declares the USD `path` attribute (e.g. `/geo/Taurus` in the demo) while the original `name` attribute is still present; a second **Attribute Swap** node moves `name`'s value into `piece_name` (any method works, as long as the original `name` is deleted afterward so it doesn't collide with USD's reserved use). On the RBD points (the transform source): a wrangle reads the `path` attribute fetched from the geometry stream and concatenates it with the point's own `name` attribute to construct the matching `piece_name`, again deleting the original `name` attribute afterward via Attribute Delete. Both streams then only carry `piece_name` where USD would otherwise expect `name`. In Solaris: both streams come in via **SOP Import** (checking the Scene Graph tree to validate the prim hierarchy), a **Houdini RBD Procedural LOP** is dropped, the geometry prim is set in the RBD Primitive field and the points in the Point Primitive field (with an option to reference points either from SOPs or directly from disk — the latter giving large speed improvements on heavier sims). Motion blur on the resulting procedural geometry is solved with a **Render Geometry Settings** LOP applied to the geometry itself (not the RBD Procedural node). The demo uses a torus ("Taurus") hip file, which the author gives away for free on Gumroad.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Understand the underlying problem: **Transform Pieces** at the SOP level loads render geometry once and drives it from a lightweight per-frame point cloud (very efficient), but Solaris/Karma converts SOP-imported geometry to USD on every single frame of a heavy animated sequence unless a dedicated LOP-level workflow is used.
+2. On the **render geometry** stream (unpacked): add a wrangle that declares the USD `path` attribute (e.g. `s@path = "/geo/Taurus";`) while `name` is still present from the fracture.
+3. Use an **Attribute Swap** to move the value of `name` into a new `piece_name` attribute, then delete the original `name` attribute (any method works as long as `name` doesn't survive, since USD reserves it).
+4. On the **RBD points** stream: write a wrangle that reads the `path` attribute (fetched from the geometry stream) and concatenates it with each point's own `name` attribute to build `piece_name` on the points too.
+5. Delete the original `name` attribute on the points stream with **Attribute Delete** so only `piece_name` remains where USD would otherwise expect `name`.
+6. Bring both streams into Solaris via **SOP Import**, checking the Scene Graph Tree tab to validate the resulting prim hierarchy.
+7. Drop a **Houdini RBD Procedural LOP**, set the geometry prim in the RBD Primitive field and the points prim in the Point Primitive field; optionally reference points directly from disk instead of SOPs for large speed gains on heavier sims.
+8. Add a **Render Geometry Settings** LOP targeting the geometry (not the RBD Procedural node) to enable motion blur.
+9. Validate by plugging in lights and a material and confirming the transforms/motion blur render as expected.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Transform Pieces (SOP-level reference technique), Houdini RBD Procedural LOP (RBD Primitive / Point Primitive fields, SOPs-vs-disk point source option), `path` attribute (USD prim-hierarchy, reserved), `name` attribute (USD-reserved, must not survive), `piece_name` attribute (workaround construct), wrangle (`s@path = "..."`, string concatenation for `piece_name`), Attribute Swap, Attribute Delete, SOP Import (Scene Graph Tree validation), Render Geometry Settings LOP (motion blur).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (the concept is simple once explained, but requires understanding USD's reserved `path`/`name` attributes and Solaris-specific import behavior that isn't obvious from Transform Pieces' SOP-level workflow).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+#rbd #usd #solaris #procedural-lop #transform-pieces #piece-name #karma #wrangle #the-point-and-prim
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Art directing large scale RBD sims in Houdini using the up-res method](art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method.md) — same channel/author; that video's Solaris rendering section uses this exact RBD Procedural LOP setup, referencing this tutorial for the detailed breakdown.
+- [RBD Procedural Animations in Houdini | Mardini 2026](rbd-procedural-animations-in-houdini-mardini-2026.md) — different author (cgside); directly overlapping RBD Procedural LOP / USD subject matter.
+- [Cleaning fractured geometry in Houdini](cleaning-fractured-geometry-in-houdini.md) — different author (cgside); complementary fracture-preparation content in the same RBD pipeline area.

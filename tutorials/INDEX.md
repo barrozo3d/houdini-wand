@@ -1,4 +1,4 @@
-# Houdini Wand — Tutorial & Knowledge Base Index
+﻿# Houdini Wand — Tutorial & Knowledge Base Index
 
 This is the skill's growing knowledge base. Every ingested tutorial, article, and book excerpt is listed here.
 
@@ -16,9 +16,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=JbxNElzALrM
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H19-H21 UI)
-- **Tags:** "sop", "dop", "vop", "vex", "attributes", "particles", "simulation", "wrangler", "procedural", "beginner"
-- **Summary:** A 2-hour beginner course covering everything needed to start creating VFX in Houdini from zero. Progresses from UI navigation and basic SOP geometry through the attributes system, Attribute VOPs, VEX wrangles, and DOP simulation networks. Ends with an overview of all major solver types (Pyro, FLIP, Vellum, RBD) and noise-driven per-frame deformation inside a SOP Solver.
+- **Houdini Version:** Houdini (any modern, H18+)
+- **Tags:** beginner, fundamentals, attributes, vops, vex, dops, solvers, pop, simulation, navigation, beginner
+- **Summary:** Voxyde VFX comprehensive beginner course (120m8s, 19 sections). Teaches Houdini from absolute zero: UI orientation (only need scene view, OBJ window, parameter window), context networks (OBJ→geometry→DOPs levels), node operations (Tab menu, display/bypass/template flags, wire cutting with Y), operator types (SOPs/VOPs/DOPs). Deep section on attributes: class (point is king; primitive for poly...
 - **File:** tutorials/intro-to-houdini-for-vfx---beginner-course.md
 
 
@@ -26,9 +26,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=94YAomHfMbw
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** "dop", "sop", "vop", "particles", "simulation", "attributes", "wrangler", "procedural", "intermediate"
-- **Summary:** A 2-hour course on Houdini particle simulations from Voxyde VFX, pitched at beginners but covering production-level techniques. Covers the full DOP particle pipeline: popnet/popsource/popsolver setup, custom velocity via Geometry VOP (rather than pre-built POP forces), multiple sourcing types, attribute inheritance, interpolate source for animated geometry, and static/moving collisions....
+- **Houdini Version:** Houdini (any modern, H18+)
+- **Tags:** particles, pop, beginner, geometry-vop, velocity, sourcing, collisions, curl-noise, intermediate
+- **Summary:** Voxyde VFX full beginner particle course (122m30s, 8 sections). Establishes the core principle: Geometry VOP inside the DOPs network (same as Attribute VOP at SOPs but runs every frame) trumps all pre-built POP nodes for real-world control. Covers: particle basics (POP Network, source, color, life), Geometry VOP workflow (velocity vs. force, goal-seek with subtract+normalize, tornado with...
 - **File:** tutorials/intro-to-houdini-particles---full-beginner-course.md
 
 
@@ -36,9 +36,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=wR0SDptfygg
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** "sop", "vop", "volumes", "simulation", "procedural", "vdb", "intermediate"
-- **Summary:** A 2-hour course covering all core Houdini volume concepts from Voxyde VFX. Explains standard volumes vs VDBs, fog density volumes vs SDF distance fields, and how to manipulate them with Volume VOP (the per-voxel equivalent of Attribute VOP). Covers multiple volume fields per object, scalar vs vector fields for velocity, curve-based velocity volumes, and two methods for converting particle...
+- **Houdini Version:** any modern (H18+)
+- **Tags:** volumes, vdb, sdf, velocity-field, vop, point-cloud, volume-rasterize, beginner-intermediate
+- **Summary:** Voxyde VFX comprehensive volumes beginner course (137m16s, 15 sections). Covers voxel math and resolution control (by-size mode, 0.1 = 10 voxels per unit), VDB sparse grids vs standard, SDF (signed distance field — positive outside, negative inside), Volume VOP internals (position = voxel center; bind/bind export; density vs field name), practical fog VOP examples (gradient fade via bounding...
 - **File:** tutorials/intro-to-houdini-volumes---beginner-course.md
 
 
@@ -46,9 +46,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=m8w2OND3rH0
 - **Author:** Voxyde VFX
-- **Houdini Version:** H20–H21 (Pyro Burst Source available)
-- **Tags:** "pyro", "fire", "smoke", "simulation", "dop", "vdb", "sourcing", "micro-solvers", "collision", "explosion", "beginner"
-- **Summary:** A 145-minute comprehensive beginner Pyro course by Voxyde VFX. Starts with a single fog-volume density source and systematically adds each field: velocity (noise-driven and wind), temperature (drives buoyancy and combustion), divergence (expansion/explosion scale), and flame. Explains the critical naming relationship between VDB names and Pyro solver target fields. Covers all Shape tab...
+- **Houdini Version:** Houdini (any modern, H19+)
+- **Tags:** pyro, fire, smoke, beginner, sourcing, micro-solvers, velocity-field, divergence, temperature, flame, collisions, intermediate
+- **Summary:** Voxyde VFX comprehensive pyro beginner course (145m31s, 15 sections). Covers the full pyro pipeline from zero: basic setup (pyro solver, fog VDB source, sourcing tab), velocity field sourcing (VDB container + Volume VOP curl noise), all 5 target fields (density/temperature/divergence/flame/velocity) with operation types (add/maximum/pool/copy), all shape micro-solvers (buoyancy, turbulence,...
 - **File:** tutorials/intro-to-houdini-pyro---full-beginner-course.md
 
 
@@ -56,9 +56,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Kx3CJJei_Vs
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** "vop", "sop", "attributes", "math", "noise", "procedural", "beginner"
-- **Summary:** A 59-minute beginner tutorial covering the core VOP math nodes used daily in Houdini VFX work. Starts with the `attribvop` and its variants (point/primitive/vertex/volume VOP), then walks through add/subtract/multiply, parameter promotion to expose controls at the geometry level, displacement along normals using the `displacealongn` VOP, the `fit` (fit range) node for remapping values, the...
+- **Houdini Version:** any modern (H18+)
+- **Tags:** vops, attribute-vop, math, noise, ramp, fit-range, bind, beginner
+- **Summary:** Part 1 of a VOP series. Covers the full spectrum of foundational VOP nodes used in production VFX: vector/float types, all basic math ops (add/subtract/multiply/divide with constant shortcuts), parameter promotion, bind/bind export for attribute I/O, import point attribute for cross-geometry lookups, mix/blend, turbulent noise + displace-along-normal, fit range, ramp parameter (spline and...
 - **File:** tutorials/intro-to-vops---houdini-beginner-tutorial.md
 
 
@@ -66,9 +66,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=mORz1y05T7E
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** "vop", "sop", "noise", "random", "attributes", "procedural", "beginner"
-- **Summary:** A 46-minute beginner tutorial dedicated to noise and randomness in Houdini VOPs. Covers the `random` VOP using point number as seed for per-point color or value variation, then progresses through five noise types: turbulent noise (classic workhorse, 1D–3D signatures), anti-aliased flow noise (directional-free animation via a flow input), curl noise (divergence-free fluid-like motion with 4D...
+- **Houdini Version:** H19+
+- **Tags:** vops, noise, random, vex, particles, simulation, turbulent-noise, curl-noise, worley-noise, flow-noise, bounding-box, beginner
+- **Summary:** 45m51s beginner VOPs tutorial by Voxyde VFX (Part 2 of VOPs series). Covers 6 major topics:  1. **Random & Gaussian Random** — Random node with ptnum seed; 1D float and 3D vector outputs; Fit Range for negative-to-positive; Gaussian Random for direct negative values / true random vector. 2. **Turbulent Noise** — Noise types (alligator default, simplex preferred, sparse convolution for...
 - **File:** tutorials/vops-02---random-noise---houdini-beginner-tutorial.md
 
 
@@ -76,9 +76,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=oT6qzs-Vffk
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** "vop", "sop", "vectors", "math", "attributes", "procedural", "beginner"
-- **Summary:** A 31-minute focused tutorial on vector math as used in VFX simulations. Covers creating direction vectors by subtracting positions, normalizing them to unit length, computing lengths/distances, and visualizing vectors via the N (normal) attribute with point normal display. Explains the cross product (result perpendicular to two input vectors) and dot product (returns -1 to 1 based on angle...
+- **Houdini Version:** H19+
+- **Tags:** vops, vectors, cross-product, dot-product, normalize, particles, simulation, beginner-intermediate
+- **Summary:** 31m12s VOPs Part 3 by Voxyde VFX. Four sections: 1. **Subtract, Normalize, Length** — Create direction vectors with subtract; normalize for uniform speed; length for scalar from vector; interactive point via Add node + Import Point Attribute; turbulent noise for randomization; scale with multiply (vector must be first input). 2. **Cross Product** — Perpendicular vector to plane formed by two...
 - **File:** tutorials/vops-03---vector-operations---houdini-beginner-tutorial.md
 
 
@@ -86,9 +86,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=qDtKmbCDn3k
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** "vop", "sop", "attributes", "geometry", "procedural", "intermediate", "beginner"
-- **Summary:** A 44-minute tutorial on one of the most critical VFX skills: making two geometries communicate and transfer attributes inside a VOP network. Covers `importpointattrib` for reading a specific point's attribute from a second geometry, `nearpoint` for finding the closest point index, `findattribval` for searching by attribute value, `minpos` for snapping points to the nearest surface position on...
+- **Houdini Version:** H19+
+- **Tags:** vops, geometry-interaction, distance, nearpoint, point-cloud, pcopen, intersect, attribute-transfer, particles, beginner-intermediate
+- **Summary:** 44m22s VOPs Part 4 by Voxyde VFX. Six sections covering all major ways geometry can communicate with geometry in Houdini:  1. **Distance & Import Point Attribute** — distance node for float gradient; import point attribute recap; turbulent noise on position for organic density source 2. **Nearpoint** — nearest point number from multi-point second input; must combine with import point attribute...
 - **File:** tutorials/vops-04---geometry-interactions---houdini-beginner-tutorial.md
 
 
@@ -96,9 +96,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=3BX97YIQERE
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H20–H21 UI)
-- **Tags:** "lop", "solaris", "usd", "rendering", "karma", "lighting", "materialx", "instancing", "beginner"
-- **Summary:** A 4.5-hour comprehensive Solaris beginner course covering the complete LOP (Lighting Operator) workflow from USD scene graph fundamentals to final Karma XPU render. Part 1 covers all key ingredients in isolation: USD scene graph concepts, importing SOP geometry via `sopimport`, stage assembly and the Stage Manager, MaterialX-based Karma material authoring inside a `materiallibrary`, the...
+- **Houdini Version:** any modern (H19.5+)
+- **Tags:** solaris, lops, usd, scene-assembly, instancer, component-builder, look-dev, karma, aov, materials, lighting, rendering, beginner-intermediate
+- **Summary:** Voxyde VFX comprehensive Solaris beginner course (286m6s, 19 sections). Part 1 covers each ingredient in isolation: USD & scene graph (paths, opinion layering, character workflow), scene assembly (SOP import/create, path prefix, name vs path attribute), stage manager (hand-placement, duplicates, groups, physics collision), material library (karma material builder, material linker, AMD material...
 - **File:** tutorials/intro-to-houdini-solaris---full-beginner-course.md
 
 
@@ -106,9 +106,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=O2F1Qzl22oU
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** "sop", "dop", "vop", "particles", "attributes", "vfx", "destruction", "intermediate"
-- **Summary:** A 21-minute tutorial showing how to build a clean disintegration effect entirely in SOPs. Starts by remeshing a test geometry to uniform triangle density using the `remesh` SOP, then scatters points across the surface. A noise-driven threshold attribute (using `attribvop` or `attribwrangle`) is animated over time to define a deletion mask — geometry below the threshold is deleted with a...
+- **Houdini Version:** Houdini 19/20
+- **Tags:** vops, disintegration, mask, noise, particles, vfx, intermediate
+- **Summary:** Voxyde VFX 21-min tutorial on a simple disintegration effect (triangles break apart from center outward). Geometry: test squab → Remesh (target size 0.001, 10 iterations) = equal triangles. Mask (Point VOP): BBox node → average Pmin+Pmax = centroid → Vector to Float (X, Z only) → Float to Vector2 for both position and centroid → Distance 2D → fit to 0–1 (source min = "anim" param, max =...
 - **File:** tutorials/houdini-tutorial---simple-disintegration-fx.md
 
 
@@ -117,8 +117,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=aQQeEOlHqjQ
 - **Author:** Voxyde VFX
 - **Houdini Version:** Houdini 21
-- **Tags:** "dop", "sop", "mpm", "grains", "simulation", "vfx", "rendering", "karma", "intermediate", "h21"
-- **Summary:** A 50-minute Houdini 21 tutorial focused on the MPM solver — introduced in H21 as the new standard for granular materials (snow, sand, mud). Covers building the snowball source geometry (sphere with layered mountain SOPs for surface detail), setting up the DOP network with the `mpm solver` and snow-specific material properties (stiffness, cohesion, friction), baking simulation output to disk as...
+- **Tags:** mpm, simulation, snow, particles, vdb, karma, compositing, secondary-sim, intermediate
+- **Summary:** Voxyde VFX (Mikael) 50-min Houdini 21 MPM tutorial: snowball hitting a helmet. Snowball: sphere (0.08 radius) + two Mountain SOPs (large elements high strength + small elements low strength). MPM Configure creates source/collider/solver. Collider fix for concave helmets: enter MPM Collider → VDB Collider → VDB from Polygons enable Pressure Falls + add VDB Reshape SDF. Source settings: Snow...
 - **File:** tutorials/houdini-21-tutorial---mpm-snowball.md
 
 
@@ -126,9 +126,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=qg3OFz4JZs4
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H20–H21 UI)
-- **Tags:** "lop", "solaris", "rendering", "karma", "top", "pipeline", "beginner"
-- **Summary:** A quick 1.5-minute tip tutorial demonstrating how to render multiple Karma/Solaris ROP outputs (e.g. character, blast, particles, rain, water) in a single automated batch using a TOP network. The workflow creates a `topnet`, adds one `ropfetch` TOP node per ROP output (named to match the LOP render node names), sets the ROP fetch node's path to the corresponding LOP stage, switches the cook...
+- **Houdini Version:** Houdini (any modern, Solaris)
+- **Tags:** solaris, rendering, rop, tops, batch-render, workflow, beginner
+- **Summary:** Voxyde VFX short tip (1m25s): batch render all Solaris ROP sequences without manually triggering each one. Workflow: create TOP Network → dive in → create one ROP Fetch node per ROP output (character, blast, bug, rain, water), naming each ROP Fetch identically to its ROP output → select all ROP Fetch nodes → set "Stash Stage" to flush at lowest → change ROP cook order from Frame by Frame to...
 - **File:** tutorials/houdini-solaris-tutorial---rendering-multiple-rops-together.md
 
 
@@ -136,9 +136,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=QfWUzrfsDaY
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H20–H21 UI)
-- **Tags:** "lop", "solaris", "usd", "rendering", "karma", "performance", "pipeline", "intermediate"
-- **Summary:** A 23-minute practical tutorial covering strategies to keep the Houdini Solaris viewport fast when dealing with complex scenes containing characters, animated geometry, RBD simulations, Vellum cloth, and particles. The core principle is to never import heavy live-cooking SOP networks directly into Solaris — instead, bake simulations and animations to disk as caches (`.bgeo.sc`, `.usd`, or...
+- **Houdini Version:** Houdini (any modern with Solaris, H19+)
+- **Tags:** solaris, lops, performance, proxy-geo, poly-reduce, usd, pipeline, point-deform, intermediate
+- **Summary:** Voxyde VFX tutorial (22m50s) covering how to efficiently load all common simulation types into Solaris/LOPs with fast viewport performance. The core pattern: SOP network produces two branches (render geo = full quality, proxy geo = low poly), each tagged with `s@purpose` and merged under a common path structure. Covers 6 geometry types: static single mesh, multi-instance (fern), animated...
 - **File:** tutorials/improve-solaris-performance---houdini-tutorial.md
 
 
@@ -146,9 +146,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=RRmvyQu39-4
 - **Author:** Voxyde VFX
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** "dop", "sop", "pyro", "smoke", "volumes", "vdb", "simulation", "vfx", "intermediate"
-- **Summary:** A 27-minute tutorial focused on achieving a wispy, thin cigarette-smoke aesthetic using Houdini's Pyro solver. The approach starts from the `configure pyro` shelf tool preset (used as a quick base), replaces the default torus source with a small sphere emitter, and then shapes the simulation by reducing density emission, increasing dissipation rate, adding high-frequency turbulence for wispy...
+- **Houdini Version:** Houdini (any modern)
+- **Tags:** pyro, pop, particles, curves, volume, smoke, karma, wispy, intermediate
+- **Summary:** Voxyde VFX 27-min tutorial on wispy (cigarette-style) smoke. Core pipeline: (1) Pyro sim (Config Pyro → sphere source, no flame, buoyancy 0.4, turbulence remapped to hill shape, viscosity 0.1, animated velocity noise layers, gas turbulence inside + vortex confinement, time scale 1.5). (2) Scatter particles from volume (1000–5000, animated density attr with noise, animated seed $F). (3)...
 - **File:** tutorials/houdini-tutorial---wispy-smoke.md
 
 
@@ -156,9 +156,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=041qemBc_1Q
 - **Author:** Pixel In The Frame
-- **Houdini Version:** 21
-- **Tags:** particles, dop, sop, vex, instancing, simulation, rendering, karma, lop, solaris, beginner, houdini-21
-- **Summary:** A 165-minute beginner-to-intermediate walkthrough covering virtually every node in the POP (Particle Operator) toolset in H21. The viewer builds up a DOP network from scratch, learning POP Source emission types (scatter on surface, all points, location), all force nodes (Force, Wind, Drag, Axis Force, Curve Force, Attract, Interact, Advect by Volume), collision handling (POP Collision Detect +...
+- **Houdini Version:** H21 / any modern (H19+)
+- **Tags:** particles, pop, pop-solver, pop-force, pop-vop, pop-wrangle, collisions, instancing, karma, solaris, lops, motion-blur, beginner-intermediate
+- **Summary:** 165-minute comprehensive course by Pixel In The Frame for Houdini 21. Covers 22 sections end-to-end from POP network setup through final Karma render. Notable for: detailed collision setup (surface vs volume SDF), orient/quaternion hierarchy (orient > N > v), POP Look-at node, Particle Trail SOP, volume advection with velocity VDB, and a full instancing-in-LOPs workflow using Collection node....
 - **File:** tutorials/introduction-to-particles-in-houdini-21-full-beginner-course-2026.md
 
 
@@ -166,9 +166,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=cguHzZ9L87g
 - **Author:** Mat Sola
-- **Houdini Version:** Not specified (H20–H21 UI)
-- **Tags:** sop, modelling, uv, procedural, intermediate
-- **Summary:** A 65-minute comprehensive UV fundamentals course by Mat Sola covering a complete reusable workflow: geometry cleanup as a prerequisite, UV projection methods, seam cutting via edge groups, `uvpeel`/`uvunwrap` for flattening, `uvlayout` for packing, `uvquickshade` for visualization in the viewport UV editor, and export-ready UV output. Demonstrated on both hard-surface and soft/organic models...
+- **Houdini Version:** Houdini (any modern, H18+)
+- **Tags:** uv, unwrapping, fundamentals, uv-layout, uv-flatten, auto-seams, workflow, beginner-intermediate
+- **Summary:** Mat Sola comprehensive UV fundamentals course (65m23s). Covers the complete end-to-end UV pipeline in Houdini with concrete examples for each step. Geometry preparation section covers 7 common problems (non-manifold edges, single-vertex sharing, unwelded points, flipped normals, scale issues, overlapping geometry, zero surface area, stale attributes/groups). Seam creation covers 4 methods...
 - **File:** tutorials/houdini-uv-unwrapping-fundamentals.md
 
 
@@ -176,9 +176,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pIp3cYSBZc4
 - **Author:** Fifo
-- **Houdini Version:** Not specified (H20–H21 UI)
-- **Tags:** sop, dop, vop, vellum, modelling, procedural, curves, attributes, simulation, intermediate
-- **Summary:** A 38-minute SOP tutorial building a fully procedural and animated flower. Covers: curve-based stem with `resample` and `sweep`, blossom modeling with `blendshape` for open/closed states, implementing the golden angle in a VOP `crossproduct` for phyllotaxis spiral alignment, `copytopoints` with time-offset `pscale` ramp for staged blooming, and a Vellum cloth solver with pin constraints to...
+- **Houdini Version:** any modern (H19+)
+- **Tags:** procedural-modeling, vellum, wire-solver, copy-to-points, for-each, quaternion, golden-angle, phyllotaxis, sweep, intermediate
+- **Summary:** 38-minute tutorial by Fifo building a complete procedural growing flower. Core innovations: using the golden ratio angle with quaternion rotation for realistic flower phyllotaxis; for-each loop TimeShift trick for sequential blooming (bottom-to-top); Vellum cloth constraints with "match animation" rest blend for intersection resolution. No rigid body physics — all Vellum. Final setup has...
 - **File:** tutorials/model-a-procedural-flower-houdini-tutorial.md
 
 
@@ -186,9 +186,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=eYqxarTsOrE
 - **Author:** VFX Grace
-- **Houdini Version:** Not specified (H20–H21 UI)
-- **Tags:** flip, dop, sop, simulation, volumes, vdb, rendering, intermediate, advanced
-- **Summary:** A 151-minute comprehensive waterfall tutorial covering the complete FLIP pipeline from reference to final composite. Includes: reference analysis of real waterfall characteristics, cliff geometry modeling, FLIP source with initial velocity, higher sim resolution for foam detail (side-by-side comparison shown), white water solver tuning, manual particle-to-mesh conversion and cleanup of...
+- **Houdini Version:** Houdini 19/20
+- **Tags:** flip, waterfall, white-water, vdb, mantra, compositing, particles, simulation, advanced
+- **Summary:** Daily Course 151-min comprehensive waterfall tutorial. Key insight: terrain flatness is critical — flat terrain = stable dynamics; too much relief = chaotic simulation. Workflow: (1) Height field terrain: start flat, add noise in the bevel/drop area only, blur for rectangle shapes, mask for upland slope. Convert to mesh + Poly Reduce + Cast. Rocks: sphere + Subdivide + Mountain SOP. (2) FLIP...
 - **File:** tutorials/houdini-tutorial-creating-realistic-waterfall-simulation-step-by-step.md
 
 
@@ -198,7 +198,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** raphaël
 - **Houdini Version:** Not specified
 - **Tags:** "dop", "sop", "rbd", "simulation", "procedural", "advanced"
-- **Summary:** Two-stage Bullet RBD sim: a Megascans rock reduced to a ~100-face proxy is scattered, de-intersected (Boolean Detect + iterative nearest-point Blast), and dropped/settled in a box collider; a second sim then carves a smiley-face hole and adds POP Axis Force + POP Wind for a swirling vortex, with a `v.y=0` wrangle to suppress excess upward ejection. Re-timed with a 10x slowdown plus a custom by-frame speed-ramp for a fast-slow-fast feel, then the high-poly mesh is transferred back onto the simulated low-poly points via a transform-zeroing + Transform Pieces trick.
+- **Summary:** Scatters a Megascans rock (reduced to a ~100-face/50-point low-poly proxy for sim performance, high-poly kept separately via a Null for final render) onto 10,000 points scattered inside a box volume (Scatter on an ISO-Offset volume), randomizing per-instance orientation with a MOPs Randomize node. De-intersects the scattered copies using a Boolean (Detect operation) to flag intersecting...
 - **File:** tutorials/grain-vortex-in-houdini-tutorial.md
 
 
@@ -206,9 +206,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=gsrHHeYadZ0
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** dop, sop, vex, particles, simulation, intermediate
-- **Summary:** A 29-minute Russian-language tutorial by Alexander Eskin (Part 1) on creating a "Heavy Lux" luxury particle effect for brand/social media use (final frame shows Dior logo render). Covers POP network setup with All Points emission from 10,000-point grid, stable particle count across frames, wind velocity (value 6) bound to a mask via VEX wrangle using `windgroupraw` (not `windgroup`), and `Cd`...
+- **Houdini Version:** H19+
+- **Tags:** particles, pop, heightfield, sand, logo, mask-animation, turbulence-noise, vdb, points-from-volume, intermediate-advanced
+- **Summary:** 29m43s tutorial by Alexander Eskin. Luxury brand Instagram-style shot: "Dior" logo imprinted in animated sand terrain with particles rising in wave. Pipeline: Grid scatter 10k points → POP Network (All Points emission) → POP Wind (velocity=6) driven by color/mask attribute so particles in white zones fly, black zones stay; animated radial gradient mask (fit on distance) sweeps outward frame...
 - **File:** tutorials/урок-тяжелый-люкс-часть-1.md
 
 
@@ -216,9 +216,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=mTnQji8a8nw
 - **Author:** PolygonCGI
-- **Houdini Version:** Not specified (H20–H21 UI)
-- **Tags:** sop, vop, modelling, procedural, curves, attributes, rendering, redshift, intermediate, advanced
-- **Summary:** A 27-minute tutorial by PolygonCGI building a fully procedural knitted-geometry effect on a skull. The core insight is using UV connectivity + attribute swap to project a tiling knit stitch (built from `mirror`/`polyfuse`/`copytopoints`) onto any mesh surface. Strands are generated via `sweep` with `curlnoise` variation and a `rest` attribute for fiber randomization. Final render uses...
+- **Houdini Version:** Houdini (any modern, H19+)
+- **Tags:** knit, procedural, uv, copy-to-points, sweep, attribute-swap, redshift, shading, intermediate
+- **Summary:** PolygonCGI beginner/intermediate tutorial (27m27s). Build a single knit stitch by modeling half a loop, mirroring, and using CurveKnot for procedural width control. Tile the stitch across a grid using Points from Volume + Copy to Points. Flatten the target skull mesh into UV space (Connectivity UV → Vertex Split → Attribute Swap P↔UV), align the knit grid into UV space, then Attribute Swap...
 - **File:** tutorials/houdini-tutorial-make-any-geometry-knitted.md
 
 
@@ -226,9 +226,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fjVERoS2olY
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** dop, sop, vex, particles, simulation, intermediate
-- **Summary:** A 24-minute English tutorial by Alexander Eskin (Part 1) building a "Heavy Chic" luxury particle effect for social media at 30 FPS. The key technique is using the expression `$F==1` in popsource birth parameters to emit only on frame 1, locking the count at exactly 100,000 particles for the entire animation without multiplication. Frames show progression from blue grid source → jagged...
+- **Houdini Version:** H19
+- **Tags:** particles, pop, height-field, volume, scatter, noise, logo-trace, animation, pscale, intermediate
+- **Summary:** 24m4s tutorial by Alexander Eskin. Builds a "heavy chic" particle sand/logo effect. Workflow: scatter points on a height field, emit only frame 1, drive upward pop wind velocity by noise (turbulence via `windpointy *= Cd.x`), animate an expanding wave mask (length + fit) to control when/where particles rise. Complex height field: Height Field Noise + VOP binding trick (height→density) +...
 - **File:** tutorials/tutorial-heavy-chic-part-1.md
 
 
@@ -236,9 +236,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=mOKs6Dht5Mw
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** dop, sop, vex, particles, simulation, rendering, intermediate
-- **Summary:** A 17-minute continuation tutorial (Part 2) completing the Heavy Chic luxury particle effect. The key refinement is masking particle noise by multiplying amplitude by `Cd` — particles with zero Cd won't flutter. A sharp B-spline ramp corrects gamma for the visual look. Point count scales from ~700k to 11 million by reducing point separation from 0.01 to 0.004. Sim is cached to disk via...
+- **Houdini Version:** H19
+- **Tags:** particles, rendering, mantra, instancing, gold-material, file-cache, fracture, pscale, depth-of-field, intermediate
+- **Summary:** 17m52s tutorial by Alexander Eskin (continuation of Heavy Chic Part 1). Polishes the particle simulation: adds noise multiplied by Cd (so stationary particles don't drift), applies a b-spline gamma ramp to redistribute particle density, increases point count from 700K to 11M (point separation 0.004). Caches to disk with `$OS.$F4.bgeo.sc`. Creates custom particle geometry: fractures a box,...
 - **File:** tutorials/tutorial-heavy-chic-part-2.md
 
 
@@ -246,9 +246,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=UrDkzEXDdLM
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** dop, sop, vex, particles, simulation, rendering, intermediate
-- **Summary:** A 22-minute Russian-language continuation (Part 2) by Alexander Eskin completing the "Heavy Lux" particle effect. Covers: noise frequency tuned to 1.7, turbulent noise added via "Add to" blend, float-type (not vector) ramp node with B-spline/Spline interpolation for sharper peak contrast in the mask, sim caching via `filecache`, and final Karma/Mantra render — final frame shows a golden luxury...
+- **Houdini Version:** H19+
+- **Tags:** particles, instancing, voronoi, rendering, redshift, file-cache, multi-shot, orient-random, intermediate-advanced
+- **Summary:** 22m5s tutorial by Alexander Eskin. Part 2 of luxury brand particle shot. Polishes the noise mask (frequency 1.7, Turbulence noise added, ramp with Spline interpolation for sharper contrast peaks). File Cache full simulation (1M particles) keeping only pscale+ID. Creates Voronoi fragment instance geometry: Box → Scatter 45 pts → Voronoi Fracture → Pack (Instancer) → Blast exterior pieces...
 - **File:** tutorials/урок-тяжелый-люкс-часть-2.md
 
 
@@ -256,9 +256,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Ps6ZOKEdDos
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, modelling, procedural, instancing, rendering, redshift, intermediate
-- **Summary:** A 25-minute tutorial by Alexander Eskin building a procedural glass tile wall for luxury brand rendering. A single tile is modeled from a `box` (0.1 × 0.5), one primitive colored red for orientation reference, then `polyextrude` + `subdivide` with crease (2 divisions) for smooth beveled edges needed for glass refraction. Tiles are distributed on a 128×128 point grid (size 10, height 2.5, YZ...
+- **Houdini Version:** H19
+- **Tags:** glass, tiles, animation, orient, quaternion, attribute-transfer, pop, trails, material, blend-material, rendering, mantra, intermediate
+- **Summary:** 25m6s tutorial by Alexander Eskin. Builds an animated glass tile wall that flips from opaque tiles to glowing emissive to transparent glass in a wave. Tile: Box + PolyExtrude + Bevel + Subdivide. Wall: Copy to Points on grid (128×128 pts, P_scale control). "Rotor" attribute driven by Attribute Transfer from a Mountain-noised grid (undisplaced transfer + Attribute Copy trick). Orient rotated...
 - **File:** tutorials/tutorial-glass-tiles.md
 
 
@@ -266,9 +266,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=-s-AnXgjw-o
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, modelling, procedural, instancing, attributes, animation, rendering, redshift, intermediate
-- **Summary:** A 32-minute Russian-language tutorial (7 minutes longer than the English counterpart) by Alexander Eskin covering the full glass tile pipeline plus tile rotation animation. Builds a single tile (box 0.1×0.5, crease/subdivide bevel), distributes on 128×128 point grid (YZ, 10×2.5), scales via `pscale`. The extended section creates a large secondary geometry to generate a noise-based attribute...
+- **Houdini Version:** H19+
+- **Tags:** procedural-animation, tiles, orient, quaternion, attribute-transfer, particles, trails, octane, intermediate
+- **Summary:** 32m14s tutorial by Alexander Eskin. Creates animated glass tile wall with procedural wave flip rotation. Pipeline: tile box (0.1×0.5) → PolyBevel → Mountain → SubDiv; scatter on 128×128 plane grid → Copy to Points with pscale; animated wave attribute via Attribute Transfer from moving grid (dense 55×55, falloff/blend); noise on attribute for organic variation; VEX quaternion for orient; 3...
 - **File:** tutorials/урок-стеклянная-плитка.md
 
 
@@ -276,9 +276,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Ju8pDlzR3vM
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, vex, procedural, curves, attributes, modelling, intermediate
-- **Summary:** A 43-minute Russian-language tutorial by Alexander Eskin building procedural woven fabric geometry purely in SOPs via VEX math. A Z-axis line (2000 points, length 1) → `resample` → `curveu` → `attribwrangle` ("weaving") applies `sin(curveu * freq)` to Y and X positions with controllable amplitude and phase offset. Frequency ~100–200 creates fabric-like loops; parameters promoted to sliders...
+- **Houdini Version:** H19+
+- **Tags:** procedural-modeling, weaving, sine-waves, animation, growth, sweep, vellum, point-deform, hair-shader, intermediate
+- **Summary:** 43m32s tutorial by Alexander Eskin. Creates animated woven/knitted fiber effect. Pipeline: 2000-point line → VEX sine displacement (`Z = sin(curveu * freq) * amp`, `X = sin(curveu * freq - phase) * amp`) → Copy to Points with even/odd phase flip (`@ptnum % 2 ? -1 : 1`) for interlocking loops → Sweep (170 twists, small radius) for 3D tubes → curveu-driven pscale for thickness variation. Grow...
 - **File:** tutorials/урок-мягкая-ткань.md
 
 
@@ -286,9 +286,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Ohj4ag8DZRo
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, vex, procedural, curves, attributes, modelling, intermediate
-- **Summary:** A 36-minute English tutorial by Alexander Eskin building procedural woven fabric geometry via VEX sine math on a 2000-point line. The key insight: Y gets `sin(@curveu * 100)` and X gets `sin(@curveu * 50)` — dividing X frequency by 2 creates the characteristic interlocking weave pattern (not just parallel waves). Amplitude = coefficient outside brackets; frequency = multiplier inside brackets....
+- **Houdini Version:** H19
+- **Tags:** sweep, weave, sine-wave, curve-u, blend, attribute-transfer, hair, redshift, vellum, point-deform, intermediate-advanced
+- **Summary:** 36m17s tutorial by Alexander Eskin. Builds a soft weaving fabric animation entirely from procedural SOP geometry (no simulation for the weave itself). Lines with CurveU-based sine-wave offsets create a weave pattern; alternating line direction prevents uniformity. Multiple Sweep SOPs (5 passes at different radii/twists) create strand variety. pscale grow animation via P lerp (not direct pscale...
 - **File:** tutorials/tutorial-soft-weave.md
 
 
@@ -296,9 +296,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=cQd2YXWiQ4k
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, vop, vdb, procedural, volumes, modelling, rendering, intermediate
-- **Summary:** A 32-minute Russian-language tutorial by Alexander Eskin recreating a sponge/foam effect inspired by Max Shulgi's Instagram work. Workflow: box (0.7 height, 15 wide) → polygon conversion with higher resolution → default noise displacement → points scattered via `pointsfromvolume` → `rest` attribute added for downstream color/material control → `pscale` attribute for size variation. Final...
+- **Houdini Version:** H19+
+- **Tags:** vellum, grains, particles, instancing, cotton-fibers, friction, cluster, pscale, shader, beginner-intermediate
+- **Summary:** 32m49s tutorial by Alexander Eskin, recreating an Instagram work by Max Shulgiy. Creates a sponge simulation using Vellum Grains: box geometry → scattered points → Vellum Grains solver with custom gravity, granular collision for wet-sand look, and cluster attribute (32 clusters) fed into Random for friction variation. Cotton fiber clumps built from 3 custom catmull curve shapes (3 variations),...
 - **File:** tutorials/урок-губка.md
 
 
@@ -306,9 +306,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=O5cFGKp0n_A
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, dop, vdb, volumes, vellum, particles, simulation, rendering, intermediate
-- **Summary:** A 29-minute English tutorial by Alexander Eskin (inspired by Mark's Instagram work) building a purple sponge effect. The pipeline is more complete than the Russian version: box converted to fog VDB via `vdbfrompolygons` + `cloudnoise` default settings → `pointsfromvolume` scatter (400k points, separation 0.07) → secondary noise (Y-component, freq 15, amplitude × 0.05) for organic shape...
+- **Houdini Version:** H19
+- **Tags:** vellum, grains, clustering, instancing, redshift, noise, rest-attribute, cotton, attraction-weight, intermediate
+- **Summary:** 29m17s tutorial by Alexander Eskin (inspired by Mark's work on Instagram). Creates a "purple sponge" cotton-ball mound effect. Box → VDB (cloud noise) → Points from Volume (400K pts, pscale=0.5) with bounding region blast + Y=0 delete + additional positional noise. Vellum Grains sim: fix ground intersection with `P.y += pscale`, interaction_weight=1 for wet-sand clumping, Cluster Points (32) +...
 - **File:** tutorials/tutorial-purple-sponge.md
 
 
@@ -316,9 +316,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=HkMJWwyqo-I
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, vop, modelling, animation, rendering, redshift, beginner, intermediate
-- **Summary:** A 13-minute Russian-language tutorial building an animated glass donut with flowing surface noise. Uses a `torus` primitive (X-axis, radius 1.5, top/bottom segs 1), applies `aanoise` (anti-aliased flow noise) — the `flow` parameter is animated 0→1 linearly across 300 frames for a seamless loop. Key gotcha: set end frame at 299 (not 300) to avoid duplicate frame at loop boundary. `polyextrude`...
+- **Houdini Version:** H19+
+- **Tags:** modeling, torus, noise, seamless-loop, glass-shader, redshift, dome-light, cop-texture, subdiv-displacement, beginner
+- **Summary:** 13m15s tutorial by Alexander Eskin. Quick product-style glass donut render. Creates Torus primitive with Mountain noise displacement → key insight: noise values at offset 0 and 1 are identical → animate offset 0→1 over 300 frames (linear) → set frame 300 keyframe equal to frame 1 value → perfect seamless loop. PolyExtrude for glass thickness. Gradient textures built in Houdini COPs (4000×2000...
 - **File:** tutorials/урок-стеклянный-пончик.md
 
 
@@ -326,9 +326,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=j5Ew_6-W8DE
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, vop, modelling, animation, rendering, redshift, intermediate
-- **Summary:** A 13-minute English tutorial confirming the Glass Donut workflow with exact parameter values. Torus (X, size 0.5×0.15, 400 rows × 800 cols) + `aanoise` added to position (roughness 0.6, octaves 4, frequency 4, amplitude 0.025). Promote `flow` parameter (mandatory — can't keyframe inside VOP). Animate flow 0→1 linear; place end keyframe at frame **301** so frame 300 in a 300-frame loop never...
+- **Houdini Version:** H19
+- **Tags:** glass, torus, noise, flow-noise, rendering, mantra, hdri, material, subdivision, beginner-intermediate
+- **Summary:** 13m28s tutorial by Alexander Eskin. Creates a glass donut (torus) with animated, loopable noise displacement. Flow noise (anti-aliased) cycles from 0→1 over 300 frames for a seamless loop. Two-layer extrusion thickens the surface. Glass shader: full transmission + reflection, zero diffuse. Lighting uses two custom gradient HDRIs (painted in AE with circle feather, color grading, Video Copilot...
 - **File:** tutorials/tutorial-glass-donut.md
 
 
@@ -336,9 +336,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=alOGxWIIwTk
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, vop, vdb, particles, instancing, simulation, procedural, intermediate
-- **Summary:** A 30-minute Russian tutorial (Part 1) by Alexander Eskin building pink bubbles packed inside a large sphere. A polygon sphere (64 cols, scale 2) is split into two streams — one for interior bubble placement, one for surface wave animation. `vdbfrompolygons` → `scatter` (65 points) → `pscale` 0.1 varied by noise multiplication (attribvop) for different bubble sizes. Key: `peak` SOP pushes each...
+- **Houdini Version:** H19+
+- **Tags:** vellum, balloons, bubbles, particles, ripple-solver, scatter, noise, pop-wind, attribute-interpolate, intermediate
+- **Summary:** 30m52s tutorial by Alexander Eskin. Creates pink bubbles floating inside a large sphere (Vellum Balloon simulation). Three bubble layers: large (65 scatter points → copy sphere → Vellum Balloons sim with wind, grain collision, drag variation); small (55000 scatter → noise scale variation → static); tiny (static on sphere surface, displaced). Sphere gets ripple-wave surface: POP particles spawn...
 - **File:** tutorials/урок-розовые-пузыри-часть-1.md
 
 
@@ -346,9 +346,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ypJL4PXxQpg
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, vop, vdb, particles, instancing, simulation, procedural, rendering, intermediate
-- **Summary:** A 25-minute English tutorial (Part 1) building pink bubbles inside a sphere, rendered with Octane. Sphere (scale 2, polygon, freq 64) → `peak` to shrink → `vdbfrompolygons` (fog type, reduced voxel size) → `scatter` 65 pts → `pscale` 0.1 → `attribadjust` float, multiply by noise (offset 1.3) for size variation → second `attribadjust` float to set minimum size. Viewport preview via...
+- **Houdini Version:** H19
+- **Tags:** vellum, balloon, grains, ripple-solver, pop, scatter, pscale, vellum-pack, wind, intermediate
+- **Summary:** 25m54s tutorial by Alexander Eskin. Builds a complex "pink bubble" scene: large deforming Vellum Balloon spheres scattered inside a VDB shell, plus 55K small Vellum Ring grain-spheres on the surface, inside a collider sphere with zero gravity + wind (upward, noise-driven). Vellum Pack → merge → Vellum Unpack avoids the tedious manual constraint merging. Solver: uncheck "Assume Uniform Radius...
 - **File:** tutorials/tutorial-pink-bubble-part-1.md
 
 
@@ -356,9 +356,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=faWPP0UPcU0
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, rendering, intermediate
-- **Summary:** A 15-minute Russian-language Part 2 completing the Pink Bubbles effect with Octane rendering. Exports geometry elements separately from the SOP network, sets up camera and scene. Key: `subdivide` uses "roll" parameter (not crease) for the final bubble geometry. Creates Octane render target + 3 Octane shaders (Ground, Bubble, Bubble Main). White/preview materials first; colored in final....
+- **Houdini Version:** H19+
+- **Tags:** rendering, octane, glass-shader, bubbles, trails, particles, specular, strand-material, beginner-intermediate
+- **Summary:** 15m49s tutorial by Alexander Eskin. Part 2 of Pink Bubbles project — rendering and scene polish. Exports geometry elements, builds Octane Render Target with 3 shaders (background, outer bubbles, inner bubbles). Background: plane (bottom wall only, SubDiv smooth). Bubble material: Octane Specular (aSpecular mode) → glass look; inner bubbles need Reverse normals for correct refraction....
 - **File:** tutorials/урок-розовые-пузыри-часть-2.md
 
 
@@ -366,9 +366,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=uztbmUElafA
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, rendering, intermediate
-- **Summary:** A 10-minute English Octane render tutorial (Part 2). Separates the bubble geometry into 3 OBJ nodes (bubble_base/outer sphere, big bubbles, small bubbles); source node stays green/unrendered. `objectmerge` pulls geo into each orange/rendered node. Camera positioned at Z=6, square aspect ratio (not 16:9), adjusted focal length. Octane chosen specifically for quality glass refraction rendering...
+- **Houdini Version:** H19
+- **Tags:** rendering, octane, glass, dispersion, specular-material, instancing, lighting, beginner-intermediate
+- **Summary:** 10m13s render tutorial by Alexander Eskin (Part 2 of Pink Bubble series). Sets up an Octane renderer for the bubble scene from Part 1. Uses Octane Specular material (glass-like). Small bubble spheres were just points — fix by Copy to Points of actual sphere geo (scale=2, polygon). Reverse normals on small spheres for correct reflections. Background: large reversed box (blast two open faces)....
 - **File:** tutorials/tutorial-pink-bubble-part-2.md
 
 
@@ -376,9 +376,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fMNkSvAwIFk
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, modelling, procedural, intermediate
-- **Summary:** A 15-minute Russian-language modeling tutorial (Part 1 of Lipstick series) by Alexander Eskin. Draws a lipstick profile curve in front view, revolves it (8–12 divisions, not critical) with `revolve` SOP, smooths with `subdivide`, cleans top with `fuse`. The characteristic angled top cut is made by clipping with a rotated `box` (boolean, ~5–6°). A logo is projected onto the surface using...
+- **Houdini Version:** H19+
+- **Tags:** modeling, hard-surface, revolve, boolean, vdb, logo-engraving, uv, octane, beginner-intermediate
+- **Summary:** 15m37s tutorial by Alexander Eskin. Models a lipstick product for render. Part 1 of a series (Parts 2/3 cover FLIP simulation and rendering). Workflow: draw profile curve → Revolve (8–19 divisions) → Fuse pole → Boolean cut angled tip with Box (5–6° tilt) → SubDiv; Alpha texture image → VDB for engraved logo cutouts → Hole node → Divide (convex off, crack thickness 0.3) → VDB Sample 0.1 for...
 - **File:** tutorials/урок-помада-часть-1-моделирование.md
 
 
@@ -386,9 +386,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Zqle_HOS7Jg
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, modelling, procedural, intermediate
-- **Summary:** An 18-minute English modeling tutorial by Alexander Eskin building a lipstick for product visualization. Front-view `curve` (polygon) → `revolve`; clip top before revolve to prevent overlap. `subdivide` with **4 divisions** (important for the logo emboss field later) → `fuse`. Boolean cut: `box` stretched + rotated ~55° around the cutting axis, then 90° around Y → creates the characteristic...
+- **Houdini Version:** H19
+- **Tags:** modeling, revolve, boolean, trace, logo-emboss, vdb-remesh, uv, bevel, subdivide, procedural, intermediate
+- **Summary:** 18m30s modeling tutorial by Alexander Eskin. Builds a complete lipstick product shot asset procedurally. Lipstick body: polygon curve drawn in front view → Revolve → clip overlap → Subdivide → Fuse; tip cut with Boolean (rotated box ~55°). Logo: Trace SOP on PNG alpha → Resample → Hole SOP → Divide (convex, crease); Raytrace project onto lipstick surface; lift 0.01 → PolyExtrude inward −0.025...
 - **File:** tutorials/tutorial-lipstick-part-1-modeling.md
 
 
@@ -396,9 +396,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=H17o8w-CFUM
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, dop, flip, simulation, particles, vdb, modelling, intermediate, advanced
-- **Summary:** A 34-minute Russian-language tutorial (Part 2) adding FLIP fluid droplets to the modeled lipstick from Part 1. Creates a "lipstick_droplets" geo node, scatters points on the lipstick surface (density ~0.8), trims to the visible rear half only (front half excluded — don't simulate what can't be seen). `pscale` attribute set to 0.03 with `attribvop` noise variation (scale 2) + random float for...
+- **Houdini Version:** H19+
+- **Tags:** flip-sim, fluid-simulation, viscous, particles, vdb, surface-reconstruction, octane, intermediate
+- **Summary:** 34m20s tutorial by Alexander Eskin. Part 2 of the lipstick series: takes the modeled lipstick geometry from Part 1 and simulates fluid FLIP dynamics to create realistic liquid-lipstick surface behavior. Transcript was not captured during ingestion (Russian audio without auto-captions). Based on title and series context, expected content: FLIP Object setup, viscosity/surface tension parameters...
 - **File:** tutorials/урок-помада-часть-2-flip-sim.md
 
 
@@ -406,9 +406,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=T1OTnyioFrA
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, dop, flip, simulation, particles, vdb, modelling, intermediate, advanced
-- **Summary:** A 26-minute English FLIP droplet tutorial (Part 2) with key production insight: three separate scatter passes at different scales — tiny (density scale ~55), medium, and big (~100 scattered, ~10 largest) — merged together for realistic droplet size distribution on the lipstick. Each pass gets `pscale` = 0.03 base + `attribadjust` random (multiply, mean 0.2) + noise multiply (smaller element...
+- **Houdini Version:** H19
+- **Tags:** flip, fluid, droplets, surface-tension, stick-field, velocity-field, vdb, collision, pscale, intermediate-advanced
+- **Summary:** 26m21s FLIP tutorial by Alexander Eskin. Creates realistic water droplets that cling to the lipstick surface. Three passes of scatter (tiny ~0.03 pscale, medium, big ~0.05–0.8) with random pscale noise variation, displaced outward along surface normals proportionally to pscale. Points from Volume is the FLIP source (resolution from control null parameter `flip_res = 0.01`). Lipstick as VDB...
 - **File:** tutorials/tutorial-lipstick-part-2-flip-sim.md
 
 
@@ -416,9 +416,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=6V7Y5aBmjo4
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, rendering, intermediate
-- **Summary:** A 14-minute Octane rendering tutorial (Part 3 of Lipstick series). Sets up geo nodes: lipstick body, droplets, large droplets (water material). Octane camera "shot_10_output" at half resolution. Octane render target "render_target_010" — path tracing, spectre depth 24, max samples 200, adaptive sampling enabled. No deep image, no environment texture initially (render starts black until lights...
+- **Houdini Version:** H19
+- **Tags:** rendering, octane, material, sss, flakes, metal-bump, hdri, cop2, lighting, water-shader, intermediate
+- **Summary:** 14m27s render tutorial by Alexander Eskin (continuation of Parts 1+2). Uses **Octane renderer** inside Houdini (not Mantra/Karma). Render settings: Contour=1, path tracing, spectral depth=24, max samples=200, adaptive, cryptomatte by material name. Materials: background=emissive (weight=3), water=specular (default), metal=metallic+roughness=0+reflectance=0.4, lipstick=specular+SSS (random...
 - **File:** tutorials/tutorial-lipstick-part-3-rendering.md
 
 
@@ -426,9 +426,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pcHSG38zTJg
 - **Author:** Alexander Eskin
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** sop, rendering, intermediate
-- **Summary:** A 22-minute Russian-language Octane rendering tutorial (Part 3, longer than the 14-minute English companion) completing the lipstick product visualization. Sets up Octane render node + camera "shot_010", render target "render_target_010" (half resolution, specular depth 4, adaptive sampling), Cryptomatte by material/model name. IPR initially black (no lights). Final render shows professional...
+- **Houdini Version:** H19+
+- **Tags:** rendering, octane, shading, materials, lighting, product-visualization, vdb, intermediate
+- **Summary:** 22m14s tutorial by Alexander Eskin. Part 3 (final) of the lipstick series: renders the modeled and simulated lipstick in Octane for Houdini. Transcript was not captured during ingestion (Russian audio without auto-captions). Based on title, series context, and Part 1 notes (which mention Octane materials: lipstick, metal, cap, background), expected content: setting up Octane materials...
 - **File:** tutorials/урок-помада-часть-3-рендер.md
 
 
@@ -436,9 +436,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Yi0ATGFthqk
 - **Author:** Fx Guru (Arbaaj)
-- **Houdini Version:** Not specified (H19–H21 UI)
-- **Tags:** dop, sop, particles, simulation, volumes, vdb, rendering, beginner, intermediate
-- **Summary:** A 33-minute beginner rain effect tutorial by Fx Guru (Arbaaj). A `grid` SOP scaled to match a target geometry (scale 6) serves as the rain emitter — All Points emission from the grid via `popsource` creates dense rain columns. `popgravity` drives particles downward. Life expectancy controls rain density. Particles converted to mesh via VDB for rendering. Secondary splash effect simulated at...
+- **Houdini Version:** H19
+- **Tags:** particles, pop, rain, collision, vdb, static-object, rendering, beginner
+- **Summary:** 33m6s beginner tutorial by Fx Guru (Arbaaj). Builds a rain effect from scratch: a flat grid emitter generates particles in a Pop Network, gravity pulls them down, inherited velocity variation removes per-frame layering artifacts. Collision is set up using a VDB generated by a Collision Source SOP from the character geometry, then fed into a Static Object / Static Solver inside the DOP network....
 - **File:** tutorials/rain-effect-in-houdini-houdini-tutorial.md
 
 
@@ -448,8 +448,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=hHLH7pr_eZo
 - **Author:** cgside
 - **Houdini Version:** H19+
-- **Tags:** #kinefx #procedural-modeling #rigging #capture-proximity #sweep #quadremesh #polyfill #animation #intermediate
-- **Summary:** Procedurally models a tuna can (staircase-embossed pull-tab lid + mirrored square-tube body via Sweep/QuadRemesh/PolyFill) then rigs the lid with a KineFX capture/proximity + Bone Deform chain driven by an eased curve-parameter animation. The rigid cap is made to follow the lid's motion by copying the animated rig's first-point world transform onto the cap, correcting for the initial point offset via a wrangle.
+- **Tags:** kinefx, procedural-modeling, rigging, capture-proximity, sweep, quadremesh, polyfill, animation, intermediate
+- **Summary:** Starts from a single line swept (Ribbon + Columns, grid end caps) into the lid's cross-section profile, then builds the embossed "staircase" pattern on the lid top using paired point offsets on concentric circles (position.y and pscale grouped in twos with incrementing offsets) before skinning them into rings. The can body is built separately from a mirrored square-tube sweep driven by a...
 - **File:** tutorials/tuna-can-procedural-modeling-and-rig-with-kinefx.md
 
 
@@ -458,8 +458,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=7J-hDF0H6ck
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+)
-- **Tags:** #rigging #kinefx #mechanical #controls #wrangle #matrix #fit-range #intermediate
-- **Summary:** Attaches sphere controls to a mechanical rig and drives symmetric joint pairs by extracting each control's translation distance, fitting it to a precomputed max-rotation-angle range, and writing the rotated matrix back onto the rig points — done in parallel via a "numbers" wrangle (npoints iteration) instead of a per-point loop, using getcomp/matrix decomposition and explicit point-transform writes.
+- **Tags:** rigging, kinefx, mechanical, controls, wrangle, matrix, fit-range, intermediate
+- **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/mechanical-rigging-in-houdini---attaching-custom-controls.md
 
 
@@ -467,9 +467,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=d3pMfIsvAyQ
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "procedural", "nature", "leaves", "copernicus", "textures", "instancing", "unreal-engine", "modeling", "organic", "vegetation"
-- **Summary:** Yan Paul Dubbelman presents a 100-minute session on building high-quality leaf models procedurally in Houdini, with a focus on quality/weight balance for production. The session has two main parts: building the procedural leaf model generators (optimized geometry), then using Houdini's new Copernicus system to generate textures that can be applied to even low-resolution geometry. The resulting...
+- **Houdini Version:** H20.5+
+- **Tags:** procedural-nature, leaves, copernicus, tree-branch-generator, uv-deform, voronoi, quad-remesh, texture-baking, tops-wedge, labs, patterns, intermediate
+- **Summary:** 100m33s Houdini.School live session by Yan Paul Dubbelman. Complete workflow for generating photorealistic procedural leaf models with textures for real-time (Unreal Engine) or render pipelines. Pipeline: define leaf shape with grid + Linear Taper; build vein skeleton with Labs tree tools; UV-deform skeleton to match any shape with one wrangle line; clean up overshooting curves via Proximity +...
 - **File:** tutorials/yan-paul-dubbelman-procedural-nature-high-quality-custom-leaves.md
 
 
@@ -477,9 +477,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=q_aD6sza6gA
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "mops", "linear-algebra", "vectors", "matrices", "math", "motion-graphics", "vex", "education", "transforms"
-- **Summary:** Henry Foster delivers a 163-minute session (MOPs 103) devoted entirely to the mathematics underlying MOPs and 3D graphics in general. The focus is linear algebra — vectors, matrices, transformations — explained as practical concepts artists can understand and use rather than abstract theory. Henry bridges the gap between "click buttons to parent objects" and actually understanding what...
+- **Houdini Version:** H18.5+
+- **Tags:** mops, math, vectors, matrices, quaternions, vex, linear-algebra, trigonometry, aim-constraint, forward-kinematics, transform, dot-product, cross-product, slurp, quaternion, intermediate-advanced
+- **Summary:** 163m38s masterclass on the linear algebra and trigonometry that powers MOPs (and all of CG). Three example files — `01_vectors`, `02_trig`, `03_transforms` — walk from first principles to practical VEX. Topics: vectors (normalize, dot product, projection, Lambert/Fresnel shading, cross product, right-hand rule, double-cross for geo-normal forces), trig (sine/cosine as triangle ratios and...
 - **File:** tutorials/mops-motion-operators-for-houdini-part-3.md
 
 
@@ -487,9 +487,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=J2g0v1k6MBs
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "mops", "motion-graphics", "spline", "animation", "packed-primitives", "advanced-modifiers", "procedural-animation"
-- **Summary:** Henry Foster continues from Part 1 with MOPs 102, a 170-minute deep-dive into advanced MOPs modifiers. The session leads with the Move Along Spline modifier — a solution to the common motion design problem of moving objects along arbitrary curves. Building on the packed primitive foundation from Part 1, this session explores the trickier modifier nodes that solve more complex kinetic problems....
+- **Houdini Version:** any (H18.5+, MOPs 1.7.1)
+- **Tags:** mops, motion-graphics, move-along-spline, move-along-mesh, delay, spring, sequences, pivot, reorient, apply-attributes, vellum, rbd, bullet, intermediate-advanced
+- **Summary:** 170m22s live class (Houdini.School, Part 2). Covers: Move Along Spline (attach/animate stages, arc length mode, maintain offset, vexpressions); Move Along Mesh (Orient Mesh up vector, simulation, blend orient, relax); VEX snippets in modifier nodes; MOPs Neighbors (plexus connections); MOPs Delay (time-offset any attribute by falloff); MOPs Spring (Hooke's law; mass/spring-K/damping); packed...
 - **File:** tutorials/mops-motion-operators-for-houdini-part-2.md
 
 
@@ -497,9 +497,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=g9eSle9IVjU
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "mops", "motion-graphics", "packed-primitives", "animation", "falloffs", "instancing", "procedural-animation", "beginners"
-- **Summary:** Henry Foster (Toadtorm, developer of MOPs) delivers a 165-minute live session as MOPs 101 — the first comprehensive introduction to the toolkit. Starting with a conceptual PowerPoint on what MOPs is and how it works, he then walks through installation and dives into the core nodes: generators for distributing instances, modifiers for transforming them (translate, rotate, scale), and falloffs...
+- **Houdini Version:** any (H18.5+, MOPs 1.7.1)
+- **Tags:** mops, motion-graphics, instancing, packed-primitives, intrinsics, transform, falloff, spread, noise, animation, intermediate
+- **Summary:** 165m31s live class (Houdini.School, Henry/ToadStorm). Part 1 of a 3-part MOPs series. Covers: MOPs philosophy + installation, instancing pipeline (template point attrs vs intrinsic transforms), generators (Instancer, Convert, Explode, Trails), modifiers (Transform, Aim, Randomize, Noise), and falloffs (Shape, Noise, Spline, Object, Spread, Transform Falloff). Also covers using MOPs falloffs as...
 - **File:** tutorials/mops-motion-operators-for-houdini-part-1.md
 
 
@@ -507,9 +507,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=0XnjEVcaq6A
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "chops", "motion", "animation", "procedural-animation", "organic", "rendering", "art-direction"
-- **Summary:** Yan Paul Dubbelman, a Dutch digital artist known for calm, nature-inspired motion work, presents an 84-minute live session on using CHOPs to generate smooth, experimental motion. His focus is on achieving a specific artistic feeling — very calm and organic — rather than technically driven effects. The session demonstrates how CHOPs can process and shape motion data to create the kind of fluid,...
+- **Houdini Version:** Houdini (any modern)
+- **Tags:** chops, animation, procedural, secondary-motion, jiggle, spring, filter, kinefx, vellum, mops, intermediate
+- **Summary:** Houdini.School workshop by Jampal Duman (84 min): using CHOPs for organic, no-keyframe procedural animation. Philosophy: no keyframes — build filter systems instead. Setup: split viewport into 3 panes (main + CHOP network editor + Motion Effects Viewer). Core pipeline: (1) Animated SOP → (2) CHOP Network (Geometry node reads SOP, filter chain, CHOP Out) → (3) Channel node (reads CHOP, applies...
 - **File:** tutorials/experimental-motion---chops.md
 
 
@@ -519,7 +519,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** Houdini.School
 - **Houdini Version:** Not specified
 - **Tags:** "sop", "vop", "particles", "procedural", "advanced"
-- **Summary:** Yan Paul Dubbelman's 89-minute SOP Solver workshop covering two generative systems: (1) coral-like growth via a `life` attribute driving Soft Peak (push along normals) inside a per-frame Remesh loop, with normal-biased velocity, Curl Noise, Labs Sharpen Mesh, and `fit($F,...)` tapering for art-directed organic/crystalline shapes; (2) a 3D vein/"synapse" network built with Find Shortest Path + Tetrahedron Embed + Fuse + Resample, then animated via Point Cloud Open/Filter spreading a decaying `life` attribute for pulsing neuron-firing visuals, drivable into a Sweep's radius or shader color.
+- **Summary:** A long-form artistic workshop (Yan Paul Dubbelman / Houdini.School) on using the SOP Solver philosophically — guiding a system toward a result rather than authoring every step. **System 1 (coral growth):** starting from a sphere, create a `life` float attribute (Attribute Adjust Float) driven by a Noise pattern, feed it into a Soft Peak node's Distance input (pushes points outward along their...
 - **File:** tutorials/experimental-motion---the-sop-solver.md
 
 
@@ -527,18 +527,18 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=xjf_mQKI3R8
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "procedural", "nature", "plants", "flowers", "organic", "modeling", "art-direction", "instancing", "no-simulation"
-- **Summary:** Yan Paul Dubbelman presents a 74-minute accessible introduction to building procedural botanical elements (flowers, plants, natural forms) in Houdini. The session is explicitly designed to break down the intimidating "Houdini wall" — the misconception that Houdini requires simulations and heavy coding for natural work. No simulations are used at all; everything is SOP-level procedural geometry...
+- **Houdini Version:** H19+
+- **Tags:** procedural-nature, plants, trees, animation, growth, curl, labs-tree-tools, mops, guide-deform, rig-wrangle, orient-along-curve, sweep, beginner-intermediate
+- **Summary:** 73m59s Houdini.School live session by Yan Paul Dubbelman (intro to procedural nature series). Builds an animated growing/unfurling plant from scratch using only Labs Tree tools + one VEX line. Pipeline: Labs Tree Trunk Generator + Labs Tree Branch Generator (2–3 levels) for skeleton; Resample for even point spacing; Orient Along Curve (3×3 transform output renamed to "orient"); Rig Attribute...
 - **File:** tutorials/yan-paul-dubbelman-procedural-nature-procedural-living-plants.md
 
 ### Procedural HDAs for Unreal
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rKcH4oIfoVw
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "hda", "unreal-engine", "procedural", "splines", "building-generator", "houdini-engine", "session-sync", "materials", "pipeline"
-- **Summary:** Julian (Technical Artist at Cloud Imperium Games, creator of tools for Star Citizen) teaches a step-by-step course on building a production-ready procedural building generator HDA. The workflow uses interactive splines/curves as the building footprint input, procedurally models the structure, adds an automated cable system, and exposes a user-friendly parameter interface. The HDA is then...
+- **Houdini Version:** H19+
+- **Tags:** procedural-nature, plants, trees, animation, growth, curl, labs-tree-tools, mops, guide-deform, rig-wrangle, orient-along-curve, sweep, beginner-intermediate
+- **Summary:** 73m59s Houdini.School live session by Yan Paul Dubbelman (intro to procedural nature series). Builds an animated growing/unfurling plant from scratch using only Labs Tree tools + one VEX line. Pipeline: Labs Tree Trunk Generator + Labs Tree Branch Generator (2–3 levels) for skeleton; Resample for even point spacing; Orient Along Curve (3×3 transform output renamed to "orient"); Rig Attribute...
 - **File:** tutorials/procedural-hdas-for-unreal.md
 
 
@@ -546,9 +546,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=EuL8598tnm4
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "velocity", "vdb", "volumes", "vex", "optical-flow", "surface-advection", "turbulence", "simulation", "math", "advanced"
-- **Summary:** David Torno (also teaches Attributes, Loops, Noise) presents the advanced sequel to his Forces course. Velocity Forces 2.0 dives deep into the nuances of Houdini volume types (standard vs. OpenVDB) and their impact on velocity field behavior. Techniques covered include eliminating activation stepping artifacts, blending multiple velocity fields, using simulation outputs as velocity sources,...
+- **Houdini Version:** H19+
+- **Tags:** velocity, volumes, vex, openvdb, simulation, fluid, smoke, optical-flow, vorticals, matrices, quaternions, intermediate-advanced
+- **Summary:** 1m24s course trailer for "Velocity Forces 2.0: Advanced" by David Torno at Houdini.School. Sequel to Velocity Forces 1. Covers: nuances between standard Houdini volumes and OpenVDB, techniques to eliminate velocity field activation stepping, blending/mixing multiple velocity fields, using simulation outputs as velocity sources for organic movement, creating vorticals (weighted turbulence...
 - **File:** tutorials/velocity-forces-20-advanced.md
 
 
@@ -586,9 +586,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=VM3m52SHUrk
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "attributes", "geometry", "vex", "rbd", "flip", "vellum", "crowds", "fundamentals", "beginner"
-- **Summary:** David Torno (Houdini.School instructor) presents a comprehensive course on Houdini attributes, structured as step-by-step sessions covering geometry component foundations through advanced attribute workflows. The course clarifies terminology, explains attribute classes and types, details the geometry spreadsheet, and covers intrinsics. Practical implementation examples are drawn from RBD,...
+- **Houdini Version:** Not specified
+- **Tags:** "attributes", "beginner", "intermediate"
+- **Summary:** Introduces a 3-session paid course on Houdini attributes: Session 1 covers core geometry components, attribute classes/types, the geometry spreadsheet, and intrinsics. Session 2 covers the many ways to create/read attributes, attributes vs. variables (global vs. local, `$` vs. `@` syntax history), and touches VOPs/VEX/HScript/Python alongside native SOP attribute nodes for non-coders. Session...
 - **File:** tutorials/attributes.md
 
 
@@ -646,9 +646,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=j5XxDiG25wQ
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "kinefx", "labs", "tree", "growth", "vex", "chops", "procedural", "wind", "rigging", "vegetation", "animation"
-- **Summary:** Mark Fancher presents an intermediate-to-advanced Houdini.School course on procedural vegetation using the free, built-in SideFX Labs Tree Tools as the starting geometry, then extending into KineFX rigging and animation. The course covers rigging the tree with KineFX, building a procedural growth sequence and a wind animation system using VEX and CHOPs, and goes deep into modifying the Labs...
+- **Houdini Version:** H19+
+- **Tags:** kinefx, labs, tree-tools, procedural, growth, vex, chops, rigging, animation, vegetation, intermediate-advanced
+- **Summary:** 1m22s promotional trailer. Course covers: (1) SideFX Labs Tree Tools (free, built into Houdini) for procedural vegetation generation; (2) KineFX rigging of the generated tree; (3) VEX + CHOPs procedural growth and wind animation; (4) advanced module: modding Labs tree tool internals for more flexibility. Instructor: Mark Fancher. Intermediate–Advanced level; requires prior VEX and general...
 - **File:** tutorials/procedural-growth-with-kinefx-and-the-labs-tree-tools.md
 
 
@@ -656,9 +656,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=g-EDNX2uaXo
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "scientific-visualization", "volumes", "particles", "pyro", "planets", "fractals", "procedural", "vfx", "simulation"
-- **Summary:** Kate Zegarace (VFX artist at MPC Toronto, credits: Umbrella Academy, The Boys, Raised by Wolves, The Witcher) teaches a course bridging scientific knowledge with VFX practice in Houdini. Each session introduces the science of a phenomenon before building the corresponding VFX setup. Sessions cover: storm cloud formation and volumetric simulation, procedural planetary systems informed by...
+- **Houdini Version:** H19+
+- **Tags:** volumes, procedural, simulation, clouds, ocean, planetary, fractals, fluid, vfx, intermediate-advanced
+- **Summary:** 1m57s promotional trailer. Instructor Kate Sagarar (VFX artist, NPC Toronto; credits: Umbrella Academy, The Boys, Raised by Wolves, The Witcher) teaches how science informs and improves VFX builds. Each session covers the real science then applies it in Houdini. Topics: cloud types and storm systems (volumetric simulation), procedural planetary system based on astronomy, fractal/procedural...
 - **File:** tutorials/scientific-phenomena-in-houdini.md
 
 
@@ -676,8 +676,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=YKnqahKFNuY
 - **Author:** Houdini.School
 - **Houdini Version:** unspecified
-- **Tags:** "sop", "liquid", "procedural-animation", "vex", "vop", "noise", "curves", "non-simulation", "motion-graphics"
-- **Summary:** This Houdini.School course presents a solver-free approach to liquid effects, emphasizing art direction and procedural control over physical accuracy. The course teaches artists to think about the mechanics of liquid motion and decompose that understanding into geometry-only setups using noises, curves, VOPs, and VEX. By eliminating FLIP, volume advection, and Vellum entirely, the workflow is...
+- **Tags:** "scientific-visualization", "data-visualization", "pdb", "molecular", "attributes", "particles", "simulation", "biology"
+- **Summary:** Kate Zegarace (Houdini.School instructor and VFX artist) presents a course on molecular visualization using Protein Data Bank (PDB) data as the input. The course covers the biology basics of proteins (what they are, how they work) then builds the Houdini pipeline to process PDB files and generate multiple visualization modes: space-filling, wireframe, ball-and-stick models. Atoms are animated...
 - **File:** tutorials/liquid-sops.md
 
 
@@ -695,9 +695,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=RDiA2R47Wzo
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "unreal-engine", "virtual-production", "hda", "megascans", "rendering", "aces", "substance-painter", "procedural", "pipeline"
-- **Summary:** Guido Poncini presents a comprehensive course on integrating Houdini with Unreal Engine for virtual production and installation sequences. The course uses the Maxi Museum in Rome as the location reference, covering procedural modeling and UV mapping in Houdini, import into Unreal, scene organization with sequences and subsequences, Megascans material application, HDRI-based lighting, and ACES...
+- **Houdini Version:** Houdini (any modern)
+- **Tags:** unreal-engine, vat, niagara, kinefx, vellum, rbd, pyro, pipeline, intermediate-advanced
+- **Summary:** Short promotional overview (4m25s) for a Houdini.School 3-session course on using Houdini FX inside Unreal Engine. Session 1: modeling techniques + procedural UV mapping → import to Unreal → project/folder organization → MN sequence + subsequences → Megascans materials → HDRI interior lighting → ACES color space render → EXR export for DaVinci → procedural robot from shark model (Substance...
 - **File:** tutorials/houdini-fx-in-unreal.md
 
 
@@ -745,9 +745,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=FKHhGJFvjys
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** "noise", "vop", "vex", "attributes", "volumes", "particles", "shaders", "pdg", "python", "procedural"
-- **Summary:** This Houdini.School course (David Torno) goes beyond basic noise applications to teach artists how to make noise-driven setups that are not immediately recognizable. The course covers all of Houdini's stock noise types and how to manipulate them to produce more visually interesting results. Use cases include driving attribute values, creating shaders and materials, adding detail to volumes,...
+- **Houdini Version:** H19+
+- **Tags:** noise, vex, vops, pdg, topnet, python, shaders, volumes, particles, motion-graphics, beginner-intermediate
+- **Summary:** 1m31s promotional trailer for the Houdini.School "Noise" full course. No technical content taught in this clip. Course promises: (1) survey of all stock Houdini noise types and simple manipulations to produce more interesting visuals; (2) practical use cases — driving attributes, creating maps/shaders, adding volume detail, defining particle emission; (3) PDG TOPnet workflow for...
 - **File:** tutorials/noise.md
 
 
@@ -777,7 +777,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** The VFX School Archive
 - **Houdini Version:** Not specified
 - **Tags:** "sop", "vop", "particles", "simulation", "pyro", "beginner"
-- **Summary:** Syllabus/overview (not hands-on) for a 5-week Thor's Hammer lightning-strike VFX course: Week 1 modeling/shading/interface basics; Week 2 CHOPs animation + ray/lightning VOPs setup; Week 3 points/particles/collisions + spark system; Week 4 volumes/Pyro solver smoke pass; Week 5 materials/render passes/COPs compositing.
+- **Summary:** Outlines a 5-week project-based course: Week 1 — Houdini interface/versions/hardware, procedural workflow basics, modeling a Thor's Hammer asset with shaders and a first render. Week 2 — animating the hammer via CHOPs, building the main "ray"/lightning-strike setup with ray ramifications and extra rays, VOPs for geometry modification and attribute ramps. Week 3 — points, particles, and...
 - **File:** tutorials/00-weeks-overview-v1-1080p.md
 
 
@@ -787,7 +787,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** The VFX School Archive
 - **Houdini Version:** Not specified
 - **Tags:** "beginner"
-- **Summary:** Licensing/edition overview (not version-specific): Houdini Core has the full toolset minus simulation (no Pyro/fluids/RBD/particles/crowds); FX is the complete unlimited commercial package; Indie is FX features under a limited commercial license capped at 4K×4K render output; Education is FX features for verified teaching institutions; Apprentice is free with full FX features for learning, watermarked and resolution-capped. Apprentice is sufficient for following a learning course.
+- **Summary:** Explains SideFX's Houdini license tiers: Core (full toolset minus FX — no Pyro/fluids/RBD/particles/crowds, still capable for modeling/lighting/general work), FX (complete unlimited package), Indie (FX feature set, limited commercial license, render cap 4K×4K), Education (FX features for verified teaching institutions), and Apprentice (free, full FX features for learning, with watermarked...
 - **File:** tutorials/03-houdini-versions-v1-1080p.md
 
 
@@ -797,7 +797,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** The VFX School Archive
 - **Houdini Version:** Not specified
 - **Tags:** "sop", "vex", "wrangler", "particles", "simulation", "beginner"
-- **Summary:** Manually builds a position-integration solver to demystify what POP/particle solvers do: scatters points on a grid, gives them a constant velocity attribute, and wires a Point Wrangle (`@P = @P + @v;`) inside a SOP Solver so each frame feeds back the previous frame's result. Catches and fixes the classic per-frame-vs-per-second bug by multiplying velocity by Houdini's `$TimeInc` global variable.
+- **Summary:** Before touching POPs, builds the same per-frame position update manually to demystify what a solver actually does. Scatters 100 points on a grid, gives them a constant velocity attribute `v` (vector, meters/second — Houdini's native unit), and writes a Point Wrangle (`@P = @P + @v;`) that nudges position once. Demonstrates that running this wrangle once doesn't animate anything over time — it...
 - **File:** tutorials/51-introducing-the-sop-solver-v1-1080p.md
 
 
@@ -807,7 +807,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** The VFX School Archive
 - **Houdini Version:** Not specified
 - **Tags:** "sop", "vex", "wrangler", "particles", "simulation", "beginner"
-- **Summary:** Extends the manual SOP Solver setup into a hand-rolled particle system: Scatter's Global Seed set to `$F` for continuous emission, an `age` attribute incremented via `@age += $TimeInc` each frame, lifespan-based death via `removepoint()` when age exceeds a `life` attribute, and per-particle randomized velocity via `rand(@ptnum + @Frame)` + `fit01()`. Sets up a later comparison against native POPs.
+- **Summary:** Direct continuation of "introducing the sop solver." First, makes the Scatter node re-randomize every frame by setting its Global Seed to `$F` (frame number), then merges the solver's own previous-frame output with freshly-scattered Input 1 particles each frame, producing continuous particle emission rather than one static batch. Adds an `age` float attribute (starts at 0) and increments it...
 - **File:** tutorials/52-creating-a-simplified-particle-system-v1-1080p.md
 
 
@@ -817,7 +817,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** The VFX School Archive
 - **Houdini Version:** Not specified
 - **Tags:** "sop", "vop", "particles", "simulation", "beginner"
-- **Summary:** Rebuilds the prior two lessons' hand-rolled SOP Solver particle system using a native POP Network instead: a POP Source on the Birth tab replaces the manual scatter/emission rate (matched to 2400 particles/sec = 100/frame at 24fps), Set Initial Velocity + Variance replaces the hand-coded velocity randomization, and Life Expectancy replaces the manual age/life wrangle — same visual result, far more attributes tracked automatically (id, age, life, position-previous, UV, etc.) than the manual version.
+- **Summary:** Shows that a POP Network needs no manual Scatter step — the source surface can feed directly into the network's first input, and the POP Solver/POP Object/operator structure handles emission, integration, and storage automatically. Converts the earlier hand-built rates and values into POP Network terms: a **POP Source** node (Source: surface, Emission Type: Scattered onto surfaces) on the...
 - **File:** tutorials/53-recreating-our-solver-with-pops-v1-1080p.md
 
 
@@ -827,7 +827,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** The VFX School Archive
 - **Houdini Version:** Not specified
 - **Tags:** "dop", "sop", "pyro", "smoke", "simulation", "intermediate"
-- **Summary:** Builds a rotating, noise-distorted Torus as Pyro emitter geometry: Trail SOP (Compute Velocity) derives a true velocity field from the torus's rotation + Mountain-noise shape change, transferred via Attribute Transfer onto points generated by a Pyro Source's Volume Scatter. Attribute Noise adds animated density/temperature variation, rasterized into source volumes via Volume Rasterize Attributes for the next lesson's actual Pyro DOP sim.
+- **Summary:** Continuation lesson (follows a prior sine-function/sphere demo) applying the same animation principles to a new emitter shape. Builds a Torus (aligned to Z, tuned radius/thickness ~0.6/0.025), increases its row/column resolution, applies a Transform (kept separate, for non-uniform scaling) and a Subdivide for smoother geometry, lifts it off the ground, and animates rotation around Z via `time...
 - **File:** tutorials/76-starting-the-smoke-vortex-v1-1080p.md
 
 
@@ -837,7 +837,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** The VFX School Archive
 - **Houdini Version:** Not specified
 - **Tags:** "dop", "pyro", "smoke", "simulation", "advanced"
-- **Summary:** Builds the Pyro DOP network (Pyro Solver, Smoke Object, Volume Source) around the prior lesson's torus source, sizing the container via a temporary Static Object proxy. Redirects Buoyancy Direction away from "up" to drive the vortex sideways instead. Main teaching point: the Dissipation micro-solver's Control Field (remaps dissipation by Temperature over a Control Range) appears to do nothing at the default 0-1 range because the source's density/temperature values run up to ~2 and are re-added every step by Volume Source — raising the Control Range max to ~4 makes dissipation visibly take effect.
+- **Summary:** Sets up the minimum required Pyro sim network: Pyro Solver, Smoke Object, and a Volume Source referencing the torus source built previously. To size the Smoke Object's simulation bounds correctly relative to the source torus, creates a throwaway Static Object referencing the torus (via Object Transform + copied sub-path), merges it temporarily into the view for visual sizing reference only,...
 - **File:** tutorials/78-building-the-vortex-dop-network-v1-1080p.md
 
 
@@ -845,9 +845,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Mq1snWFUBj0
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** sop, lop, solaris, karma, rendering, beginner
-- **Summary:** Sets up the default "build" desktop layout and drops a sphere to introduce the basic SOP geometry workflow. Week 1's project is procedural modelling of a scattering-based scene, followed by lighting/materials in Solaris (the new USD-based context), rendering with Karma (the new render engine), and a light comp pass in Nuke. Establishes the course pipeline: SOP geometry -> Solaris LOP -> Karma...
+- **Houdini Version:** H18.5
+- **Tags:** beginner, ui, navigation, project-setup, contexts, solaris, karma, beginner
+- **Summary:** 9m34s intro lesson from The VFX School Renaissance Programme Vol.1 (H18.5). Covers the absolute basics: viewport navigation controls (Alt+LMB tumble, MMB pan, RMB zoom), the context hierarchy (OBJ, SOP, Chops, Stage/LOP), switching contexts, parameter window usage (floating vs corner P key), dropping geometry nodes, and setting up a project folder + saving the hip file.
 - **File:** tutorials/module-i-week-01-01-your-first-houdini-project-v1-1080p.md
 
 
@@ -855,9 +855,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Mjw4gT36Ub4
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** sop, instancing, attributes, procedural, intermediate
-- **Summary:** This week's focus is scattering objects over a surface — specifically distributing elements over a head mesh. Two sub-projects are introduced: building the scattered geometry entirely inside Houdini, and using Megascans models as instanced scatter elements through a Quixel Bridge workflow. New H18.5 scatter-related nodes and improved Copy to Points workflows are introduced. The head surface is...
+- **Houdini Version:** H18.5
+- **Tags:** scatter, project-setup, beginner, course-intro
+- **Summary:** 1m53s intro for Module I Week 2 of The VFX School Renaissance course. Describes two projects: (1) scatter geometry built in Houdini over a surface using new nodes/workflows, (2) scatter Megascans models over a head. Setup steps: create new project "week2_scatters", save with version number using `$JOB`.
 - **File:** tutorials/module-i-week-02-01-creating-a-new-project-v1-1080p.md
 
 
@@ -865,9 +865,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=hEcmhhNlpzY
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** sop, vop, volumes, intermediate
-- **Summary:** Explains the fog VDB vs. SDF (signed distance field) distinction: fog is a density field (0 outside, positive inside), while an SDF is a distance field (negative inside, positive outside, zero exactly at the surface). Builds a cloud volume from a polygon mesh via the chain: mesh -> VDB from Polygons (SDF) -> VDB Reshape (dilate to add volume) -> cloud noise via Volume VOP. The Volume VOP...
+- **Houdini Version:** H18.5
+- **Tags:** volumes, vdb, sdf, fog-volume, velocity-field, vdb-reshape, beginner-intermediate
+- **Summary:** 15m11s intro lesson (VFX School Week 3, module-i) introducing volume concepts before cloud simulation. Covers native Houdini volumes vs VDB (efficiency = VDB only stores non-empty voxels); fog VDB vs surface/SDF VDB; storing velocity as a vector inside a volume (for simulation); multiple visualization methods (Volume Slice, Volume Trail, point generation from volume, VDB Viz Tree); boolean...
 - **File:** tutorials/module-i-week-03-01-introduction-to-volumes-v1-1080p.md
 
 
@@ -875,9 +875,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=9S5YABmK_eU
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** dop, sop, particles, simulation, beginner
-- **Summary:** Clarifies that in SOPs these entities are called "points," while inside a DOP simulation the same entities are called "particles" — both inspected via the Geometry Spreadsheet. Sets up a POP Network sourcing from a medium-resolution pig-head test geometry, using POP Source (surface emission), POP Gravity, POP Drag and POP Color. Demonstrates key particle attributes: `@age`, `@life`, `@dead`...
+- **Houdini Version:** H18.5
+- **Tags:** particles, pop, pop-solver, dop, sourcing, impulse, constant, gravity, beginner
+- **Summary:** 13m34s intro lesson (VFX School Module I, Week 4) on particles in Houdini. Uses pig head test geometry. Explains the OBJ↔DOP context bridge (points → particles inside DOP → points on exit), autodop network auto-generated by shelf tools, and each DOP node's role. Covers sourcing modes, activation types (impulse = per frame/substep, constant = per second), ID attribute, life expectancy,...
 - **File:** tutorials/module-i-week-04-01-introduction-to-particles-v1-1080p.md
 
 
@@ -885,9 +885,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Fo3HaNq9f8M
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** sop, flip, dop, intermediate
-- **Summary:** Workflow: File -> New Project, drag the .abc into the project geo folder, create a geometry node, add an Alembic SOP and browse to the file. A critical step is adding a Convert SOP after Alembic to convert from PolySoup to regular polygons — necessary for correct geometry selection and attribute access later. The animation is slowed using a Time Shift SOP: integer frames are disabled and time...
+- **Houdini Version:** H18.5
+- **Tags:** alembic, import, time-shift, flip-fluids, pop-fluid, beginner
+- **Summary:** 2m42s setup lesson (VFX School Module I Week 5: horse POP fluid). Creates new project, imports Alembic horse animation, drops Convert SOP to get access to polygons, then uses Time Shift with `$FF` (float frame variable) and multiplier 0.3 to slow animation to 30% speed — critical for proper fluid sourcing with substeps.
 - **File:** tutorials/module-i-week-05-01-importing-the-geometry-v1-1080p.md
 
 
@@ -895,9 +895,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=XPDsqVutqDw
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** dop, sop, vellum, simulation, intermediate
-- **Summary:** FBX import workflow: File -> Import Filmbox FBX, then scale down to 0.1 for proper scene scale (~2m character height). Creates a geometry node, uses Object Merge to bring in the zombie, then converts it via VDB From Polygons -> Points From Volume to scatter grain particles throughout the body volume. The grain setup uses the Vellum Grains shelf tool to create the PBD grain solver. Key grain...
+- **Houdini Version:** H18.5
+- **Tags:** grains, vellum, vellum-configure-grain, points-from-volume, substeps, attraction, beginner-intermediate
+- **Summary:** 9m56s intro lesson (VFX School Module I Week 6: zombie grains). Imports FBX zombie, creates grain setup from volume. Covers: Vellum Configure Grain (create points from volume, pscale/grain_size attributes, `grain` attribute for solver identification), Poly Fill for non-watertight geometry, Vellum Solver (no constraints required for basic grains), grain vs particle difference (interpenetration...
 - **File:** tutorials/module-i-week-06-01-introduction-to-grains-v1-1080p.md
 
 
@@ -905,9 +905,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=vQSQgkSvm8g
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** dop, sop, rbd, attributes, intermediate
-- **Summary:** Starts bare-bones: a single box, raised and rotated, then Tab -> "RBD Bullet Solver" auto-creates two nodes (RBD Configure + DOP Import) and an immediate working simulation. Escalates to Voronoi fracture: a Voronoi Fracture SOP with a point cloud controlling chunk size, then a Boolean fracture pass for sharper edges, followed by the RBD Bullet Solver on the fractured geometry. Introduces...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, bullet, packed-geometry, dop, rigid-body-solver, beginner
+- **Summary:** 7m21s intro to RBD bullet simulation (VFX School Module II Week 1). Demonstrates the same falling box sim two ways: quick SOP-level RBD Bullet Solver (H18.5 wrapper node, 2 nodes total) vs. manual DOP network approach. Explains why packed geometry is required (bullet works only with packed prims), how Pack SOP changes geometry representation (intrinsic packed transform attributes), and the...
 - **File:** tutorials/module-ii-week-01-01-basic-bullet-sim-v1-1080p.md
 
 
@@ -915,9 +915,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=tC3H8wBaytE
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** dop, sop, rbd, intermediate
-- **Summary:** Imports a compressed Alembic asset with multiple LODs; extracts it and selects LOD2 as the balance between polygon detail and simulation speed. Creates a geometry node named "building," adds an Alembic SOP, and scales the import to 0.01 since the building was modelled at real-world scale in meters and needs shrinking for the Houdini scene. The week's concept is a reverse-gravity /...
+- **Houdini Version:** H18.5
+- **Tags:** import, alembic, lod, path-attribute, exploded-view, rbd, beginner
+- **Summary:** 4m48s lesson (Module II Week 2, lesson 1). Imports a Brooklyn building Alembic with multiple LODs. LOD 2 chosen: separate tiles, windows, wooden panels (all distinct pieces). LOD 1 is fused and unworkable for fracture. Workflow: Geometry node → Alembic SOP → scale to 0.01 → Unpack → inspect path attribute for material IDs → 3D connectivity display (key 9) to confirm piece separation → Exploded...
 - **File:** tutorials/module-ii-week-02-01-importing-the-geometry-v1-1080p.md
 
 
@@ -925,9 +925,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=cvAuweF1fvg
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** dop, sop, rbd, attributes, intermediate, advanced
-- **Summary:** Continues from the Week 2 building Alembic, resaving the project under a new name. A key setup step is the Connectivity SOP set to "primitives" mode to identify separate geometry pieces, followed by a Convert SOP to move from PolySoup to standard polygons. Geometry is split by material groups so different pieces receive different fracture treatment: the RBD Material Fracture SOP (an H18.5+...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, fracture, path-attribute, split-sop, material-separation, building, area-attribute, intermediate
+- **Summary:** 5m31s lesson. Splits a Brooklyn building Alembic into material-based geometry streams for selective fracturing. Workflow: Connectivity SOP (set to primitives) → Convert (polysoups to polygons) → Split SOP chain using path attribute wildcards. Groups created: glass (windows), bits (small area pieces < 0.5), wood, fiberglass. Each split feeds its own fracture operation for variety. Uses exploded...
 - **File:** tutorials/module-ii-week-03-01-splitting-by-material-v1-1080p.md
 
 
@@ -935,9 +935,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=uPPW2sI_oyw
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** dop, sop, rbd, attributes, intermediate
-- **Summary:** Uses a different skyscraper Alembic asset with multiple LODs available, selecting LOD3 for simulation. The import workflow mirrors Week 2: Alembic SOP -> Transform at 0.01 scale -> visual check. The week's concept is a realistic downward collapse where the building folds and pancakes floor by floor, with separate simulation of concrete slabs, steel rebar/frame, and glass panes. Sets up the...
+- **Houdini Version:** H18.5
+- **Tags:** import, alembic, rbd, skyscraper, polysoup, performance, beginner
+- **Summary:** 3m21s lesson (Module II Week 4, lesson 1). New project "collapse v1" — skyscraper RBD collapse. Imports packed Alembic skyscraper LOD 3, scales to 0.1. Poly soup converts to 3.6M polygon points (heavy) — use wireframe display. Simulation strategy: 3 separate sims to manage complexity, inactive geometry at bottom, omit fine detail geo.
 - **File:** tutorials/module-ii-week-04-01-importing-the-geometry-v1-1080p.md
 
 
@@ -945,9 +945,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ZYFlDsFBxhA
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, sop, rbd, pyro, advanced
-- **Summary:** Covers a city ground explosion with rock/rubble/paving erupting upward. The RBD focus is a Boolean fracture system for high-quality, varied chunk shapes — big and small pieces with interesting silhouettes, rather than uniform Voronoi output. Constraints are set up minimally, mainly to hold the initial state rather than to drive complex breaking behaviour. A debris-sourcing pipeline uses the...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, destruction, fracture, debris, pyro, course-intro, beginner
+- **Summary:** 1m38s intro video for Week 1, Module 1 of The VFX School Renaissance Course. Describes the project pipeline: boolean-based fracture for interesting shapes, RBD simulation, debris secondary simulation sourced from the RBD velocity and object size, and a tertiary pyro simulation sourced from crack edges. No technical instruction — context only.
 - **File:** tutorials/module-i-week-01-01-intro-v1-1080p.md
 
 
@@ -955,9 +955,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=G1JI3ACUZN4
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, sop, rbd, attributes, advanced
-- **Summary:** Covers a bus stop with mixed-material destruction: a steel frame (metal), glass panels and wood planks. The new technique highlighted is the RBD Material Fracture SOP for both glass and wood fracture patterns. The key technique for metal is "plasticity" (new around H18) applied to soft constraints — metal holds its bent/deformed shape after impact instead of springing back, with constraints...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, destruction, glass, metal, wood, plasticity, course-intro, beginner
+- **Summary:** 1m41s intro for Module I Week 2. Bus stop destruction project: metal frame, glass panels, and wood benches all destroyed together. Key new tools introduced: RBD Material Fracture node for glass and wood fracture, plasticity (H18) for soft metal constraints that bend/creak/pop instead of springing back. Two simulations: first the heavy metal, then glass and wood driven by the metal result.
 - **File:** tutorials/module-i-week-02-01-intro-v1-1080p.md
 
 
@@ -965,9 +965,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=QkzF0SC76qY
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, sop, rbd, attributes, animation, advanced
-- **Summary:** Overview of Week 3 (weeks 3 and 4 form one large project): the car slides in sideways and impacts a post, with metal bending and glass shattering across the two weeks. Week 3's focus is geometry organization — the car model is complex with many named parts, a detailed chassis, wheels and windows — and selecting the right pieces for simulation versus keeping others rigid or kinematic is...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, destruction, car-crash, metal, glass, constraints, course-intro, intermediate
+- **Summary:** 1m37s intro for Module I Week 3. Two-week car crash project: animated car slides sideways and slams into a post. Week 3 = metal setup (geometry organization, selecting pieces for plasticity bending, efficiency optimization, wheel constraints). Week 4 = rest of simulation (glass, other elements). Wheels use control constraints + soft constraints for suspension bounce and free spin around axis.
 - **File:** tutorials/module-i-week-03-01-intro-v1-1080p.md
 
 
@@ -975,9 +975,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=w9p4zfurT2A
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, sop, rbd, rendering, karma, advanced
-- **Summary:** Two types of car glass require different fracture treatment. The windscreen uses laminated glass (with a PVB plastic inner layer): it fractures into thousands of small blocks that stay together and bend slightly like plastic rather than scattering as shards, achieved with dense fine Voronoi fracture, soft glue constraints and slight plasticity. Side windows use tempered glass: it shatters into...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, glass, fracture, car-crash, constraints, laminated-glass, course-intro, intermediate
+- **Summary:** 1m53s intro for Week 4 (final week of Module I RBD course). Builds on Week 3 metal simulation. Covers: laminated glass (windscreen) fracture — first a triangular spider-web pattern then Voronoi fine fracture; tempered glass (side window) — simple fine Voronoi pieces; constraint setup to keep glass pieces stuck to window frame initially; per-frame constraint manipulation in simulation;...
 - **File:** tutorials/module-i-week-04-01-intro-v1-1080p.md
 
 
@@ -985,9 +985,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=VXkmQAGzBbA
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, sop, rbd, attributes, vex, advanced
-- **Summary:** Explains the standard H19+ RBD workflow node chain, where every RBD node has a pink primary input plus constraint and proxy inputs: RBD Configure -> RBD Material Fracture -> RBD Constraint Properties -> RBD Solver. The `active` integer attribute (0 = kinematic/frozen, 1 = simulating) is set per primitive. Two common methods are shown: keyframe-animating `active` inside a SOP Solver within the...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, destruction, active-attribute, rbd-configure, attribute-transfer, speed-limit, intermediate
+- **Summary:** 10m22s lesson (VFX School Module I, Week 1, lesson 9). Covers the full RBD Configure node setup for an explosion simulation: packing geometry, applying concrete material presets, activating the `active` attribute (1=simulates, 0=collides but doesn't move), creating a border ring of inactive pieces by attribute-transferring from edge geometry (delete by normal to isolate sides), and adding...
 - **File:** tutorials/module-i-week-01-09-setting-the-active-attribute-v1-1080p.md
 
 
@@ -995,9 +995,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=XFOd1dy92Eg
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, sop, rbd, procedural, intermediate
-- **Summary:** Adds a Null SOP after the DOP Import cache (named e.g. "OUT_SIM") to cap the simulation stream. A Split SOP (or separate Blast) separates top vs. bottom pieces for independent treatment. A new geometry node named "post_sim" is created, using Object Merge SOPs to pull in: the cached RBD fractured geometry, the original un-fractured metal mesh (pre-fracture geo for deformation), the glass mesh,...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, post-sim, object-merge, destruction, intermediate
+- **Summary:** 2m13s lesson covering the organizational step of post-sim setup. Creates a null after the simulation cache, then a new geometry node "post_sim" with Object Merges of: (1) sim output (fractured animated geometry), (2) pre-fracture metal (for Point Deforming), (3) unbroken glass (for deforming to follow sim), and (4) collider geometry. Sets up the input infrastructure for the deformation steps...
 - **File:** tutorials/module-i-week-02-15-starting-the-post-sim-setup-v1-1080p1.md
 
 
@@ -1005,9 +1005,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=oZh_MAnZyaQ
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, sop, rbd, attributes, advanced
-- **Summary:** Before this node existed, the old method used a for-each loop capturing each piece's transform and deforming the matching hi-res piece individually — complex and slow. The RBD Deform Pieces workflow instead takes the high-res render geometry on input 0 and the fractured/simulated proxy geometry stream on input 1, matching pieces by their shared `name` attribute and applying per-piece rigid...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, post-sim, point-deform, rbd-deform-pieces, destruction, intermediate
+- **Summary:** 5m15s lesson. Introduces the new RBD Deform Pieces node (H18.5+) which dramatically simplifies per-piece mesh bending that previously required a complex For-Each capture/deform loop. Metal pre-fracture is subdivided with Divide (brick polygons, 0.05 size) then fed into RBD Deform Pieces with "match proxy by attribute" enabled (cluster attribute keeps each structural section self-contained)....
 - **File:** tutorials/module-i-week-02-16-point-deforming-the-metal-and-glass-v1-1080p.md
 
 
@@ -1015,9 +1015,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=R-ay-5fX_Os
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, sop, rbd, rendering, advanced
-- **Summary:** After glass fracture and deformation, some faces become disconnected from their pieces — they float in space because they lost their piece-level transform. The RBD Disconnected Faces SOP reconnects orphaned faces back to their nearest named piece. Workflow: after RBD Deform Pieces, add RBD Disconnected Faces with "fix" mode enabled. The post-sim output is then split by name groups: a Blast SOP...
+- **Houdini Version:** H18.5
+- **Tags:** rbd, post-sim, glass, disconnected-faces, blend-shapes, destruction, intermediate
+- **Summary:** 10m44s finishing lesson for the Week 2 bus stop project. Covers: splitting geometry by name attribute into metal/glass/wood streams; RBD Disconnected Faces node (set to "delete connected") for progressive glass crack reveal; blending two frozen simulation frames with Blend Shapes + animation + Switch to fix a jarring wood jitter at break moment; final merge of all components with...
 - **File:** tutorials/module-i-week-02-17-fixing-post-sim-fix-and-rbddisconnectedfaces-node-v1-1080p.md
 
 
@@ -1025,9 +1025,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Y00rlBFqpxQ
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, vellum, cloth, simulation, intermediate
-- **Summary:** Project: a crocodile attack scene where a hunter is grabbed in the crocodile's mouth. Vellum is praised for being fast and versatile, handling cloth, string, hair, soft bodies and grains all in one solver. Week 1 is a rapid overview demonstrating cloth, soft bodies (tetrahedral constraints), string/wires and grains in a single lesson. The full project pipeline simulates the soft-body hunter...
+- **Houdini Version:** H18.5
+- **Tags:** vellum, cloth, soft-body, tetrahedral, grains, rest-blend, course-intro, intermediate
+- **Summary:** 2m46s intro for Module II of the VFX School Renaissance program (Volume 2). Module focus: Vellum simulation — all solver types in one system (cloth, string, hair, tetrahedral soft bodies, grains). Project: crocodile attack sequence. Week 1 sets up: Vellum overview (quick cloth/grain/soft body/string intro), soft body of the human hunter using tetrahedral mesh (H17/18 feature), rest blend for...
 - **File:** tutorials/module-ii-week-01-01-introduction-v1-1080p.md
 
 
@@ -1035,9 +1035,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=161Gcdsi6Nw
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, vellum, cloth, simulation, intermediate, advanced
-- **Summary:** Workflow begins by draping cloth in T-pose: fitting the clothing geometry to the body before the main simulation so clothing sits correctly at frame 0. Geometry preparation includes a Remesh SOP to triangulate cloth (Vellum produces more natural folds on triangles), group creation for constraint regions, and pre-fracturing cloth with cut lines ready for the simulation to tear along. Key Vellum...
+- **Houdini Version:** H18.5
+- **Tags:** vellum, cloth, tearing, stitching, drape, remesh, course-intro, intermediate
+- **Summary:** 1m40s intro for Module II Week 2 of the VFX School Renaissance program. Focus: Vellum cloth simulation for the crocodile attack project. Week covers: draping cloth onto body starting from T-pose (precise fit at sim start), geometry prep (Remesh, groups, constraint setup), cloth tearing (pre-fracturing / pre-cutting), welding and stitching, full drape simulation in Vellum SOP solver, bonus...
 - **File:** tutorials/module-ii-week-02-01-introduction-v1-1080p.md
 
 
@@ -1045,9 +1045,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=F2vdSX1Dzgk
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, vellum, cloth, simulation, advanced
-- **Summary:** Week 3 brings everything together into a single simulation. The key technique is point-deforming the hunter body to follow the crocodile mouth animation: the inner part of the body, inside the croc's mouth, is not simulated — it simply follows the croc mouth's deformation, preventing collision-explosion artifacts when the mouth closes on the body. Only the body parts outside the croc's mouth...
+- **Houdini Version:** H18.5
+- **Tags:** vellum, cloth, soft-body, point-deform, collisions, pin, breaking-welds, course-intro, intermediate
+- **Summary:** 1m41s intro for Module II Week 3. This week brings everything together into a complete simulation: soft body hunter + cloth + crocodile collider. Key problem solved: the part of the body inside the croc's mouth is pinned to the croc's animation (not simulated) to avoid unsolvable collision stacking between two colliders. Also covers: VEX for breaking welds/constraints (cloth tearing), Point...
 - **File:** tutorials/module-ii-week-03-01-introduction-v1-1080p.md
 
 
@@ -1055,9 +1055,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=SlbMugY762Q
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, vellum, particles, rendering, karma, advanced
-- **Summary:** The final Vellum week covers grains simulation and full render. The grain-sourcing efficiency trick uses the previous Vellum simulation (crocodile + hunter) to generate a time-varying source volume: as the croc thrashes and the hunter is squeezed, the contact region emits grains, driven by a SOP Solver or DOP stamp inside the grains network. The grain network is built from scratch in DOPs...
+- **Houdini Version:** H18.5
+- **Tags:** grains, vellum, rbd, bullet, rendering, karma, course-intro, intermediate
+- **Summary:** 1m55s intro for Module II Week 4 (last week of the VFX School Renaissance program Volume 2). Wraps up the crocodile attack project: (1) Grain source geometry built procedurally from previous sim results (croc + hunter geometry) using a Solver SOP to generate evolving emission volumes; (2) Full grain simulation from scratch in DOPs; (3) High-res upres from low-res grain cache; (4) Gun simulated...
 - **File:** tutorials/module-ii-week-04-01-introduction-v1-1080p.md
 
 
@@ -1065,9 +1065,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=LKhBUByCqJw
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, vellum, cloth, particles, intermediate
-- **Summary:** Setup: a new project "croc_attack" with a "vellum_intro" geometry node. Cloth: grid -> Remesh (to triangulate for better folds) -> Vellum Cloth SOP (via shelf or tab), with bend stiffness, stretch stiffness and mass as the key parameters. Pinning is done by grouping the top edge and attaching it to geometry, or using Vellum Attach to Geometry. String/wire: a curve feeds Vellum String SOP, with...
+- **Houdini Version:** H18.5
+- **Tags:** vellum, cloth, soft-body, struts, string, glue, pin, remesh, beginner-intermediate
+- **Summary:** 15m34s hands-on Vellum introduction. Drops a grid, demonstrates Configure Cloth (with Remesh for triangles), Vellum Solver with Torus collider. Shows zero-mass pinning, the mass-from-area gotcha (degenerate triangles after Remesh become zero-mass and freeze), strut soft body constraints (lines bridging geometry to prevent volume collapse), string constraints on a line primitive with partial...
 - **File:** tutorials/module-ii-week-01-02-introduction-to-vellum-v1-1080p.md
 
 
@@ -1075,9 +1075,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pxWRHQjHpNk
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, vellum, rigging, simulation, advanced
-- **Summary:** Positions the hunter at X=5 so he sits correctly inside the crocodile's mouth when it closes. Uses the Vellum shelf tool: select the hunter geometry -> Vellum Solid Object (tetrahedral). The shelf automatically adds Poly Reduce (a proxy mesh for speed), Tet Conform, Vellum Solid Object constraints, and a Vellum Solver. A noted problem is that Poly Reduce defaults are too aggressive,...
+- **Houdini Version:** H18.5
+- **Tags:** vellum, tetrahedral, soft-body, solid-conform, remesh, vellum-source, collisions, intermediate
+- **Summary:** 8m50s lesson (Module II Week 1, lesson 4). Sets up soft body simulation for a human hunter character in a crocodile attack scene. Covers: Poly Reduce + Remesh for cleaner input, Solid Conform to convert hollow polygon mesh into tet volume, Vellum Configure Tet Soft Body for FEM-like volume-preserving soft body, Vellum Source node for external geometry input, and using "Use Deforming Geometry"...
 - **File:** tutorials/module-ii-week-01-04-tetrahedral-soft-bodies-v1-1080p.md
 
 
@@ -1085,9 +1085,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=aUkXMjjLT-k
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, vellum, rigging, attributes, advanced
-- **Summary:** The hunter's arms are raised in a T-pose / gun-holding pose, which looks wrong at rest. The fix is to manually re-pose the arms and blend this new rest position into the Vellum constraints so the solver treats it as the natural rest state. Workflow: group the left and right arms separately using bounding-sphere group mode, apply a Transform SOP per group to lower the arms, then feed this...
+- **Houdini Version:** H18.5
+- **Tags:** vellum, rest-blend, bend-sop, bounding-sphere, group, soft-body, intermediate
+- **Summary:** 12m37s lesson. Problem: soft body hunter holds arms in an unnatural raised gun position (rest pose). Solution: (1) create arm groups via bounding sphere/bounding object selection, (2) use the Bend SOP to reshape each arm to a natural lowered position, (3) feed this new geometry into a Rest Blend node inside the Vellum DOP on frame 1 of the sim (band + stretch constraint groups). The Vellum...
 - **File:** tutorials/module-ii-week-01-06-updating-the-rest-blend-v1-1080p.md
 
 
@@ -1095,9 +1095,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=dfD5FUdMCTc
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 19
-- **Tags:** dop, vellum, attributes, vex, advanced
-- **Summary:** The collar stitch and boot attachment constraints need to break at a specific frame when the crocodile flips the hunter over. Weld breaking is enabled via the "breaking" checkbox on the Vellum Weld node with a break threshold of 1. Because the break threshold cannot be keyframed directly on the Vellum node, a SOP Solver inside the DOP network is required to modify the constraint geometry per...
+- **Houdini Version:** H18.5
+- **Tags:** vellum, cloth, breaking-welds, vellum-constraint-property, wrangle, break-threshold, caching, vellumio, intermediate
+- **Summary:** 11m46s lesson. Final setup before caching the full crocodile attack Vellum sim. Two constraint-breaking techniques: (A) Vellum Constraint Property node inside the DOP — enable "remove" at `$F > 170` to delete the boot attachment constraints and let the boot fly off; (B) Geometry Wrangle on weld streams — animate `break_threshold` using fit() so welds progressively break from frame 140 to 200,...
 - **File:** tutorials/module-ii-week-03-06-breaking-welds-and-constraints-v1-1080p.md
 
 
@@ -1105,9 +1105,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=9ocqYW1XHk4
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** rbd, simulation, dop, procedural, beginner
-- **Summary:** The instructor outlines what week one covers: importing the bridge model, splitting it into simulated vs. static parts, and further categorising those parts into deformable metal, rigid metal and road geometry. The road is fractured with a Boolean (cutting geometry) method while the metal uses Voronoi. Soft constraints with plasticity are configured to give the metal realistic bending...
+- **Houdini Version:** H18+
+- **Tags:** rbd, destruction, fracture, voronoi, boolean, plasticity, constraints, active-animated, bridge, intermediate
+- **Summary:** 1m58s intro for Week 1 of VFX School's "Manhattan Bridge Destruction Project" course. Topics previewed: import bridge model, analyze and split into simulated/static parts (deformable metal + rigid metal + road). Fracture: road = boolean with custom cutting geo; deformable metal = Voronoi fracture. Configure plasticity and soft constraints (for metal bending behavior). Animate bridge...
 - **File:** tutorials/week-01-01-intro-v1-1080p.md
 
 
@@ -1115,9 +1115,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=IoxlDdh5OPg
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** rbd, vellum, simulation, dop, beginner
-- **Summary:** The instructor introduces the cable simulation strategy, distinguishing between the heavy, near-rigid horizontal suspension cables (simulated with Bullet hard constraints driven by the week-one guided sim result) and the more flexible vertical hanger cables (simulated with Vellum). The geometry is simplified to four strands before simulation. The guided simulation workflow in Houdini 18 is...
+- **Houdini Version:** H18+
+- **Tags:** rbd, vellum, cables, constraints, guided-sim, bullet, bridge, destruction, intermediate
+- **Summary:** 2m12s week intro by VFX School Archive. Week 2 of the Manhattan Bridge Destruction project. Covers two cable types: - **Horizontal cables**: Heavy, rigid → Bullet sim. Simplified from intricate geo to 4 proxy strands. Hard constraints. Guided Sim workflow (Houdini feature that guides one sim using animated geometry from Week 1 road sim). - **Vertical cables**: Bendy, active → Vellum sim. Proxy...
 - **File:** tutorials/week-02-01-intro-v1-1080p.md
 
 
@@ -1125,9 +1125,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=OnBsOG4SwIU
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18.5
-- **Tags:** rbd, simulation, dop, instancing, attributes, beginner
-- **Summary:** The instructor explains how to import varied vehicle geometry, separate bodies from wheels, and scatter them across the road using new Houdini 18.5 SOPs (Scatter and Align, Attribute from Pieces). A procedural system removes intersecting cars before a lightweight pre-simulation settles them against each other. The main sim then uses soft constraints and cone-twist constraints to fake vehicle...
+- **Houdini Version:** H18.5+
+- **Tags:** rbd, bullet, cars, scatter, scatter-align, attribute-from-pieces, constraints, suspension, bridge, intermediate
+- **Summary:** 1m22s week intro by VFX School Archive. Week 3 of Manhattan Bridge Destruction: vehicle simulation. Topics previewed: import multiple vehicle variations; group into wheels vs bodies for suspension simulation; Scatter Align SOP (H18.5) to place cars on road pointing in correct direction with variation; Attribute From Pieces SOP (H18.5) for attribute propagation; procedural system for removing...
 - **File:** tutorials/week-03-01-intro-v1-1080p.md
 
 
@@ -1155,9 +1155,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=dIBS14jw25k
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** rbd, simulation, dop, attributes, intermediate
-- **Summary:** The instructor drops in the RBD Configure node, then isolates a single piece using Delete nodes to inspect its collision geometry. The Visualize tab is used to reveal the collision proxy, which is larger than the actual mesh by default due to collision padding. The tutorial covers how to adjust collision padding on the solver vs. per-piece, and how to switch collision shape type (convex hull,...
+- **Houdini Version:** H18+
+- **Tags:** rbd, destruction, active-attribute, collision, fracture, animated-noise, constraints, bridge, intermediate
+- **Summary:** 10m34s VFX School Archive module. Part of Manhattan Bridge Destruction Week 1. Covers RBD Configure SOP setup, collision geometry visualization, and creating an animated `active` attribute that propagates from the center out to the edges over time (simulating progressive destruction). The active boundary is a box with Mountain noise deforming its face positions (flow noise, animated height...
 - **File:** tutorials/week-01-11-rbd-configure-v1-1080p.md
 
 
@@ -1165,9 +1165,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=9qkYzPC9IKM
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** rbd, simulation, dop, attributes, intermediate
-- **Summary:** The instructor gives the cable blocks a `name` attribute so each segment is individually identifiable, then feeds them into RBD Constraints from Rules to generate surface-point-based hard constraints between adjacent pieces. Hard constraints are chosen over soft because the cables are stiff and need no plasticity. The guide simulation is then established by linking the cable RBD network to the...
+- **Houdini Version:** H17.5+
+- **Tags:** rbd, guided-sim, bullet, constraints, cables, hard-constraints, active-attribute, bridge, intermediate
+- **Summary:** 6m47s VFX School Archive module. Part of Manhattan Bridge Destruction Week 2. Sets up horizontal cable simulation with Bullet + Guided Sim workflow. Creates name attributes, hard constraints between cable blocks (no plasticity, stiff behavior), RBD Configure with inactive regions at bridge towers (boxes at ±19 X). ABD Bullet Solver with Guided Simulation tab: imports Week 1 bridge simulation...
 - **File:** tutorials/week-02-03-starting-the-guided-sim-v1-1080p.md
 
 
@@ -1175,9 +1175,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ykTr02tft_k
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** rbd, simulation, dop, attributes, intermediate
-- **Summary:** The instructor resolves a constraint-visibility issue caused by the guided sim removing intra-guide constraints by default, which is toggled off to restore correct cable connections. Guide strength is demonstrated by setting it to zero, causing all pieces to fall immediately and freely, showing how strength controls the blending between guided and free-simulated motion. The angular and linear...
+- **Houdini Version:** H17.5+
+- **Tags:** rbd, guided-sim, bullet, cables, air-resistance, file-cache, strength-attribute, bridge, intermediate
+- **Summary:** 9m3s VFX School Archive module. Continuation of Week 2 horizontal cable sim. Fixes constraint popping by disabling "Remove Intro-Guide Constraint" in the Guided Sim constraints tab. Introduces `weak` group: wrangle sets `f@weak=4` on all proxy points, then `f@weak=0` for points inside the active/falling zone (object-merged from Week 1 active boundary). Feeds `f@weak` into Guided Sim strength...
 - **File:** tutorials/week-02-04-finishing-the-horizontal-cable-sim-v1-1080p.md
 
 
@@ -1185,9 +1185,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=cecNdA8cLTo
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** vellum, simulation, dop, attributes, intermediate
-- **Summary:** The instructor uses Vellum Configure Cloth (treated as a wire/cable) for the vertical cables. The key discovery is setting Rest Length Scale to 0.8 (below 1.0), which makes the constraints shorter than the actual geometry, placing the cables under tension from the first frame of the simulation — physically accurate for bridge suspension cables. Pin points are grouped and wired to the main...
+- **Houdini Version:** H17.5+
+- **Tags:** vellum, cables, cloth, constraints, pin, rest-length, tension, bridge, intermediate
+- **Summary:** 8m7s VFX School Archive module. Sets up Vellum cloth sim for vertical bridge cables. Key parameters: rest length scale=0.8 (shorter than actual → under tension → spring up violently when released); compression stiffness=max; bend stiffness=1M; pin group (top of cables) + match animation; Vellum Attach to Geometry (cables → bridge road, group="attach", breakable at threshold 0.01). Fix for...
 - **File:** tutorials/week-02-07-starting-the-vellum-sim-v1-1080p.md
 
 
@@ -1195,9 +1195,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=9TNDsfFNoq4
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** vellum, simulation, dop, attributes, intermediate
-- **Summary:** With a single test cable working, the Delete/Blast node isolating it is disabled so all cables enter the sim together. The instructor identifies that rear bridge cables should never detach (the rear section of the bridge remains intact), so those attach constraints are flagged as unbreakable using a geometry-based selection combined with a TimeShift to the last frame. A break threshold is then...
+- **Houdini Version:** H17.5+
+- **Tags:** vellum, cables, constraints, breaking, timescale, file-cache, vdb, bridge, intermediate
+- **Summary:** 12m37s VFX School Archive module. Final step of vertical cable Vellum sim. Brings in all cables (disable blast node). Creates "strong" constraint group for cables near non-falling bridge section (conservative VDB selection + Group Promote to primitives). Inside Vellum Solver: two Vellum Constraint Property nodes — one animates break threshold for "attach" group (strengthens then weakens over...
 - **File:** tutorials/week-02-08-setting-the-strong-constraints-and-the-breaking-threshold-v1-1080p.md
 
 
@@ -1205,9 +1205,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=UFrvmv0rwQI
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** particles, pyro, attributes, vex, intermediate
-- **Summary:** The instructor caches the POP sim result to disk and enables load-from-disk for fast flipbook playback. Particles are displayed as pixels or small points for viewport clarity. The core technique reads the `v` (velocity) attribute on each point, computes its length, and uses a threshold to delete slow-moving points so that only high-speed objects contribute to pyro emission sources. This...
+- **Houdini Version:** H18+
+- **Tags:** particles, rain, vex, wrangle, cull, velocity, speed, file-cache, beginner
+- **Summary:** 7m0s VFX School Archive module. Part of Week 4 rain particle sim on the Manhattan Bridge. Loads cached point sim, adjusts viewport display (pixels or small points, size 1.5). Discovers points flying upward from bridge geometry collision artifacts. Fix: Attribute Wrangle after file cache reads velocity length as speed; `removepoint` for points exceeding threshold (ch("speed_cull") ≈ 10-20)....
 - **File:** tutorials/week-04-06-cull-by-speed-v1-1080p.md
 
 
@@ -1245,9 +1245,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=S4VjdIf5BKQ
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** flip, simulation, dop, rendering, intermediate
-- **Summary:** This week introduces an animated FLIP fluid emitter (milk pour) combined with a separately animated strawberry collision object. The instructor highlights the use of viscosity and surface tension as critical parameters that give milk its characteristic behaviour — forming a crown splash with held droplets. The sim is meshed using VDB for a stable, flicker-free mesh, and rendered in Arnold with...
+- **Houdini Version:** H18+
+- **Tags:** flip, fluid, viscosity, surface-tension, meshing, vdb, rendering, arnold, beginner
+- **Summary:** 1m42s week introduction by VFX School Archive. Week 4 of the "Tabletop Course": simulates a strawberry colliding with poured milk. Topics previewed: animated FLIP emitter geometry; viscosity and surface tension (important for milk); VDB meshing for high-quality milk surface; Arnold renderer with complex strawberry shader (subsurface, transparency, noise-driven roughness map, SSS) and milk SSS...
 - **File:** tutorials/w04-01-introduction-v1-1080p.md
 
 
@@ -1265,9 +1265,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=IuvtudgbzLw
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** sop, attributes, vex, animation, intermediate
-- **Summary:** Starting from blueberry geometry with only position, normals and UVs, the instructor adds a velocity attribute using the Trail SOP set to "Compute Velocity" rather than its default trail mode. This `v` attribute is then used to drive positional displacement of the yogurt surface. The instructor also notes this is a standard technique for adding motion blur to animated geometry that lacks...
+- **Houdini Version:** H18+
+- **Tags:** velocity, attribute-transfer, deformation, trail, vex, wrangle, beginner
+- **Summary:** 7m30s VFX School Archive module lesson. Part of a blueberry/yogurt tutorial series. Shows how to derive velocity from animated geometry using the Trail SOP, transfer that velocity to a deformable grid as color (via Attribute Transfer + Vector to Float), then use an Attribute Wrangle to displace grid points along Y proportional to the velocity-derived color. Creates a ch() parameter slider for...
 - **File:** tutorials/w02-05-deforming-with-velocity-v1-1080p.md
 
 
@@ -1275,9 +1275,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=9N9CavpgoB4
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** flip, simulation, dop, attributes, intermediate
-- **Summary:** Starting from a too-watery chocolate fluid, the instructor walks through the exact steps to add viscosity: first enabling it in the FLIP Solver, then navigating to the FLIP Object and setting a viscosity value (e.g. 100) in the Physical tab. The resulting sim shows visibly thicker, slower flow. The instructor previews the future step of importing per-point `viscosity` attribute from outside...
+- **Houdini Version:** H18+
+- **Tags:** flip, fluid, viscosity, simulation, chocolate, beginner
+- **Summary:** 4m45s VFX School Archive module. Part of a chocolate-over-ice-cream FLIP sim tutorial. Shows how to add viscosity: enable in FLIP Solver viscosity tab, set value in FLIP Object Physical tab (100 for chocolate, 10000 for clay). Mentions importing viscosity attributes from outside (multi-fluid workflow for later). Demonstrates velocity-based color visualization in guides. Sets Volume Limits to...
 - **File:** tutorials/w03-04-adding-viscosity-v1-1080p.md
 
 
@@ -1285,9 +1285,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=H56dPbE3S2E
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** flip, volumes, sop, rendering, intermediate
-- **Summary:** The instructor builds the particle-to-mesh pipeline from scratch, troubleshooting VDB from Particles settings (voxel size and radius scale) until a visible level set appears. VDB Smooth SDF is then applied to remove particle-level roughness. Convert VDB extracts a polygon mesh. The key insight is that tuning voxel size to a very small value (0.025) in combination with VDB smoothing produces a...
+- **Houdini Version:** H18+
+- **Tags:** flip, meshing, vdb, particles, attribute-transfer, color-ramp, beginner
+- **Summary:** 7m49s VFX School Archive module. Part of a chocolate-over-ice-cream FLIP sim tutorial. Meshes cached FLIP particles using the VDB workflow: VDB from Particles (requires small voxel size ~0.025 and radius scale ~1 — don't go below 1.5 without smoothing planned) → VDB Smooth SDF → Convert VDB. Colors particles by viscosity attribute (ramp, range 0–250, brown tones for different chocolate...
 - **File:** tutorials/w03-11-meshing-v1-1080p.md
 
 
@@ -1295,18 +1295,18 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=1yb3mindncw
 - **Author:** The VFX School Archive
-- **Houdini Version:** Houdini 18
-- **Tags:** flip, simulation, dop, attributes, intermediate
-- **Summary:** Starting from a chaotic, formless splash, the instructor adds structured fluid behaviour by combining viscosity (light, for milk) and surface tension. The jitter seed on the FLIP Source is animated with `$F` so initial particle positions vary per frame, preventing grid patterns. A simple isolated DOP network is built to demonstrate the viscosity and surface tension interaction clearly. Surface...
+- **Houdini Version:** H18+
+- **Tags:** flip, fluid, viscosity, surface-tension, jitter, kernel, sub-steps, simulation, beginner-intermediate
+- **Summary:** 12m32s VFX School Archive module. Part of the Week 4 strawberry-collides-with-milk simulation. First demonstrates viscosity + surface tension on a simple cube DOP test, then applies those settings to the main strawberry+milk sim. Key concepts: FLIP Source jitter seed `$F` for per-frame variation; surface tension prevents square-shaped splashes (makes sphere/circle); viscosity holds fluid...
 - **File:** tutorials/w04-11-viscosity-and-surface-tension-v1-1080p.md
 
 ### Effective TD
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=c9qw6hVstEA
 - **Author:** Houdini.School
-- **Houdini Version:** unspecified
-- **Tags:** hda, python, pyro, optimization, pipeline, td, ui, procedural, houdini-digital-assets
-- **Summary:** Jesper (Houdini.School instructor) teaches a three-session TD-focused course centered on real-world pipeline thinking. The scenario: a TD receives a Pyro simulation file from an artist and must optimize it for caching/rendering, wrap it into a procedural HDA, and then add Python automation and improved UI for usability. Session 1 covers simulation data analysis and optimization; Session 2 covers HDA creation; Session 3 focuses on Python-driven UI and automation.
+- **Houdini Version:** H18+
+- **Tags:** flip, fluid, viscosity, surface-tension, jitter, kernel, sub-steps, simulation, beginner-intermediate
+- **Summary:** 12m32s VFX School Archive module. Part of the Week 4 strawberry-collides-with-milk simulation. First demonstrates viscosity + surface tension on a simple cube DOP test, then applies those settings to the main strawberry+milk sim. Key concepts: FLIP Source jitter seed `$F` for per-frame variation; surface tension prevents square-shaped splashes (makes sphere/circle); viscosity holds fluid...
 - **File:** tutorials/effective-td.md
 
 
@@ -1316,7 +1316,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** Houdini.School
 - **Houdini Version:** unspecified
 - **Tags:** hda, python, pipeline, td, ui
-- **Summary:** A separately-recorded, shorter intro to the same Houdini.School Effective TD course. Jesper introduces himself and previews the curriculum: optimizing data for caching, wrapping the system into an HDA, and adding a Python-driven UI to control the optimization. Frames the course around data management/optimization rather than the Pyro-simulation/three-session structure described in the other Effective TD recording.
+- **Summary:** Jesper introduces himself (10+ years in VFX at companies including DNEG and Framestore, has taught at schools in Vancouver, currently writes pipelines at Raw Power Games) and previews the "Effective TD" course. The course covers the role of a technical director, emphasizing data management and optimization: starting with optimizing data for caching to improve read/write speed, then wrapping...
 - **File:** tutorials/effective-td-7nejsdxzxxi.md
 
 
@@ -1325,8 +1325,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=MqtMQl8DtjQ
 - **Author:** SOP Cemetery
 - **Houdini Version:** Houdini 21
-- **Tags:** #kinefx #apex #rigging #animation #attributes #karma #rendering #advanced
-- **Summary:** Rigs and animates a Gaussian-splat scan (a fly) via KineFX skeleton + Harmonic Capture + APEX rig, then re-deforms the original splat points with Gaussian Splat Deform (since direct skin-driven deformation fails to reorient splats), finally rendering in Karma XPU with no materials, just camera DoF/motion blur and a shadow-catcher plane.
+- **Tags:** gaussian-splats, kinefx, apex, rigging, animation, karma, point-deform, spherical-harmonics, advanced
+- **Summary:** SOP Cemetery (Bogdan) 81-min tutorial: animate a Gaussian splat fly in Houdini 21. Plugin needed: G-SOP (GitHub) for GS import/bake/deform nodes (unlocked versions included in project files — G-SOP install not required). Pipeline: (1) Import fly .ply → Bake GS Splat (compute spherical harmonics = split SH into RGB components) → transform to Y-up. (2) Manual segmentation: select points by hand...
 - **File:** tutorials/animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md
 
 
@@ -1346,7 +1346,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** Houdini (official) — Magnus Møller & Jesper Andkjær, Studio Tumblehead
 - **Houdini Version:** Houdini 20 / 20.5
 - **Tags:** pipeline, production, short-film, usd, solaris, kinefx, apex, rigging, animation, compositing, copernicus, karma-xpu, hda, python, automation, lookdev, lighting, lpe-aov, hair-grooming, blendshapes, tumblehead, houdini-20, conference-talk, advanced
-- **Summary:** SideFX HIVE conference talk — Studio Tumblehead's complete open-source Houdini pipeline "Stormelpipe" for their short film *Turbulence* (H20/20.5). Covers every department: modeling (NomadSculpt/ZBrush/QuilVR import), blendshapes (GoZ or in-Houdini SkullThings sculpt), LookDev (Karma + LookDev Studio HDA), tube-to-hair HDA, KineFX/APEX auto-rigger (one Python module builds APEX rig from tagged skeleton), layout with Import Asset HDA, animation with Build Shot HDA (USD sub-layer stacker) + transient constraints + global transform mode + bone jiggle + geometry noise HDAs, CFX/seat belt tricks (Scott node + Point Deform), LPE AOV lighting in Karma XPU, Copernicus compositing with auto-built comp tree (Tumblehead Build Comp HDA). Pipeline is free and open-source on GitHub. Project site: sidefx.com/tech-demos/turbulence.
+- **Summary:** 68m35s SideFX HOUDINI HIVE talk by Magnus Møller and Jesper Andkjær of Studio Tumblehead (14 artists total, incl. programmer Søren and TD Remy) presenting their full Houdini production pipeline developed for the short film *Turbulence* (H20/20.5, made with SideFX). Covers the complete asset workflow (modeling from NomadSculpt/ZBrush/QuilVR, blendshapes via GoZ or SkullThings, LookDev with...
 - **File:** tutorials/how-to-make-a-short-film-in-houdini-magnus-møller-jesper-andkjær.md
 
 
@@ -1356,7 +1356,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** June Chevalier
 - **Houdini Version:** Not specified (H20–H20.5 UI)
 - **Tags:** sop, curves, attributes, procedural, vex, wrangler, modelling, beginner, intermediate
-- **Summary:** An 85-minute beginner-friendly end-to-end hair grooming tutorial covering: mesh import + scale correction, density mask painting and mirroring, VDB collision setup, guide sculpting with the Draw tool, hair generation, and three realism layers — primary/secondary/tertiary clumping (including a VEX mask-invert trick for lower-section clumps), guide-process frizz noise, and stray/flyaway hairs via a random guide mask. Result: a realistic short men's hairstyle. Explicitly compared to and positioned as less buggy than Maya XGen.
+- **Summary:** An 85-minute beginner-friendly tutorial by June Chevalier covering the full pipeline for character hair grooming in Houdini. Starting from mesh import and unit-scale correction, the tutorial builds a density mask, VDB collision volume, sculpted guides, and generated hair strands, then layers in the three key realism drivers: layered clumping (primary, secondary, tertiary), guide-process noise...
 - **File:** tutorials/the-only-hair-grooming-tutorial-you-need-houdini-for-artists.md
 
 
@@ -1366,7 +1366,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** vex, surface-deform, cluster, minpos, flood-fill, croissant, spiral, vex-showcase
-- **Summary:** Builds a croissant's laminated interior using a sampleCircleUniform()-based spiral warped onto the real silhouette via Surface Deform, then grows an organic honeycomb cell pattern with a from-scratch nearpoint()+max()-carry flood-fill clustering algorithm run inside a Fetch Feedback loop instead of a Sub-Solver.
+- **Summary:** Starting from a pre-sliced croissant cross-section (built earlier with a bunch of extrusions and a Sculpt node, covered in a prior video), the interior detail begins by blasting away the filled polygons and resampling the resulting simple boundary curve. The core trick is building a "rest geometry" spiral: a unit circle sampled with **`sampleCircleUniform()`** by manipulating the U parameter...
 - **File:** tutorials/why-you-need-to-learn-vex-in-houdini-1.md
 
 
@@ -1375,8 +1375,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=f5vt8n8CB-U
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+, uses Exoside QuadRemesher)
-- **Tags:** #rbd #procedural #vex #quadremesh #fracture #advanced
-- **Summary:** Part 1 of a multi-part series (model prep only — rigging/animation/liquid-stretch sim covered in later parts not in this transcript). Builds a hollow chocolate bar fractured via a noise-randomized Clip feedback loop, quad-remeshes pieces independently using Exoside QuadRemesher with vertex-color polycount hints, and closes resulting seams with a custom VEX intersect()-based snap trick.
+- **Tags:** rbd, procedural, vex, quadremesh, fracture, advanced
+- **Summary:** Starts from an imported chocolate-bar mesh, quad-remeshed and locked for a stable base. Builds an interior "shell" by branching off a Shrink Wrap–style inward-offset copy (peaked inward, snapped via a min-position VEX pass, smoothed, and normal-reversed) merged back with the original to give the bar real wall thickness. The break pattern comes from a **feedback loop of Clip nodes**: each...
 - **File:** tutorials/chocolate-break-rig-and-liquid-stretch-in-houdini-free-lesson.md
 
 
@@ -1385,8 +1385,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=zWlJ8QLkFH4
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #flip #simulation #uv #python #procedural #tips #advanced
-- **Summary:** Three deep-dives: a FLIP bottle-drip sim with VEX-driven per-drip gravity/masking and SDF-gradient surface snapping (no collider object), a UV-rectify fix via Align Vertices in U/V, and a Python texture-projection speedup by reusing the intersector's own normal sample.
+- **Tags:** vex, flip, simulation, uv, python, procedural, tips, advanced
+- **Summary:** For the drip effect: the bottle body is Clipped to carve out an emitter region, **Thickened** slightly to create a thin shell of source points (with only the surface enabled on FLIP Source, not the VDB/SDF), and a wrangle sets each drip's initial velocity/position. Drip origin points are generated by converting the clip boundary edges to a line and Scattering a handful of points (~9, tuned via...
 - **File:** tutorials/houdini-techniques-to-improve-your-level.md
 
 
@@ -1396,7 +1396,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0
 - **Tags:** rig-doctor, ik-chain, point-transform, matrix, kinefx, scissor-lift, procedural-rigging
-- **Summary:** Rigs a scissor-lift mechanism by building a single 2-Bone IK Chain once, then propagating its animated pose to every repeating segment via a from-scratch pointtransform()/setpointtransform() matrix read/write driven by a repeating index pattern, followed by procedural cross-brace geometry generation and name-pattern-based Capture/Bone Deform binding.
+- **Summary:** The rig starts from a centered 2-point Line (points enumerated with an `ID` attribute), deformed into a zigzag with a wrangle that offsets alternating points' X position (`(ptnum % 2) * amplitude`, zero-centered via `×2−1`) — a simple, loop-free way to build the classic scissor pattern. Points are grouped in threes via `pointcut` and an exploded view to visualize the pairing, then the...
 - **File:** tutorials/scissor-lift-rig-in-houdini.md
 
 
@@ -1405,8 +1405,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=AGTOukqBmhU
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+)
-- **Tags:** #vex #opencl #matrix #uv #animation #packed-primitives #expert #advanced
-- **Summary:** Three-tier learning exercise implementing the same coin reset-transform and circular-flip animation in SOPs, VEX, and OpenCL. Covers quaternion-based rotation (remembering to also rotate normals in VEX), reading Houdini's `bounds` intrinsic into a real attribute since OpenCL can't read intrinsics directly, `samplecircleedgeuniform()` vs. hand-written cos/sin circle sampling, and manually computing pivot-rotation offsets in OpenCL since it lacks a "rotate around a point" helper.
+- **Tags:** vex, opencl, matrix, uv, animation, packed-primitives, expert, advanced
+- **Summary:** An explicitly educational, three-difficulty-level comparison video. **Part 1 — reset transforms**: fixes a Sketchfab-scanned coin's inverted/offset USD "ST" UVs (renamed to `uv`, Y-flipped and offset via a wrangle), then centers and orients the coin three different ways: (easy) native Transform + Match Size nodes; (medium) a single VEX wrangle using bounding-box center subtraction and a...
 - **File:** tutorials/coin-spin-sops-vs-vex-vs-opencl.md
 
 
@@ -1415,8 +1415,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=JMfMxHi48Zs
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #uv #opencl #mpm #simulation #materials #shaders #karma #procedural #tips #advanced
-- **Summary:** Five tips: a spiral-Boolean peeling effect with animated UV-driven mask displacement, OpenCL-based force application to an MPM dive target, distance-mask snapping of sim mesh to clean source geometry, a controllable Karma/MaterialX planar projection, and an exact-count nearest-points VEX trick using pcfind()+find().
+- **Tags:** vex, uv, opencl, mpm, simulation, materials, shaders, karma, procedural, tips, advanced
+- **Summary:** **Peeling effect:** starting from a deformed QuadSphere ("potato" shape), a spiral curve is aligned to the centroid and reprojected onto the potato surface; the potato's own normals are copied to a `pscale`/orient-style attribute so the spiral can be Swept using those normals (without this, the sweep result is a broken mess). The subdivided potato gets a Distance-from-Geometry mask relative to...
 - **File:** tutorials/essential-procedural-techniques-in-houdini.md
 
 
@@ -1425,8 +1425,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=NkVT9NtRMk0
 - **Author:** cgside
 - **Houdini Version:** H21
-- **Tags:** #camera #photogrammetry #hda #plugin #image-based-modeling #intermediate
-- **Summary:** Custom camera-matching HDA (fSpy-style, with its own solver) that derives focal length, aperture, and camera transform from a single reference photo via draggable vanishing-point lines. Covers 1/2/3-point perspective modes, aperture math for cropped images, reference-distance scaling, and manually correcting the principal point when the source image was cropped off-center.
+- **Tags:** camera, photogrammetry, hda, plugin, image-based-modeling, intermediate
+- **Summary:** A Patreon-shared HDA demoed across three vanishing-point scenarios: two-point perspective (most common — one axis per horizontal vanishing point, with the vertical assumed straight), one-point perspective (focal length must be eyeballed rather than solved, since one vanishing point alone under-constrains the solve), and three-point perspective (e.g. a tall building shot from below, where the...
 - **File:** tutorials/camera-match-tool-for-houdini-21.md
 
 
@@ -1435,8 +1435,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=GQMsl6TiFXY
 - **Author:** cgside
 - **Houdini Version:** 21
-- **Tags:** #karma #materials #shaders #mtlx #triplanar #cops #python #uv #procedural #environment #intermediate
-- **Summary:** Introduces the author's custom LayerX native MaterialX node for stacking blend-mode/alpha texture layers in Karma, demonstrated texturing a water tower with rust, Triplanar decals, a Python-automated class-based section mask, COPs-baked AO, and a non-repeating graffiti decal.
+- **Tags:** karma, materials, shaders, mtlx, triplanar, cops, python, uv, procedural, environment, intermediate
+- **Summary:** **The LayerX node itself:** a native (not subnet-based) MaterialX node compiled specifically for Karma, exposing a stack of enable/disable layers, each with its own **blend mode** (Normal, Overlay, Multiply, etc.) and optional **alpha** input for masking — usable on base color, roughness, and even displacement inputs. **Model prep:** starting from a previously-modeled water tower, most...
 - **File:** tutorials/layered-textures-in-karma.md
 
 
@@ -1446,7 +1446,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0.303
 - **Tags:** rbd, glue-constraints, voronoi-fracture, convex-hull-collision, karma-xpu, mardini, barrel, animation
-- **Summary:** Breaks down a glass barrel rolling down stairs and shattering: custom-normal thick-wall modeling to avoid extrude self-intersection, an object-attached Glue-constraint-strength trigger wrangle for precise mid-sim breaking, simplified box/Voronoi collision proxies, and Transform Pieces to swap full-detail geometry back onto the simulated fracture pieces.
+- **Summary:** The barrel's thick glass wall is built by first computing a mask via **distance-along-geometry** (bottom to top, normalized), converting it to Mono for equalized normals, then blending point normals (blurred) with the mask-driven Mono normals via a channel ramp along Y — this custom-normal approach avoids the visible self-intersection artifacts that a naive Poly Extrude produces at the...
 - **File:** tutorials/rbd-procedural-animations-in-houdini-mardini-2026.md
 
 
@@ -1456,7 +1456,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** volume-cloth, rbd, flip, packed-primitives, matrix, cops, food, mardini
-- **Summary:** Full French-toast-and-fruit Mardini breakdown: Volume Cloth used as a modeling tool for puffed toast deformation, a from-scratch transform-matrix pipeline for stacking pieces, RBD Bullet fruit-drop simulation, a FLIP chocolate drizzle using volume colliders rebuilt from shared static geometry, and Cops-based food shading with fake bump/drop-shadow tricks.
+- **Summary:** The French toast starts as a Box, using inverted-normal-comparison selections (`abs(N.y) > abs(N.y)`) to separately grab the top and sides, an alternating-vertex Poly Bevel for the crust edges, then Poly Extrude with **thickness** (instead of inset) to get evenly-spaced edge segments before a UV unwrap/layout. A Remesh + a **Volume Cloth** simulation (edge-length scale, pinned-point group...
 - **File:** tutorials/procedural-food-in-houdini-mardini-2026.md
 
 
@@ -1465,8 +1465,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=62Mo7udZM_o
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #cops #procedural #texturing #noise #terrain #environment #intermediate
-- **Summary:** Builds a tileable procedural cliff-face texture entirely in COPs by layering tileable noises, directional warps, ramps, and Scatter Shapes, plus an optional Block Begin/End feedback loop for an eroded/extruded look.
+- **Tags:** cops, procedural, texturing, noise, terrain, environment, intermediate
+- **Summary:** Starting from a `polygon`/regular-polygon COP shape (5-sided base), the tutorial builds up a rock-face pattern by blending an ISO-distance-inverted shape with a Cube 3D COP-constant, then repeatedly layering **tileable 2D noises** (never 3D noise, which wouldn't tile without mesh-based position/`P`/`uv` attributes) through **Multi-Directional Warp** and **Directional Warp** nodes to distort...
 - **File:** tutorials/creating-cliff-shapes-in-cops-free-lesson.md
 
 
@@ -1476,7 +1476,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0.622
 - **Tags:** cops, hda, god-rays, luma-key, compositing, matrix-color-transform, tool-development, houdini-21
-- **Summary:** Demos a custom Cops "Volume Rays" HDA that luma-keys the brightest image areas and streaks them into animatable god-ray/light-shaft effects with flicker/glow controls and auto RGB/mono/multi-channel detection, plus a cheaper xyzdist()+Attribute-Interpolate replacement for a companion Matrix Color Transform tool's per-point transform-matrix pipeline.
+- **Summary:** **Volume Rays** works by first selecting the brightest areas of the source image via a **luminance-range** threshold (a luma-key-style operation), then repeating/streaking those bright pixels along a direction using an internal **iteration** count (how many times the pixels are repeated) combined with a **step scale** multiplier that controls the spacing/distance of each repetition — pushing...
 - **File:** tutorials/volume-rays-in-cops-for-houdini-21.md
 
 
@@ -1485,8 +1485,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=oEIXFY-Kxdk
 - **Author:** cgside
 - **Houdini Version:** 21
-- **Tags:** #modeling #rigging #vex #procedural #skeleton #deformation #intermediate
-- **Summary:** Transforms a plain open-ended tube into a posed glove asset via a temporary bone-capture skeleton, a VEX-driven edge-equalizing wrangle, and multiple Bone Deform + Delta Mesh passes to blend a fingers-apart capture pose against the final closed pose (plus wrinkle detail via a Z-axis point mask).
+- **Tags:** modeling, rigging, vex, procedural, skeleton, deformation, intermediate
+- **Summary:** Starts from a plain open-ended tube, equalizes its ragged end edge with a hand-written VEX wrangle that projects points onto a local axis (via oriented-bounding-box transform + dot product), then polyfills and unrolls a skeleton from the mesh using **Skeleton from Mesh**-style resampling. The skeleton is posed apart (to avoid finger-intersection during capture), captured onto the mesh via...
 - **File:** tutorials/creating-assets-from-default-geometry-in-houdini-21.md
 
 
@@ -1496,7 +1496,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21
 - **Tags:** uvs, python, hda, matrices, oriented-bounding-box, vex, dihedral, procedural-uvs
-- **Summary:** Breaks down a parameter-free HDA that auto-orients scrambled UV islands upright using a Python-computed oriented bounding box per island, with VEX fallback checks for square, flat, and topology-based cases where the OBB alone gives the wrong orientation.
+- **Summary:** Building on an earlier, simpler "Orient UVs Up" tool that failed on many real-world meshes, this HDA reliably auto-orients any set of UV islands right-side-up regardless of scramble. It works by giving every island a unique ID (via UV-seam split + boundary group + connectivity, since plain UV connectivity can merge overlapping islands), computing a `position.y` gradient in UV space per island...
 - **File:** tutorials/orient-uvs-like-a-pro-in-houdini-21.md
 
 
@@ -1505,8 +1505,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=AB9rwjcX0Xg
 - **Author:** cgside
 - **Houdini Version:** Houdini 21 (Copernicus/COPS)
-- **Tags:** #cops #texturing #procedural #materials #triplanar #mardini #normal-map #intermediate #advanced
-- **Summary:** Full COPS texturing pipeline: bake utility maps (AO/curvature/edge/cavity/position/normal) from a subdivided low-poly proxy, fix UV-seam bleeding with Extrapolate Boundaries, build tileable materials with Triplanar x-tile fed by Megascans textures, layer wear via a Cobstance Slope Blur node, hand-build a multi-scale Combine-Normals normal map, and imprint procedural text into the normal map via a hand-modeled Sweep+UV text mesh.
+- **Tags:** cops, texturing, procedural, materials, triplanar, mardini, normal-map, intermediate, advanced
+- **Summary:** A warts-and-all, full-workflow walkthrough (not a polished-result tutorial) texturing a previously-modeled asset (a Mardini pen/vessel) entirely inside COPS. Covers baking a full utility-map set from geometry (important gotcha: bake from a *subdivided* low-poly proxy, or curvature/displacement bakes show visible low-poly faceting), fixing UV-seam bleeding on every baked map at once via...
 - **File:** tutorials/basic-procedural-texturing-with-cops-in-houdini-21.md
 
 
@@ -1516,7 +1516,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0.303
 - **Tags:** for-loop-optimization, capture-by-proximity, labs-file-cache, rig-doctor, wedge, retrospective, best-practices
-- **Summary:** Retrospective replacing old for-loops with loop-free VEX alternatives: a vertex-neighbor-count edge-selection trick, fuse-by-ID before Polypath, a rest-space UV-layout separation for Capture by Proximity, Labs File Cache's wedge feature for animated variation baking, and a critical reminder that Fuse always needs a snap distance even when matching by attribute.
+- **Summary:** The first old setup builds a rig from a sphere: originally, extracting a clean "every-other-vertex" edge group required a for-loop iterating over per-section IDs, because promoting a raw group-by-range selection to edges also picked up unwanted collapsed-to-a-point selections at the poles. The improved approach: select all vertices with a **neighbor count less than 5** (isolating vertices away...
 - **File:** tutorials/roasting-my-houdini-setups-1.md
 
 
@@ -1526,7 +1526,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** cops, point-relax, uv-gradient, tiling, matrix, stamping, rock-material, seamless
-- **Summary:** Fixes Cops' default Scatter Shapes overlap problem for a tileable rock material by packing pieces and running a p-scale-driven point Relax in SOPs, matching attributes across grid edges for seamless tiling, and building a from-scratch UV-gradient-based transform matrix to stamp each piece with correct scale/rotation.
+- **Summary:** Four rock variations are modeled in SOPs, masked out individually (a subnet used only because Cops lacks native loops — the subnet does the per-variation math and outputs each rock's mask as an image layer), then imported into Cops via Geo-to-Layer, Cable Pack, and stamped with the built-in Stamp Cop — which works fine for a small, systematic set but breaks down (heavy overlap) as soon as...
 - **File:** tutorials/scatter-shapes-in-cops-randomly-without-overlap.md
 
 
@@ -1536,7 +1536,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0
 - **Tags:** cops, openCL, rip-mask, edge-smooth, divide, brick-wall, houdini-21, patreon-course
-- **Summary:** Course-lesson excerpt building an organic torn/ripped-edge damage mask in Cops (OpenCL pixel-threshold math blended with Fractal Noise), loading it onto a mesh via Attribute From Map to drive a Clip cut plus Labs Edge Smooth relaxation, then setting up a density-driven Divide grid ready for the next lesson's brick-wall-in-Cops continuation.
+- **Summary:** The ripping/edge-damage effect is built entirely in a Cop network using **OpenCL** since it's simple enough not to need the default node bindings: a bound `edge` float parameter is multiplied by the image's X resolution to get a pixel-space edge threshold, then a mask is grown from the left (`pixel.x < edge`) and right (`pixel.x > xres - edge`) sides of the image using simple threshold...
 - **File:** tutorials/procedural-environments-in-houdini-patreon-february-26-free-lesson.md
 
 
@@ -1545,8 +1545,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=Quj03TwHAN4
 - **Author:** cgside
 - **Houdini Version:** 20
-- **Tags:** #modeling #vex #uv #procedural #hard-surface #tips #cops #intermediate
-- **Summary:** Compares direct vs. procedural approaches across several real assets: sign/modulo-based selection wrangles, thickness-ramp insets, recursive feedback-loop extrusion, Group Fill Pattern for UV seams, Fill Boundary flood-fill selection, and Enumerate-by-name indexing for COPs.
+- **Tags:** modeling, vex, uv, procedural, hard-surface, tips, cops, intermediate
+- **Summary:** Walks through when procedural selection beats manual grouping and vice versa. Sign-of-position wrangles replace manual top/bottom group creation on a symmetric box; vertex-index-modulo wrangles select every-other edge for beveling; attribute-driven bevel widths let one Polybevel vary per group instead of needing multiple nodes; a Poly Extrude "thickness ramp" trick (instead of plain Inset)...
 - **File:** tutorials/direct-vs-procedural-in-houdini.md
 
 
@@ -1556,7 +1556,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0
 - **Tags:** brick-wall, growth-solver, pcopen, matrix, pack-inject, edge-damage, procedural-modeling, sop-solver
-- **Summary:** Full step-by-step brick-wall build using default-node Attribute-Adjust-Float profiling, a simplified pcopen()/pcfilter()-based growth solver (no DOPs) for a broken-wall silhouette, a shuffle-and-reindex trick to selectively edge-damage only a handful of bricks, and a from-scratch per-instance transform-matrix system to place the detailed variants back onto thousands of positions via Copy-to-Points.
+- **Summary:** The wall starts from a single Line (2 points) copied 24 times, using **Attribute Adjust Float** (a relatively obscure but powerful node) driven by the primitive's `copy_name`/`copyname` attribute (remapped 0–1 via `end-primitives-1`) to manipulate `P.y` (overall wall height profile) and `P.x` (brick-course width profile, applied only to alternating "outer" points via a Sort-by-Y-and-reverse...
 - **File:** tutorials/think-procedural-think-houdini.md
 
 
@@ -1565,8 +1565,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=yeA_0tL3GlU
 - **Author:** cgside
 - **Houdini Version:** 21
-- **Tags:** #vex #rigging #animation #cops #procedural #skeleton #shaders #texturing #noise #advanced
-- **Summary:** Builds a procedural leaf skeleton via custom curvature-clustering landmark detection and near-point-based spine construction, rigs and animates it with point-ID/time-seeded noise, then creates a double-sided front/back leaf shader in COPs using an intersect() ray-cast trick.
+- **Tags:** vex, rigging, animation, cops, procedural, skeleton, shaders, texturing, noise, advanced
+- **Summary:** Starts by tracing a leaf's alpha texture into mesh geometry (Trace SOP) and moving it into UV space (0-1) for easier COPs work later. The hardest part is fully procedural landmark detection: since curvature analysis on the raw boundary is noisy, the mesh is duplicated into a heavily blurred "rest" version (position stored as a `rest` attribute, blurred, then swapped into `P` via a rest/current...
 - **File:** tutorials/double-sided-leaf-animation-using-cops-in-houdini-21.md
 
 
@@ -1575,8 +1575,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=ZDlL81gmafE
 - **Author:** cgside
 - **Houdini Version:** 21
-- **Tags:** #cops #vex #opencl #python #color-management #cgi-integration #hda #advanced
-- **Summary:** Demos a custom Matrix Color Transform + Apply Color Matrix HDA pair (Houdini 21 COPs Python States UI) that interactively aligns a color-chart overlay, solves a least-squares color-correction matrix, and applies/inverts it on HDRIs or footage for CGI-integration color matching.
+- **Tags:** cops, vex, opencl, python, color-management, cgi-integration, hda, advanced
+- **Summary:** The workflow: drop a **Matrix Color Transform** COP, feed it a cropped-down HDRI image containing a physical color chart (chart region pre-extracted in Affinity Photo), then enter the node's custom **Python States** tool (Houdini 21's new COPs Python state support) — a fully custom UI with working undo/redo — to drag-align four corner handles of a rendered reference color-chart overlay onto...
 - **File:** tutorials/matrix-color-transform-in-cops-for-houdini-21.md
 
 
@@ -1586,7 +1586,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0.359
 - **Tags:** wrinkle-deformer, uv-flatten, area-scale-factor, xyzdist, object-merge, tape, procedural-modeling
-- **Summary:** Wraps duct tape around a bent pipe by flattening the tape into UV space (with an area-based scale-factor correction) to run a non-simulated Wrinkle Deformer for cheap cloth-like folds, then transfers the wrinkled displacement back onto the original curved 3D geometry via primuv()-based position sampling plus a separately-captured normal-scaled Y-displacement.
+- **Summary:** The base pipe is modeled with a bent tube (Poly Hinge targeting primitive 0, moved/rotated via bounding-box-relative position and mirrored for the other end). The tape itself starts as a Spiral (explicit radius scale matched to the tube, ~4.5 turns, slightly overlapped) Match-Sized onto the left side of the pipe, then Swept into a ribbon (rolled -90°, width ~0.115) with computed UVs. Rather...
 - **File:** tutorials/procedural-duct-tape-in-houdini.md
 
 
@@ -1596,7 +1596,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0.359
 - **Tags:** rest-attribute, clip-by-attribute, uvdist, pack-inject, rbd, cops, sushi, tips-and-tricks
-- **Summary:** Covers a rest-attribute-driven random Clip trick for seed-controlled per-primitive splitting, a uvdist()-based edge-bleed-free texture-resurrection technique for a Cops salmon pattern, and an RBD pack-transform/Pack Inject workflow for swapping low-poly simulated avocado pieces with high-poly geometry.
+- **Summary:** The first tip splits primitives in half at random orientations using rest-space cutting: after isolating target primitives, a per-primitive random-direction vector is built with `sampleDirectionUniform()` seeded by primitive number plus a random offset (giving a repeatable, seed-controllable "each 90 degrees" random rotation), then a **rest attribute** is created by getting each primitive's...
 - **File:** tutorials/tips-and-tricks-to-level-up-your-houdini-skills.md
 
 
@@ -1606,7 +1606,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0.512
 - **Tags:** connectivity, for-each, uv-flatten, xyzdist-alternative, cobblestone, houdini-21, patreon-course, sops-to-cops
-- **Summary:** Free-lesson excerpt chunking a wavy S-curve shape into cobblestone-like pieces without Labs Voronoi Fracture — a for-each-per-connected-piece pipeline extracts a skeleton, meshes a flat ribbon, live-transfers its UVs onto a flattened copy of the curved shape, then normalizes chunk size across pieces with an area-ratio scale factor before dividing into a grid.
+- **Summary:** The source geometry is a wavy S-curve-like shape (this is a free excerpt from a paid monthly Patreon lesson on generating a Cops/SOPs tiling pattern in Houdini 21). Since not everyone has access to the Labs Voronoi Fracture SOP used for a quick reference result, the tutorial builds an equivalent from scratch: first populate **Connectivity** on primitives (naming the class attribute "class"),...
 - **File:** tutorials/procedural-materials-in-houdini-21-patreon-december-25---free-lesson.md
 
 
@@ -1616,7 +1616,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0
 - **Tags:** packed-primitives, transform-attribute, uv-flatten, primitive-sort, tunnel, level-environment, houdini-21, patreon-course
-- **Summary:** Free-lesson excerpt from a paid course modeling a game-level tunnel by flattening a Tube's cross-section via group-boundary detection, then recovering a broken primitive/point sort order (from earlier Boolean-style operations) by combining a UV-flow sort key with a relative-bounding-box Z key into one monotonic sort value.
+- **Summary:** The tunnel starts from a Tube (Z axis, 8 rows, 50 columns) that gets grid-expression-based groups removed/flattened to create an open, prick-shaped cross-section: `P.y < threshold` group expressions isolate a "bottom" strip, a second lower threshold isolates the part to Blast away, and a Group-From-Match-With-Boundary (points, matched against the bottom group) plus a "not bottom" variant,...
 - **File:** tutorials/procedural-environment-assets-in-houdini-21.md
 
 
@@ -1625,8 +1625,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=RchQ9K5QXtI
 - **Author:** cgside
 - **Houdini Version:** H21 (Solaris/Karma XPU)
-- **Tags:** #solaris #usd #karma #rbd #tops #camera #vfx-integration #aces #color-pipeline #advanced
-- **Summary:** Full indie VFX-integration pipeline across DaVinci Resolve (Log→ACES color prep), Nuke (camera tracking + point-cloud mesh + legacy-wireframe alignment verification), and Houdini/Solaris (USD camera import via Sub-layer to avoid dropped FPS metadata, a TOPs-driven RBD ball sim guided by a custom VDB vector field with age-gated turbulence, and final Karma XPU render with Shadow Catcher + velocity motion blur). Covers key USD gotchas: Reference vs Sub-layer metadata handling and the reserved `id` attribute.
+- **Tags:** solaris, usd, karma, rbd, tops, camera, vfx-integration, aces, color-pipeline, advanced
+- **Summary:** An end-to-end "poor man's VFX integration" workflow using consumer gear (phone footage shot in Log) and free/trial tools. **DaVinci Resolve** (free version): imports Log footage, uses Color Space Transform twice — once to convert Log→ACES linear (for compositing/3D work, no tone mapping) and once ACES→sRGB/Rec.709 (for a display-referred JPEG sequence used in tracking) — exporting both an...
 - **File:** tutorials/cgi-integration-the-indie-way-with-houdiniusd-and-nuke.md
 
 
@@ -1635,8 +1635,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=FxrSPbnI3tI
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #vex #uv #procedural #product-viz #course #intermediate
-- **Summary:** Free Part 1 of a paid course: models a rounded container via asymmetric per-corner Peak/Bevel, a diagonal Boolean split with Exoside QuadRemesher group-boundary preservation + Group Transfer, a VEX array-reversal trick for group naming, and a crease-before-subdivide pass for sharp interior corners.
+- **Tags:** modeling, vex, uv, procedural, product-viz, course, intermediate
+- **Summary:** The base starts as a 1x1 **Grid** (2x2, no subdivisions) with points **Sorted** so point 0 lands in a specific corner, then a `pscale` **Attribute Adjust Float** gives that corner a bigger bevel value (0.5) versus the rest (0.2 default) via an "all but point 0" attribute expression — feeding a **Peak/Bevel-based-on-points** pass (1 amount, 8 divisions, scale-by-attribute) for an asymmetric...
 - **File:** tutorials/new-houdini-course---procedural-product-shots-part-1-free.md
 
 
@@ -1646,7 +1646,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0.300
 - **Tags:** vex, matrix, look-at, gradient, uv-flatten, pick-node, houdini-21, normal-map, fork
-- **Summary:** Grab-bag of H21 tips: axis-extraction-from-matrix via multiplication, jitter-free animated-origin via a frozen Time Shift, UV-gradient-driven fork-tine tapering with perfect topology, and the new Pick node's hash-attribute input (fed a UV-derived curve view) for per-shell ribbon manipulation on baked geometry.
+- **Summary:** For a book-lamp animation rig, band deformation is applied to curve-oriented normals (via Oriented-Along-Curve), but since the normals themselves don't follow the resulting bend, the fix is computing a **look-at-based transform matrix** from the curve attributes first (so the transform bends correctly with the geometry), then extracting any needed axis vector by multiplying a unit axis vector...
 - **File:** tutorials/tips-and-tricks-in-houdini-21.md
 
 
@@ -1656,7 +1656,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.590
 - **Tags:** instancing, optimization, vex, matrices, opacity-to-mesh, hda, vegetation, python, usd, solaris
-- **Summary:** Converts a heavy baked opacity-leaf tree into a lightweight instanced asset by extracting one leaf, resetting its transform, and reconstructing each original leaf's matrix via nearpoint/clip/orientalongcurve/lookat, then re-instancing via Copy to Points and Pack and Instance; also demos the author's Opacity to Mesh HDA with leaf-isolation thresholds.
+- **Summary:** Baked, high-poly assets (e.g. from MaxTree/Megascans) with opacity-mapped leaves are expensive to convert to real mesh at full resolution (millions of points). Instead of converting every leaf, the video extracts one leaf, zeroes its transform, converts it once, then reconstructs a per-leaf transform matrix (via `nearpoint()`, `clip`, `convertline`, `resample`, `orientalongcurve`, and...
 - **File:** tutorials/optimizing-baked-trees-with-instancing-in-houdini.md
 
 
@@ -1675,8 +1675,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=h6wt3KJy2W4
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #uv #vellum #modeling #procedural #animation #tips #intermediate
-- **Summary:** Five tips: slerp-based packed-object transform animation with layered rotation, automatic boundary-path UV unwrapping for non-swept pipe geometry, transferring a geometry mask into Vellum constraints via UV Sample, Skin-based mockup modeling from two profile curves, and a distance-field V-indentation deformer.
+- **Tags:** vex, uv, vellum, modeling, procedural, animation, tips, intermediate
+- **Summary:** **Slerp animation:** a packed object carrying two transforms (current position + target position, both extractable as matrices from input 1 and input 2) is animated by computing a 0-1 blend value from `fit(time, 0, 1, 0, 1)`, then using **`slerp()`** (Lerp for matrices) to interpolate between the two position matrices using that blend factor. A separate rotation-only angle (a spare parameter,...
 - **File:** tutorials/handy-houdini-tips-vellum-uvs-modeling-and-more.md
 
 
@@ -1686,7 +1686,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** vertex-selection, skin, wrinkle-deformer, cops, tile-pattern, height-blend, architecture, favela
-- **Summary:** Builds a favela house using a vertex-modulo trick for alternating edge selection (works on both separated and connected geometry), a Skin-with-second-input bridging technique, a corrected (rest-space) Wrinkle Deformer workflow with custom surface normals, and a from-scratch Substance-Painter-style height-blend COPs texturing pass.
+- **Summary:** The house starts from a box with primitives sorted by Y and reversed so primitive 0 is reliably the top face — this predictable indexing lets later selections stay procedural rather than manual. A "corner" selection (for later downward transform) is made via a point wrangle constrained to the top-face group, selecting only points on the negative X axis. For selecting alternating roof edges,...
 - **File:** tutorials/procedural-favela-in-houdini-tips-and-tricks.md
 
 
@@ -1705,8 +1705,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=ha85low9Bmo
 - **Author:** cgside
 - **Houdini Version:** 21
-- **Tags:** #karma #solaris #lops #vdb #scattering #instancing #materials #vegetation #benchmark #intermediate
-- **Summary:** Benchmarks four leaf-rendering approaches in Karma: flat cards (16s), opacity-map cutouts (2m35s), the new Stencil Map setting (27s), and fully meshed opacity-to-geometry leaves (16s) — plus the Solaris scatter/proxy/instancing pipeline used to build the test scene.
+- **Tags:** karma, solaris, lops, vdb, scattering, instancing, materials, vegetation, benchmark, intermediate
+- **Summary:** Four identical leaf-scatter setups (~6000 packed instances) are benchmarked on the same demo scene. Baseline geometry (flat cards, no opacity map, no real cutout shape) rendered in **26s** (later re-verified closer to ~15-16s after the author suspected a measurement fluke on the first run). Switching the material to use an **opacity map** (real leaf-shaped alpha cutout) balloons render time to...
 - **File:** tutorials/houdini-21-opacity-vs-stencil-vs-geometry.md
 
 
@@ -1715,8 +1715,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=1QTfNMlvF1E
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #opencl #vellum #animation #procedural #texturing #cops #tips #intermediate
-- **Summary:** Four production tips from a straw-rig project: meshing an animated curve via Sweep's second input, faking stop-motion with a frame-gated solver lerp, adding Vellum spring secondary motion transferred back via Point Deform, and generating a tileable stripe texture with hand-written OpenCL.
+- **Tags:** vex, opencl, vellum, animation, procedural, texturing, cops, tips, intermediate
+- **Summary:** Covers four independent tricks from one project. First: to mesh an animated curve/rig (the straw's accordion joints) instead of using Skin, connect the curve only to Sweep's *second* input with default settings — remembering to close the implicit backbone or the mesh stays open. Second: to fake a stop-motion "pop" on the accordion folds, drive a simple line-based deformation with Attribute...
 - **File:** tutorials/daily-dose-of-houdini-tips-sweep-secrets-opencl-textures-and-more.md
 
 
@@ -1725,8 +1725,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=CHySFnWfKLk
 - **Author:** cgside
 - **Houdini Version:** 20
-- **Tags:** #modeling #vex #vdb #tops #solaris #lops #karma #materials #shaders #procedural #usd #advanced
-- **Summary:** End-to-end dusty-wine-bottle pipeline: SOPs modeling with VDB/QuadRemesher cleanup and fur-based dust generation, TOPnet-wedge USD variant authoring, and Solaris instancing with primpath-parsed per-instance label/dust shading randomization.
+- **Tags:** modeling, vex, vdb, tops, solaris, lops, karma, materials, shaders, procedural, usd, advanced
+- **Summary:** The bottle body starts as a revolved profile (deliberately computing but not using default revolve UVs, since a manual UV-flatten + Rectify pass gives cleaner top/bottom control), then gets poly-extruded and subdivided for thickness. The neck/foil "top part" uses alternating-vertex edge selection converted to curves, randomized per-curve length/pscale via VEX curve attributes (a Houdini 20...
 - **File:** tutorials/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris.md
 
 
@@ -1745,8 +1745,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=KCy4Sw3nbcQ
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #rbd #vellum #vdb #vex #uv #procedural #environment #advanced
-- **Summary:** Five trash-prop assets: a crushed can via RBD with mid-sim glue-to-rigid constraint switching, a chip bag via custom Vellum center-attract velocity + noise, a VDB-gradient-deformed cup, a spine-controlled noise-clipped container (plus an experimental sculpt-and-adaptive-remesh crumple variant), and a soft-transform squashed bottle.
+- **Tags:** modeling, rbd, vellum, vdb, vex, uv, procedural, environment, advanced
+- **Summary:** **Crushed can:** starting from a revolved/QuadRemeshed profile curve (reused from a prior tutorial's scan asset) with UVs picked via a saved seam group, the can is Scattered with 500 points and **Voronoi Fractured** to generate crushable pieces plus RBD glue constraints; the top rim points are pinned (selected via **Relative Point Bounding Box**) so the can's top stays rigid while the body...
 - **File:** tutorials/making-trash-in-houdini.md
 
 
@@ -1755,8 +1755,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=lT0b8D6LmtM
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #uv #procedural #modeling #deformation #tips #advanced
-- **Summary:** Four deep-dives: a custom-named-normal dot-product mask for inside/outside selection without network access, a general UV-orient-up HDA using UV-space gradient measurement, a ramp-driven Resample by Density fix for pscale-broken uniform distribution, and three conform-to-surface methods (Lattice, Surface Deform, ribbon-sweep Point Deform with UV-Sample-driven deformation matrices).
+- **Tags:** vex, uv, procedural, modeling, deformation, tips, advanced
+- **Summary:** **Inside/outside mask without network access:** given only a finished geometry (no access to how it was built), Connectivity assigns a `class` per piece, Extract Centroid + Group by class gets one representative point per piece, and **Orient Along Curve** computes a custom per-piece normal saved under a **different name** (`_N`, not `normal`) so it doesn't collide with the mesh's real normals;...
 - **File:** tutorials/houdini-tips-to-save-the-day.md
 
 
@@ -1766,7 +1766,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified (H20-era UI)
 - **Tags:** procedural-modeling, no-vex, vops, sweep, groups, point-clouds, textures, cops, texture-projection, uv, hard-surface, beginner-friendly
-- **Summary:** Builds a complete procedural water tower (tank shell, platform, cross-braced legs, ladder, and a projected logo texture) using almost entirely SOP nodes and VOPs instead of typed VEX, including centroid-pivot transforms, copy/scale-to-zero cone tricks, custom up-vector orientation for Sweep, a point-cloud ramp-masked rivet pattern, and a COPs-authored logo baked and projected onto the tank via a custom HDA.
+- **Summary:** The tank body is built from a tube whose ends are split into boundary groups, then reshaped into a domed sphere-like cap and a tapered cone top via centroid-pivot Transforms and copy/scale-to-zero "cone from ID" tricks, skinned back together into one continuous shell. A circular curve (from an Object Merge of the base tube) becomes the observation platform via Transform+Extrude, with...
 - **File:** tutorials/no-vex-challenge-1-procedural-water-tower.md
 
 
@@ -1786,7 +1786,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** channel-ramp, skin, uv-rectify, connectivity, uv-sample, procedural-modeling, boat, hull
-- **Summary:** Models a full procedural boat (hull, seat, cabin with uniformly-spaced windows/doors via a from-scratch VEX gap-size formula, and sagging rigging wires) using channel-ramp curve shaping, Skin surfacing, and a UV-Connectivity/rectify trick to keep one shell perfectly flat for later UV-Sample-driven seat placement.
+- **Summary:** The hull starts from a Line (Z axis, 40-point resample) deformed along Y with a channel ramp to define the base silhouette, with normals computed along X. Side profile curves are built by blasting the first/last points of that base curve, resampling, Sweeping (ribbon, single column) with a width/scale-ramp falloff for curvature, then re-orienting (Orient Along Curve, Y axis) and displacing...
 - **File:** tutorials/procedural-boat-in-houdini.md
 
 
@@ -1796,7 +1796,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** python, hou-module, shelf-tool, object-merge, hotkey, tool-development, workflow-automation
-- **Summary:** A short hou-module Python script (wired to a shelf-tool hotkey) that auto-creates an Object Merge referencing the currently selected node, offset to avoid overlap, with an IndexError guard for empty selections.
+- **Summary:** The script grabs the current selection with `hou.selectedNodes()[0]`, then creates an Object Merge node as a child of the selected node's parent (`selection.parent().createNode("object_merge")`). To avoid the new node overlapping the source, it reads the selected node's position via `.position()` and offsets the new Object Merge by `-1` in both X and Y (`hou.Vector2(sel_pos[0]-1,...
 - **File:** tutorials/quick-object-merge-with-python-in-houdini.md
 
 
@@ -1806,7 +1806,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** vex, quick-tips, golden-angle, quaternion, look-at, transform-attribute, sweep, pineapple, plant-generator
-- **Summary:** Builds a pineapple crown's spiraling leaf arrangement with golden-angle (137.5°) rotation, a from-scratch lookat()-based transform-attribute fix for Copy-to-Points' attribute-priority behavior, and a double-cross-product curve-relative local axis so serrated leaf-edge teeth displace consistently regardless of each leaf's individual bend.
+- **Summary:** Leaves are placed by copying two-point lines onto a circle of instance points, with p-scale shrinking progressively along a resampled base line (cascading effect). A **class** attribute (point number) tags each leaf for later per-piece transforms. Leaves are first bent upward using a cross product between the surface normal and the Y axis (an "up" vector), then rotated via `qrotate()`; p-scale...
 - **File:** tutorials/vex-quick-tips-4---pineapple-crown.md
 
 
@@ -1815,8 +1815,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=ARJFJC79k3k
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #python #hda #procedural #tips #advanced
-- **Summary:** Builds a custom Python Viewer State HDA ("Draw Points on Geo") from scratch: a GeometryIntersector for surface-snapped point placement, nearestPoint()-driven drag-to-move and middle-click delete, and live hou.GeometryDrawable preview/committed-point feedback.
+- **Tags:** python, hda, procedural, tips, advanced
+- **Summary:** The HDA is built around a multi-parm **Add** SOP (one entry per drawn point) wrapped in a Subnet and converted to a Digital Asset with the "Interactive" template plus "On Draw" and "Handle States" enabled. By default, the state's built-in interaction intersects against the flat construction plane/grid — not what's wanted, since points should snap onto the actual input geometry. The fix...
 - **File:** tutorials/interactive-tools-with-houdini-python-states-draw-pts-on-geo.md
 
 
@@ -1825,8 +1825,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=Mljby-SKlUI
 - **Author:** cgside
 - **Houdini Version:** not specified (trailer only)
-- **Tags:** #tops #uv #packing #cops #solaris #karma #mardini
-- **Summary:** Promotional trailer (no on-screen technique) for a full paid course covering TOPs-driven rock variation generation, low/high-poly mesh creation, procedural UVs, packed-instance low-to-high-poly swapping, COPS-based masking (incl. a moss layer), and final Solaris/Karma lighting and rendering.
+- **Tags:** tops, uv, packing, cops, solaris, karma, mardini
+- **Summary:** The trailer verbally outlines what the full paid course will cover, without demonstrating any of it on-screen: generating rock variations via a **TOPs network**, building both low-poly and high-poly ("ipoly") versions, procedurally generating UVs, assembling the wall with "a few techniques," using **packed instances** to swap the low-poly stand-ins for high-poly geometry at render time,...
 - **File:** tutorials/creating-a-procedural-rock-wall-with-houdini-patreon-may---trailer.md
 
 
@@ -1835,8 +1835,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=O_oxVn-YVB0
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #solaris #lops #karma #vdb #cops #compositing #lighting #cgi-integration #procedural #advanced
-- **Summary:** Full CGI-integration pipeline for a truck-into-plate shot: rest-attribute-driven localized VDB fog around the headlights, Solaris spotlight instancing matched to headlight geometry, and a manual multi-pass COPs composite (shadow/reflection/AO/custom depth-of-field) over the real background plate.
+- **Tags:** solaris, lops, karma, vdb, cops, compositing, lighting, cgi-integration, procedural, advanced
+- **Summary:** Starts from a pre-built scene (camera oriented to real-world EXIF data and a background plate, covered in earlier videos) with the modeled truck placed via a saved `rest` attribute + Transform. To fake a localized volumetric light-shaft in front of the headlights, the front-metal/headlight geometry is Blasted out, moved back to its pre-transform rest position (via a second `rest` extraction),...
 - **File:** tutorials/from-sops-to-final-render-with-karma.md
 
 
@@ -1846,7 +1846,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** camera-matching, depth-map, onnx, machine-learning, cops, solaris, karma-xpu, cgi-integration, texture-projection
-- **Summary:** Integrates a CG bottle into a real back-plate via EXIF-corrected camera matching, an ONNX machine-learning depth map reassembled from tiled RGB channels in Cops, camera-relative NDC-based ground-card displacement, and Karma XPU rendering with an HDRI dome light aligned to the photographed lighting.
+- **Summary:** The pipeline starts with a real back-plate photo (from Polyhaven) plus its RAW original (used only to read EXIF: camera model, focal length, crop factor) for accurate camera matching — a reference box of assumed real-world dimensions is placed and aligned to vanishing points in the image, using an assumed human-height camera position and a corrected focal length (`nativeFocalLength ×...
 - **File:** tutorials/quick-cg-integration-with-houdini-and-karma.md
 
 
@@ -1856,7 +1856,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** brickify, voronoi-fracture, labs-sort, lattice, poly-bevel, architecture, ornament, procedural-modeling
-- **Summary:** Tips from a domed building build: per-layer Voronoi-Fractured brickify pattern with Labs Circular Sort randomization, point-count-independent tapering spire generation, directional (horizontal vs. vertical) edge bevel selection via Group Range, a Lattice-based blend connecting polygonal and rounded sections seamlessly, and a mirrored-ramp overlap mask for roof paneling.
+- **Summary:** The dome's "brickify" pattern starts by scattering many points on a swept 8-division base shape, then dividing them into horizontal layers by computing the bounding-box min/max, deriving a per-layer height ("layer height"), assigning each point a `layer` index, and remapping `P.y` from the bounding-box min plus `layer * layerHeight` so points snap into discrete bands that always reach the...
 - **File:** tutorials/procedural-buildings-in-houdini-tips-and-tricks.md
 
 
@@ -1876,7 +1876,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5
 - **Tags:** hda, python-states, cops, texture-projection, uv-less, tool-development, product-packaging
-- **Summary:** Demos a custom Python-States HDA that interactively projects logo/label textures onto UV-less geometry via click-drag placement (with rotate/scale/max-distance/near-point-radius controls), compositing under the hood in Cops, then exposes the result as an Image texture node for Solaris/Karma rendering.
+- **Summary:** This is a tool demo/showcase rather than a from-scratch build tutorial: the presenter walks through a beta HDA that projects flat textures (logos, labels) onto arbitrary geometry interactively. The tool checks the input mesh for vertex UVs and no UDIMs (a "check" indicator shows "all good") since the underlying compositing runs in Cops, which doesn't support UDIMs — meaning highly non-planar...
 - **File:** tutorials/texture-projection-tool-for-houdini-205.md
 
 
@@ -1886,7 +1886,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 21.0
 - **Tags:** packed-primitives, planar-inflate, cops, openCL, sdf-shape, negative-id, drips, graffiti, mardini
-- **Summary:** Turns font text into inflated bubble-letter graffiti via packed-primitive random transforms and Planar Inflate, then fakes 3D shading in Cops with a uvdist()-padded specular pass, an OpenCL negative-ID background-separation trick, and a from-scratch OpenCL feedback-loop kernel that fakes a directional drop-shadow by iteratively offsetting/maxing pixels.
+- **Summary:** Starting from a bold **Font** node (text set to "CUPS" for the demo), the letters are Resampled and simplified with Subdivision curves to lose sharp corners and get a rounder graffiti look. Since each letter is a single primitive, per-letter random transforms are applied entirely in VEX rather than a for-loop: a random scale (`fit()`-remapped `random(prim_num + seed)`) is applied relative to...
 - **File:** tutorials/procedural-graffiti-in-houdini-and-cops-mardini.md
 
 
@@ -1905,8 +1905,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=h6MN80ka4Vg
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #solaris #lops #usd #karma #materials #shaders #triplanar #lighting #fog #scattering #instancing #environment #advanced
-- **Summary:** Final part of the environment series: imports all named SOP parts into Solaris, lights with Karma Physical Sky plus a fake cloud-gobo shadow caster, shades everything with script-driven Triplanar Megascans materials and a light-linked water shader, scatters grass in LOPs, and renders the final 4K Karma XPU shot.
+- **Tags:** solaris, lops, usd, karma, materials, shaders, triplanar, lighting, fog, scattering, instancing, environment, advanced
+- **Summary:** Before importing to Solaris, every SOP output gets an explicit `name` attribute (terrain, water, bridge arch, bridge stones, vines, leaves, terrain-back) so LOPs can address each part individually, plus a **grass mask** primvar (built from `N.y` fit-ranged and bind-exported) and a UV-based water mask — all cached via **File Cache** for a stable base. In Solaris, a Sub Import brings this in...
 - **File:** tutorials/environments-in-houdini-part-5---solaris-and-rendering-with-karma.md
 
 
@@ -1916,7 +1916,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** vex, quick-tips, for-each, lots-of-division, random-cut, find-shortest-path, expand-point-group
-- **Summary:** Breaks up the repeating seam Lots of Division creates on a flat grid by cutting a random Find-Shortest-Path edge across it first, comparing a sort-based random-point-selection approach against a cheaper for-each-over-just-2-numbers alternative that avoids sorting entirely.
+- **Summary:** By default, feeding a flat plane straight into Lots of Division produces a visually obvious fixed seam from its first subdivision iteration. The fix is to cut a random path across the grid first with Find Shortest Path, then subdivide. The tutorial builds row/column attributes on a Grid (`row = floor(ptnum/cols)`, `col = ptnum % cols`, with `max_col` stored as a detail attribute), then...
 - **File:** tutorials/vex-quick-tips-2-iterating-over-numbers.md
 
 
@@ -1926,7 +1926,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** vex, quick-tips, channel-ramp, quaternion, curve, overhang, procedural-modeling
-- **Summary:** Fakes an overhang curve profile that channel ramps can't produce alone by rotating each point's normal with a quaternion (built from an angle ramp sampled along the un-repeated curve view) before displacing along it, letting the displacement fold back over itself into a true overhang.
+- **Summary:** Starting from a Line, Resample heavily (0.02) with curve-view output, the curve is first displaced along its X-axis normals using a channel ramp sampled by curve view (`leafRamp`) multiplied by a displacement-amount slider to build a simple leaf-shaped silhouette (mirrorable for a full leaf). To get the overhang look, a second wrangle recomputes normals along the tangent's perpendicular (X...
 - **File:** tutorials/vex-quick-tips-overhang-look-with-channel-ramps.md
 
 
@@ -1946,7 +1946,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** vex, vdb, vellum, xyzdist, quaternion, compile-block, upholstery, couch, curve-manipulation
-- **Summary:** Models a tufted circular couch from scratch: a rotating VEX ramp assembles a variable-width base profile, per-panel VDB smoothing (compile-blocked for-each) rounds the shell while keeping seams sharp, Vellum Configure Balloon inflates it into cushions with Plasticity locking the shape, and a from-scratch VEX self-intersection function closes inter-cushion gaps before adding swept sine-wave stitching detail.
+- **Summary:** The couch starts from a 12-point circle converted to a single-primitive line, then re-assembled point-by-point with a VEX point wrangle that offsets each point's position via `prim()`-sampled curve data — creating a variable spacing ("ramp going around") so some sections of the couch profile are naturally smaller than others. The core VEX exercise walks through building this from primitives:...
 - **File:** tutorials/procedural-modeling-with-vex-vdb-and-vellum.md
 
 
@@ -1956,7 +1956,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** cops, materialx, procedural-texturing, stamping, leaf-generation, uv, rasterize, karma, food
-- **Summary:** Builds a full procedural pizza-slice texture set in Cops — rounded crust via SDF/blur/Minimum-blend, faked crust breaks, SOPs-built leaf toppings (vein normals via modulo aperture, surface-distance interior bump mask) resurrected/stamped into Cops with ID-based Compare, a circular-primitive stamp trick for cloth/napkin, and a Class-attribute wedge cut for the final sliced albedo.
+- **Summary:** The crust look starts from a ring compared against an SDF, smoothed to get a rounded profile, then previewed via a height/displacement connection; a pointy artifact from a small grid-division size is fixed by blurring and blending with Minimum mode against the original texture (repeated at increasing scale) to keep some sharp corners while rounding the rest. A separate distortion pass is...
 - **File:** tutorials/procedural-pizza-in-cops.md
 
 
@@ -1966,7 +1966,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.410
 - **Tags:** solaris, karma, cops, aov, uv-projection, background-plate, physical-sky, cgi-integration, product-viz
-- **Summary:** Integrates a CG truck into a photo plate using a polar-UV-projected, back-face-culled HDRI dome, cheap opacity-traced vegetation shadow cards, a Physical Sky aligned to the HDRI light source, and a Cops slap-comp pass multiplying AO/shadow AOVs for contact-shadow realism.
+- **Summary:** A half-sphere "dome" (Polyfill, Bevel, Subdivide) is polar UV-projected and rotated to align with the background plate, then set to **remove back faces** (Optimize display option) so its interior — where the HDRI texture will be projected — is visible in the viewport, with normals reversed so the camera sees the interior rather than the exterior. This dome is Quick-Shaded with the HDRI (or a...
 - **File:** tutorials/quick-cgi-integration-with-houdini-and-solaris.md
 
 
@@ -1975,8 +1975,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=cXbdFwd3u9o
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #vdb #procedural #fracture #environment #scattering #volumes #fog #third-party-plugin #advanced
-- **Summary:** Grows hanging vines from a pcopen()-based VEX arch mask, builds procedural rocks via Platonic + Voronoi Fracture with layered VDB volume-noise detail and compiled per-piece edge damage, and authors a custom hand-built fog volume instead of Karma's default fog box.
+- **Tags:** vex, vdb, procedural, fracture, environment, scattering, volumes, fog, third-party-plugin, advanced
+- **Summary:** Hanging vines under the bridge arch are grown from a mask built almost entirely in VEX as a learning exercise (rather than pure VOPs): the bridge's arch curve is Match-Sized and Swept into a thin ribbon purely to serve as an attribute-transfer proxy, then a wrangle uses **`pcopen()`** (point-cloud open, searching the swept ribbon's points within a radius) to build an initial proximity mask,...
 - **File:** tutorials/environments-in-houdini-part-4---vines-rocks-and-fog.md
 
 
@@ -1985,8 +1985,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=enW-PwgBWE4
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+)
-- **Tags:** #vex #python #hda #editor-scripting #tool-development #radial-menu #beginner #intermediate
-- **Summary:** Builds a reusable "Flatten X/Y/Z" tool: a VEX wrangle averages selected points' positions along a chosen axis (expandpointgroup + avg() + find()-based axis lookup), packaged as an HDA, then wired to a Python Script Action that creates/positions/connects/configures the node from the current viewport selection and binds it to a radial-menu hotkey — turning a one-off SOP trick into an instant, reusable tool.
+- **Tags:** vex, python, hda, editor-scripting, tool-development, radial-menu, beginner, intermediate
+- **Summary:** A "meta" tutorial about tool-building rather than modeling itself: starts from a simple VEX averaging wrangle (select points, compute their average position, snap them to it along one axis) and evolves it step by step into a fully productionized interactive tool. Key beats: iterating over a point *group* parameter with `expandpointgroup`, building an array of positions to feed to VEX's `avg()`...
 - **File:** tutorials/building-tools-in-houdini-with-vex-and-python-flatten-loop.md
 
 
@@ -1995,8 +1995,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=FvM09fA0cKY
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #procedural #scattering #environment #python #vegetation #third-party-plugin #intermediate
-- **Summary:** Grows vines and a tree on the bridge using the Simple Tree Tools plugin (Trunk/Branch Maker, Tropism, Leaf Scatter), converts Megascans opacity-based grass to real mesh via a Python-automated Opacity-to-Mesh batch script, then scatters background trees.
+- **Tags:** vex, procedural, scattering, environment, python, vegetation, third-party-plugin, intermediate
+- **Summary:** Opens with a quick bug-fix from Part 2: the random top-brick rotation VEX had a bracket misplaced, accidentally mixing the rotation-angle randomization with the zero-centered position offset, causing bricks to rotate consistently to one side instead of both; moving the parenthesis fixes it. The main lesson uses **Simple Tree Tools** (a third-party paid plugin, explicitly recommended over...
 - **File:** tutorials/environments-in-houdini-part-3---vegetation-with-simple-tree-tools.md
 
 
@@ -2005,8 +2005,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=kPtCgMWIBj4
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #vex #procedural #fracture #environment #hard-surface #advanced
-- **Summary:** Models a full stone bridge: hand-sculpted arch curve, centroid-seeded Voronoi Fracture for brick sizing, per-piece cheap edge damage, random row deletion and quaternion-based per-piece rotation around individual bounding-box centers, plus a scattered/remeshed cobblestone road.
+- **Tags:** modeling, vex, procedural, fracture, environment, hard-surface, advanced
+- **Summary:** The bridge starts from a centered **Line** (arch profile), transformed and resampled, then deformed using its curve-U (`curveu`)-driven **Ramp** (mirrored via `abs(u*2-1)` math) to hand-sculpt an arch silhouette. That curve is swept/extruded into a **Box** cross-section and Boolean-intersected against a wider slab to carve the arch opening. To divide the resulting wall into individual bricks,...
 - **File:** tutorials/environments-in-houdini-part-2---stone-bridge.md
 
 
@@ -2015,8 +2015,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=ER_W3w3SkGk
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #heightfield #terrain #procedural #environment #vex #intermediate
-- **Summary:** Builds a battlefield terrain heightfield with a hand-authored VOP Z-gradient mask, layered masked noise displacement, and a box-taper lake feature distorted via a Volume-Sample mask trick (to avoid breaking geometry endpoints) then flattened and edge-blended.
+- **Tags:** heightfield, terrain, procedural, environment, vex, intermediate
+- **Summary:** The terrain starts as a basic **Heightfield** (Z size 700), with a custom gradient mask built manually in VOPs for finer control than the built-in Heightfield Pattern ramp preset: a Vector to Float extracts the Z component of position, **Fit Range** normalizes it (using base-relative-reference divided by 2, negated on one side) into a 0-1 gradient, complemented/inverted to bias more toward the...
 - **File:** tutorials/environments-in-houdini-part-1---heightfields.md
 
 
@@ -2035,8 +2035,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=R3ClxIiqxag
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #vex #vdb #flip #simulation #uv #procedural #food #advanced
-- **Summary:** Full brownie pipeline: a near-point random-clustering fracture technique with Mountain displacement for organic chunks, a UV-Flatten-based per-cluster centroid extraction fix for correct piece rotation, a normal-blend wrangle to conform crack geometry onto a VDB cake proxy, and a variable-viscosity FLIP fudge-drizzle simulation.
+- **Tags:** modeling, vex, vdb, flip, simulation, uv, procedural, food, advanced
+- **Summary:** The brownie top starts as a Box, grouped by normal (positive X) and edge-length-filtered to select and Bevel specific edges, with outer frames grouped (via max edge length) for the layering/cracking pass. That grouped layer is Blasted out, Remeshed for uniform point distribution, and Subdivided heavily. The core **organic-cluster fracture technique**: Scatter a handful of points on the...
 - **File:** tutorials/how-to-not-bake-brownies-in-houdini.md
 
 
@@ -2045,8 +2045,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=24vjgnyZRTw
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #cops #karma #solaris #texturing #materials #lighting #procedural #advanced
-- **Summary:** Full-scene build combining hand-authored VEX point/quaternion-rotation attributes in SOPs with a COPs Stamp Points network to bake a stone-paving texture set (albedo/roughness/displacement with embedded logo), then Solaris assembly with gobo-filtered rectangle light and Karma DOF.
+- **Tags:** vex, cops, karma, solaris, texturing, materials, lighting, procedural, advanced
+- **Summary:** Rather than using the Tile Sampler COP directly, the author deliberately combines SOPs and COPs: a 21x21 Grid's primitive centroids become points (Extract Centroid style wrangle), a radial distance-from-center mask (`length(@P)`) is used to delete a circular cluster of center points, and a single point is re-added exactly at the bounding-box center to host a logo tile later. A chain of point...
 - **File:** tutorials/houdini-mini-course-cops-vex-and-karma.md
 
 
@@ -2056,7 +2056,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.410
 - **Tags:** vex, vdb, sdf, cluster, uvs, gradient, quaternion, vines, ivy-generator, procedural-uvs
-- **Summary:** Fixes vine points stuck in concave geometry during a SOP Solver by projecting onto a heavily-smoothed VDB SDF then re-projecting onto a dilated original SDF; also UVs a VDB mesh via a normal-based Cluster node for seams plus a gradient-measured quaternion rotation for correct island orientation.
+- **Summary:** For an in-progress ivy/vine generator tool, points are scattered on a column surface with target positions to grow toward, constrained via a SOP Solver. The obvious approach — Ray Project (Minimum Distance) directly onto the mesh each solve step — causes points to get permanently stuck in concave crevices. The fix: convert the geometry to VDB, apply a heavy **VDB Smooth** (essentially a large...
 - **File:** tutorials/vex-problem-solving-in-houdini.md
 
 
@@ -2076,7 +2076,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.319
 - **Tags:** cops, copernicus, uvdist, texture-paint, rasterize, karma, wood, rust, texturing
-- **Summary:** Textures a "RUM" barrel with scrambled UVs entirely in Cops using a custom uvdist()-based attribute-sampling wrangle (avoiding Restore-Geometry edge bleeding), layering wood variation, a hand-painted Texture Paint logo, and procedural Fractal-Noise-distorted rust driving base color, roughness, normal, and metalness.
+- **Summary:** Back in SOPs, a **Measure Curvature** (Labs) convexity attribute is multiplied and heavily blurred (8 iterations) to create a soft rust-origin mask around edges, then file-cached to avoid Houdini's node re-evaluation overhead. In Cops, rather than the standard "Restore Geometry"-to-UV-space workflow (known to cause edge-bleeding artifacts, as documented by others in the community), a custom...
 - **File:** tutorials/wood-barrel-texturing-in-cops.md
 
 
@@ -2085,8 +2085,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=-1kxDkdmcV4
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+)
-- **Tags:** #modelling #procedural #vex #uv #beginner
-- **Summary:** Beginner procedural wine barrel: a tube bulged via a relative-bounding-box VEX wrangle feeding a Ramp, split into planks with a `primnum % columns` attribute + Vertex Split, capped with pushed-apart reversed-normal discs, wrapped with swept hoops (ray-projected onto a Convex Hull proxy since direct raying onto the open barrel geometry fails), and finished with a full manual UV workflow including Group Find Path to fix groups broken by extrusion.
+- **Tags:** modelling, procedural, vex, uv, beginner
+- **Summary:** An explicitly beginner-oriented tutorial pairing a simple procedural-modeling exercise with a full, correct UV workflow for procedural assets. The barrel body starts as a Tube, bulged into shape with a **relative bounding-box** VEX wrangle feeding a **Ramp** (a hallmark simple-VEX pattern: `relbbox(0,@P)` gives 0-1 values regardless of scene position, unlike `@P` itself). Planks are separated...
 - **File:** tutorials/beginner-procedural-modelinguvs-tutorial-in-houdini.md
 
 
@@ -2096,7 +2096,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.319
 - **Tags:** vex, quaternion, pop-network, pop-fluid, vellum, super-formula, karma, subsurface, food, product-viz
-- **Summary:** Builds a chocolate-splash hero shot via a from-scratch VEX quaternion spiral curve, a POP network constrained to it with a custom minpos()-based attraction wrangle plus Pop Fluid for tendrils, meshed with Particle Fluid Surface; a Super Formula heart shape is inflated into a balloon-like form with Vellum instead of manual sculpting.
+- **Summary:** A centered Line is Resampled, lightly Mountain-distorted for an organic base curve, Resampled again into a dense subdivision curve, and given an arc-length "spine" UV attribute. The **spiral itself is built entirely in VEX**: Orient Along Curve provides a tangent basis (`tangentU`/`tangentV`, one along the curve direction, one pointing outward along X); a wrangle computes an angle from the...
 - **File:** tutorials/spiral-splash-tutorial-in-houdini.md
 
 
@@ -2106,7 +2106,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.302
 - **Tags:** cops, copernicus, sops, for-each-loop, stamp-point, uv-by-id, tiling, stone, texturing
-- **Summary:** Builds a seamlessly-tiling stone pattern combining a Cops-stamped fan/scale SDF tile (with edge-matched ID offsetting) and a SOPs-built circular stone cluster (randomized-rotation for-each loop) plus a matching hexagonal border pattern, all textured via UV-by-ID and ID-driven color variation.
+- **Summary:** The base fan/scale shape is built as an SDF circle in Cops, transformed/mirrored/inverted and multiplied to form the repeating tile motif. To instance it correctly, a **Grid of points** (scaled from center, rows/columns tied to grid size minus one) gets **row and column ID attributes** (credited to "Fenis" for this part) used to carve an X-style point pattern by filtering/removing specific...
 - **File:** tutorials/tiling-patterns-with-cops-and-sops.md
 
 
@@ -2126,7 +2126,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.302
 - **Tags:** uvs, find-shortest-path, vdb, vex, hda, gradient, cake, procedural-uvs
-- **Summary:** UVs a messy VDB-derived cake mesh with no manual seam options by deriving seam curves from an edge-angle-detected proxy, snapping them onto exact edges via cost-driven Find Shortest Path, then fixing island rotation with a custom gradient-measuring "Orient UVs Up" HDA.
+- **Summary:** The source geometry (from a VDB Boolean cut) is too irregular/tessellated for traditional manual seam picking. The fix: build a simplified proxy by Remeshing (reducing polycount) and Ray-projecting it back onto the original silhouette, then **Poly Reduce** it further so only the sharpest edges remain — these are selected via a **mean-edge-length/edge-angle** Group, which reliably marks the...
 - **File:** tutorials/procedural-uvs-in-houdini.md
 
 
@@ -2135,8 +2135,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=c193tsyLH-0
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #vdb #cops #texturing #procedural #shaders #karma #noise #food #intermediate
-- **Summary:** Three CGI-burger finishing tricks: sine-wave curve + Lattice rest/deform capture for cheap edge detail, noise-masked normal displacement + VDB reshaping for water-drop clusters, and layered fractal-noise COPs shading driving both patty color and displacement.
+- **Tags:** vex, vdb, cops, texturing, procedural, shaders, karma, noise, food, intermediate
+- **Summary:** For the lettering (imported as FBX from ZBrush with a `name` attribute from the original subtitles), the goal was to add a subtle wavy/lit edge highlight cheaply instead of hand-sculpting more detail. Corner/angle edges are isolated via **Group** (min edge angle), converted to a line, isolated to a single primitive, resampled and fused into one continuous curve, then displaced using `sin()` of...
 - **File:** tutorials/enhance-your-renders-in-houdini.md
 
 
@@ -2145,8 +2145,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=conZuTxHnoc
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #vdb #vex #procedural #fracture #texturing #beginner #product-viz
-- **Summary:** Beginner-friendly broken perfume-bottle build: RBD Material Fracture with manually-placed seed points, an area-based fit() remesh-sizing pattern for uneven fragments, a Compile-Block per-piece Volume VOP noise pass for interior damage, and an experimental Triplanar-baked-to-VDB displacement workflow for a rock-textured base.
+- **Tags:** modeling, vdb, vex, procedural, fracture, texturing, beginner, product-viz
+- **Summary:** The bottle body starts as a simple Box with two Poly Bevels (first a modest bevel, then a larger heavily-subdivided one) for a rounded hard-surface look; a front screw/cap detail box gets its own edge-group-based Bevel (angle-thresholded to avoid rounding flat faces) and is Match-Sized into place. Small screw details are built from a WAP-sphere generator, clipped/scaled, Polyfilled (required...
 - **File:** tutorials/houdini-beginner-tutorial-creating-a-perfume-bottle.md
 
 
@@ -2156,7 +2156,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.302
 - **Tags:** uvs, solaris, opacity-to-mesh, make-transform, rest-position, time-dependency, karma, workflow
-- **Summary:** Five tips: clip-and-flatten UVs transferred back via Labs UV Transfer, a null-driven 360°-loop camera rig for parented look-dev objects, an xyzdist()-matched For-Each opacity-to-mesh conversion, a VEX maketransform()-based rotate-pivot solution, and Solaris rest-position/Cache-node performance fixes.
+- **Summary:** For UV work on a symmetrical asset, a Clip node slices the mesh in half (using Group by Normal to isolate one side for the seam), clips top/bottom, and saves the clip-edges group directly on the Clip node itself; UV Flatten then uses that saved group as its seam input, and since the resulting cuts shouldn't remain on the final render mesh, **Labs UV Transfer** copies the computed UVs back onto...
 - **File:** tutorials/tips-and-tricks-for-a-better-houdini-time.md
 
 
@@ -2165,8 +2165,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=c_t8JwyHJrA
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #kinefx #rigging #vex #fracture #procedural #furniture #intermediate
-- **Summary:** Models a wardrobe with recursively randomized shelf divisions via an iteration-seeded Voronoi Fracture loop, then rigs its accordion sliding doors with a KineFX Capture/Bone Deform setup and a community rig wrangle that alternates fold direction and halves the outermost panel's rotation.
+- **Tags:** modeling, kinefx, rigging, vex, fracture, procedural, furniture, intermediate
+- **Summary:** The wardrobe's back panel starts as a Grid, Copied several times using a **bounding-box-driven expression** for perfect alignment, then centered. To divide the resulting large panel into an irregular grid of shelf/drawer sections, rather than a plain Divide node, a **loop-based recursive Voronoi Fracture** is used: each iteration randomly Switches (`random()` × input count) between a...
 - **File:** tutorials/model-and-rig-a-wardrobe-in-houdini.md
 
 
@@ -2175,8 +2175,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=mcP3wLo1lIQ
 - **Author:** cgside
 - **Houdini Version:** H20+ (Copernicus/COPS, Labs tools)
-- **Tags:** #procedural #vdb #quadremesh #cops #texturing #uv #scattering #vellum #advanced
-- **Summary:** Procedural cliff face built from scattered/noised boxes cycled through VDB + Boolean intersection passes to fake rock faceting, QuadRemeshed and Ray-reprojected for clean topology at full fidelity, tiled and UV-flattened per-piece, textured in COPS via curvature/AO masks, and finished with a shortest-path vine-growth system (Labs Create Curve Branches HDA) and randomized leaf scattering.
+- **Tags:** procedural, vdb, quadremesh, cops, texturing, uv, scattering, vellum, advanced
+- **Summary:** A three-part pipeline (rock geometry → COPS texturing → vines/leaves). **Rock geometry**: scatter points on a grid, orient along Z, copy boxes, randomize orientation/scale with a natural/cellular noise, then repeatedly alternate between mesh operations (Mountain distortion, Box Clip, Mesh Sharpen for a faceted "rock plane" look) and volume operations (VDB conversion to unify the mesh, Boolean...
 - **File:** tutorials/cliff-face-in-houdini.md
 
 
@@ -2186,7 +2186,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.319
 - **Tags:** python, hou-module, ramp, cops, scripting, automation, quick-tip
-- **Summary:** Short Python script that re-samples any hou.Ramp parameter into evenly-spaced keys by extracting basis/keys/values, generating new evenly-spaced positions, sampling the original ramp's color via lookup() at each, and rebuilding a clean new hou.Ramp with the same gradient.
+- **Summary:** The script grabs the currently selected node via `hou.selectedNodes()[0]`, accesses its ramp parameter (named "ramp" in the example, e.g. on a `mono_to_rgb`-style Cops node), and calls `.eval()` to get the live `hou.Ramp` object. Three lists are extracted from it: `ramp.basis()` (interpolation type per key), `ramp.keys()` (key positions), and `ramp.values()` (the actual colors) — these are the...
 - **File:** tutorials/resample-color-ramps-in-houdini.md
 
 
@@ -2206,7 +2206,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.319
 - **Tags:** materialx, karma, uvw-randomizer, cell-noise, place2d, tiling, texturing
-- **Summary:** Recreates a V-Ray-style UVW Randomizer in MaterialX/Karma by flooring tiled UVs into per-cell IDs, feeding Cell Noise + Random Float for seeded randomization, quantizing into rotation steps, and feeding the result into a center-pivoted Place2D's rotate input to break up obvious texture tiling.
+- **Summary:** Standard UV tiling (Texture Coordinates → Multiply Constant for repetition count → Modulo set to 1 to wrap the UVs) produces the classic obviously-repeating look. To randomize per-tile, the pre-modulo repeated UV value is **floored**, collapsing each tile into a single discrete integer-pair value; feeding that into **Cell Noise** gives each tile cell a distinct pseudo-random value, and a...
 - **File:** tutorials/uvw-randomizer-in-karma.md
 
 
@@ -2216,7 +2216,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.319
 - **Tags:** vdb, volume-vop, vex, for-each-loop, bend, sweep, bones, organic-modeling, procedural-modeling
-- **Summary:** Sculpts a "ribs" asset via a four-layer cascading VDB noise stack (Worley cellular ridges distorted by 45°-rotated turbulence, complement-inverted detail layer), planarizes sides with a box-masked VDB Combine subtraction, then builds bone segments via a compiled for-each loop with per-iteration seeded randomization of division count and bend angle.
+- **Summary:** A centered Line (7 points) is swept with a Labs Simple Shapes quad cross-section (unequal top/base sizing, rounded corners) to form the base rib shape, given end caps, subdivided, lightly Mountain-distorted (low amplitude, zero-centered), and normal-blurred to soften intersection corners. Converting to a VDB (SDF, smoothed), the core of the video builds a **four-layer cascading noise stack in...
 - **File:** tutorials/vdb-procedural-modeling-in-houdini.md
 
 
@@ -2226,7 +2226,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.319
 - **Tags:** vdb, vex, intersection-analysis, orient-along-curve, quad-remesh, architecture, column, box-clip
-- **Summary:** Builds a twisted-braid column from two swept/VDB-smoothed Spiral strands, derives the ornamental ribbon geometry directly from Intersection Analysis of the strands, computes a VEX xyzdist()-based center curve for flower placement, and finishes with quad-remeshed flower ornaments bent to the column's curvature.
+- **Summary:** Two Spiral primitives (radius scale 1.2, 5 turns, tuned start angle) are offset — one scaled up slightly (1.2 in X/Y) — merged, and swept with a round tube profile (12 divisions, radius 1, single-polygon end cap), with per-primitive p-scale variation (1.1/1.2) giving the two strands slightly different thickness. The swept mesh is clipped top and bottom, converted to VDB, heavily VDB-smoothed...
 - **File:** tutorials/procedural-helical-column-in-houdini.md
 
 
@@ -2236,7 +2236,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.319
 - **Tags:** wrinkle-deformer, planar-inflate, labs-simple-shapes, cops, vex, prim-intrinsic, headphones, fabric, procedural-modeling
-- **Summary:** Models a headphone earpad using new Houdini 20.5 tools: Planar Inflate for the back cushion volume, and Wrinkle Deformer (masked by a Cops-baked seam texture, scaled by attribute) for realistic fabric stretch at seams, finished with a hand-written VEX undulating-stitch pattern using vertex_curve_param_u() and primintrinsic() perimeter normalization.
+- **Summary:** The earpad ring starts from a **Labs Simple Shapes** node (Quad shape, XY plane, unequal base/top sizes, rounded corners with 5 divisions), fused, Resampled (subdivision curves), then Swept (Ribbon mode, 1 column/division, weight 0.45), Extruded and Beveled (ignoring flat edges) for the front cushion rim. UVs are built by finding the boundary-point group via **Find Point/Prim Group** (rather...
 - **File:** tutorials/procedural-modeling-with-houdini-205-tools.md
 
 
@@ -2246,7 +2246,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.170
 - **Tags:** cops, curvature, vex, dot-product, uv-gradient, weathering, decay, procedural-textures, karma
-- **Summary:** Generates a simulation-free water/dirt streak mask by combining curvature with dot-product up/down-facing masks, then fixes streak orientation on rotated UV islands by measuring the gradient of a top-to-bottom mask in UV space, scattering oriented points and stamping SDF streaks in Cops.
+- **Summary:** Starting from simple box geometry with window cutouts, Subdivide adds enough resolution for **Measure Curvature** (Labs) to compute convexity and concavity attributes at SOP level (unavailable at shading level, hence the need for real geometry resolution). Leaks shouldn't originate everywhere — only where water/dirt would naturally collect, e.g. not at the bottom of windows or at the very top...
 - **File:** tutorials/procedural-leaking-texture-in-houdini-205.md
 
 
@@ -2256,7 +2256,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.309
 - **Tags:** vex, find-shortest-path, vdb, cops, lab-sort, seamless-noise, jewelry, procedural-modeling
-- **Summary:** Five ring-making tips: sample_circle()-based circular point groups feeding Find Shortest Path for stone-holder wires, a Lab Sort node for reliable circular ordering before Skin, VDB Topology-to-SDF for shelling an open mesh, seamless Cops displacement noise via alpha-masked Rasterize, and a Whirling-Noise+Mountain+Mesh-Sharpen stone-cut combo.
+- **Summary:** Stone-holder wire mesh generation ("prong" shapes) needs groups of points arranged in a circular pattern around each stone; rather than manual selection (fragile if the stone shape changes), a VEX snippet (adapted from sample code by Animatrix) uses `sample_circle()` to generate points in a circular pattern, grouping the nearest points and adding a distance parameter to offset their position,...
 - **File:** tutorials/procedural-tips-and-tricks-in-houdini-205.md
 
 
@@ -2266,7 +2266,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.301
 - **Tags:** cops, copernicus, uvs, procedural-textures, tile-pattern, karma, food, donut
-- **Summary:** Builds a procedural glazed donut entirely in Houdini 20.5's new Copernicus (Cops) context: a custom UV-stretch wrangle for the torus, layered Fractal-Noise/Ramp/Tile-Pattern drip masks combined via Blend Overlay/Max, a mirrored-and-rotated Max blend to fake interior detail, and Tile-Pattern-scattered colored sprinkles.
+- **Summary:** A 32x64 Torus gets UVs via seam-grouped UV Flatten (rectified, imperfect but acceptable), then a custom wrangle stretches the UVs to fill the full UV tile — using `geo unwrap`, a detail-mode bounding-box-max query, and per-component UV assignment (`uv.x` unchanged, `uv.z = 0`, `uv.y` divided by the bounding-box Y max), with sign-flips and +1 offsets to fix upside-down/out-of-range results....
 - **File:** tutorials/the-donut-tutorial-in-cops-houdini-205.md
 
 
@@ -2276,7 +2276,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.301
 - **Tags:** vellum, vex, vellum-string, python-states, intersection-analysis, orient-along-curve, footwear, procedural-modeling
-- **Summary:** Builds a procedural zig-zag shoelace pattern using a custom Python-States eyelet-placement HDA and VEX pattern generation, resolves self-intersections via Intersection Analysis, then ties the laces with a Vellum String pass and inflates the final geometry with a second Vellum Cloth pass, both driven by Vellum Rest Blend.
+- **Summary:** Eyelet points are hand-placed on the shoe mesh using a custom HDA ("Place Points on Geo," built with Python States — the same tool later built from scratch in the author's "Interactive Tools with Python States" video). Ring geometry gets a Connectivity + centroid pass to find each eyelet's position, and the eyelet points are mirrored and sorted by X so the zig-zag lace pattern can be...
 - **File:** tutorials/shoe-laces-in-houdini-vex-and-vellum.md
 
 
@@ -2285,8 +2285,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=Lm5cG2XxRwU
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #cops #procedural #texturing #materials #karma #substance-style #intermediate
-- **Summary:** Recreates a Substance-Designer-style tufted-leather-button material entirely in COPs — tile-pattern-driven folds, button geometry via height-map displacement, layered color/grain/dirt, and masked normal/roughness maps.
+- **Tags:** cops, procedural, texturing, materials, karma, substance-style, intermediate
+- **Summary:** Builds a complete quilted-leather material from scratch in a CopNet: a **Tile Pattern** (7 divisions, concentric gradient ramp) forms the base diamond grid, which is inflated via layered blurs blended as a mask to create the puffed/padded look. Random per-tile rotation (via **UV Transform** driven by tile ID as seed) plus a ramp-driven radial pattern builds the "fold" creases between diamonds,...
 - **File:** tutorials/designer-like-materials-in-cops-houdini-205.md
 
 
@@ -2295,8 +2295,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=xOeZncLWztc
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #cops #procedural #texturing #displacement #uv #tips #intermediate
-- **Summary:** Ten quick COPs tips for a cut-glass displacement map: Feather-based chamfering, Tile Pattern row/column pruning, Segment by Connectivity + Statistics by ID + Compare region masking, custom Pop Import/Stamp Points star patterns, and RestoreUV-based pattern alignment.
+- **Tags:** cops, procedural, texturing, displacement, uv, tips, intermediate
+- **Summary:** Covers ten quick techniques for building complex tileable displacement patterns in Houdini 20.5's Copernicus (COPs). A **Feather** node (not Blur) creates a beveled/chamfered look on hard pattern edges by controlling a distance parameter, producing sharp facet transitions rather than smoothed blur. **Tile Pattern**'s pruning options isolate single rows/columns by tolerance or...
 - **File:** tutorials/displacement-maps-in-cops-houdini-205.md
 
 
@@ -2306,7 +2306,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.760
 - **Tags:** vex, uv-sample, sign-function, connectivity, minpos, vex-snippets, quick-tips
-- **Summary:** Five VEX one-liners: recentering packed points, uvsample()-based logo wrapping onto curved geometry, sign() as a mirrored-deformation multiplier instead of if/else, a from-scratch Connectivity-driven "lay flat on grid" alternative, and minpos() for snapping geometry to a curve.
+- **Summary:** Instead of a for-each loop with an internal Match Size (aligned to center) to re-center a batch of packed rock objects before Copy to Points, packed points can simply be moved to the origin with a single wrangle line setting position to zero — since with packed primitives you're really just repositioning points. For wrapping flat UV-space logo artwork onto a curved camera-body mesh: convert...
 - **File:** tutorials/useful-vex-snippets-houdini-tips-and-tricks.md
 
 
@@ -2316,7 +2316,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.734
 - **Tags:** uvs, kinefx, vellum, xyzdist, vex, scatter, sprinkles, cupcake, food
-- **Summary:** Five cupcake tips: UV components used as masks and reliable ring-sort keys, an xyzdist()-driven KineFX falloff spiral-icing rig, a per-frame Vellum "attach" constraint to stop icing sliding, a dot-product slope mask for sprinkle placement, and a two-node random-rotation recipe.
+- **Summary:** UVs are shown to be useful beyond texturing: after flattening UVs on a selected seam group, the **U component** of the UV attribute becomes a ready-made X-axis mask for displacing geometry (fed through a ramp for shaping). The **V/U components** also make excellent **Sort Points** keys — sorting by U lets you cleanly select "rings" around the cupcake, and sorting again by V prevents the...
 - **File:** tutorials/procedural-workflow-vex-kinefx-uvs-and-more.md
 
 
@@ -2326,7 +2326,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.724
 - **Tags:** vdb, poly-bridge, lattice, vex, volume-vop, organic-modeling, sculpture, karma
-- **Summary:** Builds an abstract hourglass/vase sculpture from a masked-and-clipped sphere Poly Bridged with a custom thickness ramp, roughened via masked VDB volume noise (dual-noise Mix for stretched mid-section detail), refined with Smooth SDF and a Lattice pinch deformation, finished with a bent Sweep stem.
+- **Summary:** A frequency-30 Sphere gets a top/bottom mask via a Point VOP computing the relative bounding-box Y component, mirrored (`abs(y - 0.5)`) and range-expanded, then distorted with a sparse-convolution 3D Turbulence noise on position. A rest-position + random attribute drives a **Clip** operation (comparing `v@P.y` to `@Cd.r`) to cut the sphere into a jagged ring boundary; the boundary is split...
 - **File:** tutorials/procedural-and-organic-modeling-in-houdini.md
 
 
@@ -2335,8 +2335,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=t1QemBG462g
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #vex #procedural #hard-surface #tips #intermediate
-- **Summary:** Hard-surface modeling tips from a spray-bottle build: pattern-based selection expansion, Draw Curve cleanup, VEX neighbourcount() stray-point removal, target-geometry Fuse, and distortion-free per-piece peak/offset via centroid-normal VEX.
+- **Tags:** modeling, vex, procedural, hard-surface, tips, intermediate
+- **Summary:** Six independent tips from one hard-surface build. (1) Smart direct selection: select a repeating pattern (e.g. every other face on a tube) and expand it forward with Shift+Up Arrow, plus interactive select-by-normal for quick face grouping before extruding. (2) Cleaning a hand-drawn Draw Curve: clip the messy curves to share the same key points, do a large-length resample to capture just the...
 - **File:** tutorials/direct-and-procedural-modeling-in-houdini.md
 
 
@@ -2346,7 +2346,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.734
 - **Tags:** flip, vex, vdb, distance-along-geometry, materialx, karma, food, density-by-attribute
-- **Summary:** Four combined tricks for a caramel-cookie shot: a density-by-attribute FLIP source for layered caramel flow, sin(curveu)-driven VEX melty-border undulation, Boolean-seam distance-along-geometry edge masks, and VDB-combined swept-curve droplets blurred in with Smooth SDF.
+- **Summary:** To get caramel that flows in visible horizontal layers rather than uniformly, a density attribute is authored on the FLIP source points by dividing the point cloud into sections using its own bounding box, blending in noise per-section plus a separate noise at the bottom via `lerp()`, remapping the result to fit the solver's expected density range, and enabling **Density by Attribute** in the...
 - **File:** tutorials/procedural-techniques-in-houdini.md
 
 
@@ -2356,7 +2356,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.734
 - **Tags:** heightfields, substance-designer, third-party-plugin, pegasus, vex, texturing, rocks, karma
-- **Summary:** Sculpts a rock heightfield using ported Substance Designer nodes (Tile Sampler, Blend, Voronoise, Slope Blur) for the ID map, combined with Pegasus-loaded Megascans textures masked by Heightfield Mask by Feature (Occlusion), packing RGB diffuse and alpha ID map into one texture for Solaris.
+- **Summary:** The base heightfield comes from a Circle extruded exactly one unit (so its full range maps cleanly onto Substance Designer's 0–1 height convention), with the extrude-front group promoted, fused, and positioned on positive X for correct alignment with the SD texture. A **Tile Sampler** node builds the base rock-facet pattern from gradients, with heavy use of offset/random disorder/random...
 - **File:** tutorials/using-substance-designer-nodes-for-houdini.md
 
 
@@ -2366,7 +2366,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.701
 - **Tags:** vellum, curvature, remesh, materialx, karma, typography, wrinkles, animated-mask, metal
-- **Summary:** Drives balloon-typography wrinkles with a curvature-derived animated mask (0→1 only near the end of the sim) that locally amplifies Vellum stretch/pressure constraints exactly at the letters' inner curves, remeshed by attribute for extra detail there, shaded gold via MaterialX Random Color keyed to connectivity class.
+- **Summary:** Text is created via Font, arranged with an Edit node, centered/thickened via Match Size, then rounded with a VDB from Polygons → Smooth → Convert back to polygons pass. After splitting primitives along Z and grouping unshared edges, those edges are converted to curves, resampled, and re-projected onto the VDB-smoothed geometry. A curvature attribute is set to 1 on the curves and 0 on the base...
 - **File:** tutorials/vellum-typography-in-houdini.md
 
 
@@ -2376,7 +2376,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.701
 - **Tags:** vellum, shape-match, quad-remesh, materialx, karma, subsurface, food, connectivity, product-viz
-- **Summary:** Grows an intersection-free rice pile by animating each grain's p-scale inside a Vellum Shape Match sim, then swaps simulated low-poly grains for high-poly originals via Vellum Transform Pieces keyed by a saved connectivity attribute; nori wrap uses Vellum Cloth + Quad Remesh; shaded with SSS salmon/rice materials in Karma XPU.
+- **Summary:** A single rice grain is built from a Line swept with scale-along-curve (thicker in the middle, grid end caps for rounded tips), Bent for shape, then blended between the bent version and a straight version via a bounding-box-X mask and `lerp()` so the underside stays flat. Subdivide + Exoside QuadRemesher clean up the pole artifact left by the sweep/bend. Since simulating the full-resolution...
 - **File:** tutorials/sushi-modeling-and-rendering-in-houdini.md
 
 
@@ -2385,8 +2385,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=4PjTMogFWqQ
 - **Author:** cgside
 - **Houdini Version:** any modern (H19+, uses MaterialX/Karma)
-- **Tags:** #vdb #procedural #materials #karma #mardini #uv #displacement #intermediate #advanced
-- **Summary:** Chocolate-swirl candy built from a sphere: mask-blended Mountain noise, then a Volume Deform/Lattice-from-Volume with two Soft Transforms pivoting on the topmost point to create the spiral. A hand-curled tip (Rig Wrangle bends, chosen over Bend SOP to avoid interpolation issues) is swept and blended back in via VDB Combine + mask-driven VDB Smooth. Shading uses a deliberate polar UV projection so a MaterialX/Karma texture stretches radially around the swirl.
+- **Tags:** vdb, procedural, materials, karma, mardini, uv, displacement, intermediate, advanced
+- **Summary:** A compact, from-a-sphere procedural food-modeling breakdown. Geometry starts from a Labs Sphere Generator, clipped and filled, with two blurred masks built from a group-expand base: one blends a Mountain-node bump layer onto the sphere, the other drives a point-normal displacement. The signature swirl comes from converting the mesh to a VDB-backed **Volume Deform** (which auto-generates a...
 - **File:** tutorials/chocolate-swirl-effect-with-houdini.md
 
 
@@ -2396,7 +2396,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.701
 - **Tags:** workflow, hotkeys, poly-hinge, connectivity, enumerate, selection-modes, matcap, viewport, quality-of-life
-- **Summary:** Eleven workflow tips: snap-orient object picking, Houdini 20's Poly Hinge node used procedurally instead of the old copy/skin workflow, Enumerate for reordering random Connectivity IDs, several selection-mode tricks (3D connectivity, edge-in-between), and hotkey fixes for keyboard-incompatible defaults.
+- **Summary:** To snap-orient a new object (e.g. a box) onto part of a reference model, Ctrl-click the reference's display flag to set it as the pick reference, drop the new object, press Enter to enter the tool state, and use the (potentially remapped) "start orientation picking" hotkey plus left-click to snap position/orientation to any point on the model. The new **Poly Hinge** node, when switched from...
 - **File:** tutorials/quality-of-life-tips-in-houdini.md
 
 
@@ -2405,8 +2405,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=6wqRXRV7oxk
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #kinefx #rigging #vellum #simulation #vex #procedural #animation #advanced
-- **Summary:** Recreates a squeezed-toothpaste-tube animation: Vellum cloth blend between two lerped tube poses, a KineFX Capture-by-Proximity rig with a custom VEX unrolling-spiral animation, a dihedral-rotation Point Deform fix for the following cap piece, and a sine-wave-randomized Vellum Fluid paste sim.
+- **Tags:** kinefx, rigging, vellum, simulation, vex, procedural, animation, advanced
+- **Summary:** The tube body starts as simple modeling (circle + rounded square merged and Poly Bridged, UVs computed early via bottom-point grouping for potential later texturing, capped and beveled). Rather than simulating the actual squeeze, the tube's two "poses" — a naturally-drooping filled state and a squeezed/emptied state — are each produced as separate **Vellum cloth sims** (with the polyfilled...
 - **File:** tutorials/kinefx-and-vellum-fluid-in-houdini.md
 
 
@@ -2415,8 +2415,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=cRr4R54DRKw
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #karma #materials #shaders #mtlx #vex #procedural #modeling #tips #intermediate
-- **Summary:** Six tips: MaterialX Round Edge + noise-blended edge breakup, camera View Mask Opacity to hide off-frame geometry, Sublime Text as an external VEX editor with syntax highlighting, near-uniform non-square grid division, and a ceil()-based Divide-node density expression for consistent roof-panel sizing across sections.
+- **Tags:** karma, materials, shaders, mtlx, vex, procedural, modeling, tips, intermediate
+- **Summary:** **Edge breakup:** instead of (or in addition to) a real Bevel, a **Round Edge** MaterialX node (with a tuned radius) is plugged into the shader's normal input to fake rounded, worn edges purely in shading — its second output is a "round mask" isolating just the affected edge area. That mask drives a **Mix** node blending between the round-edge-modified normals and a version of those same...
 - **File:** tutorials/houdini-and-karma-tips-and-tricks.md
 
 
@@ -2425,8 +2425,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=kdpeMWXIGrY
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #karma #materials #shaders #mtlx #procedural #texturing #tips #intermediate
-- **Summary:** Four MaterialX/Karma tips on a pill blister pack: the X-key solo/emission debug preview, Add-node re-centering for tiled textures, a modulo+multiply trick for tiling bounded shapes like MtlX Line, and layering multiple bump/normal maps additively via MtlX Max before a shared Bump node.
+- **Tags:** karma, materials, shaders, mtlx, procedural, texturing, tips, intermediate
+- **Summary:** **Debugging via solo/emission preview:** selecting any node in a MaterialX network and pressing **X** switches the viewport to a flat emission-shader preview of just that node's output — instant visual debugging without wiring a temporary output or switching contexts; pressing X again returns to the full shader. **Re-centering tiled textures:** a `MtlX Image` fed through **Texture Coordinates...
 - **File:** tutorials/materialx-and-karma-procedural-networks.md
 
 
@@ -2435,8 +2435,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=Y-CjDhFmclQ
 - **Author:** cgside
 - **Houdini Version:** 20
-- **Tags:** #modeling #vdb #vex #expressions #materials #shaders #karma #solaris #lighting #product-viz #beginner
-- **Summary:** Full soap-bar build: a logo Boolean-stamped via a bbox-pivot mirror, a from-scratch VDB foam pipeline (Reshape/Combine-subtract), a hand-derived equidistant-scaling expression for the plate, and Karma XPU shading (SSS soap, thin-film bubbles, Triplanar-roughness plate) with dual rectangle-light setup.
+- **Tags:** modeling, vdb, vex, expressions, materials, shaders, karma, solaris, lighting, product-viz, beginner
+- **Summary:** The soap bar starts as a beveled Box (edges excluded from bevel on flat faces via an angle threshold), with a logo imported via **Regions from Image**, cleaned, cached, and isolated by name; the logo shape is Match-Sized onto the soap's top face (mean/max alignment, scale-to-fit, then centered-scale via a **centroid-based expression** so it shrinks toward its own middle rather than a corner),...
 - **File:** tutorials/lets-make-soap-houdini-and-karma-beginner-course.md
 
 
@@ -2446,7 +2446,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.590
 - **Tags:** ray-project, for-each-loop, cops, karma, materialx, displacement, product-viz, still-life, dust
-- **Summary:** Four still-life tips: fixing Ray Project label-stretching via blurred point normals, a Fetch-Feedback for-loop with Scale-by-Attribute for segmented random neck-wrap bending, a COPs-baked noise texture for water-puddle displacement, and a normal-Y-masked procedural dust material mixed with glass.
+- **Summary:** Projecting a flat label onto a bottle with Ray Project set to Minimum Distance fails, and switching to Projected Rays along Z produces unwanted stretching; the fix is to transfer the bottle's normals onto the label, promote them to point normals, **blur** them (fairly heavily), and Ray Project using those blurred normals instead of a fixed vector — eliminating the stretch. The torn-paper "neck...
 - **File:** tutorials/still-life-scene-breakdown-houdini-tips.md
 
 
@@ -2455,8 +2455,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=qtzO_NoQbtE
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #vex #vellum #hard-surface #procedural #subdivision #tips #advanced
-- **Summary:** Five hard-surface tricks recreating an ArtStation prop: UV-as-position flattening to Box Clip curved geometry, noise-driven bend-stiffness for varied Vellum cloth patterns, boundary-group-controlled Exoside QuadRemesher, crease-based corner preservation under Subdivide, and a VEX rotation-matrix orient-to-point snap.
+- **Tags:** modeling, vex, vellum, hard-surface, procedural, subdivision, tips, advanced
+- **Summary:** For the cloth pads: after basic extrude/bevel modeling, pieces are grouped in batches of 8 (via `primnum / 8`, with a `shift by 4` sort so groups align correctly with the visual layout), then a **For Each (name/primitive)** loop saves a `rest` position, selects/converts the bottom to vertices, runs **UV Flatten**, promotes UVs to points, and assigns the UV attribute directly to position —...
 - **File:** tutorials/hard-surface-techniques-in-houdini.md
 
 
@@ -2465,8 +2465,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=zItss8TuZMo
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #solaris #lops #tops #vex #vellum #procedural #fracture #environment #tips #intermediate
-- **Summary:** Five tips: importing an animated Stage camera to objects, a transform-then-restore RBD Fracture trick for stretched rock walls, TOPs batch HDRI resizing via a non-feedback loop, integer-only tileable-noise rules (Perlin vs. non-tileable Simplex/Sparse Convolution), and a Vellum Source staggered-emission system for random debris.
+- **Tags:** solaris, lops, tops, vex, vellum, procedural, fracture, environment, tips, intermediate
+- **Summary:** **Camera from Stage:** an animated camera authored in Solaris/LOPs can be pulled back to the SOP/object level via **Object → Import Camera** (selecting the target camera prim, e.g. `camera2`), producing a native object-level camera with the same animation intact — described as the only way to get a Stage camera back to objects short of a full USD round-trip. **Stretched rock wall via RBD...
 - **File:** tutorials/houdini-tips-tileable-noises-cam-from-stage-tops-and-more.md
 
 
@@ -2485,8 +2485,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=FLWrmz8QPZQ
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #procedural #tips #intermediate
-- **Summary:** Seven group-selection patterns: thresholded normal expressions, Group Range endpoint/partition selection, Connectivity-based class splitting, procedural bounding-box edge-loop selection, curvature-based corner-preserving curve resampling, and detail-scope VEX nearest-point grouping via nearpoint().
+- **Tags:** vex, procedural, tips, intermediate
+- **Summary:** (1) **Normal-based grouping:** `N.y` alone in a Group Expression only reliably selects top/bottom box primitives for cube-like proportions; `abs(N.y) > 0.5` (a thresholded absolute-value check) works regardless of box dimensions. The equivalent can be done non-expression-wise with a **Group (Normals)** node ("Keep by Normals" set to Y, 0, with "include normals matching opposite direction" to...
 - **File:** tutorials/groups-patterns-in-houdini.md
 
 
@@ -2495,8 +2495,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=2Vw6jvHrnBw
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #uv #vellum #cops #expressions #procedural #tips #advanced
-- **Summary:** Five gotcha-fixes: nprimsgroup() for correctly scoped Group Range divisions, a Fetch-feedback recursive Clip loop for shatter cuts, removing leftover curves via the closed primitive intrinsic, reading true image resolution only from inside a CopNet, and fixing exploding Vellum balloon sims with a shared class attribute instead of Connectivity-based piece detection.
+- **Tags:** vex, uv, vellum, cops, expressions, procedural, tips, advanced
+- **Summary:** **`nprimsgroup()` expression:** when using Group Range to select "every Nth primitive" within a specific base group (e.g. a strip of extruded side faces you want to subdivide for cleaner UVs), the natural-seeming `nprims()` expression actually counts *all* primitives in the whole object, not just the target group — producing wrong divisions. The fix is **`nprimsgroup(0, "group_name")`**, which...
 - **File:** tutorials/houdini-tips-expressions-vex-recursive-cuts-and-more.md
 
 
@@ -2505,8 +2505,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=m00nko87HeI
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #uv #modeling #texturing #unreal #zbrush #procedural #tips #intermediate
-- **Summary:** Five tips: VEX and UV-Flatten fixes for non-stretching square UVs, packing multiple masks into vertex-color channels for Unreal, a twisted-and-cut Sweep profile as a ZBrush base mesh, and a multi-stage Path Deform + normal-to-aperture-vector orientation pattern for repeated "legs" along a curve.
+- **Tags:** vex, uv, modeling, texturing, unreal, zbrush, procedural, tips, intermediate
+- **Summary:** UV Texture's default behavior stretches textures on non-square flat shapes. Two fixes: (1) a VEX approach computing the incoming shape's aspect ratio, using an if-statement to scale X or Y down to fit the 0-1 UV tile (negating Y to correct orientation and offsetting to place it correctly in the tile); (2) a simpler node-based approach using **UV Flatten** with default settings, driven by an...
 - **File:** tutorials/houdini-tips---procedural-uvs-channel-packing-and-more.md
 
 
@@ -2515,8 +2515,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=at27qaTVrFc
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #vex #procedural #expressions #furniture #product-viz #intermediate
-- **Summary:** Models a designer table base by Petal-Form-deforming a triangulated strip into stacked rings, offsetting each ring's rotation via a Metadata-node iteration expression, then reshaping the stack with a Linear Taper squish and Poly Bevel finish.
+- **Tags:** modeling, vex, procedural, expressions, furniture, product-viz, intermediate
+- **Summary:** The base pattern starts as a **Grid** (10x1, alternating-triangle remesh mode) that gets **Copy-and-Transform**'d using the bounding-box size as the offset (so shapes stack edge-to-edge), scaled down to 0.3 — critically **pivoting the scale from the shared meeting edge** (via a copy-pasted `Z-mean` expression in Pivot Transform) rather than each shape's own center, so the scaled copies...
 - **File:** tutorials/modern-furniture-modeling-in-houdini.md
 
 
@@ -2525,8 +2525,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=fgUIMtGLIrI
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #python #pipeline #unreal #houdini-engine #instancing #materials #procedural #advanced
-- **Summary:** Builds a live Houdini Engine HDA for Unreal, exposing noise/seed parameters plus Unreal_instance point-cloud outputs for static-mesh and Blueprint-light instancing, using unreal_ref/unreal_ref_class parameter tags so Unreal's asset picker filters correctly per slot type.
+- **Tags:** vex, python, pipeline, unreal, houdini-engine, instancing, materials, procedural, advanced
+- **Summary:** Starting from an existing procedural lamp/branch generator (a two-seed noise-driven shape generator with imperfect but usable results), the whole network is wrapped in a **Subnet** and converted into an HDA via **Edit Parameter Interface**: relevant internal parameters (global seed, secondary seed, Mountain noise amplitude/element size/offset) are dragged out into user-facing folders...
 - **File:** tutorials/houdini-to-unreal-hda-setup-and-workflow.md
 
 
@@ -2535,8 +2535,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=fF01Lyg_G48
 - **Author:** cgside
 - **Houdini Version:** 20
-- **Tags:** #heightfield #terrain #procedural #erosion #texturing #materials #environment #advanced
-- **Summary:** Builds a rocky terrain with embedded cliffs using a two-pass erosion workflow (low-res then mask-preserved high-res resample), third-party Pegasus Heightfield Material/Tint texturing, and a final cliff-splitting + QuadRemesh pass for real render-time Triplanar displacement.
+- **Tags:** heightfield, terrain, procedural, erosion, texturing, materials, environment, advanced
+- **Summary:** The terrain starts as a 500x700 Heightfield with a **Worley Cellular F1** noise (complemented for a desert-like look), then distorted with a very-high-element-size, high-amplitude Heightfield Distort by Noise for more interesting broad shapes. Rock/cliff formations are added by taking a heavily-distorted separate shape and projecting it onto the base terrain, then using **Mask Expand set to...
 - **File:** tutorials/houdini-heightfields-and-cliffs.md
 
 
@@ -2545,8 +2545,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=WwwTwtlKm0A
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #solaris #lops #vdb #cops #vellum #vex #compositing #karma #procedural #tips #intermediate
-- **Summary:** Five tips: real Karma-rendered Component Builder thumbnails, preserving a point attribute through a VDB From Polygons/Attribute From Volume round-trip, a subdivide-before-transfer fix for QuadRemesher attribute loss, a quick COPs concentric-ramp vignette, and mixing pre/post-Vellum positions via a mask to selectively flatten wrinkles.
+- **Tags:** solaris, lops, vdb, cops, vellum, vex, compositing, karma, procedural, tips, intermediate
+- **Summary:** **Component thumbnails:** in a Component Builder's **Component Output**, the Thumbnail section can be set to actually **Render** (rather than a plain viewport capture) using Karma XPU — feeding it a "camera and scene" second input (a dedicated light, camera, and render settings) produces asset-gallery thumbnails that look identical to a real render; for glass/transparent shaders, the render...
 - **File:** tutorials/houdini-tips-solaris-vdbs-cops-and-more.md
 
 
@@ -2555,8 +2555,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=6hbyMIxU1oI
 - **Author:** cgside
 - **Houdini Version:** H20 (Karma XPU)
-- **Tags:** #karma #lighting #hdri #materials #solaris #product-viz #intermediate
-- **Summary:** Projects an HDRI interior onto a subdivided box, then bakes the projection into a flat "room map" texture via a custom Karma lens shader HDA (driven by the box's bounding box + an offset parameter). Applying the baked texture to a flat plane with matching camera-view attributes reproduces a convincing parallax fake-interior effect at a fraction of real geometry's cost.
+- **Tags:** karma, lighting, hdri, materials, solaris, product-viz, intermediate
+- **Summary:** Starts from a subdivided box standing in for a room, projects an HDRI panorama onto its interior faces (viewing it via UV Project + Quick Shade to preview and adjust rotation/box scale interactively), then renders that projected interior through a custom Karma lens shader HDA to bake it into a square texture — a "room map." Applying the resulting room map texture to a flat plane (with the...
 - **File:** tutorials/bake-room-maps-in-karma-from-hdri-interiors-h20.md
 
 
@@ -2565,8 +2565,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=M6W_EP48BaI
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #texturing #uv #baking #materials #shaders #mtlx #karma #procedural #intermediate
-- **Summary:** Builds a procedural tufted-mattress material by generating bulge and stitching patterns from curve-clip geometry, baking color/normal/displacement maps to a flat plane, then assembling a layered MaterialX shader with masked noise and chained normal maps for Karma.
+- **Tags:** modeling, texturing, uv, baking, materials, shaders, mtlx, karma, procedural, intermediate
+- **Summary:** Covers three linked stages: (1) building a tileable bulging/tufted pattern from curve-clip geometry and displacing it via a boundary-distance mask to fake a puffy mattress surface, (2) building a separate embroidered stitching pattern from a traced reference image using the same alternating-curve-cut trick (helped by Houdini 20's new Carve by Attribute node), and (3) baking both hi-res proxies...
 - **File:** tutorials/custom-procedural-materials-with-houdini-and-karma.md
 
 
@@ -2576,7 +2576,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.590
 - **Tags:** materialx, karma, anisotropy, uvs, orient-along-curve, procedural-shading, spiral-ramp, metal, product-viz
-- **Summary:** Recreates brushed-metal circular anisotropic reflections on a modeled cake pan using a hand-built MaterialX "spiral ramp" (Rotate→Distance→Remap to ±π→Combine) that drives both specular rotation and circularly-tiled noise, finished with a Triplanar dirt-mixed roughness pass.
+- **Summary:** The pan is modeled from a reversed 64-sided Circle (ZX plane) through several Extrude/Insert passes to build the rim and inner cup profile, with a tapering effect created by blending two Orient-Along-Curve-derived normal sets via Attribute Combine (Copy blend mode). UVs are split by normal (Y-axis) into a cylindrical UV set for the vertical wall and an orthographic Y-projection for the flat...
 - **File:** tutorials/procedural-anisotropy-in-karma.md
 
 
@@ -2585,8 +2585,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=d2Qgcbzup2s
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vellum #modeling #vex #simulation #procedural #product-viz #advanced
-- **Summary:** Uses Vellum cloth/hair as a modeling tool for four assets: tangled earphone wires via Vellum Hair + POP Attract convergence, crumpled tissues via POP Attract/Force noise, a stitched tissue-box liner with POP Wind to fake gravity sag, and a candy wrapper twisted by counter-rotating tube colliders.
+- **Tags:** vellum, modeling, vex, simulation, procedural, product-viz, advanced
+- **Summary:** **Earphone wires:** three curves (main wire + two earpiece branches) are hand-drawn with **Draw Curve**, Resampled, and Fused with a generous snap distance so they visually join at the branch point while remaining three separate primitives (they'll separate again once simulated) — Resample again with Subdivision Curves smoothing, then group the shared connection points (curve start/end...
 - **File:** tutorials/modeling-assets-with-vellum.md
 
 
@@ -2596,7 +2596,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.331
 - **Tags:** vellum, vdb, typography, karma, materialx, simulation, balloon, text-effects
-- **Summary:** Creates inflated "balloon text" by VDB-rounding extruded font letters, remeshing, then running Vellum Configure Balloon with deliberately extreme stiffness/pressure values (high stretch, low bend, high pressure rest-scale) and freezing on whichever unsettled frame looks best, rendered in Karma XPU.
+- **Summary:** Text is created via a Font node, extruded (~0.2, with back cap), then converted to VDB and rounded out via **VDB Smooth**, since a straight Bevel wasn't smooth enough. After converting back to polygons to check the result, the smooth amount and an added **Erode** pass refine the rounded shape further. Since this VDB-remeshed geometry isn't well-suited for simulation directly, a separate...
 - **File:** tutorials/vellum-balloon-text-in-houdini.md
 
 
@@ -2606,7 +2606,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.331
 - **Tags:** materialx, karma-xpu, hda, decals, vex, boolean, displacement, food, product-viz
-- **Summary:** Custom UV-planar-projection HDA generates a proximity mask so a logo decal only shows on the cup's front (Address Mode Constant + alpha×mask mixing in Solaris), plus a modeled (not shaded) rim-sharpness detail via edge-normal transfer and Boolean Shatter, and a noise-mixed fries shader with displacement.
+- **Summary:** A simple custom HDA performs UV planar projection with a point placed at the same position as the projection plane, transferring a proximity-based attribute to the geometry so the decal naturally fades out anywhere not facing the projector — avoiding the logo wrapping onto the back of the cup. In Solaris, a Place2D-style node controls texture scale, the texture's Address Mode is set to...
 - **File:** tutorials/procedural-fries-with-mtlx-and-karma-xpu.md
 
 
@@ -2616,7 +2616,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.301
 - **Tags:** python, hotkeys, karma, materialx, triplanar, workflow, automation, hou-module
-- **Summary:** Three shortcuts: a shelf-tool hotkey toggling auto-update mode, rebinding the Toggle Comments hotkey for incompatible keyboard layouts, and a Python script that queries a shelf tool's own source to reconstruct hou.vopNetUtils/vopUtils arguments for scripted Karma Material Builder creation.
+- **Summary:** Manual/auto-update mode is normally menu-driven, but binding a small shelf-tool script to a global hotkey (the author uses Ctrl+.) makes toggling it a one-key action — handy for complex scenes or quickly inspecting simple setups without full cook overhead. Separately, Houdini's default "toggle comments in VEX/Python" hotkey combination doesn't work on some keyboard layouts (including the...
 - **File:** tutorials/time-saving-tips-in-houdini.md
 
 
@@ -2625,8 +2625,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=5jfjCGDdbqs
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #modeling #materials #shaders #mtlx #karma #cops #compositing #procedural #product-viz #intermediate
-- **Summary:** Fakes an infinite-mirror LED sign using a Ray-Back-Face two-sided material (glass front, mirror back) sandwiching a segment-colored, sweep-ribbon LED strip treated as a self-illuminating light source via Render Geometry Settings, finished with a COPs blur-and-add bloom pass.
+- **Tags:** modeling, materials, shaders, mtlx, karma, cops, compositing, procedural, product-viz, intermediate
+- **Summary:** Text geometry is built from a **Font** node, Extruded, and centered; primitives are grouped by front/back and split, with the front further grouped into "solid" (frame/border) vs. "mirror" (the reflective glass-facing part) sub-groups; a small Bevel and Vertex Normals soften the model. The core trick is the **material**: a metallic mirror shader (Metallic = 1, Roughness = 0) and a glass shader...
 - **File:** tutorials/infinite-mirror-in-karma-xpu.md
 
 
@@ -2636,7 +2636,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.311
 - **Tags:** groups, vex, boundary-groups, orient-along-curve, connectivity, hot-air-balloon, procedural-modeling
-- **Summary:** Seven tips on a hot-air-balloon model: multi-boundary group separation, a Connectivity+iteration-modulo repeating color pattern for gores, the wicker-basket weave technique (with a Sort-based alternation fix), Orient-Along-Curve-based sim-object replacement, and curvature-based pipe joining across mismatched point counts.
+- **Summary:** To manipulate multiple mesh boundaries independently (e.g. isolating just the top rim of the balloon), Group by unshared edges in points mode with **"create boundary groups"** enabled automatically creates a separate group per boundary loop. For the balloon's colored panel pattern, each gore/section gets a Connectivity ID, then a for-each loop over each piece runs a wrangle creating a...
 - **File:** tutorials/procedural-problem-solving-in-houdini.md
 
 
@@ -2655,8 +2655,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=ItIlLC6mlF4
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #procedural #scattering #tips #intermediate
-- **Summary:** Three tips: combinatorial geometry variants via Attribute from Pieces random selection in a for-each loop, centroid-corrected concentric radial shapes with Remap-Attribute pscale gradients, and a seeded VEX step-orient rounding trick for Scatter/Copy to Points.
+- **Tags:** vex, procedural, scattering, tips, intermediate
+- **Summary:** **Variant generation** (adapted from a Maxon-team technique, refined with Discord help): each geometry category (e.g. 3 vase variations, 3 stem/flower variations) gets its own **Connectivity** attribute named `class` and is Packed; all categories are merged, then a second Connectivity pass assigns a `name` attribute across the whole merged set. Inside a **For Each (named primitive)** loop, the...
 - **File:** tutorials/houdini-procedural-tips-variants-concentric-shapes-and-step-orient.md
 
 
@@ -2666,7 +2666,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.306
 - **Tags:** karma, materialx, solaris, room-maps, udim, cops, vellum, favela, procedural-shading, texturing
-- **Summary:** Five shading tips on a favela apartment building: random per-piece texture assignment via findattribval(), UDIM-offset room-interior variation, LOPs subset-groups exposure for material targeting, and an experimental fluid-sim "lick map" wetness texture baked via COPs.
+- **Summary:** To avoid every apartment unit rendering with the same texture, a wrangle promotes a unique-ID attribute to detail-max (getting the total count of variations needed), then loops over that count assigning each matching primitive a random integer (0–2 for 3 texture variations) via `findattribval()`, stored as an `outs_texture`-style attribute; a MaterialX Switch node in Solaris reads this...
 - **File:** tutorials/procedural-shading-tips-2-in-houdini-20.md
 
 
@@ -2675,8 +2675,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=NHD3VbE2y00
 - **Author:** cgside
 - **Houdini Version:** 20
-- **Tags:** #solaris #materials #shaders #mtlx #karma #triplanar #uv #procedural #environment #intermediate
-- **Summary:** Textures UV-less procedural houses using Houdini 20's new Karma X-Style Triplanar (albedo/roughness/normal without UVs), attribute-driven MaterialX Color Correct/Random for per-plank and per-house variation, and Karma Room Map for parallax fake-interior windows.
+- **Tags:** solaris, materials, shaders, mtlx, karma, triplanar, uv, procedural, environment, intermediate
+- **Summary:** A batch of procedurally generated houses (no UVs, would be painful to texture in Substance Painter) is shaded using new Houdini 20 MaterialX/Karma nodes. A per-plank random attribute created in SOPs is loaded and fed into **MaterialX Color Correct** nodes to vary gain/hue/saturation of the base wood texture per plank, with the effect range narrowed for subtlety. The wood texture itself comes...
 - **File:** tutorials/houdini-20-procedural-shading-features.md
 
 
@@ -2685,8 +2685,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=BUJg3ILS1Aw
 - **Author:** cgside
 - **Houdini Version:** 19.5
-- **Tags:** #vex #python #pipeline #unreal #fbx #houdini-engine #instancing #procedural #advanced
-- **Summary:** Exports a packed-instance-heavy cathedral scene to Unreal: recovers per-instance transforms via a For Each + Extract Transform loop, auto-routes packed-vs-single geometry via an intrinsic-typename switch, batch-exports FBX via Python, and reconstructs the scene in Unreal via an input-less Houdini Engine HDA of instance point clouds.
+- **Tags:** vex, python, pipeline, unreal, fbx, houdini-engine, instancing, procedural, advanced
+- **Summary:** The scene mixes packed-primitive `Copy` instances (not `Copy to Points`) with occasional manual post-pack transforms, which breaks naive approaches: a straight `add`+delete-geometry-keep-points+`Copy to Points` round-trip works for untouched objects but silently fails for pieces that were transformed after packing (e.g. plaster walls), because the packed transform doesn't survive a plain...
 - **File:** tutorials/export-a-full-scene-from-houdini-to-unreal.md
 
 
@@ -2696,7 +2696,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.598
 - **Tags:** vex, uvs, divide, for-each-loop, compile-block, roof, architecture, procedural-modeling, dihedral
-- **Summary:** Full pyramid-roof tile system: hand-derived VEX cross-product orientation per face, area/bounding-box math to size tile grids correctly per face, margin/room reservation via bounding regions, and a compiled per-piece for-loop using Clip nodes (instead of slow Boolean) for scalable tile cutting.
+- **Summary:** Starting from a grid with alternating-triangle connectivity, the center points are raised and the roof pyramid's rough shape is formed, then unneeded middle edges are removed. Since copying flat tile grids directly onto the sloped roof faces gives wrong orientation, the video derives correct per-face orientation from scratch in VEX rather than relying on default aperture vectors: an "out"...
 - **File:** tutorials/procedural-roof-tiles-in-houdini.md
 
 
@@ -2705,8 +2705,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=g6PQu2FRKGo
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+)
-- **Tags:** #vex #for-loop #optimization #performance #procedural #intermediate #advanced
-- **Summary:** Rules for successfully compiling for-loop blocks (including nested loops) on a procedural Roman-bridge brickify setup: use spare inputs instead of direct node references, replace bbox()/centroid() expressions with VEX wrangles, and relay outer-loop iteration data into inner loops via a duplicated Block Begin node set to "Fetch Input," chained per nesting level since dependencies can't cross block boundaries directly.
+- **Tags:** vex, for-loop, optimization, performance, procedural, intermediate, advanced
+- **Summary:** Compiled loop blocks execute much faster than normal for-loops but impose several hard restrictions that aren't obvious until you hit them. The core rules demonstrated: (1) nodes inside a compiled block **cannot read from other nodes via direct/named references** — any cross-reference (e.g. an Add node needing size attributes from elsewhere) must go through a **spare input** instead,...
 - **File:** tutorials/compiling-nested-loops-in-houdini.md
 
 
@@ -2716,7 +2716,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.598
 - **Tags:** sweep, vex, fuse, weaving, procedural-modeling, orient-along-curve, wicker
-- **Summary:** Models a woven basket from curves and Sweeps: modulo-alternated normal-flip creates the over-under weave wave pattern for rows/columns, and a Fuse node set to "closest target point" bridges a circle and transformed grid into the base's radial spoke pattern.
+- **Summary:** Horizontal weave rows start as a resampled Line, Swept with Round Tube/Rows surface type, with a Ramp-controlled profile for tapering. Polyframe adds inward-pointing normals; a wrangle switches between the incoming normal and its inverse for every other point using modulo, then Peak moves points along the (possibly inverted) normal to create the wave. Curves are extracted from this, blurred...
 - **File:** tutorials/procedural-wicker-basket-in-houdini.md
 
 
@@ -2726,7 +2726,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.598
 - **Tags:** vex, for-each-loop, karma, materialx, rotate-to-vector, fetch-feedback, capsule, procedural-modeling
-- **Summary:** Six tips: VEX bbox_max-based normal derivation for roof-tile orientation without a Transform, a MaterialX Rotate2D rainbow-CD shader, quick rock-modeling shortcuts (clamped-normal noise masking), a Fetch-Feedback for-loop for stacking objects, and a DIY capsule from just a Line + round Sweep.
+- **Summary:** For roof-tile instancing, rather than relying on a grid's default orientation (needing a Transform + "up" attribute + 90° rotation since Sweep-copied geometry aligns its Z axis to the point normal by default), a VEX-only alternative computes the normal directly: get the topmost point via bounding-box max, subtract the current position from it to get a direction vector, assign that as the...
 - **File:** tutorials/procedural-tips-3-vex-shading-and-loops.md
 
 
@@ -2735,8 +2735,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=VJ4AnxgCvQU
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+, uses Labs Instant Meshes)
-- **Tags:** #heightfields #triplanar #remesh #uv #substance-painter #baking #displacement #solaris #karma #advanced
-- **Summary:** Full heightfield-to-asset pipeline: mask-driven heightfield detail + slope mask, remesh/subdivide to fix triplanar-breaking stretched polygons, Triplanar Displace with Megascans textures for micro-detail (normals recomputed after, not before), island-based compiled poly-reduce + Labs Instant Meshes for low-poly, per-island UV Flatten loop, Python-batched high-poly export to Substance Painter for baking (checking raw vs. equalized bakes for gaps), and final Solaris/Karma displacement rendering.
+- **Tags:** heightfields, triplanar, remesh, uv, substance-painter, baking, displacement, solaris, karma, advanced
+- **Summary:** A dense recap of a technique the author covers in full (~1 hour) elsewhere on Patreon, compressed into ~20 minutes here. Starts from a heightfield with hand-iterated masks (blended/blurred/remapped/noised) plus a **slope mask** (via Calculate Slope) for side-detail placement. Since raw heightfield geometry has stretched polygons that break triplanar projection, the mesh is **remeshed after...
 - **File:** tutorials/creating-procedural-environment-assets-in-houdini.md
 
 
@@ -2745,8 +2745,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=n-UAPewvMgQ
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+)
-- **Tags:** #rbd #procedural #vex #cleanup #modelling #intermediate
-- **Summary:** Removes hidden interior faces left over from a bounding-box fracture cut using a two-input VEX wrangle: for every point on the kept geometry, search for a nearby point on the removed geometry within a tiny radius, and delete any point with no match. Cleans up the resulting jagged boundary with a default Clean node before merging back.
+- **Tags:** rbd, procedural, vex, cleanup, modelling, intermediate
+- **Summary:** When cutting a shape (e.g. a wood plank) with a bounding-box-driven fracture and discarding a chunk via Blast, the kept piece is left full of messy interior geometry that was only ever meant to face the removed chunk. The fix: unpack the fracture result, isolate the "keep" branch (dissolving flat edges to clean obvious wall-facing faces) and separately isolate the "remove" branch/end-pieces...
 - **File:** tutorials/cleaning-fractured-geometry-in-houdini.md
 
 
@@ -2766,7 +2766,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.598
 - **Tags:** vdb, triplanar, boolean, displacement, megascans, environment, rocks, composite
-- **Summary:** Builds a cliff by Boolean-merging mountain-distorted sphereized boxes along a curve profile, VDB-smoothing, then drives displacement/color through a Point VOP mixing two Megascans textures via a Composite node and selectively reconstructing position (keeping Y undisplaced) for clean tops.
+- **Summary:** A curve is drawn to define the cliff's ground silhouette; it's extruded upward, with the back seam and middle seam grouped for later use, then extruded again and pierced open on one side (one side of the branch). Boxes (scaled in Y) are copied onto resampled/point-heated points along two edge loops (with randomized p-scale and orientation, reused from an earlier shared script), matched,...
 - **File:** tutorials/quick-rock-cliff-setup-in-houdini.md
 
 
@@ -2776,7 +2776,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.569
 - **Tags:** extrude, uvs, material-fracture, vex, for-each-loop, displacement, architecture, procedural-modeling
-- **Summary:** Three tips on a cathedral tower: ramp-controlled Point-Normal extrude tapering, topology-preserving horizontal tiling via UV-flattened Lots of Division, and bounding-box-percentage VEX group expressions for selective end-piece breaking, plus a power-function dome with seam-flattened UVs for displacement.
+- **Summary:** A tapering extrusion effect is achieved by manipulating point normals with a ramp based on curve-view position, then setting Extrude to **Point Normal** mode with "use existing normals" enabled — the ramp shape directly controls the taper profile. For horizontal tile rows on a cylinder that must respect the original topology, UV Flatten unwraps the cylinder and maps UV back to position, strips...
 - **File:** tutorials/procedural-modeling-tips-in-houdini-2.md
 
 
@@ -2786,7 +2786,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.598
 - **Tags:** rbd, material-fracture, vdb, vex, packed-primitives, triplanar, karma, environment, rocks
-- **Summary:** Generates rock-cliff surfaces using RBD Material Fracture as a modeling tool with custom scattered seed points, removes side pieces via slope-masked normal-driven selection on packed primitives, VDB-remeshes, then details with three slope-masked whirling noises and a custom MaterialX CGS Triplanar for texturing.
+- **Summary:** A Boolean'd box has its slope faces (excluding back/bottom) selected via a group expression testing normal Y below a threshold and normal Z, then remeshed and expanded into a natural-mask-driven Mountain distortion (with the Y axis disabled and the mask blended so the flat back face is untouched). The shape is flattened before fracturing (to allow stretching afterward) and fed **custom scatter...
 - **File:** tutorials/rbd-rock-surfaces-with-houdini.md
 
 
@@ -2795,8 +2795,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=WAyk2xCn5rs
 - **Author:** cgside
 - **Houdini Version:** H20+ (Solaris/Karma, MaterialX)
-- **Tags:** #materials #karma #triplanar #hda #uv #texturing #heightfields #vdb #intermediate
-- **Summary:** Introduces a custom "CGS Triplanar" MaterialX HDA (UV-free projection with Seed/Tiling/Triplanar-Blending/UV-Blending controls) that hides tiling repetition and handles normal/displacement channels correctly, unlike the stock MaterialX triplanar node. Applies it to a heightfield+VDB cliff, mixing rock textures via a convexity mask and grass via a slope mask, with all channels synced via Reference nodes.
+- **Tags:** materials, karma, triplanar, hda, uv, texturing, heightfields, vdb, intermediate
+- **Summary:** Compares a custom MaterialX HDA ("CGS Triplanar," a MaterialX port of the author's earlier VEX-based triplanar tool) against the stock MaterialX triplanar node on two test spheres. The custom node projects textures without requiring UVs, exposing a randomization Seed, Tiling amount, a Triplanar Blending control (blend sharpness between the three projection axes), and a UV Blending control...
 - **File:** tutorials/cliff-texturing-with-karma-and-material-x.md
 
 
@@ -2806,7 +2806,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.303
 - **Tags:** python, hou-module, automation, solaris, geometry-variants, asset-loading, scripting
-- **Summary:** Python script batch-imports 3D files from a folder (filtered by variant-subfolder naming, LOD 0 only) into individually named subnets via collapseIntoSubnet(), producing a clean per-asset network ready for Solaris Component Geometry Variants.
+- **Summary:** Rather than accepting Houdini's built-in multi-file import (which dumps everything into separate Geometry containers with no folder/naming-convention support), the script opens a folder-browser dialog, creates a Geometry container, and iterates the selected folder's subfolders. It filters to subfolders starting with a configurable prefix (e.g. "var"), dives into each variant folder to grab...
 - **File:** tutorials/python-multi-asset-loader-in-houdini.md
 
 
@@ -2816,7 +2816,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** python, file-references, project-management, automation, megascans, scripting
-- **Summary:** Python script scans hou.fileReferences() for absolute model/texture paths, copies each into an organized project subfolder (with regex-based Megascans variation-suffix stripping to avoid filename collisions), and rewrites node parameters to $JOB-relative paths.
+- **Summary:** Written as a workaround for Houdini's drag-and-drop "make relative" feature failing on certain model files, the script imports `os` and `hou`, grabs `$JOB`/`$HOME` absolute paths, and iterates `hou.fileReferences()` filtered to only 3D-model and texture parameters (since USD and similar references are typically already project-relative by default). For each reference it extracts the parameter,...
 - **File:** tutorials/python-in-houdini-absolute-to-relative-paths.md
 
 
@@ -2835,8 +2835,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=rVduzdrKYZg
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #vex #karma #materials #shaders #mtlx #triplanar #cgi-integration #procedural #tips #intermediate
-- **Summary:** Five tips: polar UV Project HDRI-projected lighting sets with invisible-to-primary shadow catchers, per-object randomized Triplanar offsets to fix repetition, the free fSpy Cam Loader HDA, a VEX random-rotation+surface-orient wrangle that preserves both, and Connectivity-seeded random attributes for color variation on merged geometry.
+- **Tags:** vex, karma, materials, shaders, mtlx, triplanar, cgi-integration, procedural, tips, intermediate
+- **Summary:** **Spherical HDRI projection:** starting from a simple Grid (fit to the floor) extruded into walls/other set pieces, a **UV Project** node set to **Polar** type creates a spherical projection matching an HDRI panorama; the projection is manually transformed (translate/rotate gizmos) to align with the reference image, and the HDRI is fed into a **MaterialX Uber/Lights** shader's emission color...
 - **File:** tutorials/houdini-tips-and-tricks-2.md
 
 
@@ -2866,7 +2866,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.534
 - **Tags:** karma, rendering, optimization, opacity-maps, megascans, foliage, python, vegetation, materials
-- **Summary:** Benchmarks Karma render times with vs without opacity-mapped Megascans grass (~16x slower with opacity), then shows a workaround of tracing opacity-map silhouettes into real cut geometry, fixing normals/UVs, and reassembling into full grass assets via a Python-scripted per-plate export loop.
+- **Summary:** A quick benchmark shows opacity-mapped grass rendering ~16x slower than the same shot without opacity maps in Karma CPU. Since removing opacity entirely loses the fine blade/leaf silhouette detail from Megascans atlases, the workaround is to trace the opacity map's silhouette into real cut polygon geometry per plate, fix normals/UVs, and reassemble the plates into full grass/plant assets (e.g....
 - **File:** tutorials/opacity-maps-vs-geo-in-karma.md
 
 
@@ -2876,7 +2876,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.403
 - **Tags:** materialx, karma, vex, food, procedural-modeling, solaris, spiral, normals
-- **Summary:** Builds a banana bunch via blended outward/Y-flattened normals for controllable cluster flatness, spiral cluster placement using a VEX point-number rotation trick, then shades with tiled 3D MaterialX noises (Position×constant tiling) and a fractal yellow/brown color blend in Karma.
+- **Summary:** Individual bananas use mixed procedural/direct modeling. On the bunch, faces are selected via range nodes, mirrored for two layers, and the centroid extracted as the placement anchor. A wrangle creates outward-pointing normals, flattens the Y component, and blends the two orientations with a slider using `lerp()`, letting the artist dial in how "flat" vs "pointing out" each bunch looks, then...
 - **File:** tutorials/procedural-assets-and-shading-with-houdini-and-materialx.md
 
 
@@ -2886,7 +2886,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.403
 - **Tags:** python, solaris, materialx, hou-module, automation, texturing, scripting
-- **Summary:** From-scratch Python script that batch-imports naming-convention texture files into a Solaris Material Library, auto-building a MaterialX Standard Surface network with correctly wired UVs, shader connections, and per-texture color-space tags parsed from filenames.
+- **Summary:** Working inside a Material Library node (the script's starting reference/context), the script imports `hou` and `os`, defines a list of Substance-Painter-style channel names, and prompts the user via `hou.ui.readInput()` for the object's base name (e.g. "wood", "cloth") baked into filenames, followed by a folder-picker for the texture directory. It grabs the currently selected node (the...
 - **File:** tutorials/python-in-houdini-create-a-texture-importer-for-solaris.md
 
 
@@ -2895,8 +2895,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=kAXUfg2FbYY
 - **Author:** cgside
 - **Houdini Version:** any (H18+, workflow is version-agnostic)
-- **Tags:** #modelling #procedural #vex #attributes #curves #beginner #intermediate
-- **Summary:** Five standalone modelling tricks: attribute-driven bevel falloff (Mask from Target + Bevel scale-by-attribute + Ramp), normal-transfer beam placement along a curve (Orient Along Curve + Attribute Copy + Pick), single-axis-constrained point snapping (F + K + axis drag), wrangle-based random orient/position (avoids Attribute Randomize's quaternion math), and off-center mirroring via a centroid-driven point expression on the Mirror node's Origin parameter.
+- **Tags:** modelling, procedural, vex, attributes, curves, beginner, intermediate
+- **Summary:** A quick five-tip video with no single throughline — each tip is a standalone, reusable technique: (1) masking a bevel's distance by a target-driven attribute so the bevel width varies smoothly along an edge; (2) copying normals from a driving curve onto a duplicate so a beam can be moved/oriented along that curve's tangent frame; (3) constraining the viewport point-snapping gizmo to a single...
 - **File:** tutorials/5-tips-and-tricks-for-modeling-in-houdini.md
 
 
@@ -2905,8 +2905,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=OWMKqhVaFF8
 - **Author:** cgside
 - **Houdini Version:** H19.5+ (Solaris)
-- **Tags:** #solaris #instancing #scattering #attributes #beginner #intermediate
-- **Summary:** Controls per-prototype instance probability in a Solaris Instancer using Attribute Randomize's Custom Discrete distribution (one weighted entry per prototype index) wired into the Prototype Index Attribute field. Key gotcha: Attribute Randomize outputs a float but the index field needs an integer — fix with an Attribute Cast, otherwise it silently falls back to index 0 for everything.
+- **Tags:** solaris, instancing, scattering, attributes, beginner, intermediate
+- **Summary:** A short, focused quick-tip: by default, Solaris's Instancer only offers a random distribution (with a Seed) across prototypes, plus an Index field that isn't directly useful for weighted control on its own — the actual mechanism needed is the **Prototype Index Attribute** field. To drive it, build an **Attribute Randomize** node with the attribute renamed to something identifiable (e.g....
 - **File:** tutorials/controlling-instance-probability-in-solaris.md
 
 
@@ -2915,8 +2915,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=u7SGkPTaJKs
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+)
-- **Tags:** #vex #animation #instancing #lighting #beginner #intermediate
-- **Summary:** Instances a light onto line points via Instancer set to Reference mode (the trick for instancing actual lights, not geometry), builds a repeating 4-color pattern with a for-loop of Group by Range + Switch, then animates intensity through three sequential blink phases with one point wrangle using frame/point-parity logic, looped via Retime.
+- **Tags:** vex, animation, instancing, lighting, beginner, intermediate
+- **Summary:** A short, beginner-friendly example of instancing actual light objects (not geometry) and driving their per-instance intensity with VEX. Since lights can't be instanced via the normal geometry-instancing path, the trick is setting the Instancer's method to **Reference** so it duplicates the light object itself onto each point, then pruning the original so it doesn't render directly. Each...
 - **File:** tutorials/christmas-lights-vex-animation-in-houdini.md
 
 
@@ -2926,7 +2926,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.435
 - **Tags:** karma, materialx, hda, color-jitter, geometry-property-value, instancing, stadium
-- **Summary:** Recreates a color-jitter node for Karma/MaterialX (missing natively) using a per-instance random attribute read via Geometry Property Value, fed into a Color Ramp or a Color Correct's hue/gain/saturation inputs, packaged as a reusable "Jitter Karma" HDA.
+- **Summary:** Demonstrated on an instanced stadium-seat scene where all seats render the same flat color, an **Attribute Randomize** node creates a `1@jitter` (or similarly named) attribute per instance with min/max 0–1. In the material network, a **Geometry Property Value** node (the MaterialX/Karma equivalent of Arnold's User Data Float/Color) reads that attribute by name; feeding it directly into a...
 - **File:** tutorials/quick-color-jitter-with-karma.md
 
 
@@ -2945,8 +2945,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=2f_40GhnBXI
 - **Author:** cgside
 - **Houdini Version:** 19.5
-- **Tags:** #solaris #lops #usd #scattering #instancing #vex #materials #shaders #arnold #procedural #environment #advanced
-- **Summary:** Part 2 of a terrain series: shades the terrain in Solaris with Arnold/Triplanar, then builds a reusable Component Geometry + Point Instancer pipeline with VEX-driven random rotation/scale, USD geo-variant switching for grass/tree/bush variety, and per-part multi-material assignment.
+- **Tags:** solaris, lops, usd, scattering, instancing, vex, materials, shaders, arnold, procedural, environment, advanced
+- **Summary:** The terrain (a Null "outrain" wired to the SOP terrain output) is imported into an empty Solaris stage, lit with a Dome light (fixed light-format bug, Arnold camera samples set low for iteration), and shaded via an **Arnold Material Builder**: a Standard Surface driven by a State Vector (shading normal → Y component) feeding a Ramp for a height-based color mask, blended against...
 - **File:** tutorials/environment-creation-with-solaris-in-houdini.md
 
 
@@ -2955,8 +2955,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=nGKGXKw4_Zw
 - **Author:** cgside
 - **Houdini Version:** 19.5
-- **Tags:** #heightfield #terrain #procedural #scattering #vex #environment #intermediate
-- **Summary:** Builds a stylized terrain (back hills, curve-carved road, Voronoi-fractured field patches) with heightfield masking, then a VEX random-group assignment + for-loop/switch system to scatter different placeholder meshes per field patch group and roadside trees.
+- **Tags:** heightfield, terrain, procedural, scattering, vex, environment, intermediate
+- **Summary:** Starts with a base **Heightfield** (custom dimensions, initial noise, blurred since fine detail isn't needed yet), then divides the terrain into "back hills" vs. "front fields" using a hand-shaped curve: a centered line sized to the heightfield's width, point-jittered and displaced along Z only, then resampled with the "subdivision curves" smoothing option. That curve is poly-extruded into a...
 - **File:** tutorials/environment-creation-with-houdini---part-1.md
 
 
@@ -2966,7 +2966,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.398
 - **Tags:** beginner, hscript-expressions, bricks, procedural-modeling, groups, box-clip, architecture
-- **Summary:** Builds a fully parametric brick pattern on a Gothic tower base using a Grid sized/offset via bounding-box expressions (columns-1, bbox_x/((columns-1)*2)) so the stagger and Box Clip stay correct automatically if grid resolution or source geometry changes.
+- **Summary:** A portion of the tower's polygon faces is selected using the polycount display (`11 of 22`) and blasted off to be replaced by a brick pattern. A Grid is Match-Sized to the extracted section, then Face Set separates each face for an Exploded View check. A **Group by Range** selects every other row/column using an expression based on the grid's column count (columns − 1, and columns × 2) so...
 - **File:** tutorials/procedural-bricks-with-houdini.md
 
 
@@ -2976,7 +2976,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.398
 - **Tags:** beginner, boolean, revolve, groups, architecture, gothic, polywire, procedural-modeling
-- **Summary:** Beginner walkthrough building a Gothic cathedral arch: pointed-arch profile from two Boolean'd circles, Revolve to loft the frame, group-based panel/tracery extrusions and Boolean recessing, and hand-picked viewport edge-loops converted via Dissolve+Polywire into stone mullions.
+- **Summary:** Starting from a subdivided circle clipped in Y, two copies are Boolean-subtracted (one offset in X) using Curve nodes to select portions of each circle (playing with "keep outside/inside" toggles) to produce the classic pointed Gothic arch profile. The profile is transformed back to origin, clipped, resampled for smoothness, and Revolved into a solid frame; points are fused (important for...
 - **File:** tutorials/procedural-modeling-first-steps-with-houdini.md
 
 
@@ -2985,8 +2985,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=c90ervPv5ro
 - **Author:** cgside
 - **Houdini Version:** any modern (H19+, uses Exoside QuadRemesher)
-- **Tags:** #vdb #flip #fluid #materials #karma #procedural #uv #baking #mardini #advanced
-- **Summary:** Full cookie + chocolate-drizzle pipeline: VDB volume-sculpted cookie (layered Volume Sample noise distortion, unclamped Fit Range for hard-edged bulges), SDF-gradient-based decoration indentations (cheaper than VDB boolean subtract), bake-based texturing, and a hand-built dual velocity-field FLIP sim (attraction field + a custom rotate-by-ramp wrap field, built after the native Flow Field SOP proved unmanageable) so the chocolate wraps around the cookie shape instead of just flowing off.
+- **Tags:** vdb, flip, fluid, materials, karma, procedural, uv, baking, mardini, advanced
+- **Summary:** **Cookie modeling**: starts from a Tube shaped via a relative-bounding-box ramp mask and a position-tapering VEX snippet, converted to VDB, then heavily detailed entirely in volume space using **Volume Sample** to distort position with layered noises (turbulence, Worley F2F1 inverted-and-distorted, masked to protect the bottom) plus an *unclamped* Fit Range trick (creating a hard-clipped...
 - **File:** tutorials/cookies-and-chocolate-modeling-shading-and-sim.md
 
 
@@ -2995,8 +2995,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=Ba3Py4lodL8
 - **Author:** cgside
 - **Houdini Version:** any modern (H19+, uses Exoside QuadRemesher)
-- **Tags:** #modelling #procedural #vex #uv #vellum #quadremesh #advanced
-- **Summary:** Dense end-to-end build of an architectural cushioned panel: VEX-driven circle subdivision, manual quad skinning to work around PolyFill limitations, matrix-based UV orientation, Vellum wrinkle simulation via a custom `pressure_scale` attribute, Exoside QuadRemesher retopology driven by vertex-color density targets, and a tangent-dot-product wrangle for procedural piping trim.
+- **Tags:** modelling, procedural, vex, uv, vellum, quadremesh, advanced
+- **Summary:** A dense, single-take breakdown of building a stylized architectural/upholstery-like panel shape entirely proce41rally. Starts from a circle divided into quadrants via Voronoi Fracture (points placed with a short VEX snippet using bounding-box min/max/center), builds a rotated, scale-compensated base profile, manually meshes the resulting curves by splitting/skinning them in controlled column...
 - **File:** tutorials/all-the-procedural-modeling-tricks-in-one-video.md
 
 
@@ -3026,7 +3026,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.322
 - **Tags:** rbd, simulation, packed-primitives, karma, procedural-animation, food, torque, velocity
-- **Summary:** Fills a cheese-ball barrel with naturally swirling animation by giving each emitted RBD sphere a cross-product-derived velocity (position × up) before simulating, with staggered per-frame-seeded emission and a final Copy-to-Points pass onto the sim points for render-quality geometry.
+- **Summary:** The barrel/lid are simulated first with RBD Configure (convex hull collision, packed fragments) and a randomized initial torque (high amplitude due to scene scale) so the lid pops and settles, with angular velocity damped down after frame 144 via the RBD Bullet Solver so the barrel comes to rest. For the fill: the barrel's cap/patch-group opening is transformed/scaled/given normals so it can...
 - **File:** tutorials/procedural-animation-with-rbd.md
 
 
@@ -3056,7 +3056,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.588
 - **Tags:** vdb, voronoi-fracture, compile-block, triplanar, karma, materialx, solaris, concavity, curvature, scattering, environment, rocks
-- **Summary:** Full cliff pipeline: VDB-voxelized boulder cut into named pieces via jittered Boolean Fracture, per-piece detail via a for-loop (circle-wrap silhouette + sweep + random extrusion) inside a Compile Block, VDB Combine edge damage, then Karma Triplanar shading with concavity/convexity-masked color mixing and slope-scattered SpeedTree instancing.
+- **Summary:** A box gets low-subdivision tubes copied on and merged for a rough boulder base, then remeshed to a grid-like voxelized look via Blur/Peak/Mountain and Boolean-intersected for surface damage, before VDB conversion. Cuts across the cliff are placed by laying a line along it, resampling to 5 segments, jittering interior points (not endpoints), copying grids at each point (offset by the Metaimport...
 - **File:** tutorials/procedural-cliff-techniques.md
 
 
@@ -3075,8 +3075,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=bqyaPvWT5Gc
 - **Author:** cgside
 - **Houdini Version:** 20.5
-- **Tags:** #solaris #lops #vex #procedural #scattering #instancing #cops #compositing #karma #environment #tips #intermediate
-- **Summary:** Five environment production tips: Particle Fluid Surface tree proxies, dihedral-based VEX rock lay-flat orientation, variant-index rock instancing without subnets, NDC-based camera-frustum culling, and cheap depth-masked fog composited in COPs.
+- **Tags:** solaris, lops, vex, procedural, scattering, instancing, cops, compositing, karma, environment, tips, intermediate
+- **Summary:** For tree LOD/collision proxies: unpack the tree, scatter points across it, and run **Particle Fluid Surface** on those points to generate a simplified blob mesh usable as a Solaris viewport/bound proxy — much faster than manually retopologizing. For making scattered rocks lay flat: measure each primitive's area, loop to compute primitive normals, identify the largest-area primitive as the...
 - **File:** tutorials/environment-technical-tips-and-tricks.md
 
 
@@ -3086,7 +3086,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.310
 - **Tags:** hard-surface, boolean, vex, procedural-modeling, uvs, attribute-blend, tapering
-- **Summary:** Five hard-surface tips on a Y-branch pipe fitting: UV-boundary-based non-disruptive alpha removal, Curveu-driven tapering via Point-mix, Boolean-seam-masked Attribute Blur for ridge smoothing, primitive-bound corner rounding, and normal-blended inset extrusion via Attribute Combine.
+- **Summary:** To remove a tube's end alpha non-destructively, the sweep's UVs are computed, the UV boundary extracted, expanded, and promoted to primitives, then the inverted group is blasted away. A Curveu attribute (saved earlier) drives a tapering effect via a Point VOP mixing the current geometry with a Peaked version, using Fit Range to shape the transition, with the effect suppressed on the opposite...
 - **File:** tutorials/procedural-hard-surface-modeling-tips.md
 
 
@@ -3096,7 +3096,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.550
 - **Tags:** flow-maps, cops, rbd, materialx, karma, vex, solaris, product-viz, liquid, umbrella
-- **Summary:** Five cocktail-glass product-viz tips: MaterialX Flow Map liquid swirl driven by a custom COPs noise-distorting-noise generator, polar-UV umbrella striping via Point VOP, a pre-transform-position fix for Triplanar orientation after Solaris transforms, and staggered RBD ice-cube emission.
+- **Summary:** A glass profile is revolved, with an inside-liquid point range saved and promoted to primitives so the liquid geometry can be extracted from the same revolved mesh. MaterialX's Flow Map (set to vertex-color mode, since the viewport-shader FlowMap-visualize node has a known bug) drives liquid swirl using a custom VOP COPs generator: two noises, one distorting the position of the other using the...
 - **File:** tutorials/procedural-tips-flow-maps-rbd-emit-and-more.md
 
 
@@ -3106,7 +3106,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 20.5.551
 - **Tags:** uvs, uv-layout, udim, procedural-uvs, vex, pebbles, texturing
-- **Summary:** Deep dive into UV Layout's custom-attribute controls: edge-group cutting, island-stacking, UDIM targeting, per-island scale, randomized rotation distribution, and using position-based projection to pack non-UV geometry (pebbles) without intersections.
+- **Summary:** Beyond basic auto-unwrapping, UV Layout accepts custom primitive attributes to control exactly how islands are cut, stacked, distributed across UDIMs, scaled, and even used to pack non-UV geometry without overlaps. A window-frame example shows edge-group-driven cutting to maximize texture coverage (20%→70%). An "island" integer attribute (promoted to primitive) lets repeating geometry (8...
 - **File:** tutorials/procedural-uvs---uv-layout-node-in-depth.md
 
 
@@ -3116,7 +3116,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.752
 - **Tags:** procedural-modeling, buildings, vex, xyzdist, boolean, roof, windows, architecture, environment
-- **Summary:** Full procedural house generator: randomized fit()+random() footprint, mirrored-ramp tapering roof, xyzdist()-driven window/door placement avoiding overlap, manual UV-space-flattened roof-tile grid generation via Divide+Match Size, and a wood-plank wall pass built by recentering each primitive before subdividing.
+- **Summary:** The house starts from a grid whose dimensions use `fit()` + `random()` for size variance within a range, with middle points transformed and sides bridged for a simple tapered footprint. A tapering effect on the profile uses a Ramp over relative bounding-box X, mirrored via a formula so only one side needs authoring. Windows/doors come from extracting the wall silhouette as curves, filtering...
 - **File:** tutorials/procedural-house-generator.md
 
 
@@ -3126,7 +3126,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.752
 - **Tags:** rbd, fracture, vdb, triplanar, shortest-path, vines, procedural-modeling, rocks, environment, texturing
-- **Summary:** Builds layered rock formations from fractured boulder shapes arranged via a radial edge-to-center mask driving scale, adds VDB surface breakup and Triplanar slope/curvature texture blending, then generates simple vines using Find Shortest Path between bottom and random upper points.
+- **Summary:** A cube is fractured and transformed into "boulder" shapes, given edge damage, and centered as reusable assets. These are copied onto scattered points over a circular patch, where a **radial mask (normalized distance from edge to center)** drives the Y-scale (longer shapes toward the center) via Remap, plus randomized overall scale/normal jitter — producing a natural mounded arrangement. VDB...
 - **File:** tutorials/procedural-rock-formations-part-2.md
 
 
@@ -3136,7 +3136,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.593
 - **Tags:** vellum, vex, quaternion, branching, procedural-modeling, simulation, food, intersections
-- **Summary:** Grows a grape stem/branch hierarchy with quaternion-based 90°-offset orientation and sample_direction() cone-scattered twigs, then places tiny berries at branch tips and animates their p-scale growth inside a high-stiffness Vellum cloth sim to naturally resolve intersections instead of manual placement.
+- **Summary:** The main stem comes from a line resampled by density (ramp mode) to concentrate branch points toward the top, given a Point VOP-authored p-scale and grouped for later sweeping. First-level branches are built by copying a distorted line onto the stem points, using a curve to bound start/end and reducing p-scale via a natural-log-adjusted float; orientation comes from the quaternion output of...
 - **File:** tutorials/procedural-grapes-and-how-to-avoid-intersections.md
 
 
@@ -3146,7 +3146,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.593
 - **Tags:** platonic-solids, for-each, vex, uvs, sweep, procedural-modeling, ray-project, sports
-- **Summary:** Recreates the Champions League ball's star-panel design from a Platonic solid, using a for-each loop per named primitive to build each star patch (VEX rotation around normal, Ray-projection onto a sphere), then adds relief bevels, UVs, and swept stitch geometry.
+- **Summary:** A Platonic solid preset provides the base panel layout; each primitive is named, subdivided, and Ray-projected onto a sphere for a spherical starting form. Inside a for-each loop over each named primitive, normals point inward, the shape is subdivided, and a target point is picked to recreate a 5-pointed star by picking along existing normals, subdividing, and scaling down. Normals are...
 - **File:** tutorials/procedural-champions-league-football-in-2-minutes.md
 
 
@@ -3155,8 +3155,8 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **URL:** https://www.youtube.com/watch?v=qS5uDc8EePQ
 - **Author:** cgside
 - **Houdini Version:** H20.5+ (Labs Regions from Image tool)
-- **Tags:** #vellum #cloth #labs-tools #procedural #texturing #image-based #intermediate
-- **Summary:** Uses the Labs Regions from Image tool to auto-generate separate named pieces from a flat color-coded reference image, then curvature-selects corner points per piece, pins them, and brushes them into shape with Vellum cloth simulation — a fast workflow for background props.
+- **Tags:** vellum, cloth, labs-tools, procedural, texturing, image-based, intermediate
+- **Summary:** A quick workflow for turning a 2D color-coded reference image (made in Photoshop, with each intended piece painted a distinct flat color for easy separation) into a set of simulated cloth props. The Labs Regions from Image node auto-detects each color region as a separate named piece, which are then resampled/remeshed, corner-selected via curvature analysis, pinned, and brushed into a draped...
 - **File:** tutorials/add-details-with-regions-from-image-labs-tool.md
 
 
@@ -3176,7 +3176,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.593
 - **Tags:** heightfields, terrain, triplanar, displacement, ambient-occlusion, texturing, rocks, environment
-- **Summary:** Builds rock-spire formations by layering masked Heightfield Distort/Noise passes (Shabby Shapes, Mask Expand, falloff-aware masking), converts to polygons, applies Triplanar displacement and Ambient Occlusion, then quick-shades using Houdini's "sample screen colors" eyedropper.
+- **Summary:** Starting from a hand-drawn Heightfield mask, a Heightfield Layer mix (set to Maximum) blends two versions of the mask (one blurred) to build up the base silhouette. A Voronoi-based random-height pattern (via a random function seeded per point) adds per-point height variation, scaled and masked. Mask Expand grows/blocks out squarish base shapes, followed by blurring and mask-clearing between...
 - **File:** tutorials/rock-formations-with-heightfields.md
 
 
@@ -3196,7 +3196,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.593
 - **Tags:** voronoi-fracture, vex, procedural-modeling, bricks, ruins, environment, connectivity, compile-block, texturing
-- **Summary:** Builds a broken brick wall with realistic staggered alignment by fracturing each row/layer with its own randomized jitter seed inside a for-loop (driven by the detail iteration attribute), then adds compiled per-brick edge damage masked by an "inside bricks" attribute and randomized per-piece color.
+- **Summary:** Rather than a uniform brick grid, the wall is built by extracting bounding-box-derived guide curves along Y, X, and Z, resampling them into sections, jittering the interior points (endpoints preserved), cutting at each point, and subdividing for consistency. The key realism trick is fracturing each "layer" (row) with its own randomized jitter seed inside a for-loop using the detail iteration...
 - **File:** tutorials/ruins-randomized-brick-wall.md
 
 
@@ -3206,7 +3206,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.593
 - **Tags:** rbd, simulation, scatter, packed-primitives, procedural-modeling, environment, stone-wall
-- **Summary:** Uses an RBD Bullet solver as a compression tool — scattering low-poly proxy rocks then animating a Bound's scale down over time — so simulation naturally packs the stones intersection-free, before back-injecting the high-poly source geometry for final render.
+- **Summary:** Individual rocks are modeled once in a loop, each generating both a high-poly render version and a very low-poly proxy for simulation. The low-poly proxies are copied to scattered points (using a Scatter node with many relaxation iterations to reduce initial overlap), then fed into an RBD Bullet Solver alongside a **Bound** node (all-sides collision box) whose Y-scale is animated from 1 down...
 - **File:** tutorials/procedural-rock-wall-without-intersections.md
 
 
@@ -3216,7 +3216,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.593
 - **Tags:** heightfields, vdb, terrain, vex, volumes, optimization, masks
-- **Summary:** Five heightfield/VDB tips: masking terrain elevation with Heightfield Pattern+Remap, masking Erosion with noise so cliffs aren't uniform, using noise bias instead of Mask Expand to grow/shrink masks, VDB Clip for faster Volume VOP iteration, and previewing volume attributes via a Color-node/Attribute-from-Volume round-trip.
+- **Summary:** Heightfield Pattern combined with Remap creates elevation masks (height/center controls). A second Heightfield Pattern (Chippy Shapes) masks where Erosion is applied so cliff-like breakup only appears in some areas rather than uniformly, since Erosion's default look isn't great everywhere. For growing/shrinking a masked area, playing with a noise's **bias** works better than Mask Expand. For...
 - **File:** tutorials/procedural-tips-heightfields-and-vdb.md
 
 
@@ -3236,7 +3236,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.534
 - **Tags:** vdb, volumes, vex, noise, cops, food, karma, solaris, procedural-modeling
-- **Summary:** Models a cookie's cracked surface via cascading VDB noises (Worley F2F1/F1, Complement, Fit Range, Turbulence distortion), using a bounding-box-derived mask fed through a Color-node/Attribute-from-Volume round-trip to keep the bottom flat despite the noise, then renders in Karma.
+- **Summary:** Starting from a clipped, flattened sphere closed with Polyfill and beveled/subdivided for a smooth VDB input, the cookie shape is converted to a VDB and detailed inside a Volume VOP with four layered noises of increasing fineness. A key trick is exporting the relative-bounding-box Y-component as a visualizable mask (via a Color node feeding CD into VDB from Polygons, then Attribute from Volume...
 - **File:** tutorials/procedural-vdb-cookies.md
 
 
@@ -3256,7 +3256,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.493
 - **Tags:** uvs, texturing, connectivity, sort, vex, procedural-uvs, tiling
-- **Summary:** Breaks up texture repetition across many duplicated objects (railway sleepers) by assigning each piece an integer ID and promoting it to primitive so UV Layout stacks same-ID pieces while separating different IDs, then randomizing ID assignment with a Sort node to avoid visible patterns.
+- **Summary:** Instead of stacking every duplicate's UVs on top of each other for maximum texture density (which causes obvious pattern repetition), a wrangle assigns each piece an integer ID within a chosen range (the "how many distinct UV islands" control). UV Layout then stacks pieces sharing the same ID on top of each other, but lays out different IDs into separate regions — trading a bit of texture...
 - **File:** tutorials/uv-randomizer---texturing-multiple-objects.md
 
 
@@ -3266,7 +3266,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.493
 - **Tags:** vdb, volumes, vex, noise, zbrush, displacement, solaris, rocks, environment
-- **Summary:** Quick rock-asset workflow: extrude/mountain a grid, convert to VDB, detail with two cascading noises (Manhattan Cellular F2F1 + complement, intuitive frequency via Constant÷Constant), then finish in ZBrush (Z-Remesh, Auto-UV, displacement bake) and render a turntable in Solaris.
+- **Summary:** Compared to the studio's more elaborate cliff tutorials, this one keeps the Volume VOP setup deliberately simple — two main noise layers, each distorted by a secondary noise — to produce a quick rock asset. Frequency is controlled with an intuitive Constant/Divide-by-Constant pair instead of raw exponents, and a Multiply Constant scales the overall displacement strength. The second main noise...
 - **File:** tutorials/quick-asset-creation-with-vdb.md
 
 
@@ -3276,7 +3276,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** 19.5.435
 - **Tags:** vdb, volumes, vex, noise, solaris, karma, environment, cliffs, rocks, scattering, instancing
-- **Summary:** Sculpts a rock/cliff spire by cascading multiple noises inside a VDB Volume VOP (each distorting the next), then shades and scatters it in Solaris with triplanar materials, fog volumes, and instanced trees driven by a normal-based mask.
+- **Summary:** A simple box is extruded and beveled, then hit with a Mountain node to break up the base silhouette before converting to VDB. Inside the Volume VOP, four cascading noise layers each displace the incoming density (or distort the position feeding the next noise): a base Unified Noise displacement distorted by a secondary noise, a Manhattan Cellular pattern with an increased range mean for...
 - **File:** tutorials/vdb-procedural-cliffs.md
 
 
@@ -3286,7 +3286,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** beginner, procedural-modeling, groups, extrusion, ramp, copy-to-points, polyframe, group-by-range, vex
-- **Summary:** Five beginner procedural-modeling tips: blending shapes with Smooth, shaping an extrusion with a ramp, outputting procedural groups from Extrude, orienting copied geometry with Polyframe, and selecting corners procedurally by linking Group by Range to Resample's segment count.
+- **Summary:** Starting from circles scattered on a grid and covered with a boolean-unioned grid, sharp transitions between the shapes are blended away with a high-value Smooth node. A tapering/profile extrusion is shaped using the built-in ramp under the Extrude node's Thickness parameter (values can exceed 1 to overshoot the boundary). Extrude's "Output Geometry and Groups" option is used to procedurally...
 - **File:** tutorials/procedural-modeling-tips-for-beginners.md
 
 
@@ -3296,7 +3296,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** Rebelway
 - **Houdini Version:** 19.5.716
 - **Tags:** pop-network, flocking, karma-fog, ocean-spectrum, solaris, birds, rebelway, simulation
-- **Summary:** Two-part breakdown: a fast lake/mountain Solaris environment using an Ocean Spectrum as bump-only (never displaced) and a Karma Fog Box to drive HDRI illumination falloff, plus a from-scratch POP-network flocking system (Pop Attract follow + clustering, a custom Curl-Noise Pop VOP constrained to a horizontal plane, and Pop Interact separation/alignment) instead of a scripted boids solver.
+- **Summary:** The environment starts from a simple grid sculpted into sharp mountain silhouettes using layered Chebyshev Cellular and Spark Convolution noise, then a **Soft Transform** (created with a point selection pre-made so its pivot centers correctly) flattens the front foreground area into a usable "beach" zone before the noise ramps into peaks; a duplicated, scaled-up copy of the same mountain adds...
 - **File:** tutorials/bird-flocking-simulation-and-rendering-in-houdini-pro-karma-tutorial.md
 
 
@@ -3306,7 +3306,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** Not specified
 - **Tags:** vex, matrix, attribute-reorient, custom-function, uv-space, learning-vex, cross-product
-- **Summary:** Recreates the stock Attribute Reorient SOP from scratch in VEX by building a per-point local rotation matrix (position/normal/neighbor), computing it for both 3D and UV-unwrapped space via a custom function, then applying the difference matrix (with correct 4x4-vs-matrix3 handling) to re-orient positions, normals, and a measured gradient attribute.
+- **Summary:** The motivating problem: measuring the **gradient of `P.y`** on a 3D mesh gives a vector attribute that correctly "flows" along the surface's Y-height direction — but if that mesh is then moved into UV space (via Attribute Swap, copying UV into position), the gradient vectors no longer make sense relative to the new flattened shape, since they were computed for the original orientation. The...
 - **File:** tutorials/learning-vex---recreating-attribute-reorient-sop.md
 
 
@@ -3316,7 +3316,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** Pixel In The Frame
 - **Houdini Version:** Not specified
 - **Tags:** vellum, voronoi-fracture, pyro, particle-trails, vdb-blend-shapes, cell-division, gestation, pixel-in-the-frame
-- **Summary:** Builds an organic cell-division "gestation" effect combining Vellum cell-splitting simulation with per-cell Voronoi-style identity, driving four cached sub-systems (core smoke/particle-trail Pyro sim, ray-projected connective wires, a noise-blended VDB outer shell, and an ambient atmosphere) shaded with Fresnel-driven transmission/subsurface materials.
+- **Summary:** The base simulation follows a known Vellum-based cell-splitting method (referencing Tim van Helsdingen's original tutorial on cell-splitting with the Vellum solver) using **Vellum Configure Balloon** for constraints and a pressure-group output, with rest-length values controlled live from a top network via a Vellum Constraint Properties node. Key deviations from the reference technique:...
 - **File:** tutorials/gestation-effect-in-houdini-scene-breakdown.md
 
 
@@ -3326,7 +3326,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** Tim van Helsdingen
 - **Houdini Version:** Not specified
 - **Tags:** vellum, sop-solver, multisolver, dop-network, cell-splitting, vellum-fundamentals, tim-van-helsdingen
-- **Summary:** Foundational technique for safely removing points/primitives from a live Vellum simulation without it imploding — geometry and constraints must be modified in the exact same timestep via a dual-input SOP Solver (or a Multi Solver chaining a Vellum Solver + SOP Solvers), using a shared incrementing age attribute to drive synchronized deletion.
+- **Summary:** The video opens by demonstrating exactly why removing points/primitives from a live Vellum sim breaks it: a basic Vellum Configure Balloon setup (built inside a DOP network, sourcing geometry and constraints from the first and second inputs via backtick-quoted `opinputpath` expressions, merged with a ground plane and gravity) produces a normal soft-body ball; but deleting a group of points at...
 - **File:** tutorials/vellum-fundamentals---week-5-cell-splitting-part-1.md
 
 
@@ -3336,7 +3336,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** Tim van Helsdingen
 - **Houdini Version:** Not specified
 - **Tags:** vellum, voronoi-fracture, multisolver, sop-solver, rest-attribute, triplanar, cell-division, vellum-fundamentals, tim-van-helsdingen
-- **Summary:** Completes the cell-splitting effect: prototypes a Voronoi-Fracture-and-remesh split cycle in SOPs, wires it into dual synchronized SOP Solvers under a Multi Solver so fractured pieces swap in mid-sim on the same timestep as new constraints, drives per-piece split timing with an age + per-class random threshold, and finishes with rest-attribute caching for stable triplanar texturing plus optional Path Sequencer instancing.
+- **Summary:** Work begins outside the DOP network to prototype the actual "split" operation cheaply: a sphere is Scattered with 2 points and run through **Voronoi Fracture**, seeded by `$F` so the fracture direction changes if re-evaluated; an Exploded View confirms it cleanly separates into two convex halves. Since a Voronoi-fractured half is hollow on the cut face, a **Remesh** (smaller target size for...
 - **File:** tutorials/vellum-fundamentals---week-5-cell-splitting-part-2.md
 
 
@@ -3344,9 +3344,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=XLiXackQH_k
 - **Author:** Tim van Helsdingen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5
+- **Tags:** tendrils, curl-noise, curve-view, redshift-strands, random-walk-sss, pop-network, compositing, fusion, tim-van-helsdingen
+- **Summary:** This is a scene breakdown of a quick "daily render" (not a formal step-by-step tutorial). The base look comes from a 10-node "tendrils" subnetwork that is instanced ("Copy to Points" via a Fast Point Instance-style instance node) around the scene rather than modeled once at full scale. Inside the patch: a grid gets displaced with a mountain SOP for base relief, then two separate scatters (each...
 - **File:** tutorials/houdini-tutorial-daily-fun-alien-tendrils.md
 
 
@@ -3354,9 +3354,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=gmN76ZeObsA
 - **Author:** the point and prim
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** quaternions, particle-rotation, orient-attribute, vex, vops, point-vop, the-point-and-prim
+- **Summary:** The video explains how to rotate large numbers of particles procedurally, without simulating anything, by manipulating the native Houdini `orient` attribute (a Vector4/Quaternion) directly. Starting from a single point, an **Attribute Randomize** node creates the `orient` attribute as a 4-component vector (a Quaternion — described as the least ambiguous way to store 3D rotation). Inside a...
 - **File:** tutorials/particle-rotations-in-houdini-how-to-rotate-orient.md
 
 
@@ -3364,9 +3364,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=UL-VdOBmXgE
 - **Author:** the point and prim
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** smooth-function, distance-along-geometry, masking, procedural-animation, rest-attribute, performance-optimization, the-point-and-prim
+- **Summary:** Building on a prior video's flat, single-axis smooth-function mask, this tutorial shows how to art-direct a mask that spreads outward from arbitrary points across curved or deforming geometry — demonstrated first on a subdivided/remeshed triangulated bust model (with a callout that the USD Import LOP re-imports every frame unless pinned to a static frame number). The key node is **Distance...
 - **File:** tutorials/procedurally-mask-deforming-animated-geometry---houdini.md
 
 
@@ -3374,9 +3374,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=7U8slXjQ3-s
 - **Author:** the point and prim
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** smooth-function, masking, procedural-animation, rel-bbox, vops, particle-simulation, pyro, the-point-and-prim
+- **Summary:** This is the opening video of a new "core techniques" series (as opposed to the channel's usual full-effect tutorials), focused on foundational, low-level building blocks reusable across many effects. The demo starts with a simple box, remeshed for resolution, moved into a 0–1 space, with a Point VOP driving everything. **Relative Bounding Box** (`relbbox`) returns the geometry's bounds...
 - **File:** tutorials/houdini-how-to-mask-with-the-smooth-function.md
 
 
@@ -3384,9 +3384,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=M6E3f3yY824
 - **Author:** the point and prim
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** rbd, up-res, voronoi-fracture, solaris, karma-cpu, usd, procedural-lop, art-direction, the-point-and-prim
+- **Summary:** This is a follow-up to the author's RBD up-res R&D video, focused on the core concepts rather than every node in the (large) project file: base fracture, guide/proxy sim, secondary (high-res) fracture, and — most importantly — the "up-res system" that decides which high-res pieces activate, plus a Solaris/Karma CPU rendering pass. The motivating problem: standard RBD iteration (sim at final...
 - **File:** tutorials/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method.md
 
 
@@ -3394,9 +3394,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ixJvo0iShiM
 - **Author:** the point and prim
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** rbd, usd, solaris, procedural-lop, transform-pieces, piece-name, karma, the-point-and-prim
+- **Summary:** A short, practical breakdown (part of the author's larger RBD up-res R&D work) on why RBD rendering gets awkward once it moves into Solaris/USD, and how to fix it in two wrangles. The setup problem: **Transform Pieces** (a SOP-level node any experienced RBD artist knows) loads a render-resolution fracture once and applies per-frame orientation/translation from a much lighter point cloud,...
 - **File:** tutorials/houdini-usd-rbd-procedural-lop-in-under-5-minutes.md
 
 
@@ -3404,9 +3404,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Syn7XjeCH_8
 - **Author:** the point and prim
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** disintegration, particle-simulation, distance-along-geometry, smooth-function, materialx, karma-xpu, quaternion-blend, the-point-and-prim
+- **Summary:** Framed as a breakdown rather than a formal tutorial, this video shows how combining simple attribute tricks with particle simulation avoids the long sim times of more literal destruction approaches. The mask driving the whole effect reuses the channel's own toolkit: **Distance Along Geometry** from a handful of manually-selected art-directed points produces a `dist` attribute, which is...
 - **File:** tutorials/techniques-for-fast-disintegration-fx-in-houdini-a-particle-attribute-approach.md
 
 ---

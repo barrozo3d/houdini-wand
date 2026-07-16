@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=7U8slXjQ3-s
 author: the point and prim
 ingested: 2026-07-16
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [smooth-function, masking, procedural-animation, rel-bbox, vops, particle-simulation, pyro, the-point-and-prim]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-how-to-mask-with-the-smooth-function/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini: How to mask with the smooth function
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-how-to-mask-with-the-smooth-function <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -185,30 +181,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:15] tutorials/frames/houdini-how-to-mask-with-the-smooth-function/frame_000.jpg
+- [1:27] tutorials/frames/houdini-how-to-mask-with-the-smooth-function/frame_001.jpg
+- [2:03] tutorials/frames/houdini-how-to-mask-with-the-smooth-function/frame_002.jpg
+- [2:28] tutorials/frames/houdini-how-to-mask-with-the-smooth-function/frame_003.jpg
+- [3:12] tutorials/frames/houdini-how-to-mask-with-the-smooth-function/frame_004.jpg
+- [4:10] tutorials/frames/houdini-how-to-mask-with-the-smooth-function/frame_005.jpg
+- [6:39] tutorials/frames/houdini-how-to-mask-with-the-smooth-function/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building and animating a hard-edged, art-directable procedural mask along a single axis using **Relative Bounding Box** (normalized 0–1 position) piped through the **smooth function** (ease interpolation between a range-bottom/range-top pair), with noise-driven edge breakup and an offset-parameter trick for animating the mask without re-keyframing its shape.
 
 ### Summary
-[PENDING EXTRACTION]
+This is the opening video of a new "core techniques" series (as opposed to the channel's usual full-effect tutorials), focused on foundational, low-level building blocks reusable across many effects. The demo starts with a simple box, remeshed for resolution, moved into a 0–1 space, with a Point VOP driving everything. **Relative Bounding Box** (`relbbox`) returns the geometry's bounds pre-normalized between 0 and 1; visualizing just the X component confirms this. Piping that into the **smooth function** immediately changes the falloff from linear to ease-in/ease-out interpolation (the same default tweening Houdini gives you between two keyframes): values below "range bottom" clamp to 0, values above "range top" clamp to 1, and everything between eases smoothly — moving range-bottom/range-top toward each other squeezes the transition into a sharp line. Exposing range-top as a channel parameter and offsetting range-bottom by a tiny constant creates a **very sharp, animatable mask line** — described as the exact technique reused in two of the channel's other effect videos. Edge breakup comes from adding noise to the range-top parameter (keyframed live to show the effect): the noise displaces the effective range-top value up/down by its amplitude around a center value, which visually "melts" the sharp line into a noisy boundary; stacking noise (feeding one noise's output into the position input of a second noise) can produce more elaborate patterns. Applying a **Float Ramp** set to "Hill" interpolation on top of the same X component turns the single sharp line into a **symmetric central band** that squeezes inward from both sides as its mid-value parameter is animated (theory explanation: Hill ramps map mid-value to 1 and both ends to 0, so scaling the mid-value toward 0 or 1 asymmetrically compresses the band). To animate this band moving left-to-right (a "wipe") without having to re-keyframe every ramp value, the trick is to instead **offset the value fed into the ramp** via simple addition/subtraction (promoted as a keyframeable "offset" parameter) — this keeps the band's shape parameters static while only the offset value animates, and swapping the offset source for `$F` fed through a **Fit Range** (remapping frame range to -1..1) produces a clean automatic wipe; repeating the wipe periodically is done with the **modulo** function (matching the modulo value to the fit-range source-max creates a seamless loop, or halving it introduces a pause between repeats). The remainder of the video (marked as artistic rather than core-technique) walks through a full render setup using this masking technique to source a particle effect: swap the box for a more complex model, delete all primitives and cache points (Add SOP), use two **Clip** nodes to trim emission off the top/bottom faces, add curl noise mixed with bespoke velocity along normal/negative-width directions, stack multiple noises of decreasing frequency to disturb the points (plus an Attribute Blur pass merged back with the original for a two-layer look), set density from `cd.x` so it fades at the mask's edges, rasterize to a volume (adding a Cloud node with speed noise to break up the characteristic "blobby" rasterize look, and fading density near the top/bottom using the original geometry's bounding box), cache the source volume, and run a **Pyro solver** (not intended to be rendered — used purely as an advection field) whose result drives a POP Network (POP Advect + POP Wind) sourced from the original cached particle points. A final Attribute Blur/patriotic pass adds another complexity layer merged back with the original stream, followed by render-attribute setup (`pscale`, velocity tweaks). Shading/rendering/full effect assembly is explicitly out of scope, deferred to the free Gumroad project file.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start with a box (remeshed for resolution, normalized to 0–1 space) and drop a **Point VOP**.
+2. Use **Relative Bounding Box** and split out the X component to get a 0–1 normalized position value.
+3. Pipe that value into the **smooth function**; observe/confirm ease-in/ease-out falloff replacing linear.
+4. Expose **range-top** as a parameter, offset **range-bottom** by a tiny constant relative to it, to create a sharp, animatable mask line.
+5. Add **noise** to the range-top parameter's value to break up the hard edge; optionally feed one noise's output into a second noise's input position for more complex patterns.
+6. Swap in a **Float Ramp set to "Hill"** interpolation on the same normalized component to turn the line into a symmetric band; animate its mid-value to squeeze the band inward from both sides.
+7. To animate the band's position without re-keying ramp values, **offset the value feeding the ramp** via simple add/subtract, promoted to a keyframeable "offset" parameter.
+8. Replace manual offset keyframes with `$F`/frame remapped via **Fit Range** (e.g. to -1..1) for an automatic wipe; use **modulo** (matched to, or a fraction of, the fit-range source-max) to repeat the wipe periodically with optional pauses.
+9. (Showcase render) Swap in production geometry, cache points via **Add** SOP, trim emission faces with two **Clip** nodes, layer curl noise + directional velocity, stack multiple decreasing-frequency noises (plus an Attribute Blur variant merged back in) for point disturbance.
+10. Set particle density from `cd.x` to fade at mask edges, **rasterize** to volume, break up rasterize "blobbiness" with a Cloud node (speed noise) and fade top/bottom density using the source geometry's bounding box; cache the volume.
+11. Run a non-rendered **Pyro solver** purely to generate an advection field; feed it into a **POP Network** (POP Advect + POP Wind) sourced from the originally cached particle points.
+12. Add a final Attribute Blur pass merged back with the original stream for extra complexity, then set render attributes (`pscale`, velocity) — shading/rendering deferred to the project file.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Point VOP, Relative Bounding Box (`relbbox`), smooth function (range-bottom/range-top ease interpolation), Turbulent/Noise VOP (range-top perturbation, stacked noise), Float Ramp (Hill interpolation), offset-parameter pattern (add/subtract before ramp), Fit Range (frame → -1..1), modulo function (periodic wipe), Add SOP (point caching), Clip (x2, face trimming), curl noise + directional velocity VEX, Attribute Blur (point disturbance layering + later on volume/particles), Cloud SOP (speed-noise volume breakup), Rasterize, Pyro Solver (advection-only, unrendered), POP Network (POP Advect, POP Wind).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner to Intermediate (explicitly framed by the author as foundational/theory-first; the smooth-function and ramp-offset concepts are approachable, though the full particle/volume showcase raises the ceiling).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified.
 
 ### Tags
-[PENDING EXTRACTION]
+#smooth-function #masking #procedural-animation #rel-bbox #vops #particle-simulation #pyro #rasterize #the-point-and-prim
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Procedurally mask deforming / animated geometry - Houdini](procedurally-mask-deforming-animated-geometry---houdini.md) — the direct sequel; explicitly extends this video's smooth-function mask to curved and deforming surfaces via Distance Along Geometry.
+- [Particle rotations in Houdini (how to rotate orient)](particle-rotations-in-houdini-how-to-rotate-orient.md) — same channel/author; references this smooth-function technique as one way to drive normalized rotation angles.
+- [Techniques for Fast Disintegration FX in Houdini](techniques-for-fast-disintegration-fx-in-houdini-a-particle-attribute-approach.md) — same channel/author; builds its disintegration mask directly on top of the smooth-function + rest-noise-rest pattern introduced in this series.
