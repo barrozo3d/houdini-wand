@@ -3349,6 +3349,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-tutorial-daily-fun-alien-tendrils.md
 
+
+### Particle rotations in Houdini (how to rotate orient)
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=gmN76ZeObsA
+- **Author:** the point and prim
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/particle-rotations-in-houdini-how-to-rotate-orient.md
+
 ---
 
 ## Tag Reference
