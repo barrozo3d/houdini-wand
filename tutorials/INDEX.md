@@ -3369,6 +3369,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedurally-mask-deforming-animated-geometry---houdini.md
 
+
+### Houdini: How to mask with the smooth function
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=7U8slXjQ3-s
+- **Author:** the point and prim
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-how-to-mask-with-the-smooth-function.md
+
 ---
 
 ## Tag Reference
