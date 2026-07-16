@@ -3389,6 +3389,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method.md
 
+
+### Houdini USD RBD Procedural LOP in under 5 minutes
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ixJvo0iShiM
+- **Author:** the point and prim
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-usd-rbd-procedural-lop-in-under-5-minutes.md
+
 ---
 
 ## Tag Reference
