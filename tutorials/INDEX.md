@@ -3439,6 +3439,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-22-how-to-destroy-metal-1-tearing.md
 
+
+### Houdini 22 | How to Destroy Metal | 2 | Denting
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=R4YVz0FcCOw
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-22-how-to-destroy-metal-2-denting.md
+
 ---
 
 ## Tag Reference
