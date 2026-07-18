@@ -3423,10 +3423,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ### H22 - Gaussian Splats and Machine Learning | Jakob Ringler | Houdini 22 HIVE
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=LBkowc4gfjs
-- **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Houdini (official SideFX — Jakob Ringler, TD)
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, top, pdg, compositing, rendering, karma, solaris, usd, advanced, houdini-22
+- **Summary:** HIVE talk on H22's three ML pillars. (1) Neural Cellular Automata in COPs: per-cell mini-CNNs grow trained textures (NCA Core + NCA Decode split architecture, up-res ≤8x, always tileable); ML Train NCA recipe (128×128 training, features ≤10–15 px); inference controls — update masks, kernel rotation, perception scaling, COPs injected into the solve loop, self-healing regrowth; seamless on meshes via new adjacency rasterization; latent-space blending of two NCAs trained with alternating targets. (2) New neural COPs: Neural Layer to Mask (Meta SAM 2 — click/bbox prompts, confidence + embeddings outputs enable iterative self-refinement) and Neural Layer to Depth (Microsoft MoGe-2 — depth/normal/position + camera from one image; single-image PBR texturing; GSplat point output). (3) Native Gaussian-splat training: LOPs recipe + ML Process/Train GSplats TOP nodes optimize point clouds from Karma EXRs (camera metadata free in EXRs) or COLMAP photo datasets; trains extra AOVs (normal/albedo) enabling COPs relighting via Rasterize GSplats; live browser training viewer; PLY/USD export; 4D via per-frame velocity-advected checkpoints.
 - **File:** tutorials/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive.md
 
 

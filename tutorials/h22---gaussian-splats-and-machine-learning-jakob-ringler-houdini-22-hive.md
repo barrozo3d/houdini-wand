@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=LBkowc4gfjs
 author: Houdini
 ingested: 2026-07-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 22"
+tags: [cop, top, pdg, compositing, rendering, karma, solaris, usd, advanced, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # H22 - Gaussian Splats and Machine Learning | Jakob Ringler | Houdini 22 HIVE
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro & Neural Cellular Automata (NCA) Basics [0:00]
@@ -411,30 +407,64 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [4:36] tutorials/frames/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive/frame_000.jpg
+- [8:07] tutorials/frames/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive/frame_001.jpg
+- [13:45] tutorials/frames/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive/frame_002.jpg
+- [15:15] tutorials/frames/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive/frame_003.jpg
+- [17:24] tutorials/frames/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive/frame_004.jpg
+- [19:28] tutorials/frames/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive/frame_005.jpg
+- [25:35] tutorials/frames/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive/frame_006.jpg
+- [28:05] tutorials/frames/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini 22's new machine-learning toolset: Neural Cellular Automata (NCA) texture synthesis in COPs, SAM 2 / MoGe-2 neural nodes for masking and utility-pass extraction, and native Gaussian-splat training (synthetic and photo-based) via TOPs with COPs rasterization/relighting.
 
 ### Summary
-[PENDING EXTRACTION]
+SideFX TD Jakob Ringler's HIVE talk on the three H22 ML topics. NCAs are tiny convolutional networks run per-cell (a neural Game of Life) that learn to grow a target texture; H22 ships a split core/decode architecture (low-res cell state + up-res decoder, up to 8x) with training recipes in COPs driven by TOPs. Two external-model nodes arrive in COPs: Meta SAM 2 (prompt-based alpha masks) and Microsoft MoGe-2 (depth/normal/position from a single image). Gaussian splats get first-class support: rasterize them in COPs, train your own from Karma renders (or COLMAP photo datasets) with `ML Process GSplats` + `ML Train GSplats` TOP nodes, train extra AOVs (normal, albedo) into the splat, and relight splats in COPs like CG renders.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **NCA concept**: each cell runs a small CNN — hard-coded convolution kernels (I₃, K_lap, K_y, K_x = depthwise Conv2D) give local image gradients as a "perception vector" → two Dense layers (ReLU) → stochastic update added back to the state each iteration. RGB + hidden latent channels (a learned local coordinate system).
+2. **Train a custom NCA**: crop/pre-process a pattern-based target square → COPs **ML Train NCA recipe** → helper layout checks pitfalls: pattern must read at the 128×128 training res, features ≤10–15 px in low-res, minimal noise, genuinely repeating pattern. Click Cook Output → training runs in TOPs; watch total/component losses and test outputs in the **ML Training Monitor**.
+3. **Use it**: drop the **Neural Cellular Automata recipe**, load the model; iterations on the `NCA Core` node, seed changes give variations; `NCA Decode` up-resses up to 8x (fast proxy vs final). Output wraps at borders → always tileable, any resolution VRAM allows.
+4. **Control at inference**: masks drive per-cell update probability (growth); rotating the convolution kernels rotates the pattern (drive with ramps/layers); scaling the perception gradient per-axis shrinks pattern scale (values <1 only); insert any COP inside the solve loop (distortion — NCA self-heals damage each step, enabling regrowth effects). **NCA Block recipe** runs it over time for motion design.
+5. **On meshes**: H22 **adjacency rasterization** computes UV-island adjacency so COP solvers/NCAs run seamlessly across seams on any mesh with proper UVs (demoed on a capybara); combine with position-pass masks, rotation/scale controls.
+6. **Blend two NCAs**: train with alternating targets (partial-training mode on the TOP node in a for-loop, switch target every ~500 steps, fine-tune at the end) → shared latent space; blend by masking each `NCA Core`'s update (mask + inverted mask) on one shared cell state; blend the two decoders with the same mask.
+7. **SAM 2**: `Neural Layer to Mask` COP — positive/negative click prompts + bounding box, mask threshold, cleanup options. Outputs: predicted mask, confidence values, image embeddings, prompt points as world-space geometry — feed outputs back in to iteratively self-refine without recomputing embeddings.
+8. **MoGe-2**: `Neural Layer to Depth` COP — depth/normal/position + estimated camera from one image; point-cloud output with "Create GSplat Points" (screen-space-correct splat drawing); use depth→height for single-image PBR texture generation.
+9. **GSplat rasterization in COPs**: ~3 nodes to add camera parallax to a still image.
+10. **Train a GSplat from CG**: LOPs recipe — plug scene into Stage Sublayer → **Setup Camera Arrays** subnetwork (distributes cameras, sets up passes incl. depth AOV) → Cook Output. `ML Process GSplats` (TOP) reads EXRs + camera metadata (free in any Karma render) + depth AOV → initial point cloud; `ML Train GSplats` (TOP) optimizes point position/color/orient/opacity via gradient descent (no neural net), densifies/prunes points. Train extra features from custom AOVs (normal + albedo by default).
+11. **Monitor**: ML Training Monitor (ground truth | current splat | loss heatmap, per-AOV views) or the browser **live training viewer** (full 3D inspection, pause = save current splat to disk). Export PLY / USD → sublayer back onto the stage.
+12. **Photo-based**: dataset type = SFM COLMAP; build the COLMAP dataset externally (e.g. Epic RealityScan, free).
+13. **Relight splats in COPs**: `Rasterize GSplats` per attribute (beauty / albedo / N) → unpremult, clamp, blur, divide — standard AOV relighting (keylight + spec) works across the frame range.
+14. **Q&A**: 4D/animated splats = train frame 1 → advect points by velocity field → use as checkpoint for next frame (explosion keynote demo). Stylization: lock points, disable densification. Karma/Arnold both consume the same splat data.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- COPs: `NCA Core` (iterations, seed, update mask, kernel rotation, perception scale), `NCA Decode` (up-res ≤8x), NCA Block recipe, ML Train NCA recipe (128×128 training res)
+- COPs: `Neural Layer to Mask` (SAM 2 Large; point coords ±, bounding box, mask threshold), `Neural Layer to Depth` (MoGe-2; + `Remap`), Create GSplat Points output
+- TOPs: `ML Process GSplats`, `ML Train GSplats` (dataset type: EXR/Karma or SFM COLMAP; checkpoint-from-previous-splat), partial training mode, ML Training Monitor
+- LOPs: GSplat training recipe — Stage Sublayer → Setup_Camera_Array → merge_camera_array → karma render settings → ML_Train_GSplats
+- COPs: `Rasterize GSplats` (camera input; per-AOV: beauty/albedo/N), `RGBA to RGB`, unpremult/clamp/blur/divide relighting chain
+- SOPs (H21 baseline): GSplat import utility — compute splats (orient, scale, GS alpha) + compute spherical harmonics (view-dependent lighting)
+- H22 adjacency rasterization (seamless cross-UV-island COP solving)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (NCA nodes, SAM 2 / MoGe-2 neural COPs, GSplat training + COPs rasterization all new in H22; GSplat import utility existed in H21)
 
 ### Tags
-[PENDING EXTRACTION]
+#cop #top #pdg #compositing #rendering #karma #solaris #usd #advanced #houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Animate Gaussian Splats with Houdini - Free Tutorial + Scene Files](animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md) — G-SOP plugin workflow for animating existing splats; this talk covers the native H22 training/rasterization counterpart
+- [Houdini 22 | How to Create Pyro in COPs | Configure Pyro Recipes](houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes.md) — shares #cop #houdini-22; COPs simulation recipes
+- `references/copernicus.md` — COP context fundamentals
