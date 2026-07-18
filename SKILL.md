@@ -207,7 +207,7 @@ curves, attributes, procedural, instancing, simulation,
 rendering, karma, mantra, redshift, solaris, usd,
 hda, python, wrangler, vop, modelling, rigging, animation, compositing,
 beginner, intermediate, advanced, expert,
-houdini-19, houdini-20, houdini-21
+houdini-19, houdini-20, houdini-21, houdini-22
 ```
 
 ---

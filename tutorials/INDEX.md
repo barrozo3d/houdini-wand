@@ -3413,10 +3413,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ### Houdini 22 | How to Create Pyro in COPs | Configure Pyro Recipes
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=xKrHwJRo-nI
-- **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Houdini (official SideFX)
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, pyro, volumes, simulation, compositing, intermediate, houdini-22
+- **Summary:** Official walkthrough of the H22 COP Pyro Recipes (Billowy Smoke + Fire), built on the COPs Pyro Block 2.0 where all solver controls (bounds, collisions, sourcing, fields, forces) live on the Block End node — no solvers inside the loop. Covers Pyro Configure (voxel size → reference VDB), implicit-surface Pyro Source Shape emitters with animated distortion, rasterizing 3D volumes to 2D via Rasterize Volume + Pyro Light Ambient/Light Scatter through COPs' built-in camera operators (frustum far plane = image plane), and 3D preview via VDB Visualize colored with Mono to RGB on temperature (black-to-orange ramp) wired through Pyro Light Ambient into CD/emit CD. Demo values: density scale 15, emission scale 45.
 - **File:** tutorials/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes.md
 
 

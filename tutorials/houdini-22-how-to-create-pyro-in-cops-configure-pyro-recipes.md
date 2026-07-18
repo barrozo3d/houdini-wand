@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=xKrHwJRo-nI
 author: Houdini
 ingested: 2026-07-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 22"
+tags: [cop, pyro, volumes, simulation, compositing, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 22 | How to Create Pyro in COPs | Configure Pyro Recipes
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -305,30 +301,62 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:21] tutorials/frames/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes/frame_000.jpg
+- [2:40] tutorials/frames/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes/frame_001.jpg
+- [3:44] tutorials/frames/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes/frame_002.jpg
+- [4:16] tutorials/frames/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes/frame_003.jpg
+- [5:50] tutorials/frames/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes/frame_004.jpg
+- [9:32] tutorials/frames/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes/frame_005.jpg
+- [12:45] tutorials/frames/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes/frame_006.jpg
+- [14:03] tutorials/frames/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Running full Pyro simulations inside Copernicus (COPs) in Houdini 22 using the built-in Pyro Recipes, which are driven by the **COPs Pyro Block 2.0** — all solver controls live on the Block End node, no intermediate solver nodes inside the loop.
 
 ### Summary
-[PENDING EXTRACTION]
+Official SideFX walkthrough of two COP Pyro Recipes (Billowy Smoke and Fire) in Houdini 22. The recipes drop a complete network: `Pyro Configure` (voxel size → reference VDB), implicit-surface `Pyro Source Shape` emitters, the `Pyro Block Begin/End` sim loop, then rasterization to 2D via `Rasterize Volume` with `Pyro Light Ambient`/`Light Scatter` lighting and COPs' built-in camera operators. Also covers previewing the sim in 3D with `VDB Visualize`, coloring flame via `Mono to RGB` (temperature field → black-to-orange ramp), and matching that preview to the rasterized output.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Object context: drop a `COP Network`, name it (e.g. "smoke"), dive inside.
+2. Type "Pyro Config" in the TAB menu → pick a recipe (Billowy Smoke, Fire, Fireballs, Candle Flame, Cigarette Smoke) — nodes and a viewport source appear automatically.
+3. Understand the **Pyro Block 2.0**: `Block Begin` is only an input pointer; **`Block End` holds all sim controls** (Setup, Bounds, Collisions, Sourcing — density/temperature/velocity, Fields, Forces — dissipation, disturbance, buoyancy). No solver nodes needed inside the loop, unlike 1.0.
+4. `Pyro Configure` sets voxel size and outputs a **reference VDB** into the Block Begin's VDB-reference port.
+5. `Pyro Source Shape` uses the new **implicit surfaces** (sphere/torus/tube/box, or SOP-imported ones) as mathematically perfect emitters; per-field sourcing controls (density, temperature), transform, scale-by-noise, and an animated **Distortion** amplitude.
+6. Rasterize to 2D: `Rasterize Volume` (density scale ≈15, emission scale ≈45 in the demo) + `Pyro Light Ambient` (color/intensity — COPs has no real lights) viewed through COPs **camera operators** (frustum's far plane = the rendered image plane). Append `RGBA to RGB` (premultiply off) to inspect without alpha.
+7. Fire recipe: adds a `Collision Shape` (ground plane) and a noisy disk source; feed the **flame** field into emission; slight blur on flame softens the emission; Light Scatter adds colored in-volume scattering; tint controls on the rasterizer.
+8. Viewport shows only single fields (density/temperature/velocity/flame) with no color — for a colored 3D preview use `VDB Visualize` (inputs: density, color, emit, emission color).
+9. Color the preview: `Mono to RGB` on temperature → Compute Range → default black-to-orange ramp → into VDB Visualize CD/emit CD, via `Pyro Light Ambient` (RGB → light input; light output → CD + emit CD; density also wired). Copy the ambient's exposed color and tweak density scale/exposure to approximate the final rasterized render (close, not 1:1).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `COP Network` (Object context container)
+- `Pyro Configure` — voxel size, outputs reference VDB
+- `Pyro Source Shape` — implicit surface emitters; Distortion amplitude; scale-by-noise per field
+- `Pyro Block Begin` / `Pyro Block End` (**Pyro Block 2.0** — all controls on End: Bounds/Collisions/Sourcing/Fields/Forces)
+- `Rasterize Volume` — density scale 15, emission scale 45 (demo values); emission map ramp; tint
+- `Pyro Light Ambient` — exposed color, intensity, exposure, density scale (ambient lighting substitute)
+- Light Scatter — emission-driven in-volume color scatter
+- `RGBA to RGB` — Remove Premultiplied Alpha off for inspection
+- COPs camera operators — frustum far plane = render plane
+- `VDB Visualize` — density/color/emit/emission-color 3D preview
+- `Mono to RGB` — temperature → Compute Range → black-to-orange ramp
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (COPs Pyro Block 2.0, implicit surfaces, COPs camera operators are H22 features)
 
 ### Tags
-[PENDING EXTRACTION]
+#cop #pyro #volumes #simulation #compositing #intermediate #houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- Copernicus fundamentals: `references/copernicus.md` (COP context reference)
+- Pyro production pipeline: `recipes/pyro-hero-shot.md` — SOP/DOP pyro counterpart to this COPs workflow
