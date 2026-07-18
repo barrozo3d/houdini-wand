@@ -404,6 +404,8 @@ Frames captured — see "Captured Frames" section below.
 
 ---
 
+## Structured Notes
+
 ### Core Technique
 A complete indie VFX-integration pipeline across three applications: DaVinci Resolve (Log→ACES color prep and dual export), Nuke (camera tracking, point-cloud mesh generation, wireframe-alignment verification), and Houdini/Solaris USD (camera + tracked-mesh import via sub-layers, a TOPs-driven RBD ball simulation guided by a custom vector field, and final Karma XPU compositing with shadow-catcher + motion blur) — producing CG balls that roll down a real filmed path and interact convincingly with the footage.
 
