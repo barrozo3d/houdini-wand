@@ -12,11 +12,11 @@ Used by the auto-changelog rule in SKILL.md.
 ## Known Versions (ingested)
 | Version | Reference File | Ingested |
 |---------|---------------|---------|
+| H22.0 (current) | `release-notes-h22.md` | 2026-07-18 |
 | H21.0 | `release-notes-h21.md` | 2026-05-19 |
 | H20.5 | `release-notes-h20-5.md` | 2026-05-19 |
 
 ## Versions Not Yet Ingested
-- **H22.0 (CURRENT — release notes NOT yet ingested)** — available at `https://www.sidefx.com/docs/houdini/news/22/index.html`. Confirmed live on 2026-07-18. Four H22 tutorials are already in the library (COPs Pyro Recipes, Gaussian Splats & ML, Destroy Metal 1+2) — ingest the official release notes to back them: fetch the sub-pages and create `references/release-notes-h22.md`.
 - H20.0 — available at `https://www.sidefx.com/docs/houdini/news/20/index.html`
 - H19.5 — available at `https://www.sidefx.com/docs/houdini/news/19_5/index.html`
 - H19.0 — available at `https://www.sidefx.com/docs/houdini/news/19/index.html`
@@ -26,7 +26,7 @@ Used by the auto-changelog rule in SKILL.md.
 https://www.sidefx.com/docs/houdini/news/{version}/index.html
 # Sub-pages:
 https://www.sidefx.com/docs/houdini/news/{version}/{section}.html
-# Where {version} = 21, 20_5, 20, 19_5, 19
+# Where {version} = 22, 21, 20_5, 20, 19_5, 19
 # Where {section} = kinefx, model, solaris, karma, pyro, rbd, copernicus, engine, vex, viewport, mpm, crowds, ml, pdg, hqueue
 ```
 

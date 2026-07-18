@@ -278,6 +278,7 @@ houdini-19, houdini-20, houdini-21, houdini-22
 | `kinefx-apex.md` | **KineFX & APEX** — skeleton SOPs, APEX rigging graph, Autorig Builder, animation retargeting, capture/skinning (H20+) |
 | `copernicus.md` | **Copernicus (COP2 replacement)** — GPU compositing, AOV post-processing, procedural texture generation (H20.5+) |
 | `foundations-overview.md` | **Core concepts** from Houdini Foundations book (H19.5): workspace, nodes, attributes, modeling, simulation, VEX, HDAs, pipeline |
+| `release-notes-h22.md` | **H22 release notes** — COP Pyro + implicit surfaces, ML (GSplats/NCA/SAM2/MoGe-2), RBD metal fracture 2.0, COPs heightfields + adjacency, Animate desktop/APEX, Vulkan viewport |
 | `release-notes-h21.md` | **H21 release notes** — KineFX/APEX, Copernicus cables, Solaris Adobe USD, Karma XPU shader blending, new SOPs, VEX functions |
 | `release-notes-h20-5.md` | **H20.5 release notes** — Copernicus introduction, APEX Script, layered animation, new VEX functions |
 | `version-tracker.md` | **Version state** — last changelog check date, known versions, URL patterns for auto-update |
