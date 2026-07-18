@@ -3429,6 +3429,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive.md
 
+
+### Houdini 22 | How to Destroy Metal | 1 | Tearing
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=x-N5I4XS7Q4
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-22-how-to-destroy-metal-1-tearing.md
+
 ---
 
 ## Tag Reference
