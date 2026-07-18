@@ -6,16 +6,17 @@ Used by the auto-changelog rule in SKILL.md.
 ---
 
 ## Last Check
-- **last_checked:** 2026-05-19
-- **checked_by:** Manual ingestion session
+- **last_checked:** 2026-07-18
+- **checked_by:** Ingest session (H22 tutorials) — sidefx.com news index fetched
 
 ## Known Versions (ingested)
 | Version | Reference File | Ingested |
 |---------|---------------|---------|
-| H21.0 (current) | `release-notes-h21.md` | 2026-05-19 |
+| H21.0 | `release-notes-h21.md` | 2026-05-19 |
 | H20.5 | `release-notes-h20-5.md` | 2026-05-19 |
 
 ## Versions Not Yet Ingested
+- **H22.0 (CURRENT — release notes NOT yet ingested)** — available at `https://www.sidefx.com/docs/houdini/news/22/index.html`. Confirmed live on 2026-07-18. Four H22 tutorials are already in the library (COPs Pyro Recipes, Gaussian Splats & ML, Destroy Metal 1+2) — ingest the official release notes to back them: fetch the sub-pages and create `references/release-notes-h22.md`.
 - H20.0 — available at `https://www.sidefx.com/docs/houdini/news/20/index.html`
 - H19.5 — available at `https://www.sidefx.com/docs/houdini/news/19_5/index.html`
 - H19.0 — available at `https://www.sidefx.com/docs/houdini/news/19/index.html`
