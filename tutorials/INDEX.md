@@ -3419,6 +3419,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes.md
 
+
+### H22 - Gaussian Splats and Machine Learning | Jakob Ringler | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=LBkowc4gfjs
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive.md
+
 ---
 
 ## Tag Reference
