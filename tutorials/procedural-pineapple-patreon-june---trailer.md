@@ -4,12 +4,12 @@ source: YouTube
 url: https://www.youtube.com/watch?v=JO0V0xTDh9w
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: needs-review
+houdini_version: "Not specified"
+tags: [cop, sop, procedural, modelling, trailer-stub]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-pineapple-patreon-june---trailer/
 frame_count: 0
-frame_status: pending-selection
+frame_status: skipped
 ---
 
 # Procedural Pineapple | Patreon June - Trailer
@@ -46,27 +46,27 @@ frontmatter before you write the Structured Notes below.
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Trailer stub — no tutorial content. The full tutorial is a cgside Patreon exclusive; this entry records that it exists and what it covers.
 
 ### Summary
-[PENDING EXTRACTION]
+Trailer for a Patreon tutorial building a procedural pineapple — pattern creation in COPs feeding shape generation in SOPs.
 
 ### Key Steps
-[PENDING EXTRACTION]
+Not available — the trailer contains no instructional content (voiceover/music only).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Not shown in the trailer.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Unknown (trailer only)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified
 
 ### Tags
-[PENDING EXTRACTION]
+#cop #sop #procedural #modelling #trailer-stub
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Other cgside Patreon trailers in this library share the same source channel; search INDEX.md for "cgside".

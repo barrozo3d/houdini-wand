@@ -459,7 +459,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+)
 - **Tags:** rigging, kinefx, mechanical, controls, wrangle, matrix, fit-range, intermediate
-- **Summary:** [PENDING EXTRACTION]
+- **Summary:** Attaches sphere-shaped animation controls to a mechanical rig and drives symmetric pairs of joint rotations by extracting each control's translation distance, fitting it to a precomputed max-rotation-angle range, and writing the rotated matrix back onto the rig points — done in parallel in a number-of-points wrangle (Point Generate + Name + Rig Doctor + instanced spheres; Attach Joint Geo; Rig Pose with locked rotation/axes so animators can only translate the intended axis).
 - **File:** tutorials/mechanical-rigging-in-houdini---attaching-custom-controls.md
 
 
@@ -1664,9 +1664,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=M8odmzpj2dc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, simulation, animation, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial creating a cookie-splash animation from scratch — procedural modeling, procedural animation, and sim work.
 - **File:** tutorials/bring-your-3d-renders-to-life-with-houdini---patreon-october-25-trailer.md
 
 
@@ -1694,9 +1694,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pbwra2esNqc
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 21
+- **Tags:** cop, sop, procedural, houdini-21, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial on the H21 HeightFields-COPs workflows: terrain generation with COPs through final texturing and baking.
 - **File:** tutorials/heightfields-and-cops-workflow-in-houdini-21---patreon-september-25-trailer.md
 
 
@@ -1734,9 +1734,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Eb4KIaOJT5Y
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** cop, vex, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon exclusive building a procedural brick wall in COPs — point generation with VEX plus designer-like texturing workflows.
 - **File:** tutorials/procedural-brick-wall-with-cops---patreon-august-trailer.md
 
 
@@ -1774,9 +1774,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=udPSR7Gjp9Y
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, vex, animation, procedural, rigging, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial on procedural jellyfish animation — modeling, rigging, and animation with VEX tips throughout.
 - **File:** tutorials/jellyfish-procedural-animation-with-houdini-and-vex-patreon-july-trailer.md
 
 
@@ -1864,9 +1864,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=2HYYRRW7tws
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, vex, simulation, particles, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial building a custom droplet/waterdrop solver in Houdini; voiceover promises several previously unshared techniques.
 - **File:** tutorials/advanced-waterdrops-setup-in-houdini-patreon-april-trailer.md
 
 
@@ -1894,9 +1894,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=-lVYE0LRu6w
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** cop, procedural, rendering, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial creating a procedural concrete material: quick UVs oriented to always face upward, leak masks, and the final material built in COPs.
 - **File:** tutorials/procedural-uvs-and-texturing-in-cops-patreon-march-trailer.md
 
 
@@ -1934,9 +1934,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=08lvfWum09M
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, rigging, animation, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon tutorial covering procedural modeling, rigging, and animation.
 - **File:** tutorials/procedural-modeling-rigging-and-animation-with-houdini-patreon-february-trailer.md
 
 
@@ -2024,9 +2024,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=aaNiFlx6Vi0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** solaris, lop, karma, rendering, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for part 2 of a product-shot series in Houdini and Solaris.
 - **File:** tutorials/product-shot-in-houdini-and-solaris-part-2-patreon-december.md
 
 
@@ -2064,9 +2064,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Joe8Cu40_as
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** karma, rendering, sop, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for part 1 of a product-shot series in Houdini.
 - **File:** tutorials/product-shot-in-houdini-part-1-patreon-november.md
 
 
@@ -2114,9 +2114,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=bM7hzXqBq0Y
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** cop, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon exclusive on generating custom patterns in Copernicus (COPs).
 - **File:** tutorials/custom-patterns-with-cops-october-patreon-exclusive.md
 
 
@@ -2194,9 +2194,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=3bP9uKsn-9U
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** cop, karma, rendering, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only preview for a procedural shading workflow combining COPs and Karma.
 - **File:** tutorials/procedural-shading-with-cops-and-karma---preview.md
 
 
@@ -2474,9 +2474,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=S5sKJaPU7C8
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, simulation, modelling, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a tutorial modeling and simulating a husk chair in Houdini.
 - **File:** tutorials/husk-chair---modeling-and-simulating-in-houdini---trailer.md
 
 
@@ -2644,9 +2644,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=cvTnsmUNw3w
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, procedural, modelling, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Short preview for a procedural ice-cream-swirl modeling setup in Houdini.
 - **File:** tutorials/procedural-ice-cream-swirl-in-houdini.md
 
 
@@ -2754,9 +2754,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=LwbK0Z_y77Y
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, procedural, modelling, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a procedural modeling course building church ruins in Houdini.
 - **File:** tutorials/church-ruins---houdini-procedural-modeling-course-trailer.md
 
 
@@ -2824,9 +2824,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=0-oFYKvYucA
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, procedural, modelling, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) 13-second preview for part 1 of a procedural stadium modeling series.
 - **File:** tutorials/procedural-modeling-of-a-stadium-in-houdini---part-1.md
 
 
@@ -2844,9 +2844,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=I3mf1AQCxc0
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** karma, rendering, vop, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon exclusive building a custom triplanar projection setup for Karma.
 - **File:** tutorials/custom-triplanar-for-karma-patreon.md
 
 
@@ -2854,9 +2854,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=CzgcCkVy50o
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** karma, rendering, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only preview for a Patreon exclusive on procedural shading with Karma.
 - **File:** tutorials/procedural-shading-with-karma-patreon-exclusive.md
 
 
@@ -2934,9 +2934,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=v3irz0OHw48
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, volumes, rendering, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for an environment-building series using heightfields, volumes, scattering, and procedural shading, rendered in Arnold.
 - **File:** tutorials/creating-3d-environments-with-houdini-and-arnold---trailer.md
 
 
@@ -3004,9 +3004,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=JO0V0xTDh9w
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** cop, sop, procedural, modelling, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial building a procedural pineapple — pattern creation in COPs feeding shape generation in SOPs.
 - **File:** tutorials/procedural-pineapple-patreon-june---trailer.md
 
 
@@ -3014,9 +3014,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=tG8HSBblVk8
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, simulation, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon tutorial on a chocolate-split effect (breaking/splitting chocolate).
 - **File:** tutorials/chocolate-split-patreon-january-25-trailer.md
 
 
@@ -3034,9 +3034,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=IOC8hPPWrGY
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, procedural, modelling, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon tutorial on procedural grape modeling.
 - **File:** tutorials/procedural-grapes-patreon-september-trailer.md
 
 
@@ -3044,9 +3044,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=CiFOWrTiaFM
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, procedural, modelling, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only preview for a procedural coffee-beans modeling tutorial.
 - **File:** tutorials/procedural-coffee-beans---preview.md
 
 
@@ -3064,9 +3064,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=g6HyohwVR1s
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, simulation, rendering, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a tutorial modeling, simulating, and rendering a procedural cookie.
 - **File:** tutorials/procedural-cookie---model-simulate-and-render---trailer.md
 
 
@@ -3164,9 +3164,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=G4Fb8jKQ3WM
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, procedural, modelling, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Silent trailer for a procedural Roman-bridge asset-creation tutorial.
 - **File:** tutorials/roman-bridge---procedural-asset-creation---trailer.md
 
 
@@ -3184,9 +3184,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=TnujEWlFdfU
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Silent trailer for a Patreon exclusive on procedural rock surfaces.
 - **File:** tutorials/procedural-rock-surfaces-patreon-exclusive.md
 
 
@@ -3224,9 +3224,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=U1c1-dbgUAk
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, volumes, rendering, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a tutorial building procedural cliffs with HeightFields, VDB, and MaterialX shading.
 - **File:** tutorials/prodecural-cliffs-with-heighfields-vdb-and-materialx.md
 
 
@@ -3244,9 +3244,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=qzs3LnMeYEE
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, procedural, trailer-stub
+- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) 16-second preview for a Patreon exclusive on adding side details to procedural cliffs.
 - **File:** tutorials/patreon-exclusive-add-side-details-to-cliffs-preview.md
 
 

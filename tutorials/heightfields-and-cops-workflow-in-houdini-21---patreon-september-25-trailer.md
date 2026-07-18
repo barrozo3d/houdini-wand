@@ -4,12 +4,12 @@ source: YouTube
 url: https://www.youtube.com/watch?v=pbwra2esNqc
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: needs-review
+houdini_version: "Houdini 21"
+tags: [cop, sop, procedural, houdini-21, trailer-stub]
+extraction_status: complete
 frames_dir: tutorials/frames/heightfields-and-cops-workflow-in-houdini-21---patreon-september-25-trailer/
 frame_count: 0
-frame_status: pending-selection
+frame_status: skipped
 ---
 
 # Heightfields and Cops workflow in Houdini 21 -  Patreon September 25 Trailer
@@ -47,27 +47,27 @@ frontmatter before you write the Structured Notes below.
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Trailer stub — no tutorial content. The full tutorial is a cgside Patreon exclusive; this entry records that it exists and what it covers.
 
 ### Summary
-[PENDING EXTRACTION]
+Trailer for a Patreon tutorial on the H21 HeightFields-COPs workflows: terrain generation with COPs through final texturing and baking.
 
 ### Key Steps
-[PENDING EXTRACTION]
+Not available — the trailer contains no instructional content (voiceover/music only).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Not shown in the trailer.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Unknown (trailer only)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21
 
 ### Tags
-[PENDING EXTRACTION]
+#cop #sop #procedural #houdini-21 #trailer-stub
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Other cgside Patreon trailers in this library share the same source channel; search INDEX.md for "cgside".

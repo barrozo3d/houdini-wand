@@ -4,12 +4,12 @@ source: YouTube
 url: https://www.youtube.com/watch?v=g6HyohwVR1s
 author: cgside
 ingested: 2026-07-13
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: needs-review
+houdini_version: "Not specified"
+tags: [sop, simulation, rendering, procedural, trailer-stub]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-cookie---model-simulate-and-render---trailer/
 frame_count: 0
-frame_status: pending-selection
+frame_status: skipped
 ---
 
 # Procedural Cookie - Model, Simulate and Render - Trailer
@@ -41,27 +41,27 @@ frontmatter before you write the Structured Notes below.
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Trailer stub — no tutorial content. The full tutorial is a cgside Patreon exclusive; this entry records that it exists and what it covers.
 
 ### Summary
-[PENDING EXTRACTION]
+Music-only trailer for a tutorial modeling, simulating, and rendering a procedural cookie.
 
 ### Key Steps
-[PENDING EXTRACTION]
+Not available — the trailer contains no instructional content (voiceover/music only).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Not shown in the trailer.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Unknown (trailer only)
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified
 
 ### Tags
-[PENDING EXTRACTION]
+#sop #simulation #rendering #procedural #trailer-stub
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+Other cgside Patreon trailers in this library share the same source channel; search INDEX.md for "cgside".
