@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=R4YVz0FcCOw
 author: Houdini
 ingested: 2026-07-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 22"
+tags: [rbd, dop, sop, simulation, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-22-how-to-destroy-metal-2-denting/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 22 | How to Destroy Metal | 2 | Denting
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-22-how-to-destroy-metal-2-denting <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -198,30 +194,60 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:49] tutorials/frames/houdini-22-how-to-destroy-metal-2-denting/frame_000.jpg
+- [2:23] tutorials/frames/houdini-22-how-to-destroy-metal-2-denting/frame_001.jpg
+- [4:14] tutorials/frames/houdini-22-how-to-destroy-metal-2-denting/frame_002.jpg
+- [7:30] tutorials/frames/houdini-22-how-to-destroy-metal-2-denting/frame_003.jpg
+- [10:03] tutorials/frames/houdini-22-how-to-destroy-metal-2-denting/frame_004.jpg
+- [11:03] tutorials/frames/houdini-22-how-to-destroy-metal-2-denting/frame_005.jpg
+- [13:03] tutorials/frames/houdini-22-how-to-destroy-metal-2-denting/frame_006.jpg
+- [14:50] tutorials/frames/houdini-22-how-to-destroy-metal-2-denting/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Denting (plastic deformation without full tearing) of a metal wall hit by cannon-fired steel balls, using H22's RBD Material Fracture **Secondary Fracture in Proxy Only mode**: the proxy is fractured finer than the render mesh so big visible fragments bend with rich interior detail.
 
 ### Summary
-[PENDING EXTRACTION]
+Part 2 of the official SideFX metal-destruction series. A staggered ball cannon (velocity attribute × alligator noise, `$F % 10` delete-based emission) fires at a garage door. The wall's fracture uses a coarse primary density (~2) plus **Secondary Fracture with Proxy Only on** — only the collision proxy gets the extra cuts, and **Refine Geometry: Bricker** adds render-mesh subdivisions to support the bending. Emissive RBDs are set up via the emit attribute on RBD Configure (balls emit=1, wall emit=0), packed/merged/unpacked, and solved with Emit RBDs on. Constraint deletion is filtered to the primary fracture ID only, so tears follow primary cuts while secondary pieces purely bend; RBD Deform Pieces uses the `parentpiece` cluster attribute for boundary connection.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Cannon setup: sphere → PolyBevel → Subdivide → Transform to launch position; point velocity `v` attribute scaled by alligator noise (staggered strengths); `Delete` with `$F % 10` = one ball every 10 frames.
+2. Viewport polish: click-hold work lights → **Dome Light** → Properties → file → Houdini HDRI (garage), raise exposure, enable viewport AO.
+3. Wall fracture: `RBD Material Fracture` — Material Type **Metal**, primary density ≈ 2, enable **Secondary Fracture** with **Proxy Only** checked (extra fragments exist only on proxy geometry — inspect with a null on the proxy output).
+4. Constraints: glue ≈ 500, raise dampening (stability, per part 1).
+5. Ball `RBD Configure`: emit from the **RBD emitting attribute**; Physical: Metal → **Steel** (heavier).
+6. Wall `RBD Configure` (copied from part 1: bounding-box Active center, Metal/Aluminum): enable the emission attribute but set **emit = 0** — the solver's Emit RBDs mode needs a clear emit attribute on every object when merging streams.
+7. `RBD Pack` each stream → `Merge` → `RBD Unpack` (Transfer Attributes + Transfer Groups on) → `RBD Bullet Solver` with **Emit RBDs on**; Collision → Ground Plane.
+8. Minimal denting at first: the render mesh lacks polygons to express proxy bending → RBD Material Fracture **Refine Geometry: Bricker** (adjust Size, e.g. 0.05) adds supporting subdivisions.
+9. `RBD Deform Pieces` — raise point counts for smoother blending; Boundary Connection uses the **parentpiece** cluster attribute (secondary pieces are parented to their primary fragment).
+10. Tear-along-primary-cuts: fracture IDs are `metal_fracture` (primary) and `metal_fracture_2` (secondary); in Bullet Solver → Constraints, restrict constraint deletion to **metal_fracture** only and keep detach distance high — cuts open only along primary seams while secondary fragments keep bending.
+11. Output: Blast the metal door, merge with unpacked spheres (add normals, darker color) for the preview.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `RBD Material Fracture` — Metal; density 2; **Secondary Fracture** (Fracture Count, **Proxy Only**, Refine Geometry: **Bricker**, Size 0.05, Cluster Attribute: `parentpiece`); glue 500; fracture IDs `metal_fracture` / `metal_fracture_2`
+- `RBD Configure` — emit attribute (1 on balls / 0 on wall); Physical Metal: Steel (balls) vs Aluminum (wall)
+- `RBD Pack` → `Merge` → `RBD Unpack` (transfer attrs/groups) → `RBD Bullet Solver` (**Emit RBDs**, Ground Plane, constraint-name filter for deletion)
+- `RBD Deform Pieces` — Boundary Connection: parent-piece cluster attribute; point counts for smoothness
+- Cannon: `PolyBevel`, `Subdivide`, `Transform`, point `v` × alligator noise, `Delete` with `$F % 10`
+- Viewport: Dome Light + HDRI, ambient occlusion
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22
 
 ### Tags
-[PENDING EXTRACTION]
+#rbd #dop #sop #simulation #intermediate #houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini 22 | How to Destroy Metal | 1 | Tearing](houdini-22-how-to-destroy-metal-1-tearing.md) — part 1; same file and constraint fundamentals
+- [Art directing large scale RBD sims in Houdini using the up-res method](art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method.md) — shares #rbd #simulation; complementary proxy/up-res philosophy
+- `recipes/rbd-destruction.md` — general destruction pipeline
