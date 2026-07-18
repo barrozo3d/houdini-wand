@@ -3409,6 +3409,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Framed as a breakdown rather than a formal tutorial, this video shows how combining simple attribute tricks with particle simulation avoids the long sim times of more literal destruction approaches. The mask driving the whole effect reuses the channel's own toolkit: **Distance Along Geometry** from a handful of manually-selected art-directed points produces a `dist` attribute, which is...
 - **File:** tutorials/techniques-for-fast-disintegration-fx-in-houdini-a-particle-attribute-approach.md
 
+
+### Houdini 22 | How to Create Pyro in COPs | Configure Pyro Recipes
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=xKrHwJRo-nI
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes.md
+
 ---
 
 ## Tag Reference
