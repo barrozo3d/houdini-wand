@@ -36,7 +36,7 @@ User provides a URL (YouTube, article, documentation) or pastes book/chapter con
 ## Mode 1: Consultation Workflow
 
 ### Step 1 — Check the Tutorial Library
-Before answering, read `tutorials/INDEX.md`. Search for entries matching the technique or topic. If found, cite the source.
+Before answering, search `tutorials/INDEX.md` for entries matching the technique or topic. The INDEX is large (3000+ lines) — do NOT read it top to bottom. Grep it by keyword/tag first (e.g. `pyro`, `#rbd`, a node name), then read only the matching entry blocks. If found, cite the source.
 
 ### Step 2 — Check Reference Files
 
@@ -295,9 +295,3 @@ Production pipeline guides: step-by-step from first SOP to final render. Check t
 | `recipes/rbd-destruction.md` | RBD destruction: Voronoi fracture → constraint teardown → debris/dust → Karma render |
 | `recipes/houdini-to-ue5.md` | Houdini → UE5: Houdini Engine HDA workflow + static export (USD/Alembic/VDB) |
 
-### Step 2 — Check Recipes
-When the question is about a **full production workflow** (not a single technique), check the relevant recipe before answering:
-- Pyro shot → `recipes/pyro-hero-shot.md`
-- Fluid/liquid → `recipes/flip-fluid-render.md`
-- Destruction/fracture → `recipes/rbd-destruction.md`
-- Houdini → UE5 export → `recipes/houdini-to-ue5.md`
