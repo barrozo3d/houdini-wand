@@ -3433,10 +3433,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ### Houdini 22 | How to Destroy Metal | 1 | Tearing
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=x-N5I4XS7Q4
-- **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Houdini (official SideFX)
+- **Houdini Version:** Houdini 22
+- **Tags:** rbd, dop, sop, simulation, intermediate, houdini-22
+- **Summary:** Part 1 of the official H22 metal-destruction series: tearing sheet metal with RBD Material Fracture in Metal mode (glue + soft bending constraints; edge detail via detail size / noise height / element size), RBD Configure with a bounding-box Active region (pin top/sides) and Metal/Aluminum physical density, RBD Bullet Solver with an animated collider + ground plane and a lowered constraint detach distance (~0.1), then the new RBD Deform Pieces node with Boundary Connection switched from Cluster Attribute (dent-only) to Constraints (true tearing). Stabilizes springy metal via dampening ratio ×4000 + reduced angular dampening/stiffness, and shows the thick-wall variant: PolyExtrude (−0.01, output back) + Reverse/Normal → Material Fracture set to Solid with fewer scatter points and glue 100.
 - **File:** tutorials/houdini-22-how-to-destroy-metal-1-tearing.md
 
 

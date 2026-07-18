@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=x-N5I4XS7Q4
 author: Houdini
 ingested: 2026-07-18
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 22"
+tags: [rbd, dop, sop, simulation, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-22-how-to-destroy-metal-1-tearing/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 22 | How to Destroy Metal | 1 | Tearing
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-22-how-to-destroy-metal-1-tearing <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -156,30 +152,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [2:34] tutorials/frames/houdini-22-how-to-destroy-metal-1-tearing/frame_000.jpg
+- [3:16] tutorials/frames/houdini-22-how-to-destroy-metal-1-tearing/frame_001.jpg
+- [4:20] tutorials/frames/houdini-22-how-to-destroy-metal-1-tearing/frame_002.jpg
+- [7:00] tutorials/frames/houdini-22-how-to-destroy-metal-1-tearing/frame_003.jpg
+- [7:42] tutorials/frames/houdini-22-how-to-destroy-metal-1-tearing/frame_004.jpg
+- [10:10] tutorials/frames/houdini-22-how-to-destroy-metal-1-tearing/frame_005.jpg
+- [12:40] tutorials/frames/houdini-22-how-to-destroy-metal-1-tearing/frame_006.jpg
+- [15:00] tutorials/frames/houdini-22-how-to-destroy-metal-1-tearing/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
-
-### Summary
-[PENDING EXTRACTION]
+Houdini 22's new metal-destruction workflow: `RBD Material Fracture` in **Metal** mode + `RBD Bullet Solver` + the new `RBD Deform Pieces` node (boundary connection = constraints) to tear thin or thick sheet metal with plastic bending.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. `Split` isolates the metal-door group from the garage geo; an animated "crack" character serves as the collider.
+2. `RBD Material Fracture` — Material Type: **Metal**, manual mode while tweaking; Fracture tab: scatter points 100→50. Details tab: lower detail size (more subdivisions), higher noise height, element size 215 → richer torn-edge detail.
+3. Constraints tab: two constraint types — **glue** (initial) then **soft** (bending after glue breaks). Lower glue strength to ~1000 (defaults too high).
+4. `RBD Configure` (all 3 inputs) — Active attribute via **Bounds → Bounding Box** (interactive red box; demo values 2.77 / 1.35 / 4.72) pins top/sides, leaving only the boxed region active. Physical attributes → Metal → **Aluminum** (density changes bend/heaviness).
+5. `RBD Bullet Solver` — connect high-res / constraints / proxy; Collision tab: Ground Plane on; crack character into the **collision geometry** input.
+6. Constraints tab of the solver: lower the detach **distance** threshold to ~0.1 so pieces can actually break free.
+7. `RBD Deform Pieces` (all 3 inputs) — switch **Boundary Connection: Cluster Attribute → Constraints**; Cluster-Attribute mode = denting without detachment, Constraints mode = proper tearing.
+8. Stabilize jiggly metal in RBD Material Fracture soft-constraint properties: dampening ratio ×4000, reduce angular dampening and angular stiffness → bends out fast then freezes. Lowering glue strength (1000→100) frees more fragments.
+9. Thick metal variant: `PolyExtrude` the thin door (extrude front −0.01, Output Back on) → `Reverse` + `Normal` to fix normals → second `RBD Material Fracture` set to **Solid** (remeshes; 10 scatter points, smaller detail size — solid fracture is slower). Same downstream setup reused via copy/paste.
+10. `RBD Deform Pieces` shaping: Min/Max Points (e.g. 10/100) and Radius change blending — rougher vs smoother torn surfaces. Flipbook via the provided camera to iterate.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `RBD Material Fracture` — Material Type: Metal; Thin vs **Solid** geometry modes; edge detail (detail size, noise height, element size 215); glue strength 1000→100; dampening ratio ×4000; angular dampening/stiffness reduced
+- `RBD Configure` — Active attr from Bounding Box (2.77, 1.35, 4.72); Physical: Metal/Aluminum
+- `RBD Bullet Solver` — Ground Plane; collision geometry input (animated collider); constraint detach distance 0.1
+- `RBD Deform Pieces` — Boundary Connection: **Constraints** (tear) vs Cluster Attribute (dent only); Radius, Min/Max Points
+- `PolyExtrude` (front −0.01, Output Back) + `Reverse` + `Normal` for thick walls
+- File: RBD_metal_start_01 (official project file)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (RBD Deform Pieces + metal material fracture workflow are new in H22)
 
 ### Tags
-[PENDING EXTRACTION]
+#rbd #dop #sop #simulation #intermediate #houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini 22 | How to Destroy Metal | 2 | Denting](houdini-22-how-to-destroy-metal-2-denting.md) — part 2 of this official series
+- [Art directing large scale RBD sims in Houdini using the up-res method](art-directing-large-scale-rbd-sims-in-houdini-using-the-up-res-method.md) — shares #rbd #simulation
+- `recipes/rbd-destruction.md` — general fracture pipeline this metal workflow extends
