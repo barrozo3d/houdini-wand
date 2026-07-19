@@ -3194,9 +3194,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=5v9lmJcIrIw
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, procedural, volumes, attributes, intermediate, houdini-22
+- **Summary:** Official SideFX walkthrough of building terrain in Copernicus: the HeightField COP Network preset (border clamp, ZX-plane canvas, km-scale Uniform Scale), a height-typed Layer deforming a live grid, and the HF stack — HF Noise (Hybrid Terrain fractal), HF Terrace (Compute Range, Random Step 1, seed picking), HF Erode (keeps terraced ledges), HF Strata (Amplitude 10, Element ~340, Strata ~15) — then HF Visualize colored via Mono to RGB with the new terrain ramp presets, plus an Add + Fractal Noise before the color mapping so color stops tracking height 1:1.
 - **File:** tutorials/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields.md
 
 
@@ -3238,6 +3238,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** [PENDING]
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive.md
+
+
+### H22 - Modeling & Solaris | Fianna Wong | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=CFr-1PANhsk
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/h22---modeling-solaris-fianna-wong-houdini-22-hive.md
 
 ---
 
