@@ -3184,9 +3184,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Wkj1DMn-X2w
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 22
+- **Tags:** lop, solaris, usd, rbd, sop, procedural, intermediate, advanced, houdini-22
+- **Summary:** Fixing the H22 Edit node's physics-mode collisions (LOPs): default sim geometry is convex hulls, so concave shapes fail — author proxy-purpose collision meshes via Convex Decomposition (Max Concavity tuning), Voronoi-fracture + per-piece decomposition to preserve holes, and ramp-driven relbbox clustering (chramp → rint cluster ids → per-cluster Convex Hull) for segmented boxes; assign render/proxy purposes with Configure Primitive, build variants in a component graph, and work around tiny scene scale with a root USD Transform scale + inverse.
 - **File:** tutorials/messing-with-the-edit-node-in-houdini-22.md
 
 
@@ -3228,6 +3228,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** [PENDING]
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive.md
+
+
+### H22 - Animation | Motion Mixer | Sasa Budimir | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=VaUleTuvWgA
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive.md
 
 ---
 
