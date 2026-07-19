@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=VaUleTuvWgA
 author: Houdini
 ingested: 2026-07-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [animation, rigging, rbd, simulation, solaris, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # H22 - Animation | Motion Mixer | Sasa Budimir | Houdini 22 HIVE
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py h22---animation-motion-mixer-sasa-budimir-houdini-22-hive <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro & Silly Character Animation Showcase [0:00]
@@ -322,30 +318,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [5:35] tutorials/frames/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive/frame_000.jpg
+- [6:12] tutorials/frames/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive/frame_001.jpg
+- [6:52] tutorials/frames/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive/frame_002.jpg
+- [8:44] tutorials/frames/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive/frame_003.jpg
+- [10:39] tutorials/frames/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive/frame_004.jpg
+- [13:40] tutorials/frames/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A "minimum viable animation" character workflow: tiny FK clip library → Motion Mixer choreography (with H22's new nested clips) → additive noise layers → ragdoll pass that supplies all the secondary motion, finished in Solaris/Karma with Copernicus compositing.
 
 ### Summary
-[PENDING EXTRACTION]
+Sasa Budimir's HIVE talk animates silly knight puppets by deliberately under-animating: plan a small set of basic clips (attacks, dodges, idles) from an old-KineFX animatic, keep the rig all-FK (only hand/weapon/shield control positions matter), and let a ragdoll pass add the liveliness nobody keyframed. Prep steps: build collision shapes per body part (fracture or shrinkwrap — worth the time), auto-extract ragdoll joint limits by keyframing silly limb swings and feeding the poses to Configure Joint Limits, and set the root/cycle controls Motion Mixer needs for clip matching. In Motion Mixer: drag = loop, Shift+drag = retime, blend regions mix adjacent clips, tracks/clips offset independently, a search bar filters big clip libraries. Two noise types (subtle idle keep-alive, livelier in-motion) are layered additively on their own track with keyframed weights; H22's **nested clips** let you slide the noise inside the nest to find the sweet spot without moving top-level keyframes. Ragdoll was applied after the mixer (though it's accessible inside via the animate scene). Set is a "cardboard maker" HDA, assembled and lit in Solaris, composited in Copernicus.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Plan clips from an animatic** — old-KineFX/rig-pose SOP animatic determines the minimal clip set; enhance later with noise + ragdoll instead of hand animation.
+2. **Rig** [frame_000, 5:35] — all-FK APEX autorig; only hand-control positions for stick/shield matter; H22's updated **Auto-rig Component Look-At** used for the hand stick.
+3. **Collision shapes** [frame_001, 6:12] — per-part collision geometry via fracture or shrinkwrap (custom `OUT_COLL_SHAPES_CUSTOM` + zero-padding wrangle); time spent here keeps the ragdoll happy.
+4. **Joint limits the easy way** [frame_002, 6:52] — keyframe silly limb-swing animations → poses → motion clip → **Configure Joint Limits** extracts limits from those poses (vs painful manual setup). Test: a 7-keyframe animation + ragdoll = working pauldrons/shield/weapon follow-through; weapon and shield targets drive everything, tune stiffness/physical params.
+5. **Mixer prep** — set **root control and cycle controls** on the character (used by the mixer's clip position-matching).
+6. **Motion Mixer basics** [frame_003, 8:44] — drag clip = loop; Shift+drag = retime (icon shows speed factor, resettable); per-clip and per-track offsets; overlap = frame blending between clips; search-bar filtering by name/character.
+7. **Additive noise track** [frame_004, 10:39] — noise motion applied additively on top of the previous track, weights keyframed (orange curve); two flavors: idle keep-alive vs in-motion.
+8. **Nested clips (new in H22)** — nest the noise + its keyframes: sliding the outer clip moves everything, but *inside* the nest you can slide the noise independently while top-level keyframes stay put.
+9. **Ragdoll pass** — applied to the whole mixed shot afterward (could run inside the mixer via scene animate; kept separate for parameter keying). Simple anim → +noise → +ragdoll = a character you'd "buy something from."
+10. **Set/lookdev/comp** [frame_005, 13:40] — cardboard-maker tool for the set; Solaris scene: reference characters/props/lights per shot, few lights for the puppet-theater look; basic compositing in Copernicus; render close to final, tweak lightly.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- APEX autorig components; Auto-rig Component Look-At (updated in H22)
+- Ragdoll prep: fracture/shrinkwrap collision shapes, collision padding zeroed via wrangle; Configure Joint Limits fed by pose motion clips; stiffness/physical properties tuning
+- Motion Mixer: loop (drag), retime (Shift+drag), clip/track offsets, blend overlaps, search filter, additive tracks with keyframed weights, root/cycle controls, **nested clips** (H22)
+- Ragdoll applied post-mixer (also possible inside via animate scene)
+- Solaris: per-shot references (characters, props, lights), Karma; Copernicus for compositing
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (nested clips, updated look-at component)
 
 ### Tags
-[PENDING EXTRACTION]
+animation, rigging, rbd, simulation, solaris, intermediate, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [H22 - KineFX Rigging and Animation | Max Rose | Houdini 22 HIVE](h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive.md) — companion HIVE rigging/animation session
+- [H22 - KineFX Rigging and Procedural Animation | Henry Dean | Houdini 22 HIVE](h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive.md) — the procedural counterpart to this hand-mixed workflow
+- [MOPs: Motion Operators for Houdini](mops-motion-operators-for-houdini.md) — alternative motion-layering toolset

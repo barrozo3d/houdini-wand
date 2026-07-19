@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Wkj1DMn-X2w
 author: cgside
 ingested: 2026-07-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [lop, solaris, usd, rbd, sop, procedural, intermediate, advanced, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/messing-with-the-edit-node-in-houdini-22/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Messing with the Edit node in Houdini 22
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py messing-with-the-edit-node-in-houdini-22 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -159,30 +155,52 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:05] tutorials/frames/messing-with-the-edit-node-in-houdini-22/frame_000.jpg
+- [2:40] tutorials/frames/messing-with-the-edit-node-in-houdini-22/frame_001.jpg
+- [3:49] tutorials/frames/messing-with-the-edit-node-in-houdini-22/frame_002.jpg
+- [5:03] tutorials/frames/messing-with-the-edit-node-in-houdini-22/frame_003.jpg
+- [7:27] tutorials/frames/messing-with-the-edit-node-in-houdini-22/frame_004.jpg
+- [10:41] tutorials/frames/messing-with-the-edit-node-in-houdini-22/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building custom proxy collision meshes so the Houdini 22 Edit node's physics mode (LOPs/Solaris) collides correctly with concave geometry, using convex decomposition, ramp-driven clustering, and USD purpose assignment (render vs proxy).
 
 ### Summary
-[PENDING EXTRACTION]
+cgside hits the core limitation of the new Edit node's physics placement in Houdini 22: it builds convex hulls of scene geometry by default, so objects can't nestle into concave shapes (a sphere won't drop behind a wall; a CD won't sit in its case tray). The fix is authoring a **proxy-purpose mesh** per asset: convex-decompose (or cluster then per-cluster convex hull) the geometry in SOPs, name it, assign it to the USD **proxy** purpose with Configure Primitive while the full-res mesh gets **render** purpose — the Edit node then uses the proxy as the collision shape. The video also covers a scene-scale gotcha (tiny real-world scale breaks collisions; scale the whole stage up via a matrix + USD Transform on the root prim, edit, then invert) and a full component-builder/variant workflow for a CD-case asset.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Reproduce the issue** [frame_000, 1:05; frame_001, 2:40] — in LOPs: SOP Create mesh (box + PolyExtrude wall), graft a sphere, drop an Edit node, select prims → Add Physics → physics mode → Draw Sim Geometry: the green sim geometry shows a convex hull bridging the concavity, so the sphere won't collide into the pocket (no exposed way to change hull generation — likely for performance).
+2. **Simple fix** — inside the SOP Create, after PolyExtrude: **Convex Decomposition** (reduce Max Concavity) → delete `name` → set `name = proxy_mesh` → Merge with the render mesh; then **Configure Primitive** ×2: render geometry → purpose **render**, proxy geometry → purpose **proxy**. Edit node now collides against the true concave shape.
+3. **Preserving holes** [frame_003, 5:03] — plain convex decomposition erases a CD's center hole. Better: Subdivide → density attribute weighting scatter toward edges → scatter → **Voronoi Fracture** → Convex Decomposition per piece: pieces trace the hole; heavier but valid for RBD too (the Edit node likely runs RBD under the hood).
+4. **Ramp-clustered segmentation** [frame_004, 7:27] — for box-like cases: **Relative Point Bounding Box** (0–1 per axis) → per-axis ramps (`chramp`) positioned at desired cut locations → multiply ramp value by section count and `rint()` to an integer cluster id; combine axes with an offset so ids stay unique; write to an attribute; then For-Each over cluster → **Convex Hull** per cluster = clean segmented collision boxes. Y-axis included only where needed (floating parts).
+5. **Asset build in Solaris** [frame_005, 10:41] — Component-style graph: create render/proxy scopes, Configure Primitive per purpose, For-Each over variant prims grafting render + proxy branches, **Add Variant**; switch variants (closed / open / with CD / disc only) and export as a USD asset.
+6. **Scene-scale workaround** — at real-world (tiny) scale the proxy collisions misbehave: build a scale matrix (matrix4), **USD Transform** on the root prim path, place everything with Edit-node physics at the large scale, then apply the inverse (1/scale) transform.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- LOPs: SOP Create, Graft Branches, **Edit** (Add Physics, physics mode, Draw Sim Geometry), Configure Primitive (purpose: render/proxy), Add Variant, For-Each (prims), USD Transform, Set Variant
+- SOPs: PolyExtrude, Convex Decomposition (Max Concavity ~0.03–0.1), Convex Hull, Voronoi Fracture, Scatter (density-weighted), Subdivide, Merge, Name/Attribute Delete, Relative Point Bounding Box, For-Each (pieces)
+- VEX (cluster wrangle): per-axis `chramp()` on relbbox components, `rint(ramp * sections)`, axis combine with offset → cluster attribute
+- USD: purposes render/proxy; component/variant asset structure; root-prim scale matrix + inverse
+- Default Edit-node sim geometry = convex hulls (not user-configurable)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (Edit node physics mode)
 
 ### Tags
-[PENDING EXTRACTION]
+lop, solaris, usd, rbd, sop, procedural, intermediate, advanced, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Intro To Houdini Solaris - Full Beginner Course](intro-to-houdini-solaris---full-beginner-course.md) — the component-builder/variant foundations this asset workflow uses
+- [Improve Solaris Performance - Houdini Tutorial](improve-solaris-performance---houdini-tutorial.md) — proxy-geometry authoring for viewport speed; same render/proxy purpose mechanics
+- [H22 - Modeling & Solaris | Fianna Wong | Houdini 22 HIVE](h22---modeling-solaris-fianna-wong-houdini-22-hive.md) — the H22 Solaris feature context around the Edit node

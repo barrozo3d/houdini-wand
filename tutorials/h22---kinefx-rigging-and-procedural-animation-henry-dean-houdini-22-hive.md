@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=0YNaNZkjwoM
 author: Houdini
 ingested: 2026-07-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [rigging, animation, procedural, attributes, sop, advanced, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # H22 - KineFX Rigging and Procedural Animation | Henry Dean | Houdini 22 HIVE
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Viewport G-Splat Rigging & Scaling Bugs [0:00]
@@ -412,30 +408,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [2:31] tutorials/frames/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive/frame_000.jpg
+- [5:45] tutorials/frames/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive/frame_001.jpg
+- [9:12] tutorials/frames/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive/frame_002.jpg
+- [10:29] tutorials/frames/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive/frame_003.jpg
+- [13:12] tutorials/frames/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive/frame_004.jpg
+- [15:31] tutorials/frames/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Rigging and procedurally animating a Gaussian-splat centipede in Houdini 22 with KineFX/APEX: Bake GSplats to a point cloud, kit-bash a clean rest pose, capture-proximity skinning, a phase-driven "metachronal wave" gait, and injecting procedural animation into the animate state via MotionClip → channel prims.
 
 ### Summary
-[PENDING EXTRACTION]
+Henry Dean's Houdini 22 HIVE talk (using Dany Bittel's photogrammetry G-splat centipede) shows that once H22 renders G-splats directly in the viewport, the whole rigging stack "just works" on the splat point cloud — Bone Deform, Transform, standard SOPs — with two gotchas: the `scale` attribute is deliberately 3 floats (not a vector) so rotations don't shear the non-uniform splat scales (cast to vector only while scaling, cast back before rotating), and everything topology-dependent (weight painting, joint snapping, selections) disappears with a pure point cloud. The fix was kit-bashing a clean, symmetric rest-pose centipede from clean segments of the original, skinned via Capture Proximity, assembled with Copy to Points (manually wrangling capture data — much easier now that H22 drops the 20-float `pcapdata` detail array), legs driven by a wheel-phase metachronal wave (first 180° = lift + move forward, second 180° = drag back) advanced by distance traveled, plus Spline IK for body and rig-built antenna joints reused upstream. Procedural animation reaches the animate state via parameter dictionary → MotionClip → Channel Prims from MotionClip → APEX animation layer, leaving hand-keyed layers available for head/antenna/tail.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Import** [frame_000, 2:31 area] — File (`new_centipede_M.ply`) → **Bake GSplats SOP**: raw .ply becomes points with splat attributes, viewport-renderable in H22. Bone Deform and Transform SOPs work directly on it.
+2. **The scale-attribute trap** — Transform scaling mushes splats because `scale` is typed as 3 floats (no transform applied). Cast to vector → scaling works; but then rotation also rotates the non-uniform scale (streaking ellipsoids) — that's *why* it's a 3-float. Cast back after scaling. (Squash-and-stretch rigs on splats: open question.)
+3. **No topology** [frame_001, 5:45] — no weight painting, joint snapping, or viewport selections; splats overlap "painterly", which makes kit-bashing forgiving — moving pieces apart/together blends visually with no edge loops or volume preservation to manage.
+4. **Kit-bash a rest pose** [frame_003, 10:29] — isolate clean narrow/broad segments from the source splat, rig them individually, then **Copy to Points** onto template points spaced by segment width; manually wrangle capture data for the new geometry/joints (H22's removal of the 20-float `pcapdata` detail attribute makes this far easier). Intermediate bone deformation mid-setup is fine as long as capture attributes aren't deleted.
+5. **Skinning** — **Capture Proximity** (not the most robust method, but the only option without topology); worked well here.
+6. **Metachronal wave gait** [frame_002, 9:12] — legs keyed off a wheel phase: 0–180° lift + translate forward, 180–360° translate back; phase offset propagates back-to-front along the body; drive phase from change in distance traveled. Foot sliding turned out to *match* real centipede reference (skittery, water-like motion) — prototype first, revise later.
+7. **Rig build + APEX injection** [frame_004, 13:12] — leg IK solvers + spine Spline IK. Fully procedural path: build parameter dictionary → invoke rig. Animate-state path: pack SKELETON/SKIN/RIG/OTHER_BITS with **Pack Folders** → **APEX Scene Add Character** → parameter dictionary → **MotionClip** (dictionary per frame) → **Channel Prims from MotionClip** (animation curves on geometry) → **APEX Scene Add Animation** (procedural layer) + **APEX Scene Animate** (manual layers) → **APEX Scene Invoke** for skin/skeleton output.
+8. **Antenna reusability** — build the antenna skeleton *with the rig itself* upstream (before capture), pass that rig chunk down and fuse it — joints match 1:1; a quasi-viewport tool: pose CVs, check capture output live.
+9. **Network anatomy** [frame_005, 15:31] — green = geometry processing (most of it), small pink block = rig build, yellow = animation solver; adapting to uneven terrain/crowds only requires revising the animation block ("north of the yellow"). Both G-splat versions will ship in the SideFX content library.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Bake GSplats SOP (.ply → point cloud with splat attributes); H22 viewport G-splat rendering
+- `scale` splat attribute: 3 floats intentionally (cast to vector for scaling only; rotation would corrupt non-uniform scale)
+- Bone Deform, Transform, Copy to Points, Capture Proximity, Spline IK, Pack Folders
+- H22 change: 20-float `pcapdata` detail attribute no longer needed (easier manual capture-data wrangling)
+- APEX: Scene Add Character, Scene Add Animation, Scene Animate, Scene Invoke; Attribute Adjust Dictionary (parameter dict) → MotionClip → Channel Prims from MotionClip
+- Gait: phase wheel (180° lift/forward, 180° back), phase from accumulated distance, back-to-front wave offset
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (viewport G-splat rendering, pcapdata removal)
 
 ### Tags
-[PENDING EXTRACTION]
+rigging, animation, procedural, attributes, sop, advanced, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [H22 - Gaussian Splats | Peter Sanitra | Houdini 22 HIVE](h22---gaussian-splats-peter-sanitra-houdini-22-hive.md) — the G-splat fundamentals talk this rigging demo builds on
+- [H22 - KineFX Rigging and Animation | Max Rose | Houdini 22 HIVE](h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive.md) — companion HIVE rigging session
+- [H22 - Gaussian Splats and Machine Learning | Jakob Ringler | Houdini 22 HIVE](h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive.md) — more G-splat pipeline context from the same HIVE event

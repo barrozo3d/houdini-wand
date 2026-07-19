@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=5v9lmJcIrIw
 author: Houdini
 ingested: 2026-07-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [cop, procedural, volumes, attributes, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 22 | How to Create Terrains in COPs | Utilize Height Fields
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-22-how-to-create-terrains-in-cops-utilize-height-fields <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -278,30 +274,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:44] tutorials/frames/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields/frame_000.jpg
+- [2:29] tutorials/frames/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields/frame_001.jpg
+- [5:15] tutorials/frames/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields/frame_002.jpg
+- [6:05] tutorials/frames/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields/frame_003.jpg
+- [7:52] tutorials/frames/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields/frame_004.jpg
+- [9:38] tutorials/frames/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields/frame_005.jpg
+- [11:58] tutorials/frames/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a heightfield terrain from scratch in Copernicus (COPs) in Houdini 22 using the HeightField COP Network preset and the HF node family (Noise → Terrace → Erode → Strata → Visualize), with layer-level color grading via Mono to RGB.
 
 ### Summary
-[PENDING EXTRACTION]
+Official SideFX walkthrough of the H22 COPs terrain workflow: the dedicated **HeightField COP Network** (tab at object level — not the plain COP network) presets border clamping, ZX-plane canvas, and a 1 km canvas (bumped to 2 km here). Inside, a height-typed Layer node deforms a live grid, and the classic SOPs heightfield stack is reproduced with COP equivalents: HF Noise for the base, HF Terrace for desert stepping (with computed min/max range), HF Erode for natural wear that respects the terraces, HF Strata for fine ridge detail, and HF Visualize colored by piping height → Add (fractal noise for breakup) → Mono to RGB with the new terrain color-ramp presets. The COPs advantage: any layer can be freely modified mid-stream (e.g., noising the height copy used only for color, so color no longer maps 1:1 to height).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Create the network** [frame_000, 1:44] — object level → Tab → **HeightField COP Network** (the plain COP Network lacks the presets). It sets border clamp-at-edge and canvas to the **ZX plane**; raise Uniform Scale for a 2 km² canvas.
+2. **Height layer** — inside, add a heightfield (Layer node with **type info = height**): height data now visibly deforms the preview grid.
+3. **Base noise** [frame_001, 2:29] — **HF Noise** (Fractal Noise 3D, Signature: Height; Sparse Convolution noise, Fractal Type Hybrid Terrain, Max Octaves ~10) wired with the layer as *size reference* (dotted line = reference, not pass-through). Controls: Amplitude (~500), Element Size, Roughness, Octaves.
+4. **Terracing** [frame_002, 5:15] — **HF Terrace**: hit **Compute Range** to fill min/max (−24.5 / ~36 here), raise Min Height ≈ 23–24, lower Max ≈ 36; Random Step 1, Step Seed 56, tweak Global Seed — varied desert steps.
+5. **Erosion** [frame_003, 6:05] — **HF Erode** defaults (Erosion Model: Ridge Size, Spread Iterations, Random Seed 0.434) naturalize the terrain; toggling the upstream terrace shows it keeps flat ledges the erosion alone would smooth away.
+6. **Fine strata** [frame_004, 7:52] — **HF Strata**: Amplitude 10 (pronounced), Element Size ≈ 337–350, Strata Size ≈ 13.5–15 for spaced ridges — desert-southwest look without reworking large forms.
+7. **Color** [frame_005, 9:38] — **HF Visualize** (outputs geometry; has color/mask inputs). Insert **Mono to RGB** from height: Compute Range so the ramp spans the full height (−46.46 / 46.57 shown), then pick from the new **terrain color ramp presets** (folder browser: Terrain/Desert/Forest/Mountain/Rocky/Tundra — "Mountain 07" used); wire RGB → color input.
+8. **Break the 1:1 height→color mapping** [frame_006, 11:58] — before Mono to RGB, **Add** a **Fractal Noise** layer (Amplitude ~60, Element Size 0.2, Fractal Type Hybrid Terrain): it only alters the *color-driving* copy of the height, so colors drift naturally across the terrain instead of tracking elevation contours exactly. Since these are just layers, ordinary COP math nodes work anywhere in the chain.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- HeightField COP Network preset: border clamp, canvas ZX plane, Uniform Scale (1 km → 2 km)
+- Layer (type info: height) — live grid deformation
+- HF Noise: Sparse Convolution / Hybrid Terrain fractal, Amplitude ~500, Octaves ~10
+- HF Terrace: Compute Range; Min ≈ 23.5, Max ≈ 36; Random Step 1; Step Seed 56
+- HF Erode: defaults (Ridge Size model, Random Seed 0.4343)
+- HF Strata: Amplitude 10, Element Size 337–350, Strata Size 13.5–15
+- HF Visualize: color input from Mono to RGB (Compute Range −46.46/46.57; terrain ramp presets — Mountain 07)
+- Add + Fractal Noise (Amplitude 60, Element Size 0.2, Hybrid Terrain, Lacunarity 2.012) for color breakup
+- COPs concepts: references (dotted) vs wires; everything is a layer, freely modifiable mid-stream
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (Copernicus heightfield workflow; terrain color ramp presets are new)
 
 ### Tags
-[PENDING EXTRACTION]
+cop, procedural, volumes, attributes, intermediate, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini 22 | How to Create Pyro in COPs | Configure Pyro Recipes](houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes.md) — sibling official H22 COPs walkthrough
+- [Environments in Houdini | Part 1 - Heightfields](environments-in-houdini-part-1---heightfields.md) — the SOPs-era heightfield workflow this COPs version mirrors
+- [Houdini Heightfields and Cliffs](houdini-heightfields-and-cliffs.md) — advanced terrain shaping techniques transferable to the COPs stack

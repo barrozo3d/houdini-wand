@@ -3224,9 +3224,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=EUjZ7ObaN1Y
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, procedural, simulation, solaris, karma, advanced, houdini-22
+- **Summary:** HIVE talk stress-testing H22's adjacency nodes on a badly-UV'd statue scan: Geometry to Adjacency cables (Cable Unpack, pass-through green inputs skip per-frame recompute), Adjacency Distort bridging UV islands, Adjacency Attribute Sample fixing noise mapping, a block-solver paint-spread (Slope Direction + distorted noise), leading edge via the new Time Shift node ($F−10 subtract), seam-free blur-in-block (small radius × ~500 iterations), masked Turing pattern + Ripple solver layers, hue/sat remapping, Solaris/Karma lookdev with Material Linker. Practical notes: fix overlapping UV islands (Labs node), bake 4K COPs output, X toggles flat/3D preview.
 - **File:** tutorials/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive.md
 
 
@@ -3234,9 +3234,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=VaUleTuvWgA
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 22
+- **Tags:** animation, rigging, rbd, simulation, solaris, intermediate, houdini-22
+- **Summary:** HIVE talk: "minimum viable animation" knight-puppet workflow — tiny all-FK clip library planned from an animatic, Motion Mixer choreography (drag=loop, Shift+drag=retime, blend overlaps, search filter, root/cycle controls), additive noise tracks with keyframed weights, H22 nested clips for sliding noise independently of top-level keys, and a ragdoll pass supplying all secondary motion (fracture/shrinkwrap collision shapes; Configure Joint Limits auto-extracted from keyframed limb-swing poses). Cardboard set + Solaris/Karma lookdev, Copernicus compositing.
 - **File:** tutorials/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive.md
 
 
@@ -3244,9 +3244,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=CFr-1PANhsk
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 22
+- **Tags:** modelling, sop, lop, solaris, usd, cop, karma, instancing, intermediate, houdini-22
+- **Summary:** HIVE talk (SideFX): SOPs-first USD bike-shop assembly — image-to-3D asset sourcing cleaned by the new rectangular Quad Remesh (always precede with Remesh; try both modes), render-time Scatter Instances (prototypes/weights, Karma-only visibility, relax iterations for interpenetration), implicit-surface booleans (resolution-independent quad output), sculpt QoL (G floating menu, lazy-mouse visualizer), Texture Material Library hosting COP nodes directly, and the new USD Create Component + USD Parent Geometry SOPs that author a tidy USD hierarchy without leaving SOPs. PolyHaven/GLTF tips included.
 - **File:** tutorials/h22---modeling-solaris-fianna-wong-houdini-22-hive.md
 
 
@@ -3254,9 +3254,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=2jZjaEzLdco
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 22
+- **Tags:** rigging, animation, rbd, simulation, procedural, intermediate, advanced, houdini-22
+- **Summary:** HIVE talk (SideFX): jack-in-the-box driven by ~2 keyframes — spiral-spring rig via centerline trick + group-based Parent Joints, parent rigs in KineFX before entering APEX, Pack Character + Spline auto-rig on a tagged coil, Configure Ragdoll recipe with hand-simplified proxy geometry, layer-per-limb weights to stiffen ragdoll, SDK component fired by the crank control (sample rotate-X into min/max), H22 spring secondary motion baked to layers and weight-animated, second clip on one Scene Animate node blended in Motion Mixer. Q&A covers the APEX-script MCP server ("vibe-rigging", token-light).
 - **File:** tutorials/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive.md
 
 
@@ -3264,9 +3264,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=orN8H41hNDE
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, rendering, procedural, uv, modelling, intermediate, houdini-22
+- **Summary:** HIVE talk (Copernicus team): H22's new Bake Pre-Process node (SOP+COP) makes cage-mesh authoring visible and interactive — orange cage in a viewport state, High Res Intersections highlighting (raise offset until no red), cage softening split at UV seams/faces/edge groups to stop skewed bakes, attribute-scaled offsets, inward ray-end mesh to exclude stray geometry — feeding Bake Geometry Textures (surface-normal / cage / single-mesh tracing, Match Pieces by Name for per-part bakes). Demo: fan asset via bake-setup recipe, live multi-UDIM preview material, COP materials with curvature/occlusion-driven scratches, exported to Unreal.
 - **File:** tutorials/h22---baking-with-copernicus-alex-hamer-houdini-22-hive.md
 
 ---

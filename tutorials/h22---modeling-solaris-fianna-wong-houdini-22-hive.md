@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=CFr-1PANhsk
 author: Houdini
 ingested: 2026-07-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [modelling, sop, lop, solaris, usd, cop, karma, instancing, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/h22---modeling-solaris-fianna-wong-houdini-22-hive/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # H22 - Modeling & Solaris | Fianna Wong | Houdini 22 HIVE
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py h22---modeling-solaris-fianna-wong-houdini-22-hive <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro & Overview [0:00]
@@ -266,30 +262,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [5:21] tutorials/frames/h22---modeling-solaris-fianna-wong-houdini-22-hive/frame_000.jpg
+- [6:08] tutorials/frames/h22---modeling-solaris-fianna-wong-houdini-22-hive/frame_001.jpg
+- [8:15] tutorials/frames/h22---modeling-solaris-fianna-wong-houdini-22-hive/frame_002.jpg
+- [9:39] tutorials/frames/h22---modeling-solaris-fianna-wong-houdini-22-hive/frame_003.jpg
+- [11:18] tutorials/frames/h22---modeling-solaris-fianna-wong-houdini-22-hive/frame_004.jpg
+- [12:21] tutorials/frames/h22---modeling-solaris-fianna-wong-houdini-22-hive/frame_005.jpg
+- [15:35] tutorials/frames/h22---modeling-solaris-fianna-wong-houdini-22-hive/frame_006.jpg
+- [17:21] tutorials/frames/h22---modeling-solaris-fianna-wong-houdini-22-hive/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini 22's SOPs-first USD scene assembly: image-to-3D asset sourcing cleaned with the new rectangular Quad Remesh, render-time Scatter Instances, implicit-surface booleans, the Texture Material Library with embedded COPs, and the new `USD Create Component` / `USD Parent Geometry` SOPs that author USD hierarchy without leaving SOPs.
 
 ### Summary
-[PENDING EXTRACTION]
+Fianna Wong (SideFX) builds a bike-shop scene to showcase H22 workflows that blur SOPs/LOPs/Copernicus boundaries. Assets are sourced by feeding reference photos through image-to-3D ("Pinocchio"/Meshy-style — output is dense garbage but correctly proportioned), then Quad Remesh — always with a Remesh appended first — using the new **rectangular** method for hard-surface/CAD shapes (try both modes; uniform still exists). Screws seconds-fast retopo with correct interiors [frame_000/001]. Set dressing uses the **Scatter Instances** LOP (prototypes with weights/scale/rotation distributions — render-time only, visible in Karma XPU/CPU not Vulkan; fix interpenetration with relax iterations). Booleans come "cheapo" via Implicit Surface → Implicit Surface Operation → Convert (resolution-independent, all-quad output, no sliver triangles — less precise, fine for background assets). Texturing lives in the **Texture Material Library** which now hosts COP nodes directly (no separate copnet), written out as textures for heavy scenes. The star: **USD Create Component** (per asset: kind = subcomponent, plus its transform) and **USD Parent Geometry** (grouping under umbrella prims) define the USD hierarchy in SOPs, so the LOPs side arrives tidy; final placement is done in SOPs via object merges of nulls.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Image → 3D sourcing** [frame_000, 5:21] — run reference photos through an image-to-3D tool; dense unusable mesh, right proportions — enough to try assets in a scene without committing to building them ("you kind of don't need reference images anymore").
+2. **Quad Remesh (beta) with new rectangular method** [frame_001, 6:08] — always append a **Remesh** first (Quad Remesh dislikes irregular input); rectangular mode nails hard-surface/CAD meshes (screw: 2–3 s with correct interior; delete stray interior geo, PolyFill top/bottom loops); UV Flatten + UV Layout after; uniform mode remains for organic shapes — try both.
+3. **Scatter Instances** [frame_002, 8:15] — LOP scattering with prototype groups + weights, count, distribution, scale/rotation ranges; **Configure Primitive** hides source meshes; instances exist only at render time (Karma XPU/CPU) → Houdini can't collide them, use **relax iterations** to fix interpenetrations in frame.
+4. **Sculpt QoL** [frame_003, 9:39] — **G-key floating menu** for all sculpt controls/brushes; values beyond 0–1 via mouse+keyboard; lazy-mouse visualizer for tracing mechanical edges; used to re-add detail the image-to-3D softening lost.
+5. **Implicit-surface booleans** [frame_004, 11:18] — Implicit Surface → Implicit Surface Operation (boolean) → Convert: quad output automatically, no mesh-resolution dependence, no sliver triangles; less precise — perfect for distant assets (pegboard from box + copied tubes).
+6. **Texture Material Library + COPs** [frame_005, 12:21] — author COP nodes inside the material library (no copnet/window pinning); colors/noises/grunges on the UV'd asset; keep live or bake to texture files (bake for many-asset scenes). PolyHaven (CC0) fills the gaps; GLTF downloads load textures in the viewport automatically, unlike USD.
+7. **USD hierarchy from SOPs** [frame_006, 15:35] — per-asset **USD Create Component** (kind: subcomponent under the bike-shop umbrella; put final translate/rotate/scale *on this node*, keeping the network sane) and **USD Parent Geometry** to group (4 workbenches → "workbenches" parent → OUT null).
+8. **Assembly** [frame_007, 17:21] — object-merge the nulls (blue), three top structures (bike shop / room / posters+plates); LOPs receives a tidy scene graph; to move anything, edit in SOPs. 12 fps viewport = unoptimized image-to-3D geo (a power outlet was millions of faces) — jam first, optimize later.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Quad Remesh (beta): **rectangular** (new, hard-surface/CAD) vs uniform; precede with Remesh; PolyFill for interior cleanup; UV Flatten + UV Layout
+- Scatter Instances (LOP): prototypes, weights, distribution, scale/orient ranges, relax iterations; render-time-only (Karma XPU/CPU); Configure Primitive to hide prototypes
+- Implicit Surface / Implicit Surface Operation / Convert — resolution-independent quad booleans
+- Sculpt: G floating menu, >0–1 values, lazy-mouse visualizer
+- Texture Material Library: embedded COP authoring, bake-to-texture
+- New USD SOPs: USD Create Component (kind, transform per asset), USD Parent Geometry (grouping)
+- Sources: image-to-3D tool, PolyHaven (CC0; prefer GLTF for auto-loading viewport textures)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (rectangular quad remesh, Scatter Instances, sculpt QoL, Texture Material Library COPs, USD Create Component / Parent Geometry)
 
 ### Tags
-[PENDING EXTRACTION]
+modelling, sop, lop, solaris, usd, cop, karma, instancing, intermediate, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Messing with the Edit node in Houdini 22](messing-with-the-edit-node-in-houdini-22.md) — physics-based placement of the assembled assets in LOPs (Edit node physics mode)
+- [Intro To Houdini Solaris - Full Beginner Course](intro-to-houdini-solaris---full-beginner-course.md) — the LOPs foundations this SOPs-first workflow feeds into
+- [Houdini tips : Solaris, VDB's , COPS and More](houdini-tips-solaris-vdbs-cops-and-more.md) — component-builder and COPs tips in the same territory

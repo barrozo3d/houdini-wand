@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=HUTd8BHNHKI
 author: Houdini
 ingested: 2026-07-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [solaris, usd, cop, top, pdg, volumes, karma, rendering, advanced, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/h22---gaussian-splats-peter-sanitra-houdini-22-hive/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # H22 - Gaussian Splats | Peter Sanitra | Houdini 22 HIVE
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py h22---gaussian-splats-peter-sanitra-houdini-22-hive <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro & What Are Gaussian Splats? [0:00]
@@ -412,30 +408,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [5:35] tutorials/frames/h22---gaussian-splats-peter-sanitra-houdini-22-hive/frame_000.jpg
+- [7:44] tutorials/frames/h22---gaussian-splats-peter-sanitra-houdini-22-hive/frame_001.jpg
+- [10:17] tutorials/frames/h22---gaussian-splats-peter-sanitra-houdini-22-hive/frame_002.jpg
+- [11:34] tutorials/frames/h22---gaussian-splats-peter-sanitra-houdini-22-hive/frame_003.jpg
+- [14:16] tutorials/frames/h22---gaussian-splats-peter-sanitra-houdini-22-hive/frame_004.jpg
+- [20:23] tutorials/frames/h22---gaussian-splats-peter-sanitra-houdini-22-hive/frame_005.jpg
+- [25:36] tutorials/frames/h22---gaussian-splats-peter-sanitra-houdini-22-hive/frame_006.jpg
+- [29:26] tutorials/frames/h22---gaussian-splats-peter-sanitra-houdini-22-hive/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini 22's end-to-end synthetic Gaussian-splat pipeline: a single Solaris recipe that generates camera rigs, renders EXR ground truth with any Hydra renderer, trains splats (with AOV feature layers) via a TOPs graph, and exports PLY/USD — demonstrated on volumes, animated assets, fur characters, and interiors.
 
 ### Summary
-[PENDING EXTRACTION]
+Peter Sanitra (NVIDIA) walks the full H22 G-splat pipeline. Splats are anisotropic ellipsoids with per-point spherical-harmonic view dependence — to Houdini, just points with attributes. The SideFX recipe drops into a Solaris stage: load an asset, execute, and it builds the camera rig (H22's SOP-level cameras allow Copy-to-Points rigs), renders ground-truth **OpenEXR** (camera + depth embedded; any Hydra delegate — Karma/Redshift/Arnold/RenderMan), seeds a point cloud from depth, trains via TOPs with per-stage hardware scheduling, and exports PLY (native) or USD — now a first-class Pixar USD schema, letting animation time-sample only changing properties (hundreds of MB vs gigabytes of mesh caches). Beyond RGB, AOVs (normal, albedo, subsurface) train as extra features, unlocking Nuke-style relighting/compositing in COPs via new splat-aware nodes (GSplat Rasterize). Strengths: volumes (10× smaller than VDB, HDR values >30 can light a scene, 100fps clouds with true anisotropic scattering), fur/whiskers (stacked stretched splats; moving eye speculars with no surface), real-time previz and USD preview purposes. Weaknesses: camera coverage is *the* bottleneck for interiors (treat placement as an engineering problem — he implemented a 2024 optimal-camera-placement paper in VEX/wrangles), glass/mirrors, HDR clamping, VRAM-bound training, no native temporal training, sparse editing tools.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Recipe** — drop the SideFX G-splat recipe on the Solaris stage, load the asset (sublayer/reference/SOP import), execute: camera rig → ground-truth renders → initial point cloud → training → export.
+2. **Camera rig** [frame_000, 5:35] — auto-generated light-stage-style rig, or feed custom cameras (H22 SOP cameras + Copy to Points). Coverage is everything for environments — an implemented optimal-camera-placement algorithm positions cameras by overlap/occlusion; "you will not succeed with a spherical rig around an interior."
+3. **Ground truth** — render **OpenEXR** (embeds camera + depth; depth seeds the initial point cloud; every AOV projects back to points → feature-carrying point cloud). Any Hydra renderer works (Karma XPU used).
+4. **AOV feature training** [frame_001, 7:44] — splats train RGB, position, orientation, scale, opacity *plus* extra AOVs (normal/albedo/subsurface) in a single pass — the palm's normal-map G-splat displays right in the viewport; rasterize any layer to image planes in COPs for relighting and proper compositing.
+5. **Training** [frame_002 triptych; frame_003 graph] — TOPs graph compares splat vs ground truth per step. Strategies: **Default (prune & grow)** — point count fluctuates (SFM init 1,000,000 → sawtooth as opacity resets every 3000 iters → refine-stop freezes count → final 322,285 for the hamster) — or **Monte Carlo** — fixed budget, points only move/retrain. Loss drops near-linearly to ~30–40k iterations then plateaus: stop there, further training is noise. Per-stage scheduling (farm renders, pick the big-VRAM GPU for training). Checkpoints every 10k let you resume or *partially retrain* (add normal/subsurface coefficients to an RGB-trained splat).
+6. **Quality vs count** [frame_004, 14:16] — 300k → 80k → 20k → 5k comparison: a 10× point drop is nowhere near a 10× quality drop; low counts hold up. Close-up splats read as oriented "brush strokes."
+7. **Volumes** [frame_005, 20:23] — splat opacity-stacking ≈ voxel density-stacking; optimizer concentrates splats at high-variation areas (cloud edges, cauliflower detail; few in flat/shadowed cores). Explosion: HDR intact (values >30 — can illuminate an environment), ~10× smaller than the source VDB; clouds capture anisotropic forward scattering and render ~100fps vs hours offline.
+8. **Animation** — train once on a static pose, then deform the splat point cloud with normal tools (Point Deform, lattices, the character's own rig — no retraining). Store via the new USD Gaussian-splat schema, time-sampling only P/orient.
+9. **Characters** [frame_006, 25:36] — Lorena E'Vers' cat/hamster: ~2K renders, ~300 cameras, optimizer tuned aggressive on fine detail — every hair, whisker, and moving eye highlight survives close inspection (~half a million points for the cat).
+10. **Failure modes & limits** [frame_007, 29:26] — big soft blobs / spiky elongated splats / wrong colors = coverage gaps (areas seen from few or no cameras); glass/refraction/mirrors are view-dependent beyond the model; don't clamp EXRs; training is VRAM-bound (all assets here < 60 GB VRAM); no native time-aware training; editing tooling sparse. Shines: volumetric capture, virtual sets/backgrounds (HDR-responsive), real-time previz, USD preview purpose, and full automation (hook splat generation to asset publishes, distribute on a farm).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Solaris G-splat recipe (single-click stage setup); SOP-level cameras + Copy to Points rigs (new in H22)
+- Ground truth: OpenEXR with embedded camera/depth/AOVs; any Hydra delegate (Karma XPU shown)
+- Training: TOPs graph; Default (prune & grow — opacity reset every 3000 iters, refine-stop freeze) vs Monte Carlo (fixed count); loss/iteration monitor tab (new); triptych ground-truth/render/heatmap view
+- Export: PLY (native), USD (new Pixar Gaussian-splat schema; Solaris loads natively — lights/relighting work like any prim)
+- COPs: splat-aware import + **GSplat Rasterize** (pick RGB/albedo/normal layers → image planes → relight/comp, project back)
+- Numbers: hamster SFM init 1M → final 322,285 splats; cat ~500k; palm 50–70k (from ~1M polys); cloud/explosion ≈ 10× smaller than VDB; HDR values 30+; training < 60 GB VRAM
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (viewport G-splat rendering, SOP cameras, AOV feature training, USD schema, splat-aware COPs nodes)
 
 ### Tags
-[PENDING EXTRACTION]
+solaris, usd, cop, top, pdg, volumes, karma, rendering, advanced, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [H22 - Gaussian Splats and Machine Learning | Jakob Ringler | Houdini 22 HIVE](h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive.md) — the preceding HIVE talk referenced throughout ("as Jakob was showing")
+- [H22 - KineFX Rigging and Procedural Animation | Henry Dean | Houdini 22 HIVE](h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive.md) — rigging/animating the deform-a-static-splat way
+- [H22 - Baking with Copernicus | Alex Hamer | Houdini 22 HIVE](h22---baking-with-copernicus-alex-hamer-houdini-22-hive.md) — COPs baking workflows adjacent to splat rasterization

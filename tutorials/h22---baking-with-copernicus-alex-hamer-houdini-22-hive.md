@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=orN8H41hNDE
 author: Houdini
 ingested: 2026-07-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [cop, rendering, procedural, uv, modelling, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/h22---baking-with-copernicus-alex-hamer-houdini-22-hive/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # H22 - Baking with Copernicus | Alex Hamer | Houdini 22 HIVE
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py h22---baking-with-copernicus-alex-hamer-houdini-22-hive <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro & What's New in Copernicus [0:00]
@@ -286,30 +282,54 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:45] tutorials/frames/h22---baking-with-copernicus-alex-hamer-houdini-22-hive/frame_000.jpg
+- [3:12] tutorials/frames/h22---baking-with-copernicus-alex-hamer-houdini-22-hive/frame_001.jpg
+- [5:22] tutorials/frames/h22---baking-with-copernicus-alex-hamer-houdini-22-hive/frame_002.jpg
+- [6:14] tutorials/frames/h22---baking-with-copernicus-alex-hamer-houdini-22-hive/frame_003.jpg
+- [7:50] tutorials/frames/h22---baking-with-copernicus-alex-hamer-houdini-22-hive/frame_004.jpg
+- [9:46] tutorials/frames/h22---baking-with-copernicus-alex-hamer-houdini-22-hive/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini 22's texture-baking upgrade in Copernicus: the new **Bake Pre-Process** node (SOP + COP) for interactive cage-mesh authoring — visible cages, intersection highlighting, UV-seam cage softening, attribute-scaled offsets, ray-end meshes — feeding Bake Geometry Textures, then COP materials driven by the baked maps, exported to Unreal.
 
 ### Summary
-[PENDING EXTRACTION]
+Alex Hamer (image-processing TD on the Copernicus team) covers H22 baking. Bake Geometry Textures (from H21) bakes high-res geometry data (normals, curvature, height, any custom attribute) onto low-res UVs for game-style optimization — a low-poly with baked AO + tangent normals reads nearly identical to the source [frame_000]. Its three tracing modes: **surface normal** (bidirectional trace along low-poly normals, first hit — fails on overhangs/problem areas [frame_001]), **cage mesh** (offset outward, trace inward — better bakes), and **single mesh** (low = high; grab geometry data as maps). H21's pain: the auto-generated cage was invisible, so you tuned it blind against black artifacts. H22 moves all cage setup into **Bake Pre-Process**: an interactive viewport state (Enter) shows the orange cage, toggles comparison targets, and — key feature — **highlight high-res intersections** (high-res red, cage blue) so you raise the cage offset until no red remains [frame_004]. **Cage softening** splits the cage at UV seams (or faces/edge groups) so expanded normals don't skew details like bolts [frame_002]; offsets can be scaled by a point attribute; an optional inward-offset **ray-end mesh** stops rays so nearby geometry isn't picked up [frame_003]. Cage data rides as attributes on the cage geometry output. The demo bakes a fan asset via the bake-setup recipe, previews a curvature+occlusion supermaterial across all UDIMs live, then builds COP materials where baked maps drive scratch placement and noise masks [frame_005], finishing in Unreal's material editor (viewport lighting looks off because normals are Unreal-flavored — preview material only handles its own normal type; RFE welcome). Q&A: **Match Pieces by Name** bakes per-part within one bake using matching `name` attributes on low/high.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Why bake** [frame_000, 1:45] — bake high-res geometry data to low-res texture maps: near-identical visuals at game budgets; maps also drive masks, materials, and effects.
+2. **Tracing modes** [frame_001, 3:12] — Surface Normal: bidirectional first-hit along low-res normals (problem areas marked); Cage Mesh: expand cage outward, trace back to high-res, avoiding those areas; Single Mesh: treat the low as high to extract curvature/etc. maps directly.
+3. **Bake Pre-Process interface** — normals authoring (mode/override), cage softening, **Ray Start Offset** (the cage) and **Ray End Offset** (how far past the low-res rays travel; default infinite), cage output attributes consumed by Bake Geometry Textures.
+4. **Cage softening** [frame_002, 5:22] — expanded cage inherits slanted normals on flat faces → skewed bakes (angled bolts); split the cage at UV seams / faces / edge groups so bakes project straight; skew-map painting exists as an alternative.
+5. **Ray-end mesh** [frame_003, 6:14] — a second low-res copy offset inward, fully inside the high-res; rays stop there, excluding stray geometry from the bake.
+6. **Interactive cage state** [frame_004, 7:50] — bake-setup recipe builds the network; press Enter on Bake Pre-Process for the viewport state: orange cage, opacity control, comparison target (none/low/high), **High Res Intersections** (red vs blue) — raise cage offset until no red; scale offsets by a float attribute for local control; enable/place the purple ray-end mesh.
+7. **Lookdev** [frame_005, 9:46] — preview material (e.g. occlusion + curvature) updates live across all UDIMs; build COP materials where baked maps (shape scatter + curvature) drive scratches, noises, color placement; export to Unreal via a simple material setup.
+8. **Per-part baking** — "Match Pieces by Name": matching `name` attributes on low/high bake each part in its own pocket within a single bake.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Bake Geometry Textures (H21; auto-cage params removed in H22): tracing modes Surface Normal / Cage Mesh / Single Mesh; Match Pieces by Name
+- **Bake Pre-Process** (new, SOP + COP): normals setup, cage softening (UV seams / faces / edge group), Ray Start Offset (cage), Ray End Offset / ray-end mesh, offset scaling by attribute, cage attributes on output; interactive viewport state (Enter): cage opacity, comparison target, High Res Intersections (red/blue), ray-end mesh display (purple)
+- Bake setup recipe; preview material (multi-UDIM live preview; only understands its own normal convention — Unreal normals look wrong in viewport)
+- COP material building: baked maps → shape scatter/curvature-driven scratches, noise masks
+- Every node's `?` button → docs
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (Bake Pre-Process node + interactive cage state)
 
 ### Tags
-[PENDING EXTRACTION]
+cop, rendering, procedural, uv, modelling, intermediate, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [H22 - Copernicus and Time Shift | Jakub Spacek | Houdini 22 HIVE](h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive.md) — Alex is the credited author of that talk's Turing pattern; both live in H22 COPs
+- [Wood Barrel Texturing in COPS](wood-barrel-texturing-in-cops.md) — COPs texturing workflows that these baked maps feed
+- [H22 - Modeling & Solaris | Fianna Wong | Houdini 22 HIVE](h22---modeling-solaris-fianna-wong-houdini-22-hive.md) — the Texture Material Library where such COP materials now live

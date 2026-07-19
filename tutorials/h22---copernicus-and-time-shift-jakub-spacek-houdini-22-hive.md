@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=EUjZ7ObaN1Y
 author: Houdini
 ingested: 2026-07-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [cop, procedural, simulation, solaris, karma, advanced, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # H22 - Copernicus and Time Shift | Jakub Spacek | Houdini 22 HIVE
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro & Adjacency Workflows [0:00]
@@ -355,30 +351,61 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [3:08] tutorials/frames/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive/frame_000.jpg
+- [6:29] tutorials/frames/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive/frame_001.jpg
+- [8:19] tutorials/frames/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive/frame_002.jpg
+- [9:43] tutorials/frames/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive/frame_003.jpg
+- [11:15] tutorials/frames/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive/frame_004.jpg
+- [13:29] tutorials/frames/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive/frame_005.jpg
+- [17:23] tutorials/frames/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini 22 Copernicus **adjacency workflows** — seam-free texture effects across UV islands on bad UVs — driving a custom paint-spreading solver, plus the new COPs **time-manipulation nodes** (Time Shift / Time Blend / Time Loop) for leading-edge effects.
 
 ### Summary
-[PENDING EXTRACTION]
+Jakub Spacek's HIVE talk builds a paint-spreading/reaction-diffusion look on a 3dscans.com statue with deliberately bad auto-UVs, to stress-test H22's adjacency node family. Geometry to Adjacency emits a packed "cable" (unpacked via Cable Unpack → Set Fields from Input) that lets operators cross UV-island boundaries seamlessly: Adjacency Distort bridges islands, Adjacency Attribute Sample maps noises correctly (sampling P by default), and solvers like Turing Pattern / Reaction Diffusion have adjacency inputs built in. The spread itself is a block solver (slope direction + adjacency-distorted noise per frame), given a leading edge by the new **Time Shift** node ($F−10 subtracted from the current frame — replacing a hand-built dissipation solver), and layered with a masked Turing pattern, a Ripple solver seeded each frame from the leading edge, hue/saturation remapping for color, and blur inside blocks (small radius × many iterations so it never crosses island boundaries). Lookdev happens in Solaris/Karma with Material Linker; textures were baked (4K COPs sims are RAM-hungry — unload the Copernicus cache or crash, even with 400 GB RAM).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Mesh prep** — scan is dense triangulated mess: Quad Remesh (UV Unwrap crashed/cooked forever on the triangulation), then UV Unwrap for arbitrary UVs; fix hidden **overlapping islands** (caused mystery noise artifacts [frame_000, 3:08]) with the Labs overlap-isolating node; UV Layout with "spread islands to all available space" — island gaps determine how far adjacency operators can go before crossing boundaries.
+2. **Sources** — flatten geometry into UV space, Scatter points as paint-dip sources with per-ID colors; bring points + geometry into Copernicus, Stamp Points to splat circles. Tip: **X key toggles flattened UV view vs 3D preview**.
+3. **Adjacency in** [frame_001, 6:29] — Geometry to Adjacency → packed cable (many fields); Cable Unpack + "Set Fields from Input" exposes them. Cables (green inputs) pass through solver iterations uncooked — adjacency doesn't change per frame, so this saves compute.
+4. **Spreading solver** [frame_002, 8:19] — block solver, per frame: add source color (RGBA) → **Slope Direction** spreads outward → noise distorts, but raw noise maps wrongly across islands; run it through **Adjacency Attribute Sample** first, then **Adjacency Distort** at the end bridges island seams [frame_003, 9:43]. Multiply by alpha to preview blending. Color juice: remap spread value −180..180 into Hue Shift + Saturation.
+5. **Leading edge via Time Shift** [frame_004, 11:15] — Time Shift (Mode: Custom, Frame: `$F-10`) → Subtract from current → Clamp = a moving front, no custom dissipation solver needed. The three new time nodes (Time Shift / Time Blend / Time Loop) work like SOP-level time operators — hold first/last frame, loop sequences.
+6. **Seam-free blur** — plain Blur crosses UV boundaries; wrap it in a block: radius small enough to stay inside the island gap × ~500 iterations (~4 s cook) to reach the intended blur size.
+7. **Turing pattern** [frame_005, 13:29] — courtesy of Alex (Hamer); similar to reaction diffusion (Units: Pixels, Iterations 5, Radius 5, Power 10, Gain 1) with adjacency passed in and the spreading mask clamping growth; RD and several Copernicus solvers have adjacency embedded.
+8. **Ripple solver** — COPs Ripple works like the SOP one, but instead of an initial state, **Add** the leading edge every frame (clamp ≤1); tune conservation/waves/spring.
+9. **Dissolve-out** — invert the original spread animation to melt colors back to the plaster material — no extra solver.
+10. **Lookdev** [frame_006, 17:23] — Solaris: Material Library (3 materials), Material Linker for per-object material and light assignment, Karma render; grunge nodes (new preset library, Copernicus-native noises — adjacency-matchable for seamless grunge) faked here with MTLX noise mixing. ML teaser: the ML pattern preset has an adjacency input; masking training updates with the spread mask grows the pattern gradually.
+11. **Q&A** — bake COPs textures (4K live is massive; unload Copernicus cache to avoid crashes); resolution scales down fine (1024² works, edges just rasterize sooner); Time Shift inside blocks for time-displacement is untested but plausible.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Adjacency family (new in H22): Geometry to Adjacency, Adjacency Distort, Adjacency Attribute Sample, Adjacency Space Transform (not used); cables: Cable Unpack + Set Fields from Input; green cable inputs skip per-iteration recompute
+- Time nodes (new): Time Shift (Custom, `$F-10`), Time Blend, Time Loop
+- Solver: block begin/end per frame; Add (source), Slope Direction, Fractal Noise 3D, Clamp; Hue Shift/Saturation remap (−180..180)
+- Blur-in-block: small radius × ~500 iterations to respect island gaps
+- Turing Pattern (Units Pixels, Iter 5, Radius 5, Power 10, Gain 1) masked by spread; Ripple Solver fed by Add each frame, clamped
+- SOP prep: Quad Remesh, UV Unwrap, Labs overlapping-UV fix, UV Layout (spread islands), UV flatten + Scatter + Stamp Points
+- Solaris: Material Library, Material Linker (materials + light linking), Karma; grunge node presets (H22)
+- Shortcut: **X** toggles flattened/3D preview in Copernicus
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (adjacency nodes, time-manipulation COPs, grunge presets)
 
 ### Tags
-[PENDING EXTRACTION]
+cop, procedural, simulation, solaris, karma, advanced, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini 22 | How to Create Terrains in COPs | Utilize Height Fields](houdini-22-how-to-create-terrains-in-cops-utilize-height-fields.md) — layer-based Copernicus fundamentals
+- [H22 - Baking with Copernicus | Alex Hamer | Houdini 22 HIVE](h22---baking-with-copernicus-alex-hamer-houdini-22-hive.md) — the Alex credited for the Turing pattern; baking the COPs output this talk needed
+- [Wood Barrel Texturing in COPS](wood-barrel-texturing-in-cops.md) — earlier-generation COPs texturing with UV-space workarounds these adjacency nodes obsolete

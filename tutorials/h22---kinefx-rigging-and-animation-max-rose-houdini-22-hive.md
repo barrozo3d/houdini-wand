@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=2jZjaEzLdco
 author: Houdini
 ingested: 2026-07-19
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [rigging, animation, rbd, simulation, procedural, intermediate, advanced, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # H22 - KineFX Rigging and Animation | Max Rose | Houdini 22 HIVE
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro & Jack in the Box Showcase [0:00]
@@ -482,30 +478,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [2:53] tutorials/frames/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive/frame_000.jpg
+- [5:56] tutorials/frames/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive/frame_001.jpg
+- [8:15] tutorials/frames/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive/frame_002.jpg
+- [10:55] tutorials/frames/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive/frame_003.jpg
+- [11:31] tutorials/frames/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive/frame_004.jpg
+- [15:39] tutorials/frames/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive/frame_005.jpg
+- [18:32] tutorials/frames/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A jack-in-the-box driven by ~2 keyframes: KineFX spiral-spring rigging (centerline trick + group-based Parent Joints), APEX pack character with Spline auto-rig, the Configure Ragdoll recipe with custom proxy geometry, Set Driven Keys fired by a crank control, and layered/baked spring secondary motion — all blended in the Motion Mixer.
 
 ### Summary
-[PENDING EXTRACTION]
+Max Rose (SideFX) animates a jack-in-the-box where essentially two keyframes (spline control up + SDK slider) drive everything else dynamically. The spring rig uses a classic trick: duplicate the spiral joints, crush them to a centerline (zero X/Z, keep Y), rename, and use one **Parent Joints** node on two equal-count groups to parent all radial joints to their center joints at once — animating Y on the centerline springs the coil. Rigs made separately combine by parenting in **KineFX first, then entering APEX** (matrices come pre-solved; parenting inside APEX means painful matrix math). APEX Pack Character (FK + bone deform components) plus a Spline auto-rig component on the tagged "coil" centerline (curve order 3, 3 controls) finishes the rig. The ragdoll comes from the **APEX Configure Ragdoll recipe** — modified to accept hand-simplified proxy geometry (strip bells/frills/buttons; recipes are meant to be edited); limb sections go on separate animation layers so floppiness is fixed by lowering layer weight, not re-animating. **SDK component** + APEX rig pose layers create a stuff-the-doll rest-pose slider, and — the standout — any rig control can fire SDKs: sample the crank's rotate-X at two points into min/max so multiple real cranks play the opening. New **secondary motion (spring)** is applied, damped (~4), baked to layers, and mixed: ragdoll keyed on for a split second at the pop, its pose baked and weight-animated, then spring motion layered on top, each pass dynamically driven by the previous but always editable via layer weights. The crank clip is a second clip on one Scene Animate node (new multi-clip support), blended with the main performance in the **Motion Mixer**. Q&A: the keynote's MCP server is APEX-script-specific ("vibe-rigging"), token-light by design, communicating via an attribute watcher.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Spiral spring rig** [frame_000, 2:53] — duplicate spiral joints → scale X/Z to 0 (keep Y) = centerline; rename; two groups (center joints, radial joints) into one **Parent Joints** node — equal point counts auto-parent 1:1. Animate the centerline's Y for the spring.
+2. **Combine rigs in KineFX, then APEX** — position the doll, parent its root joint to the last spiral joint *before* going into APEX (matrices handled for you). Then APEX **Pack Character** with FK + Bone Deform components.
+3. **Spline control** [frame_001, 5:56] — tag the centerline "coil", **Auto-rig Component: Spline** on that tag; curve order 3, control count 3.
+4. **Ragdoll with custom proxy** [frame_002, 8:15] — ragdoll dislikes many-piece models; delete everything unneeded (box: keep only the center piece; doll: strip bells/neck frill/thread buttons). Drop **APEX Configure Ragdoll recipe** and swap in the custom proxy — recipes are made to be modified. It configures joint limits, converts to motion clip, builds ragdoll geometry.
+5. **Layer-per-limb animation** — arms/spine/dress/hat each on their own layer; too-floppy ragdoll = lower that layer's weight, don't re-animate.
+6. **SDK rest pose** [frame_003/004, ~10:55] — SDK component works with APEX rig pose layers: animate the box-open/doll-stuff once, get a slider per layer; slide to open/close instead of re-posing.
+7. **Crank-driven SDK** [11:31] — SDKs can be fired by rig controls, not just sliders: crank several turns, sample rotate-X into the SDK **minimum**, crank more, sample into **maximum** — the opening now takes multiple realistic crank turns.
+8. **Base animation** — one keyframe raising the spline control + the SDK slider closing/popping: that's the whole hand-keyed performance.
+9. **Layered dynamics** [frame_005, 15:39] — Secondary Motion (Spring type), dampening ≈ 4; bake to a new layer (select range → control → bake keys). Ragdoll: keyframe its controls ON at exactly the pop frame, bake the brief sim to a layer, then animate the layer weight hunting the arms-up pose before snapping back to rest; then apply spring secondary motion over everything (blend to 0, keyframe up; disable per-part — neck, spine — where too much), bake, weight-animate again. Every pass is a layer: never locked in.
+10. **Motion Mixer finish** [frame_006, 18:32] — create a second clip on the same **APEX Scene Animate** (new: multiple clips per node) for the crank anticipation; Motion Mixer lists all scene-animate clips; drop both in and finesse the blend timing.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- KineFX: Parent Joints (group-pair auto-parenting), joint rename, transform crush (X/Z=0) for centerlines
+- APEX: Pack Character (FK + Bone Deform), Auto-rig Component Spline (tag-based, curve order 3, 3 controls), Configure Ragdoll recipe (custom proxy geometry swap), SDK component + rig pose layers (control-driven min/max), Secondary Motion – Spring (dampening ~4, per-control blend/disable), bake-to-layer + layer weights, Scene Animate multi-clip (new), Motion Mixer
+- Pro tips: parent in KineFX before APEX; keep dynamics over-strong when baking, dial with layer weights after
+- Q&A: APEX-script MCP server (keynote) — plain-English rigging, token-light harness, attribute-watcher bridge, extendable beyond rigging
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate–Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (secondary motion, multi-clip scene animate, ragdoll recipe workflow)
 
 ### Tags
-[PENDING EXTRACTION]
+rigging, animation, rbd, simulation, procedural, intermediate, advanced, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [H22 - Animation | Motion Mixer | Sasa Budimir | Houdini 22 HIVE](h22---animation-motion-mixer-sasa-budimir-houdini-22-hive.md) — the deeper Motion Mixer session referenced in this talk
+- [H22 - KineFX Rigging and Procedural Animation | Henry Dean | Houdini 22 HIVE](h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive.md) — companion HIVE rigging talk (G-splat centipede)
