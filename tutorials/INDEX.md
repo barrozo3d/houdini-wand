@@ -3189,6 +3189,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/messing-with-the-edit-node-in-houdini-22.md
 
+
+### Houdini 22 | How to Create Terrains in COPs | Utilize Height Fields
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=5v9lmJcIrIw
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields.md
+
 ---
 
 ## Tag Reference
