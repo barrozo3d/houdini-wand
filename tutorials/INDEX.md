@@ -1660,16 +1660,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/optimizing-baked-trees-with-instancing-in-houdini.md
 
 
-### Bring your 3D renders to life with Houdini - Patreon October '25 Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=M8odmzpj2dc
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, simulation, animation, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial creating a cookie-splash animation from scratch — procedural modeling, procedural animation, and sim work.
-- **File:** tutorials/bring-your-3d-renders-to-life-with-houdini---patreon-october-25-trailer.md
-
-
 ### Handy Houdini Tips | Vellum, UVS, Modeling and More
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=h6wt3KJy2W4
@@ -1688,16 +1678,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vertex-selection, skin, wrinkle-deformer, cops, tile-pattern, height-blend, architecture, favela
 - **Summary:** The house starts from a box with primitives sorted by Y and reversed so primitive 0 is reliably the top face — this predictable indexing lets later selections stay procedural rather than manual. A "corner" selection (for later downward transform) is made via a point wrangle constrained to the top-face group, selecting only points on the negative X axis. For selecting alternating roof edges,...
 - **File:** tutorials/procedural-favela-in-houdini-tips-and-tricks.md
-
-
-### Heightfields and Cops workflow in Houdini 21 -  Patreon September 25 Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=pbwra2esNqc
-- **Author:** cgside
-- **Houdini Version:** Houdini 21
-- **Tags:** cop, sop, procedural, houdini-21, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial on the H21 HeightFields-COPs workflows: terrain generation with COPs through final texturing and baking.
-- **File:** tutorials/heightfields-and-cops-workflow-in-houdini-21---patreon-september-25-trailer.md
 
 
 ### Houdini 21 | Opacity vs Stencil vs Geometry
@@ -1730,16 +1710,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris.md
 
 
-### Procedural Brick Wall with COPS  - Patreon August Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=Eb4KIaOJT5Y
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** cop, vex, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon exclusive building a procedural brick wall in COPs — point generation with VEX plus designer-like texturing workflows.
-- **File:** tutorials/procedural-brick-wall-with-cops---patreon-august-trailer.md
-
-
 ### Making Trash in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=KCy4Sw3nbcQ
@@ -1768,16 +1738,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** procedural-modeling, no-vex, vops, sweep, groups, point-clouds, textures, cops, texture-projection, uv, hard-surface, beginner-friendly
 - **Summary:** The tank body is built from a tube whose ends are split into boundary groups, then reshaped into a domed sphere-like cap and a tapered cone top via centroid-pivot Transforms and copy/scale-to-zero "cone from ID" tricks, skinned back together into one continuous shell. A circular curve (from an Object Merge of the base tube) becomes the observation platform via Transform+Extrude, with...
 - **File:** tutorials/no-vex-challenge-1-procedural-water-tower.md
-
-
-### Jellyfish Procedural Animation with Houdini and Vex | Patreon July Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=udPSR7Gjp9Y
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, vex, animation, procedural, rigging, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial on procedural jellyfish animation — modeling, rigging, and animation with VEX tips throughout.
-- **File:** tutorials/jellyfish-procedural-animation-with-houdini-and-vex-patreon-july-trailer.md
 
 
 ### Procedural Boat in Houdini
@@ -1860,16 +1820,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/procedural-buildings-in-houdini-tips-and-tricks.md
 
 
-### Advanced Waterdrops Setup in Houdini | Patreon April Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=2HYYRRW7tws
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, vex, simulation, particles, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial building a custom droplet/waterdrop solver in Houdini; voiceover promises several previously unshared techniques.
-- **File:** tutorials/advanced-waterdrops-setup-in-houdini-patreon-april-trailer.md
-
-
 ### Texture Projection Tool for Houdini 20.5
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=t9ldXkD7oqA
@@ -1888,16 +1838,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** packed-primitives, planar-inflate, cops, openCL, sdf-shape, negative-id, drips, graffiti, mardini
 - **Summary:** Starting from a bold **Font** node (text set to "CUPS" for the demo), the letters are Resampled and simplified with Subdivision curves to lose sharp corners and get a rounder graffiti look. Since each letter is a single primitive, per-letter random transforms are applied entirely in VEX rather than a for-loop: a random scale (`fit()`-remapped `random(prim_num + seed)`) is applied relative to...
 - **File:** tutorials/procedural-graffiti-in-houdini-and-cops-mardini.md
-
-
-### Procedural UVS and Texturing in COPS | Patreon March Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=-lVYE0LRu6w
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** cop, procedural, rendering, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial creating a procedural concrete material: quick UVs oriented to always face upward, leak masks, and the final material built in COPs.
-- **File:** tutorials/procedural-uvs-and-texturing-in-cops-patreon-march-trailer.md
 
 
 ### Environments in Houdini | Part 5 - Solaris and rendering with Karma
@@ -1928,16 +1868,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vex, quick-tips, channel-ramp, quaternion, curve, overhang, procedural-modeling
 - **Summary:** Starting from a Line, Resample heavily (0.02) with curve-view output, the curve is first displaced along its X-axis normals using a channel ramp sampled by curve view (`leafRamp`) multiplied by a displacement-amount slider to build a simple leaf-shaped silhouette (mirrorable for a full leaf). To get the overhang look, a second wrangle recomputes normals along the tangent's perpendicular (X...
 - **File:** tutorials/vex-quick-tips-overhang-look-with-channel-ramps.md
-
-
-### Procedural Modeling, Rigging and Animation with Houdini | Patreon February Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=08lvfWum09M
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, rigging, animation, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon tutorial covering procedural modeling, rigging, and animation.
-- **File:** tutorials/procedural-modeling-rigging-and-animation-with-houdini-patreon-february-trailer.md
 
 
 ### Procedural Modeling with VEX, VDB and Vellum
@@ -2020,16 +1950,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/environments-in-houdini-part-1---heightfields.md
 
 
-### Product Shot in Houdini and Solaris | Part 2 | Patreon December
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=aaNiFlx6Vi0
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** solaris, lop, karma, rendering, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for part 2 of a product-shot series in Houdini and Solaris.
-- **File:** tutorials/product-shot-in-houdini-and-solaris-part-2-patreon-december.md
-
-
 ### How to (not) bake brownies in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=R3ClxIiqxag
@@ -2058,16 +1978,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vex, vdb, sdf, cluster, uvs, gradient, quaternion, vines, ivy-generator, procedural-uvs
 - **Summary:** For an in-progress ivy/vine generator tool, points are scattered on a column surface with target positions to grow toward, constrained via a SOP Solver. The obvious approach — Ray Project (Minimum Distance) directly onto the mesh each solve step — causes points to get permanently stuck in concave crevices. The fix: convert the geometry to VDB, apply a heavy **VDB Smooth** (essentially a large...
 - **File:** tutorials/vex-problem-solving-in-houdini.md
-
-
-### Product Shot in Houdini Part 1 | Patreon November
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=Joe8Cu40_as
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** karma, rendering, sop, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for part 1 of a product-shot series in Houdini.
-- **File:** tutorials/product-shot-in-houdini-part-1-patreon-november.md
 
 
 ### Wood Barrel Texturing in COPS
@@ -2108,16 +2018,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** cops, copernicus, sops, for-each-loop, stamp-point, uv-by-id, tiling, stone, texturing
 - **Summary:** The base fan/scale shape is built as an SDF circle in Cops, transformed/mirrored/inverted and multiplied to form the repeating tile motif. To instance it correctly, a **Grid of points** (scaled from center, rows/columns tied to grid size minus one) gets **row and column ID attributes** (credited to "Fenis" for this part) used to carve an X-style point pattern by filtering/removing specific...
 - **File:** tutorials/tiling-patterns-with-cops-and-sops.md
-
-
-### Custom patterns with COPS |  October Patreon Exclusive
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=bM7hzXqBq0Y
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** cop, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon exclusive on generating custom patterns in Copernicus (COPs).
-- **File:** tutorials/custom-patterns-with-cops-october-patreon-exclusive.md
 
 
 ### Procedural UV's In Houdini
@@ -2188,16 +2088,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** python, hou-module, ramp, cops, scripting, automation, quick-tip
 - **Summary:** The script grabs the currently selected node via `hou.selectedNodes()[0]`, accesses its ramp parameter (named "ramp" in the example, e.g. on a `mono_to_rgb`-style Cops node), and calls `.eval()` to get the live `hou.Ramp` object. Three lists are extracted from it: `ramp.basis()` (interpolation type per key), `ramp.keys()` (key positions), and `ramp.values()` (the actual colors) — these are the...
 - **File:** tutorials/resample-color-ramps-in-houdini.md
-
-
-### Procedural Shading with COPS and Karma - Preview
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=3bP9uKsn-9U
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** cop, karma, rendering, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only preview for a procedural shading workflow combining COPs and Karma.
-- **File:** tutorials/procedural-shading-with-cops-and-karma---preview.md
 
 
 ### UVW randomizer in karma
@@ -2470,16 +2360,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/houdini-tips-tileable-noises-cam-from-stage-tops-and-more.md
 
 
-### Husk Chair - Modeling and Simulating in Houdini - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=S5sKJaPU7C8
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, simulation, modelling, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a tutorial modeling and simulating a husk chair in Houdini.
-- **File:** tutorials/husk-chair---modeling-and-simulating-in-houdini---trailer.md
-
-
 ### Groups Patterns in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=FLWrmz8QPZQ
@@ -2640,16 +2520,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/procedural-problem-solving-in-houdini.md
 
 
-### Procedural Ice cream Swirl in Houdini
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=cvTnsmUNw3w
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, procedural, modelling, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Short preview for a procedural ice-cream-swirl modeling setup in Houdini.
-- **File:** tutorials/procedural-ice-cream-swirl-in-houdini.md
-
-
 ### Houdini Procedural Tips | Variants, Concentric Shapes and Step Orient
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ItIlLC6mlF4
@@ -2750,16 +2620,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/cleaning-fractured-geometry-in-houdini.md
 
 
-### Church Ruins - Houdini Procedural Modeling Course | Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=LwbK0Z_y77Y
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, procedural, modelling, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a procedural modeling course building church ruins in Houdini.
-- **File:** tutorials/church-ruins---houdini-procedural-modeling-course-trailer.md
-
-
 ### Quick Rock Cliff Setup in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=iSIXaa3rknU
@@ -2820,16 +2680,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/python-in-houdini-absolute-to-relative-paths.md
 
 
-### Procedural Modeling of a Stadium in Houdini - Part 1
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=0-oFYKvYucA
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, procedural, modelling, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) 13-second preview for part 1 of a procedural stadium modeling series.
-- **File:** tutorials/procedural-modeling-of-a-stadium-in-houdini---part-1.md
-
-
 ### Houdini tips and tricks #2
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rVduzdrKYZg
@@ -2838,26 +2688,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vex, karma, materials, shaders, mtlx, triplanar, cgi-integration, procedural, tips, intermediate
 - **Summary:** **Spherical HDRI projection:** starting from a simple Grid (fit to the floor) extruded into walls/other set pieces, a **UV Project** node set to **Polar** type creates a spherical projection matching an HDRI panorama; the projection is manually transformed (translate/rotate gizmos) to align with the reference image, and the HDRI is fed into a **MaterialX Uber/Lights** shader's emission color...
 - **File:** tutorials/houdini-tips-and-tricks-2.md
-
-
-### Custom triplanar for karma | Patreon
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=I3mf1AQCxc0
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** karma, rendering, vop, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon exclusive building a custom triplanar projection setup for Karma.
-- **File:** tutorials/custom-triplanar-for-karma-patreon.md
-
-
-### Procedural shading with karma  | Patreon exclusive
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=CzgcCkVy50o
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** karma, rendering, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only preview for a Patreon exclusive on procedural shading with Karma.
-- **File:** tutorials/procedural-shading-with-karma-patreon-exclusive.md
 
 
 ### Opacity maps vs Geo in Karma
@@ -2930,16 +2760,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/quick-color-jitter-with-karma.md
 
 
-### Creating 3D Environments with Houdini and Arnold - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=v3irz0OHw48
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, volumes, rendering, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for an environment-building series using heightfields, volumes, scattering, and procedural shading, rendered in Arnold.
-- **File:** tutorials/creating-3d-environments-with-houdini-and-arnold---trailer.md
-
-
 ### Environment creation with Solaris in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=2f_40GhnBXI
@@ -3000,26 +2820,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/all-the-procedural-modeling-tricks-in-one-video.md
 
 
-### Procedural Pineapple | Patreon June - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=JO0V0xTDh9w
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** cop, sop, procedural, modelling, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Trailer for a Patreon tutorial building a procedural pineapple — pattern creation in COPs feeding shape generation in SOPs.
-- **File:** tutorials/procedural-pineapple-patreon-june---trailer.md
-
-
-### Chocolate Split  | Patreon January 25  | Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=tG8HSBblVk8
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, simulation, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon tutorial on a chocolate-split effect (breaking/splitting chocolate).
-- **File:** tutorials/chocolate-split-patreon-january-25-trailer.md
-
-
 ### Procedural Animation with RBD
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=RbiH315adq8
@@ -3030,26 +2830,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/procedural-animation-with-rbd.md
 
 
-### Procedural Grapes  | Patreon September  | Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=IOC8hPPWrGY
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, procedural, modelling, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a Patreon tutorial on procedural grape modeling.
-- **File:** tutorials/procedural-grapes-patreon-september-trailer.md
-
-
-### Procedural Coffee Beans - Preview
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=CiFOWrTiaFM
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, procedural, modelling, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only preview for a procedural coffee-beans modeling tutorial.
-- **File:** tutorials/procedural-coffee-beans---preview.md
-
-
 ### Procedural Cliff Techniques
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=YLrE1Zww_uc
@@ -3058,16 +2838,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vdb, voronoi-fracture, compile-block, triplanar, karma, materialx, solaris, concavity, curvature, scattering, environment, rocks
 - **Summary:** A box gets low-subdivision tubes copied on and merged for a rough boulder base, then remeshed to a grid-like voxelized look via Blur/Peak/Mountain and Boolean-intersected for surface damage, before VDB conversion. Cuts across the cliff are placed by laying a line along it, resampling to 5 segments, jittering interior points (not endpoints), copying grids at each point (offset by the Metaimport...
 - **File:** tutorials/procedural-cliff-techniques.md
-
-
-### Procedural Cookie - Model, Simulate and Render - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=g6HyohwVR1s
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, simulation, rendering, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a tutorial modeling, simulating, and rendering a procedural cookie.
-- **File:** tutorials/procedural-cookie---model-simulate-and-render---trailer.md
 
 
 ### Environment Technical tips and tricks
@@ -3160,16 +2930,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/add-details-with-regions-from-image-labs-tool.md
 
 
-### Roman Bridge - Procedural Asset Creation - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=G4Fb8jKQ3WM
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, procedural, modelling, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Silent trailer for a procedural Roman-bridge asset-creation tutorial.
-- **File:** tutorials/roman-bridge---procedural-asset-creation---trailer.md
-
-
 ### Rock formations with heightfields
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rEn0ochILjU
@@ -3178,16 +2938,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** heightfields, terrain, triplanar, displacement, ambient-occlusion, texturing, rocks, environment
 - **Summary:** Starting from a hand-drawn Heightfield mask, a Heightfield Layer mix (set to Maximum) blends two versions of the mask (one blurred) to build up the base silhouette. A Voronoi-based random-height pattern (via a random function seeded per point) adds per-point height variation, scaled and masked. Mask Expand grows/blocks out squarish base shapes, followed by blurring and mask-clearing between...
 - **File:** tutorials/rock-formations-with-heightfields.md
-
-
-### Procedural Rock Surfaces | Patreon Exclusive
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=TnujEWlFdfU
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Silent trailer for a Patreon exclusive on procedural rock surfaces.
-- **File:** tutorials/procedural-rock-surfaces-patreon-exclusive.md
 
 
 ### Ruins randomized brick wall
@@ -3220,16 +2970,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/procedural-tips-heightfields-and-vdb.md
 
 
-### Prodecural Cliffs with heighfields vdb and materialX
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=U1c1-dbgUAk
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, volumes, rendering, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) Music-only trailer for a tutorial building procedural cliffs with HeightFields, VDB, and MaterialX shading.
-- **File:** tutorials/prodecural-cliffs-with-heighfields-vdb-and-materialx.md
-
-
 ### Procedural VDB Cookies
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=WKs4KHfHpyA
@@ -3238,16 +2978,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vdb, volumes, vex, noise, cops, food, karma, solaris, procedural-modeling
 - **Summary:** Starting from a clipped, flattened sphere closed with Polyfill and beveled/subdivided for a smooth VDB input, the cookie shape is converted to a VDB and detailed inside a Volume VOP with four layered noises of increasing fineness. A key trick is exporting the relative-bounding-box Y-component as a visualizable mask (via a Color node feeding CD into VDB from Polygons, then Attribute from Volume...
 - **File:** tutorials/procedural-vdb-cookies.md
-
-
-### Patreon Exclusive  | Add side details to cliffs | Preview
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=qzs3LnMeYEE
-- **Author:** cgside
-- **Houdini Version:** Not specified
-- **Tags:** sop, procedural, trailer-stub
-- **Summary:** (Trailer stub — full tutorial is a cgside Patreon exclusive; no instructional content in the library.) 16-second preview for a Patreon exclusive on adding side details to procedural cliffs.
-- **File:** tutorials/patreon-exclusive-add-side-details-to-cliffs-preview.md
 
 
 ### UV Randomizer - Texturing multiple objects
