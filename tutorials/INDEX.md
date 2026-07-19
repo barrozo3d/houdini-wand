@@ -3199,6 +3199,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields.md
 
+
+### H22 - KineFX Rigging and Procedural Animation | Henry Dean | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=0YNaNZkjwoM
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive.md
+
 ---
 
 ## Tag Reference
