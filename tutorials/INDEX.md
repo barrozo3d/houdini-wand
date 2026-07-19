@@ -3204,9 +3204,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=0YNaNZkjwoM
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 22
+- **Tags:** rigging, animation, procedural, attributes, sop, advanced, houdini-22
+- **Summary:** HIVE talk: rigging Dany Bittel's G-splat centipede in H22 — Bake GSplats to a point cloud (Bone Deform/Transform just work; `scale` is deliberately 3 floats, cast to vector only while scaling), kit-bash a clean rest pose from segments via Copy to Points, Capture Proximity skinning (no topology), a wheel-phase metachronal-wave gait driven by distance traveled, Spline IK body + rig-built antenna joints reused upstream, and procedural animation injected into the animate state via parameter dictionary → MotionClip → Channel Prims from MotionClip → APEX animation layers. H22's pcapdata removal called out as a major QoL win.
 - **File:** tutorials/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive.md
 
 
@@ -3248,6 +3248,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** [PENDING]
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/h22---modeling-solaris-fianna-wong-houdini-22-hive.md
+
+
+### H22 - KineFX Rigging and Animation | Max Rose | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=2jZjaEzLdco
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive.md
 
 ---
 
