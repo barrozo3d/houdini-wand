@@ -3219,6 +3219,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/h22---gaussian-splats-peter-sanitra-houdini-22-hive.md
 
+
+### H22 - Copernicus and Time Shift | Jakub Spacek | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=EUjZ7ObaN1Y
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive.md
+
 ---
 
 ## Tag Reference
