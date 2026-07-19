@@ -3214,9 +3214,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=HUTd8BHNHKI
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Houdini 22
+- **Tags:** solaris, usd, cop, top, pdg, volumes, karma, rendering, advanced, houdini-22
+- **Summary:** Full H22 synthetic G-splat pipeline (Peter Sanitra, NVIDIA): single Solaris recipe → auto camera rigs (SOP cameras + Copy to Points; optimal-placement algorithm for interiors), OpenEXR ground truth from any Hydra renderer, TOPs training (Default prune-and-grow vs Monte Carlo fixed-count; stop at the ~30–40k-iteration loss plateau), AOV feature training (normal/albedo/subsurface) enabling COPs GSplat Rasterize relighting, PLY/USD export via the new Pixar splat schema. Volumes 10× smaller than VDB with HDR intact; fur/whisker capture; deform-static-splat animation; failure modes = camera coverage, glass/mirrors, HDR clamping, VRAM, no temporal training.
 - **File:** tutorials/h22---gaussian-splats-peter-sanitra-houdini-22-hive.md
 
 
@@ -3258,6 +3258,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** [PENDING]
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive.md
+
+
+### H22 - Baking with Copernicus | Alex Hamer | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=orN8H41hNDE
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/h22---baking-with-copernicus-alex-hamer-houdini-22-hive.md
 
 ---
 
