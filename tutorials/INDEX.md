@@ -3209,6 +3209,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive.md
 
+
+### H22 - Gaussian Splats | Peter Sanitra | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=HUTd8BHNHKI
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/h22---gaussian-splats-peter-sanitra-houdini-22-hive.md
+
 ---
 
 ## Tag Reference
