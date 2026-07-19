@@ -3179,6 +3179,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Part 2 of the official H22 metal-destruction series: denting a wall with cannon-fired steel balls. Key idea — Secondary Fracture in Proxy Only mode fractures only the collision proxy so large render fragments bend with interior detail, while Refine Geometry: Bricker subdivides the render mesh to support the deformation. Covers staggered RBD emission ($F%10 delete + v×alligator-noise cannon, emit attribute 1/0 via RBD Configure, RBD Pack→Merge→Unpack→Bullet Solver with Emit RBDs), Steel vs Aluminum physical presets, restricting constraint deletion to the primary fracture ID (metal_fracture) so tears follow primary seams while secondary pieces only bend, and RBD Deform Pieces boundary connection via the parentpiece cluster attribute.
 - **File:** tutorials/houdini-22-how-to-destroy-metal-2-denting.md
 
+
+### Messing with the Edit node in Houdini 22
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Wkj1DMn-X2w
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/messing-with-the-edit-node-in-houdini-22.md
+
 ---
 
 ## Tag Reference
