@@ -10,10 +10,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ### Intro to Crowds | SideFX
 - **Source:** Article
 - **URL:** https://www.sidefx.com/tutorials/intro-to-crowds/
-- **Author:** www.sidefx.com
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Luca Pataracchia (SideFX)
+- **Houdini Version:** H18 (course base; core concepts stable across later versions)
+- **Tags:** crowd, dop, sop, chop, animation, rigging, simulation, vellum, rbd, usd, python, vex, procedural, beginner, intermediate, houdini-18
+- **Summary:** Official SideFX beginner course (9 chapters, ~7h) covering the full Crowds pipeline: in-place vs. locomotion animation clips, DOP crowd solver setup, CHOPs for clip channels, the Transition Graph + Ragdoll FX, USD and FBX interoperability, the full built-in Trigger catalog plus custom VEXpressions, pre/post-sim art direction (pruning, combining sims, resimulating specific agents), a VEX Follow Path sub-pipeline, and H18 Transitions/Blendshapes. Text-only ingest (chapters are private Vimeo embeds, no transcript available) — the library's first real Crowd-context reference.
 - **File:** tutorials/intro-to-crowds-sidefx.md
 
 

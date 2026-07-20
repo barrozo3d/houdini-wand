@@ -2,11 +2,11 @@
 title: Intro to Crowds | SideFX
 source: Article
 url: https://www.sidefx.com/tutorials/intro-to-crowds/
-author: www.sidefx.com
+author: Luca Pataracchia (SideFX)
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H18 (course base); interoperability/blendshape chapters call out H18-new features, workflow applies through current Crowds toolset"
+tags: [crowd, dop, sop, chop, animation, rigging, simulation, vellum, rbd, usd, python, vex, procedural, beginner, intermediate, houdini-18]
+extraction_status: complete
 frames_dir: tutorials/frames/intro-to-crowds-sidefx/
 frame_count: 0
 frame_status: skipped
@@ -35,27 +35,39 @@ Frame capture was skipped for this ingest (--skip-video). Text-only extraction.
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+End-to-end Houdini Crowds workflow: driving agents with in-place vs. locomotion animation clips, simulating them in a DOP crowd solver (or the newer SOP-based approach), art-directing the result with triggers and pre/post-sim adjustments, and interchanging crowd data with USD and FBX pipelines.
 
 ### Summary
-[PENDING EXTRACTION]
+Official SideFX beginner course (9 chapters, ~7 hours total, by Luca Pataracchia). This is a landing-page/course-index tutorial hosted on sidefx.com — the fetched page text is the chapter list with timecodes and per-chapter one-line descriptions (no transcript/video access from this ingest; see note in Gotchas). The course walks through: importing **in-place animation clips** (idle/walk/run) and tuning per-state initial/run velocities so locomotion "reads" correctly on the agent; **locomotion** setup (Agent Setup, a CHOPs primer, Crowd Source for Locomotion, and simulating with locomotion so agents actually travel instead of sliding in place); the **SOPs vs. DOPs** distinction for where crowd simulation logic can live and how to explore/inspect the DOP network and per-clip "Clip Properties"; the **Transition Graph** for blending between animation states plus optional Ragdoll FX on death/impact, caching agents to disk, and adjusting overall locomotion speed; **interoperability** chapters covering both **USD** (setting up a USD-based crowd sim and export) and **FBX** (importing FBX motion clips and building a crowd from them); a long **Triggers** chapter enumerating every built-in trigger type (state duration, object bounds/attribute/distance/raycast, particle speed/proximity/attribute lookup/compare, time, animated parameter, RBD impact) plus custom **VEXpressions** for trigger logic; **pre/post-sim art direction** (procedural pruning of agents, combining multiple simulations, re-simulating specific agents) and a **Follow Path** sub-pipeline (VEX-driven path following using primitive UVs, tangent-force scaling, and moving the VEX logic from SOPs into DOPs for performance); and finally H18's **Transitions and Blendshapes** features for smoother state changes and facial/body blending.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **In-place animation**: bring in idle/walk/run clips authored without root motion; set/adjust initial velocities per state and specifically tune the run-state velocity so the agent's apparent speed matches the clip.
+2. **Locomotion setup**: configure the Agent (skeleta/clip assignment), get oriented in CHOPs (used to manipulate clip channels), build a Crowd Source configured for locomotion (root-motion-driven movement) instead of static in-place clips, then simulate.
+3. **SOPs vs. DOPs**: understand which parts of the crowd pipeline can be authored at the SOP level vs. must run inside the DOP network; open and inspect the DOP network directly; check per-clip Clip Properties for blending/priority.
+4. **Transition Graph**: wire up allowed state-to-state transitions (idle→walk→run and back), add Ragdoll FX as a terminal/impact state, cache the sim to disk before iterating further, and tune overall locomotion speed globally.
+5. **USD interoperability**: set up a crowd simulation whose agents/clips are USD-native, export/import through USD for use downstream (e.g. Solaris/USD render pipelines).
+6. **FBX interoperability**: import FBX-authored locomotion/animation clips and rebuild a crowd setup around them (for pipelines where the animation source is external, e.g. Mixamo/game-engine assets).
+7. **Triggers**: attach trigger nodes to switch agent states based on object bounds/attribute/distance/raycast tests, particle-based tests (speed, proximity, attribute lookup/compare), time, an animated parameter, or RBD impact events; write custom trigger conditions directly in VEX ("VEXpressions") when the built-in triggers aren't expressive enough.
+8. **Pre/post-sim art direction**: procedurally prune agents (e.g. by region or count) before or after simulating, combine multiple separate crowd sims into one scene, and re-simulate only specific agents rather than the whole crowd when iterating.
+9. **Follow Path sub-pipeline**: drive agents along a curve using VEX, reading a primitive UV coordinate along the path, scaling a tangent-aligned force to keep agents on-path, and moving that VEX logic from a SOP context into the DOP solver for better simulation-time performance.
+10. **H18 Transitions and Blendshapes**: use the newer (at time of course) transition and blendshape features for smoother inter-state blending, including facial/body blendshape support on agents.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Agent / Crowd Source / Crowd Source (Locomotion) · **CHOPs** (clip channel manipulation) · DOP crowd solver network · Clip Properties (per-clip blending settings) · Transition Graph node · Ragdoll FX (agent-to-RBD handoff) · USD import/export nodes for crowds (Solaris-side) · FBX Character Import · Trigger nodes: State Duration, Object Bounds, Object Attribute, Object Distance, Object Raycast, Particle Speed, Particle Proximity, Particle Attribute Lookup, Particle Attribute Compare, Time, Animated Parameter, RBD Impact · custom **VEXpressions** for trigger conditions · VEX Follow Path (Prim UV read, tangent-force scaling, force logic moved SOP→DOP) · Blendshapes (H18).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner (as labeled by SideFX) but comprehensive — the ~7-hour runtime and later chapters (custom VEX triggers, Follow Path VEX-in-DOPs, USD/FBX interop) push into intermediate territory. Good on-ramp for anyone who has never touched the Crowd context but wants full-pipeline coverage, not just agent setup.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Made in Houdini 18 (course explicitly calls out "new features in Houdini 18" for the Transitions/Blendshapes chapter). Core crowd concepts (agents, clip-based locomotion, triggers, DOP crowd solver) are stable across later versions per SideFX documentation, though node names/UI have evolved since H18.
 
 ### Tags
-[PENDING EXTRACTION]
+#crowd #dop #sop #chop #animation #rigging #simulation #vellum #rbd #usd #python #vex #procedural #beginner #intermediate #houdini-18
+
+### Gotchas
+This ingest is text-only: the SideFX tutorial page embeds per-chapter Vimeo videos (private/unlisted IDs, not publicly transcribable) rather than linking a YouTube copy, so no transcript or frame captures were available — these notes are built entirely from the official chapter list and one-line chapter descriptions on the tutorial page itself, not from watching the video content. Treat "Key Steps" above as a structural summary of what each chapter covers, not a verbatim step-by-step (no exact node names/parameter values could be verified beyond what SideFX's own descriptions state). This was previously the single library gap called out in KNOWLEDGE_GAPS_TODO.md as "zero real coverage" for the Crowd context — this entry gives the library its first real Crowd-specific reference even at chapter-summary depth.
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- No other ingested tutorial in this library currently covers the Crowd context (agents, crowd DOP solver, locomotion clips, triggers) — this is the library's first Crowds entry. Cross-reference `references/dop-nodes.md` for general DOP-network concepts (crowd sims run inside DOPs) and the RBD destruction tutorials tagged `rbd` (e.g. skyscraper/bus-stop RBD entries) for the Ragdoll FX handoff mentioned in Chapter 4c.
