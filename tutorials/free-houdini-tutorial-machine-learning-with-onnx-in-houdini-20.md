@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=aCAatiY53s8
 author: Entagma
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 20"
+tags: [python, sop, cop, vex, machine-learning, onnx, procedural, attributes, intermediate, houdini-20]
+extraction_status: complete
 frames_dir: tutorials/frames/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Free Houdini Tutorial: Machine Learning with ONNX in Houdini 20
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro to ONNX [0:00]
@@ -384,30 +380,62 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:21] tutorials/frames/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20/frame_000.jpg
+- [5:53] tutorials/frames/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20/frame_001.jpg
+- [8:06] tutorials/frames/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20/frame_002.jpg
+- [8:45] tutorials/frames/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20/frame_003.jpg
+- [9:12] tutorials/frames/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20/frame_004.jpg
+- [11:14] tutorials/frames/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20/frame_005.jpg
+- [13:03] tutorials/frames/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20/frame_006.jpg
+- [16:47] tutorials/frames/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini 20's official **ONNX Inference SOP** — the first built-in machine-learning node SideFX ships with a stock Houdini install — runs pre-trained neural networks (downloaded as portable `.onnx` files, no Python/PyTorch environment needed) directly inside a geometry network, reading/writing input and output tensors as ordinary point attributes.
 
 ### Summary
-[PENDING EXTRACTION]
+Entagma tutorial explaining and demonstrating the **ONNX Inference SOP**, new in Houdini 20. Conceptual framing: ONNX is a *runtime* (like a compiled program) that packages a trained neural net's architecture + weights into one portable file, letting Houdini use "inference" (the final, already-trained usage stage of a neural net's lifecycle) without a custom Python/PyTorch environment — you just hand the node an `.onnx` file, commonly sourced from `github.com/onnx/models` or found elsewhere online. The node's core UX loop is always the same: load the `.onnx` file, click **"Setup Shapes from Model"** to auto-fill the expected input/output tensor dimensions, then match your Houdini attribute data to that exact shape. Tensor dimensions read left-to-right/top-to-bottom as [batch size, channels, height, width] (input) and a corresponding output shape. Three worked examples: (1) **MNIST-12** (handwritten digit classifier) — a 28×28 grid painted with an Attribute Paint mask attribute feeds directly as a point attribute (`mask` in, `prob` out) with no restructuring needed since the shape is already point-per-pixel; sorting the 10 output probability values picks the most likely digit (correctly identified a hand-drawn "4"). (2) **Mosaic-9 style transfer** (fast neural style transfer, ONNX Model Zoo) — expects `[1, 3, 224, 224]` (RGB image), and naively feeding a `Cd` vector attribute fails because ONNX expects **all red values, then all green, then all blue** (planar/channel-first layout), not per-point interleaved RGB (`Cd` layout) — the fix is 3 separate Point Wrangles extracting `f@in = @Cd.r` (etc.) onto 3× the point count (3×224×224 total points, R-block then G-block then B-block), feeding that as a flat float attribute, then on the way back out using `pcopen()`/point-function reads at `@ptnum`, `@ptnum + npoints(0)`, and `@ptnum + 2*npoints(0)` to reassemble R/G/B into `Cd`, followed by a **Labs Attribute Normalize Float** since neural-net outputs aren't naturally 0-1. (3) **MiDaS depth estimation** (`dpt-swin2-base`, an ONNX export of the MiDaS depth model found via a Unity-focused GitHub project but reused as-is in Houdini since ONNX is an open, engine-agnostic standard) — same input restructuring approach at 384×384 resolution, but the output is a single float per point (depth), used directly as `v@P += {0, depth, 0}` to displace the grid into a visible bas-relief depth map (scaled down, e.g. ×0.3, for a more plausible result). Closing discussion: whether this makes ML tools like ML Ops obsolete — the presenter's answer is "no, not yet," illustrated with Stable Diffusion's pipeline (tokenizer → CLIP encoder → latent noise → UNet+scheduler denoising loop → VAE resize to output). Of that pipeline, ONNX nodes can realistically replace the **neural-net stages** (CLIP encoder, UNet, VAE) but not the **non-neural/algorithmic stages** (scheduler, noise generation, tokenizer) — meaning fully rebuilding something like Stable Diffusion from vanilla ONNX SOPs alone isn't yet practical, though simpler single-network models (classification, style transfer, depth, upscaling, etc.) work well today.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Drop a Geometry node, dive in, add an **ONNX Inference SOP**.
+2. Load an `.onnx` model file (downloaded from `github.com/onnx/models` or elsewhere) into the node's file parameter.
+3. Click **Setup Shapes from Model** — auto-fills the Number of Inputs/Outputs and their tensor-dimension fields from the model's own metadata.
+4. Read the resulting shape (e.g. `[1, 1, 28, 28]` for MNIST: batch=1, channels=1/grayscale, 28×28 resolution) to know exactly what data layout the net expects.
+5. Build a canvas matching the required resolution (Grid sized to e.g. 28×28 or 224×224 or 384×384 points) and populate it (Paint SOP for a hand-drawn mask; an image import + UV Texture for photographic input).
+6. On the ONNX node, choose the attribute class to read from (point attribute) and name the input attribute (e.g. `mask`) and output attribute (e.g. `prob`); for grayscale/single-channel data this direct mapping just works.
+7. For multi-channel (RGB) image models: **do not** feed a vector `Cd` attribute directly — ONNX expects channel-planar layout (all R, then all G, then all B), not per-point interleaved RGB. Fix with 3 Point Wrangles creating a float attribute (e.g. `in`) from `@Cd.r`, `@Cd.g`, `@Cd.b` respectively on 3 separate point sets (each = full resolution point count), merged together so the total point count is `3 × width × height`.
+8. Wire the merged/restructured points into the ONNX node's input; confirm the "no complaints"/correct cook (shape matches).
+9. To unpack a channel-planar output back into a per-point `Cd`: a Point Wrangle reads `out` at `@ptnum` for red, at `@ptnum + npoints(0)` (an `int np = npoints(geo_stream_0)`) for green, and `@ptnum + 2*np` for blue, then writes `v@Cd = {r, g, b}`.
+10. Run a **Labs Attribute Normalize Float** on the unpacked output before using it as color/depth — raw neural-net output values are not guaranteed to sit in 0-1 range.
+11. For depth-map-style single-float outputs: skip the R/G/B reassembly step (no need — it's already 1 value per point) and instead directly displace geometry, e.g. `v@P += set(0, f@depth, 0)`, scaling the depth value down (e.g. ×0.3) for a more physically plausible bas-relief result.
+12. For animated input (e.g. a video/animated texture instead of a static painted image), the whole per-frame cook (restructure → infer → unpack → normalize) re-runs automatically each frame, since the node caches nothing on its own — this is how the style-transfer example produces "working" per-frame animated style transfer.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+**ONNX Inference SOP** (file parameter = `.onnx` model path; "Setup Shapes from Model" button; per-input/output: attribute class, attribute name, tensor shape fields) · Grid (canvas sized to model's expected resolution: 28×28 / 224×224 / 384×384) · **Attrib Paint** (paint mask variation, for the MNIST digit) · UV Texture + Edge/Image node (for loading a photo as input, with Y-scale −1/offset 1 flip and X-scale 0.6/offset 0.2 letterboxing to avoid squash on non-square source images) · **Attribute Copy** (works fine for the naive/failing vector-`Cd` feed used to demonstrate the wrong approach) · 3× **Point Wrangle** (`f@in = @Cd.r`/`.g`/`.b` — data restructuring in) · Merge · Point Wrangle (unpack out: `point(1, "out", @ptnum)`, `point(1, "out", @ptnum + np)` where `int np = npoints(0)`, `point(1, "out", @ptnum + 2*np)` → `v@Cd = {r,g,b}`) · **Labs Attribute Normalize Float** (post-inference 0-1 remap) · depth-map variant: single Point Wrangle reading `float depth = point(1, "out", @ptnum)` then `v@P += set(0, depth, 0)`.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — no custom neural-net training or Python required (that's the entire point of the node), but correctly reasoning about tensor shapes and channel-planar vs. per-point-interleaved data layout (the RGB restructuring via 3 Point Wrangles + point-count-offset unpacking) is a genuinely non-obvious VEX/attribute-management skill that trips up most first attempts (as demonstrated on-camera with the garbage/broken initial output).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 20 — the ONNX Inference SOP is introduced as new in this version ("With Houdini 20 we got our first official machine learning node from SideFX").
 
 ### Tags
-[PENDING EXTRACTION]
+#python #sop #cop #vex #machine-learning #onnx #procedural #attributes #intermediate #houdini-20
+
+### Gotchas
+- **Data layout mismatch is the single most common failure mode**: ONNX image models expect channel-planar tensors (all red, then all green, then all blue) — feeding a plain `Cd` vector attribute (interleaved per-point RGB) produces a garbage/scrambled output that looks superficially plausible but is wrong; the frame captured at [11:14] shows exactly this failure state before the fix.
+- The ONNX node **re-centers/collapses output around world origin** in some configurations — an Attribute Copy (or the restructured-wrangle approach) is needed to actually see/use the result rather than just the raw node output.
+- Output values are **not** guaranteed to be normalized 0-1 (common assumption when treating output as color or displacement) — always pass through **Labs Attribute Normalize Float** (or equivalent) before using ML output as `Cd` or a displacement value.
+- This is **inference only** — the node cannot train or fine-tune a network; all the demonstrated `.onnx` files are pre-trained models downloaded as-is (from `github.com/onnx/models` or third-party exports like the MiDaS-for-Unity project reused here).
+- Not a universal replacement for custom ML pipelines: multi-stage pipelines that mix neural-net stages with non-neural algorithmic stages (e.g. Stable Diffusion's scheduler/tokenizer/noise generation) still need a real Python/ML environment for the non-neural parts — only the neural-net sub-stages are realistically portable to ONNX SOPs today.
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- Cross-link with [Quick CG integration with Houdini and Karma](quick-cg-integration-with-houdini-and-karma.md) (`tutorials/quick-cg-integration-with-houdini-and-karma.md`) — shares `machine-learning` and `onnx`; that tutorial uses an ONNX-based MiDaS-style depth model *inside a Cops network* (tiled 384×128 output requiring a Contact Sheet reassembly, then NDC-based camera-relative displacement) for camera-matched CG integration — a production application of the exact same ONNX/depth-estimation concept this tutorial introduces at the SOP level, useful as a "here's what this looks like in a real production pipeline" follow-up.
+- Cross-link with `references/copernicus.md` for the COP-context ML/ONNX usage pattern referenced above, and with H22 HIVE talks on native ML (e.g. `tutorials/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive.md`, tagged `machine-learning`) for how SideFX's ML tooling expanded in the following major version (Neural Cellular Automata, SAM2, MoGe-2, Gaussian-splat training) beyond this H20 ONNX-inference starting point.

@@ -291,3 +291,4 @@ camera-matching, depth-map, onnx, machine-learning, cops, solaris, karma-xpu, cg
 ## Related Tutorials
 - [Texture Projection Tool for Houdini 20.5](texture-projection-tool-for-houdini-205.md) — the tool used here to logo-decal the bottle before this CGI-integration render.
 - [Quick CGI Integration with Houdini and Solaris](quick-cgi-integration-with-houdini-and-solaris.md) — companion CGI-integration tutorial from the same channel using an HDRI dome + AOV compositing approach instead of an ML depth map.
+- [Free Houdini Tutorial: Machine Learning with ONNX in Houdini 20](free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20.md) — shares `machine-learning`/`onnx`; explains the underlying ONNX Inference SOP fundamentals (tensor shapes, channel-planar RGB restructuring, Attribute Normalize Float) at the SOP level that this tutorial applies inside a Cops network for the depth-map step.
