@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=yGCjD0_TIpw
 author: Entagma
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22.0.368"
+tags: [gaussian-splats, photogrammetry, colmap, top, solaris, usd, karma, rendering, advanced, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/new-in-houdini-22-training-gaussian-splats-from-infrared-photos/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # New in Houdini 22: Training Gaussian Splats from Infrared Photos
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py new-in-houdini-22-training-gaussian-splats-from-infrared-photos <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -273,30 +269,71 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:47] tutorials/frames/new-in-houdini-22-training-gaussian-splats-from-infrared-photos/frame_000.jpg
+- [4:20] tutorials/frames/new-in-houdini-22-training-gaussian-splats-from-infrared-photos/frame_001.jpg
+- [5:45] tutorials/frames/new-in-houdini-22-training-gaussian-splats-from-infrared-photos/frame_002.jpg
+- [7:10] tutorials/frames/new-in-houdini-22-training-gaussian-splats-from-infrared-photos/frame_003.jpg
+- [9:20] tutorials/frames/new-in-houdini-22-training-gaussian-splats-from-infrared-photos/frame_004.jpg
+- [12:15] tutorials/frames/new-in-houdini-22-training-gaussian-splats-from-infrared-photos/frame_005.jpg
+- [13:55] tutorials/frames/new-in-houdini-22-training-gaussian-splats-from-infrared-photos/frame_006.jpg
+- [16:00] tutorials/frames/new-in-houdini-22-training-gaussian-splats-from-infrared-photos/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Training a native Gaussian splat in Houdini 22's TOPs from real-world photographs (here, infrared-modded-camera shots of a botanical garden), using the free/open-source COLMAP app to solve camera poses and a sparse point cloud, then Houdini's `ML Train GSplat` TOP node to train and Karma/Solaris to render the result.
 
 ### Summary
-[PENDING EXTRACTION]
+Entagma's quick-start walkthrough of H22's native Gaussian-splat training feature. Covers the full pipeline end to end: capturing suitable photos, running them through COLMAP (feature extraction → feature matching → reconstruction → sparse export) to get camera positions and a sparse point cloud, building a TOP network around `ML Train GSplat` with VRAM-aware settings, monitoring training in a live browser viewer, and finally importing the trained `.ply` back into Houdini as a `gsplat`, cleaning it up, and rendering it through Karma in Solaris.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Capture images:** ~100–200 photos, camera *moved* (not just rotated) between shots for parallax; avoid fisheye/wide lenses; fast shutter + ~f8 aperture for sharpness (auto ISO acceptable in a pinch); cloudy/flat lighting reduces relighting work later; fewer good images beats many bad ones.
+2. **COLMAP — new project:** File → New Project; create a new database `.db` file and select the images folder; Save.
+3. **COLMAP — feature extraction:** Processing → Feature Extraction; extraction method OpenCV; check "Shared for all images"; Extract; watch the console for "Elapsed time" to confirm completion.
+4. **COLMAP — feature matching:** Processing → Feature Matching; use **Exhaustive** (Sequential is only for frames pulled from a video); Run.
+5. **COLMAP — reconstruction:** Reconstruction → Start Reconstruction — by far the longest step; camera frustums and a sparse point cloud populate the viewport as it runs.
+6. **COLMAP — export:** File → Export Model → create a new `sparse` folder inside the project directory and export into it.
+7. **Houdini setup:** Save the `.hip` file first — Houdini generates working folders relative to its location. Switch to the **TOP context** (not OBJ), create a TOP network, dive in, search `gsplat`, and place **`ML Train GSplat`** (not the "from rendered images" variant).
+8. **Manual folder structure** next to the hip file: `ml/<hipfile-name>/dataset.gsplats/images/` (your source photos) and `ml/<hipfile-name>/dataset.gsplats/sparse/0/` (the COLMAP sparse export). Tops auto-creates the remaining working folders (`images_3`, the `.run` output folder, etc).
+9. **Data tab:** set **Dataset Type** to **SfM (COLMAP)** (default is Houdini XRs); set **Data Downscale Factor** high enough that all images fit in VRAM — e.g. downscale 3 for 6000px-wide images on 24GB VRAM. Too low a value crashes Houdini; if it crashes, restart and increase the factor.
+10. **Execution tab:** enable **Cache Images to VRAM** (training drops from hours to minutes); set **Number of Workers** to CPU-thread-count minus one.
+11. **Training tab:** disable **Testing** (skips holding out every 8th image to score against) to shave more time off, at the cost of a quality readout.
+12. **Cook:** right-click the `ML Train GSplat` node → Cook Node. Default run length is 30,000 steps.
+13. **Monitor:** the node's sub-process icon lists running processes; right-click one → Work Item Info for a status readout, or use **Monitoring → Open Viewer** for a live browser window (localhost) showing step count and the live splat.
+14. **Stop & Save** once the result looks good — ~12 minutes on an RTX 4090 for this ~100-image dataset. Output `.ply` lands in `.../<run-folder>/gsplats/`.
+15. **Back in OBJ context:** Geometry node → File node pointing at the trained `.ply` (imports as a plain point cloud) → **GSplat** node ("Big GSplat", same node as H21) to render it as a Gaussian splat → **Transform** node to fix orientation (rarely correct on first import).
+16. **Cleanup:** Blast node, Group selection = points, Lasso-select unwanted stray/noisy regions, delete.
+17. Add a **Null** ("out") as the export handle for Solaris.
+18. **Solaris/Stage context:** Sub-Import node pulling in the OBJ null; pick a camera angle and create a Camera. No lights or materials needed — the splat carries its own baked appearance.
+19. **Karma render:** low Path Trace Samples are fine (e.g. 32) since noise only matters with motion blur or out-of-focus regions; under **Advanced**, set **Pixel Oracle** from Variance to **Uniform** — roughly 2x faster and slightly cleaner. Render to MPlay.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **TOP context:** `ML Train GSplat` node (search "gsplat" — do not confuse with the "from rendered images" gsplat TOP), driven by a Local Scheduler.
+  - Data tab: `Dataset Type` = SfM (COLMAP); `Data Downscale Factor` = project-specific (e.g. 3 for 6000px images / 24GB VRAM); `Input Data Source` → Dataset Folder path derived from the hip-relative `ml/<hipname>/dataset.gsplats` structure.
+  - Execution tab: `Cache Images to VRAM` = on; `Number of Workers` = CPU count − 1.
+  - Training tab: `Testing` = disabled.
+- **OBJ context:** Geometry node → `File` SOP (loads the `.ply`) → `GSplat` SOP ("Big GSplat") → `Transform` SOP → `Blast` SOP (Group Type: points, Lasso select) → `Null` ("out").
+- **Stage/LOP context:** `Sub-Import` (imports the OBJ null) → Camera → Karma render node.
+  - Karma: `Path Trace Samples` ≈ 32; Advanced → `Pixel Oracle` = Uniform (from Variance).
+- No VEX/wrangles used in this tutorial — it's entirely TOPs configuration + a standard SOP/LOP import-and-render chain.
+- External tool: **COLMAP** (free/open source) for Structure-from-Motion — feature extraction (OpenCV, shared for all images) → feature matching (Exhaustive) → reconstruction → sparse model export.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines an external photogrammetry tool (COLMAP), VRAM-aware ML training configuration in TOPs, and a Solaris/Karma render setup; not a single-node/single-context technique.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+22.0.368
 
 ### Tags
-[PENDING EXTRACTION]
+gaussian-splats, photogrammetry, colmap, top, solaris, usd, karma, rendering, advanced, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive.md` — H22 - Gaussian Splats and Machine Learning | Jakob Ringler | Houdini 22 HIVE (shared tags: top, karma, solaris, usd, houdini-22). Deep-dive on the same native `ML Train/Process GSplats` TOPs feature this video demos quickly, including the COLMAP-vs-Karma-EXR data source choice and AOV feature training.
+- `tutorials/h22---gaussian-splats-peter-sanitra-houdini-22-hive.md` — H22 - Gaussian Splats | Peter Sanitra | Houdini 22 HIVE (shared tags: top, karma, solaris, usd, rendering, advanced, houdini-22). Companion HIVE talk covering the synthetic (Karma-rendered) side of the same GSplat TOPs pipeline, plus AOV relighting and failure modes.
+- `tutorials/animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md` — Animate Gaussian Splats with Houdini (shared tags: karma, gaussian-splats). Picks up where this tutorial leaves off — animating/deforming a trained Gaussian splat `.ply` once you have one.
