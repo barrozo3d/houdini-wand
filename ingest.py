@@ -369,13 +369,14 @@ def append_safeguard_note(content, note, level="WARNING"):
 # ── Build raw .md ──────────────────────────────────────────────────────────────
 
 def build_raw_md(info, ch_transcripts, slug, frame_status="pending-selection",
-                  sg_warnings=None, sg_critical=None):
+                  sg_warnings=None, sg_critical=None, is_yt=True):
     title    = info.get("title", "Unknown")
     url      = info.get("webpage_url", "")
     author   = info.get("uploader", "Unknown")
     today    = datetime.now().strftime("%Y-%m-%d")
     duration = info.get("duration", 0)
     dur_str  = f"{int(duration)//60}m{int(duration)%60}s" if duration else "unknown"
+    source_label = "YouTube" if is_yt else "Article"
 
     # Chapter breakdown with per-sentence timestamped transcript.
     # No frames yet at this point — frame capture is Step 2 (content-aware,
@@ -412,7 +413,7 @@ def build_raw_md(info, ch_transcripts, slug, frame_status="pending-selection",
 
     return f"""---
 title: {title}
-source: YouTube
+source: {source_label}
 url: {url}
 author: {author}
 ingested: {today}
@@ -426,7 +427,7 @@ frame_status: {frame_status}
 
 # {title}
 
-**Source:** [YouTube]({url})
+**Source:** [{source_label}]({url})
 **Author:** {author}
 **Duration:** {dur_str} | {len(ch_transcripts)} section(s)
 
@@ -469,15 +470,16 @@ frame_status: {frame_status}
 [PENDING EXTRACTION]
 """
 
-def update_index_pending(info, slug, filename):
+def update_index_pending(info, slug, filename, is_yt=True):
     title  = info.get("title", "Unknown")
     url    = info.get("webpage_url", "")
     author = info.get("uploader", "Unknown")
+    source_label = "YouTube" if is_yt else "Article"
 
     entry = f"""
 
 ### {title}
-- **Source:** YouTube
+- **Source:** {source_label}
 - **URL:** {url}
 - **Author:** {author}
 - **Houdini Version:** [PENDING]
@@ -507,14 +509,19 @@ def fetch_article(url):
     import urllib.request
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as resp:
-        html = resp.read().decode("utf-8", errors="ignore")
-    html = re.sub(r"<script[^>]*>.*?</script>", "", html, flags=re.DOTALL)
+        raw_html = resp.read().decode("utf-8", errors="ignore")
+    # Extract <title> BEFORE stripping tags — stripping first left this dead code
+    # (it searched html that no longer had any tags, so title always fell back
+    # to the raw URL, which then poisoned the slug/filename too).
+    tm = re.search(r"<title[^>]*>(.*?)</title>", raw_html, re.I | re.S)
+    title = re.sub(r"\s+", " ", tm.group(1)).strip() if tm else url
+    title = re.sub(r"&#x27;|&#39;|&rsquo;", "'", title)
+    title = re.sub(r"&amp;", "&", title)
+    html = re.sub(r"<script[^>]*>.*?</script>", "", raw_html, flags=re.DOTALL)
     html = re.sub(r"<style[^>]*>.*?</style>", "", html, flags=re.DOTALL)
     html = re.sub(r"<[^>]+>", " ", html)
-    html = re.sub(r"&[a-z]+;", " ", html)
+    html = re.sub(r"&[a-z#0-9]+;", " ", html)
     text = re.sub(r"\s+", " ", html).strip()
-    tm = re.search(r"<title[^>]*>(.*?)</title>", html, re.I | re.S)
-    title = tm.group(1).strip() if tm else url
     from urllib.parse import urlparse
     return {"title": title, "uploader": urlparse(url).netloc,
             "description": text[:8000], "duration": 0,
@@ -702,11 +709,11 @@ def main():
 
         # 4. Write raw .md + commit
         print("[4/4] Writing raw tutorial file...")
-        md = build_raw_md(info, ch_transcripts, slug, frame_status, sg_warnings, sg_critical)
+        md = build_raw_md(info, ch_transcripts, slug, frame_status, sg_warnings, sg_critical, is_yt=is_yt)
         if sg_critical:
             md = md.replace("extraction_status: pending", "extraction_status: needs-review", 1)
         out_md.write_text(md, encoding="utf-8")
-        update_index_pending(info, slug, out_md.name)
+        update_index_pending(info, slug, out_md.name, is_yt=is_yt)
 
         print("      Committing raw data to GitHub...")
         os.chdir(SKILL_DIR)
