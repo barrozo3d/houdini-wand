@@ -56,6 +56,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/getting-started-with-houdini-engine-for-unity-sidefx.md
 
+
+### Free Houdini Tutorial: Machine Learning with ONNX in Houdini 20
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=aCAatiY53s8
+- **Author:** Entagma
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20.md
+
 ---
 
 ## How to Read This Index
