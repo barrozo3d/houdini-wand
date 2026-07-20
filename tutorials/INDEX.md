@@ -26,6 +26,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/create-cinematic-oceans-fast-realistic-shading-render-with-karma-xpu-sidefx.md
 
+
+### Muscles and tissue
+- **Source:** Article
+- **URL:** https://www.sidefx.com/docs/houdini/muscles/index.html
+- **Author:** www.sidefx.com
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/muscles-and-tissue.md
+
 ---
 
 ## How to Read This Index
