@@ -2,11 +2,11 @@
 title: Procedural City 1 : Building Generator | SideFX
 source: Article
 url: https://www.sidefx.com/tutorials/procedural-city-1-building-generator/
-author: www.sidefx.com
+author: Hossam Aldin Alaliwi
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 18.5"
+tags: [procedural, modelling, uv, materials, pdg, mantra, redshift, instancing, beginner, intermediate, advanced, houdini-18]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-city-1-building-generator-sidefx/
 frame_count: 0
 frame_status: skipped
@@ -35,27 +35,38 @@ Frame capture was skipped for this ingest (--skip-video). Text-only extraction.
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A rules-driven "smart system" that converts simple box massing into a fully detailed building — automatically deciding window and balcony placement, generating procedural UVs, and applying imported real-world materials (Quixel Megascans) — so that a single click can generate an effectively infinite number of unique buildings from the same generator network.
 
 ### Summary
-[PENDING EXTRACTION]
+This is a paid, multi-hour Houdini course (Vol. 1 of a two-part "Procedural City" series) sold directly on the SideFX tutorials marketplace by Hossam Aldin Alaliwi — the fetched page is a sales/landing page (course description, pricing, instructor bio, purchaser comments), not a technical walkthrough, and SideFX gates the actual 65 video lessons behind payment, so no step-by-step node graph could be extracted from this ingest. What the landing page does establish technically: the course builds a **procedural building generator** entirely through node networks ("I will stay away from complexity and the use of code," i.e. VEX/Python are explicitly avoided in favor of pure SOP node chains) that takes basic box geometry and adds facade detail — deciding *where* to place windows and balconies rather than using fixed placement, generating **procedural UVs** for the resulting geometry, and importing/manipulating **Quixel Megascans** materials for realistic surfacing. The course also builds a **PDG network** (task/data-processing graph, likely for batch-generating many building variations) and renders test results in both **Mantra** and **Redshift**. The stated end-to-end deliverable is a system that can randomly generate an unbounded number of distinct buildings from one HDA-like setup — the course's own promotional render shows 50 different buildings generated from the same system — intended as the foundation for a Vol. 2 course that scatters these generated buildings into a full city.
 
 ### Key Steps
-[PENDING EXTRACTION]
+Only inferable from the course description (no lesson-by-lesson content is visible without purchase):
+1. Start from simple box/massing geometry representing a building envelope.
+2. Build a rules-based system that decides facade divisions and where windows vs. balconies should appear (rather than uniform/fixed placement).
+3. Generate **procedural UVs** for the resulting detailed geometry.
+4. Import and manipulate **Quixel Megascans** materials, applying/adjusting them across the generated facade.
+5. Build a **PDG (TOP) network**, likely to batch-generate and cache many building variations/randomized seeds.
+6. Render test variations in **Mantra** and/or **Redshift** to validate the look development.
+7. (Implied, for the promised Vol. 2) Package the generator so many instances can be randomly generated and later scattered across a city layout.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Not verifiable from the available (non-paywalled) content — the landing page names no specific node types. Based on the stated deliverables, a real implementation of this kind of generator would typically involve procedural extrude/facade-division SOPs, Copy-to-Points/instancing for windows and balconies, a UV Layout/UV Flatten pass for the procedural UVs, a Material Library importing Megascans textures, and a TOP network (PDG) for batch variation generation — but none of this is confirmed by the source text, so treat it as informed inference, not extracted fact.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner → Intermediate → Advanced (per the course's own listed range) — an 18+ hour, 65-lesson course, so likely starts from basic procedural modeling and ramps into more advanced generator/PDG topics by the end.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 18.5 (per the course listing/pricing page).
 
 ### Tags
-[PENDING EXTRACTION]
+#procedural #modelling #uv #materials #pdg #mantra #redshift #instancing #beginner #intermediate #advanced #houdini-18
+
+### Gotchas
+- **This tutorial is a paid product**, not a free article or video — the SideFX page fetched by `ingest.py` is a course marketplace listing (title, price, instructor bio, and buyer comments), not instructional content. All "Key Steps" and "Houdini Nodes" content above is reconstructed from the course's own marketing description and is necessarily shallow compared to other library entries — there is no way to verify exact node names, parameter values, or network structure without purchasing the 65-lesson course.
+- If a user asks a detailed "how do I build a procedural building generator" question, this entry can point them to the *existence* and scope of this paid course and to the general technique category (rule-driven facade generation + procedural UVs + Megascans + PDG batch variation), but should not be treated as a substitute for `references/sop-nodes.md`-level exact guidance — answer such a question by synthesizing from general Houdini procedural-modeling knowledge instead, and mention this course as a further-learning pointer.
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- No other tutorial in this library builds a ground-up procedural building/facade generator — existing "skyscraper" content (e.g. the RBD destruction skyscraper entries, tagged `skyscraper`, `rbd`) only uses **pre-built** skyscraper assets as destruction fodder, not generated ones. This entry fills the "Procedural city/building generation" gap from `KNOWLEDGE_GAPS_TODO.md`, though only at a scope/overview level given the paywalled source.

@@ -40,10 +40,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ### Procedural City 1 : Building Generator | SideFX
 - **Source:** Article
 - **URL:** https://www.sidefx.com/tutorials/procedural-city-1-building-generator/
-- **Author:** www.sidefx.com
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Hossam Aldin Alaliwi
+- **Houdini Version:** Houdini 18.5
+- **Tags:** procedural, modelling, uv, materials, pdg, mantra, redshift, instancing, beginner, intermediate, advanced, houdini-18
+- **Summary:** Paid 65-lesson (18+ hour) marketplace course, Vol. 1 of a two-part Procedural City series. Builds a rules-based generator that converts box massing into detailed buildings — deciding window/balcony placement, generating procedural UVs, importing/manipulating Quixel Megascans materials, building a PDG network for variation, and rendering tests in Mantra/Redshift. Source is a paywalled marketplace listing (not free instructional content) — notes are reconstructed from the course's own description only; no exact node graph is verifiable. Fills the "procedural city/building generation" gap at an overview level.
 - **File:** tutorials/procedural-city-1-building-generator-sidefx.md
 
 
