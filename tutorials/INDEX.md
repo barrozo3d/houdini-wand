@@ -3269,6 +3269,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** HIVE talk (Copernicus team): H22's new Bake Pre-Process node (SOP+COP) makes cage-mesh authoring visible and interactive — orange cage in a viewport state, High Res Intersections highlighting (raise offset until no red), cage softening split at UV seams/faces/edge groups to stop skewed bakes, attribute-scaled offsets, inward ray-end mesh to exclude stray geometry — feeding Bake Geometry Textures (surface-normal / cage / single-mesh tracing, Match Pieces by Name for per-part bakes). Demo: fan asset via bake-setup recipe, live multi-UDIM preview material, COP materials with curvature/occlusion-driven scratches, exported to Unreal.
 - **File:** tutorials/h22---baking-with-copernicus-alex-hamer-houdini-22-hive.md
 
+
+### https://www.sidefx.com/tutorials/intro-to-crowds/
+- **Source:** YouTube
+- **URL:** https://www.sidefx.com/tutorials/intro-to-crowds/
+- **Author:** www.sidefx.com
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/httpswwwsidefxcomtutorialsintro-to-crowds.md
+
 ---
 
 ## Tag Reference
