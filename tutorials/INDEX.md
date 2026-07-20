@@ -36,6 +36,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/muscles-and-tissue.md
 
+
+### Procedural City 1 : Building Generator | SideFX
+- **Source:** Article
+- **URL:** https://www.sidefx.com/tutorials/procedural-city-1-building-generator/
+- **Author:** www.sidefx.com
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/procedural-city-1-building-generator-sidefx.md
+
 ---
 
 ## How to Read This Index
