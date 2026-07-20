@@ -2,11 +2,11 @@
 title: Muscles and tissue
 source: Article
 url: https://www.sidefx.com/docs/houdini/muscles/index.html
-author: www.sidefx.com
+author: SideFX (official documentation)
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Houdini 22.0 (Otis Muscle and Tissue System); Legacy Vellum-based muscles/tissue documented separately for pre-H22 workflows"
+tags: [muscles, tissue, otis, vellum, sop, dop, simulation, rigging, animation, character, procedural, advanced, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/muscles-and-tissue/
 frame_count: 0
 frame_status: skipped
@@ -35,27 +35,43 @@ Frame capture was skipped for this ingest (--skip-video). Text-only extraction.
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini's dedicated **Muscle and Tissue system** (H22's **Otis solver**, successor to the earlier Vellum-based muscle/tissue workflow): a true anatomical simulation with distinct muscle, tissue-core (fascia), and tissue-shell (fat) layers, driven by fiber directions, tension activation, and constraint-based attachments to bones — genuinely different from faking muscle bulge with plain Vellum cloth/soft-body rest-blend stiffness.
 
 ### Summary
-[PENDING EXTRACTION]
+This is the top-level index/table-of-contents page of SideFX's official "Muscles and tissue" documentation section (H22.0). The page itself only lists sub-topic links; the real technical content lives on its child pages, four of which were fetched directly for this extraction to get actual substance instead of a table of contents: **Otis Muscle and Tissue overview**, **Otis vs. Vellum differences**, **Muscle setup**, and **Otis simulation configuration**. Key findings: the **Otis system** is built on **Vertex Block Descent (VBD)** and runs as a *single unified simulation pass* where muscles, bones, tissue-core, and tissue-shell all simulate together — a deliberate architectural break from the legacy Vellum muscle/tissue workflow, which required a *multi-pass* setup (each layer independently configured, cached, and constrained). The system layers are: (1) muscles and bones (the driving anatomical structure), (2) tissue core / fascia (a tetrahedral volume shrinkwrapped around the muscles and bones — the "Fascia" approach uses only this layer for fast, tight, early-development iteration), and (3) tissue shell / fat (the outer deformable layer — the full "Tissue" approach simulates both core and shell for jiggle, secondary motion, and realistic volume, used for final quality). Six constraint/attachment types glue everything together: **muscle ends** (springy bone-to-muscle, visualized pink), **muscle glue** (muscle-to-muscle, purple), **rigid points** (firm tissue-to-animation/bone anchors, cyan), **tissue to bone** (springy, red), and **tissue to muscle** (bidirectional mutual influence, yellow). Migrating an existing Vellum muscle rig to Otis is explicitly **not** a parameter-preserving conversion — SideFX states the two solvers produce different results even with identical inputs and recommends rebuilding from Otis "Starter Recipes" rather than attempting a manual port; Otis is also unavailable in Houdini Core (parameters greyed out), unlike Vellum which had broader tier availability. The muscle-setup workflow chains a specific sequence of SOP nodes (see Key Steps) from raw muscle-surface geometry through tetrahedralization, fiber painting, physical properties, constraint generation, tension-line-driven flex activation, mirroring, and finally into the Otis configure/solve pair. Configuring the actual sim (`Otis Muscle and Tissue Configure` SOP) supports two typical setups — one instance with just muscles+bones for a muscle-only pass, a second instance adding tissue with "Simulate Muscles" disabled so the already-solved muscles act as passive colliders for the tissue pass — plus troubleshooting toggles (isolate specific attachments/constraints, "Always Show Visualizations"). The **Otis Solver SOP** itself is GPU-accelerated; SideFX's recommended starting values are **Substeps = 40 at 24fps** and **Iterations = 10**, with more substeps needed for fast/rapid character motion and more iterations needed as geometry resolution increases. After simulation, the pipeline moves to skin post-processing (skin sliding/deformation driven by the simulated muscle/tissue result) as the final stage.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Prepare geometry**: build/clean muscle surface geometry, bones, and the render-skin mesh that will ultimately be deformed by the simulated result.
+2. **Muscle ID**: run **Muscle ID SOP** to create and assign a unique Muscle ID to each connected cluster of primitives (so the system can distinguish individual muscles in one merged network).
+3. **Tetrahedralize**: **Muscle Solidify SOP** converts the surface geometry into a tetrahedral (volumetric) mesh — required for the muscle to simulate as a deformable solid, not just a shell.
+4. Optionally cache with a **File Cache SOP** at this stage for iteration speed.
+5. **Fiber direction**: **Fiber Groom SOP** paints/defines the fiber direction vector through the solid muscle geometry — this drives how the muscle contracts (muscles shorten along their fiber direction, not uniformly).
+6. **Physical properties**: **Muscle Properties Otis SOP** sets stiffness/mass/other physical characteristics per muscle.
+7. **Constraints**: **Muscle Constraint Properties Otis SOP** builds the Otis constraint network (muscle-ends, muscle-glue, etc. — the six attachment types described above).
+8. **Symmetry**: **Muscle Mirror SOP** duplicates a muscle setup with left/right symmetry to avoid manually rebuilding mirrored anatomy.
+9. **Tension/activation**: **Muscle Auto Tension Lines SOP** auto-creates a tension line per muscle (longest line between its muscle-ends), then **Muscle Tension Lines Activate SOP** sets activation values on those lines, and **Muscle Flex SOP** actually animates the contraction/relaxation of the solid muscle geometry over time based on that activation.
+10. **Final constraint prep**: **Otis Configure Muscle and Tissue SOP** collects all geometry/attributes into the form the solver expects — build one instance for muscles+bones only (muscle-only sim), and optionally a second instance layering in tissue with "Simulate Muscles" off (muscles become passive colliders for the tissue layer).
+11. **Solve**: **Otis Solver SOP** — GPU-accelerated; start from **Substeps = 40 @ 24fps**, **Iterations = 10**, and scale substeps up for fast/rapid animation and iterations up for higher-resolution geometry.
+12. **Post-process**: deform the render skin from the simulated result (skin sliding/post-processing stage) to get the final animated character surface.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+**Muscle ID** → **Muscle Solidify** (tetrahedralize) → [optional File Cache] → **Fiber Groom** (fiber direction) → **Muscle Properties Otis** → **Muscle Constraint Properties Otis** → **Muscle Mirror** (symmetry) → **Muscle Auto Tension Lines** → **Muscle Tension Lines Activate** → **Muscle Flex** (contraction/relaxation animation) → **Otis Configure Muscle and Tissue** (final constraint prep; toggle "Simulate Muscles" off for a passive-collider muscle pass under tissue) → **Otis Solver** (GPU; Substeps ≈40 @24fps, Iterations ≈10) → skin post-processing/deform stage. Also referenced: **Tissue Solidify Otis**, **Tissue Properties Otis** (tissue-layer equivalents of the muscle property/solidify nodes), **Skin Deform** and **Muscle Deform** (post-sim skin driving), **Muscle Transfer** (transferring a muscle rig from a test/generic character onto a production character). Legacy equivalents (pre-H22, Vellum-based): Vellum-suffixed Muscle Properties, Tissue Solidify, etc. — architecturally incompatible with Otis, cannot be mixed, and are not a drop-in parameter-preserving swap.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — this is a full character-simulation subsystem (fiber-direction muscle contraction, layered tetrahedral tissue, six-way constraint typing, GPU solver tuning) intended for riggers/CFX TDs, not a beginner topic. The conceptual model (fascia vs. tissue, passive-collider muscle pass) also requires understanding of the broader Houdini character/CFX pipeline (skinning, rigging) before it's usable in production.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22.0 introduces the **Otis Muscle and Tissue System** as the current/recommended workflow (single unified VBD-based simulation pass). A **Legacy Muscles (Vellum Solver)** section still documents the older multi-pass Vellum-based muscle/tissue workflow for users on earlier Houdini versions or existing Vellum-based rigs — the two are not directly compatible or convertible.
 
 ### Tags
-[PENDING EXTRACTION]
+#muscles #tissue #otis #vellum #sop #dop #simulation #rigging #animation #character #procedural #advanced #houdini-22
+
+### Gotchas
+- The page ingested by `ingest.py` (`/docs/houdini/muscles/index.html`) is only a **table-of-contents landing page** with no technical content of its own — the substantive notes above were built by additionally fetching four of its linked sub-pages directly (`overview.html`, `differences.html`, `musclesetup.html`, `otissimulation.html`) via WebFetch, since a text-only ingest of the index page alone would have produced a thin/useless extraction. Other sub-pages (fascia/tissue setup, property assignments, Franken muscle, the three muscle "recipes," and the full Legacy Vellum workflow docs) exist under the same `tutorials/muscles/` path but were not individually fetched — see `references/dop-nodes.md` or the live docs for those if deeper Vellum-legacy or recipe-specific detail is needed later.
+- Otis and Vellum muscle/tissue rigs are **not interchangeable** — don't try to port parameter values between them; SideFX explicitly recommends rebuilding from Otis Starter Recipes instead.
+- **Otis Solver is unavailable in Houdini Core** (parameters greyed out) — a licensing gotcha worth knowing before planning a pipeline around it.
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- Cross-link with the Vellum rest-blend/soft-body tutorials already in the library (e.g. the VFX School Renaissance Vellum module entries tagged `vellum`, `rest-blend`, `soft-body`) — those explicitly describe achieving muscle-*like* bulge via Vellum cloth/tetrahedral rest-blend stiffness *without* true muscle simulation; this entry is the real Muscle/Tissue (Otis) system that KNOWLEDGE_GAPS_TODO.md flagged as missing from the library, and clarifies the distinction between the two approaches.

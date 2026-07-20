@@ -30,10 +30,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ### Muscles and tissue
 - **Source:** Article
 - **URL:** https://www.sidefx.com/docs/houdini/muscles/index.html
-- **Author:** www.sidefx.com
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** SideFX (official documentation)
+- **Houdini Version:** Houdini 22.0 (Otis system); Legacy Vellum muscles/tissue also documented
+- **Tags:** muscles, tissue, otis, vellum, sop, dop, simulation, rigging, animation, character, procedural, advanced, houdini-22
+- **Summary:** H22's Otis Muscle and Tissue System (VBD-based, single unified sim pass for muscles/bones/tissue-core-fascia/tissue-shell-fat, replacing the older multi-pass Vellum muscle workflow — not parameter-compatible with it). Full node chain: Muscle ID → Muscle Solidify (tetrahedralize) → Fiber Groom → Muscle Properties/Constraint Properties Otis → Muscle Mirror → Auto Tension Lines + Activate → Muscle Flex → Otis Configure Muscle and Tissue → Otis Solver (GPU; Substeps≈40@24fps, Iterations≈10) → skin post-processing. Six constraint types (muscle ends, muscle glue, rigid points, tissue-to-bone, tissue-to-muscle). Fills the "true muscle simulation" library gap (previously only Vellum rest-blend faking).
 - **File:** tutorials/muscles-and-tissue.md
 
 
