@@ -6,13 +6,14 @@ Used by the auto-changelog rule in SKILL.md.
 ---
 
 ## Last Check
-- **last_checked:** 2026-05-19
-- **checked_by:** Manual ingestion session
+- **last_checked:** 2026-07-18
+- **checked_by:** Ingest session (H22 tutorials) — sidefx.com news index fetched
 
 ## Known Versions (ingested)
 | Version | Reference File | Ingested |
 |---------|---------------|---------|
-| H21.0 (current) | `release-notes-h21.md` | 2026-05-19 |
+| H22.0 (current) | `release-notes-h22.md` | 2026-07-18 |
+| H21.0 | `release-notes-h21.md` | 2026-05-19 |
 | H20.5 | `release-notes-h20-5.md` | 2026-05-19 |
 
 ## Versions Not Yet Ingested
@@ -25,7 +26,7 @@ Used by the auto-changelog rule in SKILL.md.
 https://www.sidefx.com/docs/houdini/news/{version}/index.html
 # Sub-pages:
 https://www.sidefx.com/docs/houdini/news/{version}/{section}.html
-# Where {version} = 21, 20_5, 20, 19_5, 19
+# Where {version} = 22, 21, 20_5, 20, 19_5, 19
 # Where {section} = kinefx, model, solaris, karma, pyro, rbd, copernicus, engine, vex, viewport, mpm, crowds, ml, pdg, hqueue
 ```
 

@@ -459,7 +459,7 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Author:** cgside
 - **Houdini Version:** any modern (H18+)
 - **Tags:** rigging, kinefx, mechanical, controls, wrangle, matrix, fit-range, intermediate
-- **Summary:** [PENDING EXTRACTION]
+- **Summary:** Attaches sphere-shaped animation controls to a mechanical rig and drives symmetric pairs of joint rotations by extracting each control's translation distance, fitting it to a precomputed max-rotation-angle range, and writing the rotated matrix back onto the rig points — done in parallel in a number-of-points wrangle (Point Generate + Name + Rig Doctor + instanced spheres; Attach Joint Geo; Rig Pose with locked rotation/axes so animators can only translate the intended axis).
 - **File:** tutorials/mechanical-rigging-in-houdini---attaching-custom-controls.md
 
 
@@ -1660,16 +1660,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/optimizing-baked-trees-with-instancing-in-houdini.md
 
 
-### Bring your 3D renders to life with Houdini - Patreon October '25 Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=M8odmzpj2dc
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/bring-your-3d-renders-to-life-with-houdini---patreon-october-25-trailer.md
-
-
 ### Handy Houdini Tips | Vellum, UVS, Modeling and More
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=h6wt3KJy2W4
@@ -1688,16 +1678,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vertex-selection, skin, wrinkle-deformer, cops, tile-pattern, height-blend, architecture, favela
 - **Summary:** The house starts from a box with primitives sorted by Y and reversed so primitive 0 is reliably the top face — this predictable indexing lets later selections stay procedural rather than manual. A "corner" selection (for later downward transform) is made via a point wrangle constrained to the top-face group, selecting only points on the negative X axis. For selecting alternating roof edges,...
 - **File:** tutorials/procedural-favela-in-houdini-tips-and-tricks.md
-
-
-### Heightfields and Cops workflow in Houdini 21 -  Patreon September 25 Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=pbwra2esNqc
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/heightfields-and-cops-workflow-in-houdini-21---patreon-september-25-trailer.md
 
 
 ### Houdini 21 | Opacity vs Stencil vs Geometry
@@ -1730,16 +1710,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/dusty-bottles---bridging-procedural-workflows-in-houdini-and-solaris.md
 
 
-### Procedural Brick Wall with COPS  - Patreon August Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=Eb4KIaOJT5Y
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-brick-wall-with-cops---patreon-august-trailer.md
-
-
 ### Making Trash in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=KCy4Sw3nbcQ
@@ -1768,16 +1738,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** procedural-modeling, no-vex, vops, sweep, groups, point-clouds, textures, cops, texture-projection, uv, hard-surface, beginner-friendly
 - **Summary:** The tank body is built from a tube whose ends are split into boundary groups, then reshaped into a domed sphere-like cap and a tapered cone top via centroid-pivot Transforms and copy/scale-to-zero "cone from ID" tricks, skinned back together into one continuous shell. A circular curve (from an Object Merge of the base tube) becomes the observation platform via Transform+Extrude, with...
 - **File:** tutorials/no-vex-challenge-1-procedural-water-tower.md
-
-
-### Jellyfish Procedural Animation with Houdini and Vex | Patreon July Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=udPSR7Gjp9Y
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/jellyfish-procedural-animation-with-houdini-and-vex-patreon-july-trailer.md
 
 
 ### Procedural Boat in Houdini
@@ -1860,16 +1820,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/procedural-buildings-in-houdini-tips-and-tricks.md
 
 
-### Advanced Waterdrops Setup in Houdini | Patreon April Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=2HYYRRW7tws
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/advanced-waterdrops-setup-in-houdini-patreon-april-trailer.md
-
-
 ### Texture Projection Tool for Houdini 20.5
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=t9ldXkD7oqA
@@ -1888,16 +1838,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** packed-primitives, planar-inflate, cops, openCL, sdf-shape, negative-id, drips, graffiti, mardini
 - **Summary:** Starting from a bold **Font** node (text set to "CUPS" for the demo), the letters are Resampled and simplified with Subdivision curves to lose sharp corners and get a rounder graffiti look. Since each letter is a single primitive, per-letter random transforms are applied entirely in VEX rather than a for-loop: a random scale (`fit()`-remapped `random(prim_num + seed)`) is applied relative to...
 - **File:** tutorials/procedural-graffiti-in-houdini-and-cops-mardini.md
-
-
-### Procedural UVS and Texturing in COPS | Patreon March Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=-lVYE0LRu6w
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-uvs-and-texturing-in-cops-patreon-march-trailer.md
 
 
 ### Environments in Houdini | Part 5 - Solaris and rendering with Karma
@@ -1928,16 +1868,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vex, quick-tips, channel-ramp, quaternion, curve, overhang, procedural-modeling
 - **Summary:** Starting from a Line, Resample heavily (0.02) with curve-view output, the curve is first displaced along its X-axis normals using a channel ramp sampled by curve view (`leafRamp`) multiplied by a displacement-amount slider to build a simple leaf-shaped silhouette (mirrorable for a full leaf). To get the overhang look, a second wrangle recomputes normals along the tangent's perpendicular (X...
 - **File:** tutorials/vex-quick-tips-overhang-look-with-channel-ramps.md
-
-
-### Procedural Modeling, Rigging and Animation with Houdini | Patreon February Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=08lvfWum09M
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-modeling-rigging-and-animation-with-houdini-patreon-february-trailer.md
 
 
 ### Procedural Modeling with VEX, VDB and Vellum
@@ -2020,16 +1950,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/environments-in-houdini-part-1---heightfields.md
 
 
-### Product Shot in Houdini and Solaris | Part 2 | Patreon December
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=aaNiFlx6Vi0
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/product-shot-in-houdini-and-solaris-part-2-patreon-december.md
-
-
 ### How to (not) bake brownies in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=R3ClxIiqxag
@@ -2058,16 +1978,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vex, vdb, sdf, cluster, uvs, gradient, quaternion, vines, ivy-generator, procedural-uvs
 - **Summary:** For an in-progress ivy/vine generator tool, points are scattered on a column surface with target positions to grow toward, constrained via a SOP Solver. The obvious approach — Ray Project (Minimum Distance) directly onto the mesh each solve step — causes points to get permanently stuck in concave crevices. The fix: convert the geometry to VDB, apply a heavy **VDB Smooth** (essentially a large...
 - **File:** tutorials/vex-problem-solving-in-houdini.md
-
-
-### Product Shot in Houdini Part 1 | Patreon November
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=Joe8Cu40_as
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/product-shot-in-houdini-part-1-patreon-november.md
 
 
 ### Wood Barrel Texturing in COPS
@@ -2108,16 +2018,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** cops, copernicus, sops, for-each-loop, stamp-point, uv-by-id, tiling, stone, texturing
 - **Summary:** The base fan/scale shape is built as an SDF circle in Cops, transformed/mirrored/inverted and multiplied to form the repeating tile motif. To instance it correctly, a **Grid of points** (scaled from center, rows/columns tied to grid size minus one) gets **row and column ID attributes** (credited to "Fenis" for this part) used to carve an X-style point pattern by filtering/removing specific...
 - **File:** tutorials/tiling-patterns-with-cops-and-sops.md
-
-
-### Custom patterns with COPS |  October Patreon Exclusive
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=bM7hzXqBq0Y
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/custom-patterns-with-cops-october-patreon-exclusive.md
 
 
 ### Procedural UV's In Houdini
@@ -2188,16 +2088,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** python, hou-module, ramp, cops, scripting, automation, quick-tip
 - **Summary:** The script grabs the currently selected node via `hou.selectedNodes()[0]`, accesses its ramp parameter (named "ramp" in the example, e.g. on a `mono_to_rgb`-style Cops node), and calls `.eval()` to get the live `hou.Ramp` object. Three lists are extracted from it: `ramp.basis()` (interpolation type per key), `ramp.keys()` (key positions), and `ramp.values()` (the actual colors) — these are the...
 - **File:** tutorials/resample-color-ramps-in-houdini.md
-
-
-### Procedural Shading with COPS and Karma - Preview
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=3bP9uKsn-9U
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-shading-with-cops-and-karma---preview.md
 
 
 ### UVW randomizer in karma
@@ -2470,16 +2360,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/houdini-tips-tileable-noises-cam-from-stage-tops-and-more.md
 
 
-### Husk Chair - Modeling and Simulating in Houdini - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=S5sKJaPU7C8
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/husk-chair---modeling-and-simulating-in-houdini---trailer.md
-
-
 ### Groups Patterns in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=FLWrmz8QPZQ
@@ -2640,16 +2520,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/procedural-problem-solving-in-houdini.md
 
 
-### Procedural Ice cream Swirl in Houdini
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=cvTnsmUNw3w
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-ice-cream-swirl-in-houdini.md
-
-
 ### Houdini Procedural Tips | Variants, Concentric Shapes and Step Orient
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ItIlLC6mlF4
@@ -2750,16 +2620,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/cleaning-fractured-geometry-in-houdini.md
 
 
-### Church Ruins - Houdini Procedural Modeling Course | Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=LwbK0Z_y77Y
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/church-ruins---houdini-procedural-modeling-course-trailer.md
-
-
 ### Quick Rock Cliff Setup in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=iSIXaa3rknU
@@ -2820,16 +2680,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/python-in-houdini-absolute-to-relative-paths.md
 
 
-### Procedural Modeling of a Stadium in Houdini - Part 1
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=0-oFYKvYucA
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-modeling-of-a-stadium-in-houdini---part-1.md
-
-
 ### Houdini tips and tricks #2
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rVduzdrKYZg
@@ -2838,26 +2688,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vex, karma, materials, shaders, mtlx, triplanar, cgi-integration, procedural, tips, intermediate
 - **Summary:** **Spherical HDRI projection:** starting from a simple Grid (fit to the floor) extruded into walls/other set pieces, a **UV Project** node set to **Polar** type creates a spherical projection matching an HDRI panorama; the projection is manually transformed (translate/rotate gizmos) to align with the reference image, and the HDRI is fed into a **MaterialX Uber/Lights** shader's emission color...
 - **File:** tutorials/houdini-tips-and-tricks-2.md
-
-
-### Custom triplanar for karma | Patreon
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=I3mf1AQCxc0
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/custom-triplanar-for-karma-patreon.md
-
-
-### Procedural shading with karma  | Patreon exclusive
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=CzgcCkVy50o
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-shading-with-karma-patreon-exclusive.md
 
 
 ### Opacity maps vs Geo in Karma
@@ -2930,16 +2760,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/quick-color-jitter-with-karma.md
 
 
-### Creating 3D Environments with Houdini and Arnold - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=v3irz0OHw48
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/creating-3d-environments-with-houdini-and-arnold---trailer.md
-
-
 ### Environment creation with Solaris in Houdini
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=2f_40GhnBXI
@@ -3000,26 +2820,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/all-the-procedural-modeling-tricks-in-one-video.md
 
 
-### Procedural Pineapple | Patreon June - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=JO0V0xTDh9w
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-pineapple-patreon-june---trailer.md
-
-
-### Chocolate Split  | Patreon January 25  | Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=tG8HSBblVk8
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/chocolate-split-patreon-january-25-trailer.md
-
-
 ### Procedural Animation with RBD
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=RbiH315adq8
@@ -3030,26 +2830,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/procedural-animation-with-rbd.md
 
 
-### Procedural Grapes  | Patreon September  | Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=IOC8hPPWrGY
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-grapes-patreon-september-trailer.md
-
-
-### Procedural Coffee Beans - Preview
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=CiFOWrTiaFM
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-coffee-beans---preview.md
-
-
 ### Procedural Cliff Techniques
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=YLrE1Zww_uc
@@ -3058,16 +2838,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vdb, voronoi-fracture, compile-block, triplanar, karma, materialx, solaris, concavity, curvature, scattering, environment, rocks
 - **Summary:** A box gets low-subdivision tubes copied on and merged for a rough boulder base, then remeshed to a grid-like voxelized look via Blur/Peak/Mountain and Boolean-intersected for surface damage, before VDB conversion. Cuts across the cliff are placed by laying a line along it, resampling to 5 segments, jittering interior points (not endpoints), copying grids at each point (offset by the Metaimport...
 - **File:** tutorials/procedural-cliff-techniques.md
-
-
-### Procedural Cookie - Model, Simulate and Render - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=g6HyohwVR1s
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-cookie---model-simulate-and-render---trailer.md
 
 
 ### Environment Technical tips and tricks
@@ -3160,16 +2930,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/add-details-with-regions-from-image-labs-tool.md
 
 
-### Roman Bridge - Procedural Asset Creation - Trailer
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=G4Fb8jKQ3WM
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/roman-bridge---procedural-asset-creation---trailer.md
-
-
 ### Rock formations with heightfields
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rEn0ochILjU
@@ -3178,16 +2938,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** heightfields, terrain, triplanar, displacement, ambient-occlusion, texturing, rocks, environment
 - **Summary:** Starting from a hand-drawn Heightfield mask, a Heightfield Layer mix (set to Maximum) blends two versions of the mask (one blurred) to build up the base silhouette. A Voronoi-based random-height pattern (via a random function seeded per point) adds per-point height variation, scaled and masked. Mask Expand grows/blocks out squarish base shapes, followed by blurring and mask-clearing between...
 - **File:** tutorials/rock-formations-with-heightfields.md
-
-
-### Procedural Rock Surfaces | Patreon Exclusive
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=TnujEWlFdfU
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/procedural-rock-surfaces-patreon-exclusive.md
 
 
 ### Ruins randomized brick wall
@@ -3220,16 +2970,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/procedural-tips-heightfields-and-vdb.md
 
 
-### Prodecural Cliffs with heighfields vdb and materialX
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=U1c1-dbgUAk
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/prodecural-cliffs-with-heighfields-vdb-and-materialx.md
-
-
 ### Procedural VDB Cookies
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=WKs4KHfHpyA
@@ -3238,16 +2978,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** vdb, volumes, vex, noise, cops, food, karma, solaris, procedural-modeling
 - **Summary:** Starting from a clipped, flattened sphere closed with Polyfill and beveled/subdivided for a smooth VDB input, the cookie shape is converted to a VDB and detailed inside a Volume VOP with four layered noises of increasing fineness. A key trick is exporting the relative-bounding-box Y-component as a visualizable mask (via a Color node feeding CD into VDB from Polygons, then Attribute from Volume...
 - **File:** tutorials/procedural-vdb-cookies.md
-
-
-### Patreon Exclusive  | Add side details to cliffs | Preview
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=qzs3LnMeYEE
-- **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
-- **File:** tutorials/patreon-exclusive-add-side-details-to-cliffs-preview.md
 
 
 ### UV Randomizer - Texturing multiple objects
@@ -3408,6 +3138,136 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** disintegration, particle-simulation, distance-along-geometry, smooth-function, materialx, karma-xpu, quaternion-blend, the-point-and-prim
 - **Summary:** Framed as a breakdown rather than a formal tutorial, this video shows how combining simple attribute tricks with particle simulation avoids the long sim times of more literal destruction approaches. The mask driving the whole effect reuses the channel's own toolkit: **Distance Along Geometry** from a handful of manually-selected art-directed points produces a `dist` attribute, which is...
 - **File:** tutorials/techniques-for-fast-disintegration-fx-in-houdini-a-particle-attribute-approach.md
+
+
+### Houdini 22 | How to Create Pyro in COPs | Configure Pyro Recipes
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=xKrHwJRo-nI
+- **Author:** Houdini (official SideFX)
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, pyro, volumes, simulation, compositing, intermediate, houdini-22
+- **Summary:** Official walkthrough of the H22 COP Pyro Recipes (Billowy Smoke + Fire), built on the COPs Pyro Block 2.0 where all solver controls (bounds, collisions, sourcing, fields, forces) live on the Block End node — no solvers inside the loop. Covers Pyro Configure (voxel size → reference VDB), implicit-surface Pyro Source Shape emitters with animated distortion, rasterizing 3D volumes to 2D via Rasterize Volume + Pyro Light Ambient/Light Scatter through COPs' built-in camera operators (frustum far plane = image plane), and 3D preview via VDB Visualize colored with Mono to RGB on temperature (black-to-orange ramp) wired through Pyro Light Ambient into CD/emit CD. Demo values: density scale 15, emission scale 45.
+- **File:** tutorials/houdini-22-how-to-create-pyro-in-cops-configure-pyro-recipes.md
+
+
+### H22 - Gaussian Splats and Machine Learning | Jakob Ringler | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=LBkowc4gfjs
+- **Author:** Houdini (official SideFX — Jakob Ringler, TD)
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, top, pdg, compositing, rendering, karma, solaris, usd, advanced, houdini-22
+- **Summary:** HIVE talk on H22's three ML pillars. (1) Neural Cellular Automata in COPs: per-cell mini-CNNs grow trained textures (NCA Core + NCA Decode split architecture, up-res ≤8x, always tileable); ML Train NCA recipe (128×128 training, features ≤10–15 px); inference controls — update masks, kernel rotation, perception scaling, COPs injected into the solve loop, self-healing regrowth; seamless on meshes via new adjacency rasterization; latent-space blending of two NCAs trained with alternating targets. (2) New neural COPs: Neural Layer to Mask (Meta SAM 2 — click/bbox prompts, confidence + embeddings outputs enable iterative self-refinement) and Neural Layer to Depth (Microsoft MoGe-2 — depth/normal/position + camera from one image; single-image PBR texturing; GSplat point output). (3) Native Gaussian-splat training: LOPs recipe + ML Process/Train GSplats TOP nodes optimize point clouds from Karma EXRs (camera metadata free in EXRs) or COLMAP photo datasets; trains extra AOVs (normal/albedo) enabling COPs relighting via Rasterize GSplats; live browser training viewer; PLY/USD export; 4D via per-frame velocity-advected checkpoints.
+- **File:** tutorials/h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive.md
+
+
+### Houdini 22 | How to Destroy Metal | 1 | Tearing
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=x-N5I4XS7Q4
+- **Author:** Houdini (official SideFX)
+- **Houdini Version:** Houdini 22
+- **Tags:** rbd, dop, sop, simulation, intermediate, houdini-22
+- **Summary:** Part 1 of the official H22 metal-destruction series: tearing sheet metal with RBD Material Fracture in Metal mode (glue + soft bending constraints; edge detail via detail size / noise height / element size), RBD Configure with a bounding-box Active region (pin top/sides) and Metal/Aluminum physical density, RBD Bullet Solver with an animated collider + ground plane and a lowered constraint detach distance (~0.1), then the new RBD Deform Pieces node with Boundary Connection switched from Cluster Attribute (dent-only) to Constraints (true tearing). Stabilizes springy metal via dampening ratio ×4000 + reduced angular dampening/stiffness, and shows the thick-wall variant: PolyExtrude (−0.01, output back) + Reverse/Normal → Material Fracture set to Solid with fewer scatter points and glue 100.
+- **File:** tutorials/houdini-22-how-to-destroy-metal-1-tearing.md
+
+
+### Houdini 22 | How to Destroy Metal | 2 | Denting
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=R4YVz0FcCOw
+- **Author:** Houdini (official SideFX)
+- **Houdini Version:** Houdini 22
+- **Tags:** rbd, dop, sop, simulation, intermediate, houdini-22
+- **Summary:** Part 2 of the official H22 metal-destruction series: denting a wall with cannon-fired steel balls. Key idea — Secondary Fracture in Proxy Only mode fractures only the collision proxy so large render fragments bend with interior detail, while Refine Geometry: Bricker subdivides the render mesh to support the deformation. Covers staggered RBD emission ($F%10 delete + v×alligator-noise cannon, emit attribute 1/0 via RBD Configure, RBD Pack→Merge→Unpack→Bullet Solver with Emit RBDs), Steel vs Aluminum physical presets, restricting constraint deletion to the primary fracture ID (metal_fracture) so tears follow primary seams while secondary pieces only bend, and RBD Deform Pieces boundary connection via the parentpiece cluster attribute.
+- **File:** tutorials/houdini-22-how-to-destroy-metal-2-denting.md
+
+
+### Messing with the Edit node in Houdini 22
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Wkj1DMn-X2w
+- **Author:** cgside
+- **Houdini Version:** Houdini 22
+- **Tags:** lop, solaris, usd, rbd, sop, procedural, intermediate, advanced, houdini-22
+- **Summary:** Fixing the H22 Edit node's physics-mode collisions (LOPs): default sim geometry is convex hulls, so concave shapes fail — author proxy-purpose collision meshes via Convex Decomposition (Max Concavity tuning), Voronoi-fracture + per-piece decomposition to preserve holes, and ramp-driven relbbox clustering (chramp → rint cluster ids → per-cluster Convex Hull) for segmented boxes; assign render/proxy purposes with Configure Primitive, build variants in a component graph, and work around tiny scene scale with a root USD Transform scale + inverse.
+- **File:** tutorials/messing-with-the-edit-node-in-houdini-22.md
+
+
+### Houdini 22 | How to Create Terrains in COPs | Utilize Height Fields
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=5v9lmJcIrIw
+- **Author:** Houdini
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, procedural, volumes, attributes, intermediate, houdini-22
+- **Summary:** Official SideFX walkthrough of building terrain in Copernicus: the HeightField COP Network preset (border clamp, ZX-plane canvas, km-scale Uniform Scale), a height-typed Layer deforming a live grid, and the HF stack — HF Noise (Hybrid Terrain fractal), HF Terrace (Compute Range, Random Step 1, seed picking), HF Erode (keeps terraced ledges), HF Strata (Amplitude 10, Element ~340, Strata ~15) — then HF Visualize colored via Mono to RGB with the new terrain ramp presets, plus an Add + Fractal Noise before the color mapping so color stops tracking height 1:1.
+- **File:** tutorials/houdini-22-how-to-create-terrains-in-cops-utilize-height-fields.md
+
+
+### H22 - KineFX Rigging and Procedural Animation | Henry Dean | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=0YNaNZkjwoM
+- **Author:** Houdini
+- **Houdini Version:** Houdini 22
+- **Tags:** rigging, animation, procedural, attributes, sop, advanced, houdini-22
+- **Summary:** HIVE talk: rigging Dany Bittel's G-splat centipede in H22 — Bake GSplats to a point cloud (Bone Deform/Transform just work; `scale` is deliberately 3 floats, cast to vector only while scaling), kit-bash a clean rest pose from segments via Copy to Points, Capture Proximity skinning (no topology), a wheel-phase metachronal-wave gait driven by distance traveled, Spline IK body + rig-built antenna joints reused upstream, and procedural animation injected into the animate state via parameter dictionary → MotionClip → Channel Prims from MotionClip → APEX animation layers. H22's pcapdata removal called out as a major QoL win.
+- **File:** tutorials/h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive.md
+
+
+### H22 - Gaussian Splats | Peter Sanitra | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=HUTd8BHNHKI
+- **Author:** Houdini
+- **Houdini Version:** Houdini 22
+- **Tags:** solaris, usd, cop, top, pdg, volumes, karma, rendering, advanced, houdini-22
+- **Summary:** Full H22 synthetic G-splat pipeline (Peter Sanitra, NVIDIA): single Solaris recipe → auto camera rigs (SOP cameras + Copy to Points; optimal-placement algorithm for interiors), OpenEXR ground truth from any Hydra renderer, TOPs training (Default prune-and-grow vs Monte Carlo fixed-count; stop at the ~30–40k-iteration loss plateau), AOV feature training (normal/albedo/subsurface) enabling COPs GSplat Rasterize relighting, PLY/USD export via the new Pixar splat schema. Volumes 10× smaller than VDB with HDR intact; fur/whisker capture; deform-static-splat animation; failure modes = camera coverage, glass/mirrors, HDR clamping, VRAM, no temporal training.
+- **File:** tutorials/h22---gaussian-splats-peter-sanitra-houdini-22-hive.md
+
+
+### H22 - Copernicus and Time Shift | Jakub Spacek | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=EUjZ7ObaN1Y
+- **Author:** Houdini
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, procedural, simulation, solaris, karma, advanced, houdini-22
+- **Summary:** HIVE talk stress-testing H22's adjacency nodes on a badly-UV'd statue scan: Geometry to Adjacency cables (Cable Unpack, pass-through green inputs skip per-frame recompute), Adjacency Distort bridging UV islands, Adjacency Attribute Sample fixing noise mapping, a block-solver paint-spread (Slope Direction + distorted noise), leading edge via the new Time Shift node ($F−10 subtract), seam-free blur-in-block (small radius × ~500 iterations), masked Turing pattern + Ripple solver layers, hue/sat remapping, Solaris/Karma lookdev with Material Linker. Practical notes: fix overlapping UV islands (Labs node), bake 4K COPs output, X toggles flat/3D preview.
+- **File:** tutorials/h22---copernicus-and-time-shift-jakub-spacek-houdini-22-hive.md
+
+
+### H22 - Animation | Motion Mixer | Sasa Budimir | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=VaUleTuvWgA
+- **Author:** Houdini
+- **Houdini Version:** Houdini 22
+- **Tags:** animation, rigging, rbd, simulation, solaris, intermediate, houdini-22
+- **Summary:** HIVE talk: "minimum viable animation" knight-puppet workflow — tiny all-FK clip library planned from an animatic, Motion Mixer choreography (drag=loop, Shift+drag=retime, blend overlaps, search filter, root/cycle controls), additive noise tracks with keyframed weights, H22 nested clips for sliding noise independently of top-level keys, and a ragdoll pass supplying all secondary motion (fracture/shrinkwrap collision shapes; Configure Joint Limits auto-extracted from keyframed limb-swing poses). Cardboard set + Solaris/Karma lookdev, Copernicus compositing.
+- **File:** tutorials/h22---animation-motion-mixer-sasa-budimir-houdini-22-hive.md
+
+
+### H22 - Modeling & Solaris | Fianna Wong | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=CFr-1PANhsk
+- **Author:** Houdini
+- **Houdini Version:** Houdini 22
+- **Tags:** modelling, sop, lop, solaris, usd, cop, karma, instancing, intermediate, houdini-22
+- **Summary:** HIVE talk (SideFX): SOPs-first USD bike-shop assembly — image-to-3D asset sourcing cleaned by the new rectangular Quad Remesh (always precede with Remesh; try both modes), render-time Scatter Instances (prototypes/weights, Karma-only visibility, relax iterations for interpenetration), implicit-surface booleans (resolution-independent quad output), sculpt QoL (G floating menu, lazy-mouse visualizer), Texture Material Library hosting COP nodes directly, and the new USD Create Component + USD Parent Geometry SOPs that author a tidy USD hierarchy without leaving SOPs. PolyHaven/GLTF tips included.
+- **File:** tutorials/h22---modeling-solaris-fianna-wong-houdini-22-hive.md
+
+
+### H22 - KineFX Rigging and Animation | Max Rose | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=2jZjaEzLdco
+- **Author:** Houdini
+- **Houdini Version:** Houdini 22
+- **Tags:** rigging, animation, rbd, simulation, procedural, intermediate, advanced, houdini-22
+- **Summary:** HIVE talk (SideFX): jack-in-the-box driven by ~2 keyframes — spiral-spring rig via centerline trick + group-based Parent Joints, parent rigs in KineFX before entering APEX, Pack Character + Spline auto-rig on a tagged coil, Configure Ragdoll recipe with hand-simplified proxy geometry, layer-per-limb weights to stiffen ragdoll, SDK component fired by the crank control (sample rotate-X into min/max), H22 spring secondary motion baked to layers and weight-animated, second clip on one Scene Animate node blended in Motion Mixer. Q&A covers the APEX-script MCP server ("vibe-rigging", token-light).
+- **File:** tutorials/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive.md
+
+
+### H22 - Baking with Copernicus | Alex Hamer | Houdini 22 HIVE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=orN8H41hNDE
+- **Author:** Houdini
+- **Houdini Version:** Houdini 22
+- **Tags:** cop, rendering, procedural, uv, modelling, intermediate, houdini-22
+- **Summary:** HIVE talk (Copernicus team): H22's new Bake Pre-Process node (SOP+COP) makes cage-mesh authoring visible and interactive — orange cage in a viewport state, High Res Intersections highlighting (raise offset until no red), cage softening split at UV seams/faces/edge groups to stop skewed bakes, attribute-scaled offsets, inward ray-end mesh to exclude stray geometry — feeding Bake Geometry Textures (surface-normal / cage / single-mesh tracing, Match Pieces by Name for per-part bakes). Demo: fan asset via bake-setup recipe, live multi-UDIM preview material, COP materials with curvature/occlusion-driven scratches, exported to Unreal.
+- **File:** tutorials/h22---baking-with-copernicus-alex-hamer-houdini-22-hive.md
 
 ---
 
