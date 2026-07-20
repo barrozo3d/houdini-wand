@@ -66,6 +66,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Explains and demonstrates H20's new ONNX Inference SOP (first official ML node, inference-only, no Python/training needed) via 3 worked examples: MNIST digit classification (direct point-attribute mapping), Mosaic style transfer (requires restructuring `Cd` into channel-planar R/G/B blocks via 3 Point Wrangles since ONNX expects all-red-then-all-green-then-all-blue, not interleaved RGB), and MiDaS depth estimation (single float output used to displace geometry into a depth map). Covers Setup Shapes from Model, Labs Attribute Normalize Float for un-normalized ML output, and discusses current limits (can't yet replace full multi-stage pipelines like Stable Diffusion, only their neural-net sub-stages). Fills the "ML SOPs / ONNX" library gap.
 - **File:** tutorials/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20.md
 
+
+### New in Houdini 22: Training Gaussian Splats from Infrared Photos
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=yGCjD0_TIpw
+- **Author:** Entagma
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/new-in-houdini-22-training-gaussian-splats-from-infrared-photos.md
+
 ---
 
 ## How to Read This Index
