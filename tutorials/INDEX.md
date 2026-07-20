@@ -46,6 +46,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-city-1-building-generator-sidefx.md
 
+
+### Getting Started with Houdini Engine for Unity | SideFX
+- **Source:** Article
+- **URL:** https://www.sidefx.com/tutorials/getting-started-with-houdini-engine-for-unity/
+- **Author:** www.sidefx.com
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/getting-started-with-houdini-engine-for-unity-sidefx.md
+
 ---
 
 ## How to Read This Index
