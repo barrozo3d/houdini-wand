@@ -50,10 +50,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ### Getting Started with Houdini Engine for Unity | SideFX
 - **Source:** Article
 - **URL:** https://www.sidefx.com/tutorials/getting-started-with-houdini-engine-for-unity/
-- **Author:** www.sidefx.com
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Simon Verstraete (SideFX)
+- **Houdini Version:** Houdini 19
+- **Tags:** hda, unity, houdini-engine, procedural, python, beginner, houdini-19
+- **Summary:** Recorded Unity Live Session introducing the Houdini Engine for Unity plug-in: installing the plug-in, importing an HDA as a native Unity asset with live-editable exposed parameters (re-cooks in-editor without Houdini open), and authoring your own HDAs designed for Unity consumption. Text-only ingest (no accessible transcript/video) — session-scope summary rather than a node-by-node walkthrough. Fills the "Houdini Engine → Unity" gap (Unreal side already has ~8 tutorials + a recipe; Unity had zero).
 - **File:** tutorials/getting-started-with-houdini-engine-for-unity-sidefx.md
 
 
