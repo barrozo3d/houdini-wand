@@ -20,10 +20,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 ### Create Cinematic Oceans FAST | Realistic Shading & Render with Karma XPU | SideFX
 - **Source:** Article
 - **URL:** https://www.sidefx.com/tutorials/create-cinematic-oceans-fast-in-houdini-realistic-shading-render-with-karma-xpu/
-- **Author:** www.sidefx.com
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Author:** Mario Leone (NodeFlow)
+- **Houdini Version:** Houdini 20.5
+- **Tags:** ocean, whitewater, solaris, lop, karma, rendering, materialx, procedural, beginner, houdini-20
+- **Summary:** Builds a spectral (non-simulated) ocean via Ocean Spectrum + Ocean Evaluate in OBJ, fixes visible tiling with a wave-instancing trick (sparse point cloud feeding the Wave Instancing tab), caches to disk, then assembles in Solaris: floor + Quick Surface Material, camera/Karma XPU render settings set up before the Houdini Ocean Procedural LOP (required for its frustum-based adaptive subdivision), Karma Physical Sky lighting, and a hand-tuned wave/foam Diffuse-Specular-Transmission shading pass. Fills the "Ocean spectrum / whitewater FX" library gap.
 - **File:** tutorials/create-cinematic-oceans-fast-realistic-shading-render-with-karma-xpu-sidefx.md
 
 
