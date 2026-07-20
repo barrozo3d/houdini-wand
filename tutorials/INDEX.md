@@ -16,6 +16,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/intro-to-crowds-sidefx.md
 
+
+### Create Cinematic Oceans FAST | Realistic Shading & Render with Karma XPU | SideFX
+- **Source:** Article
+- **URL:** https://www.sidefx.com/tutorials/create-cinematic-oceans-fast-in-houdini-realistic-shading-render-with-karma-xpu/
+- **Author:** www.sidefx.com
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/create-cinematic-oceans-fast-realistic-shading-render-with-karma-xpu-sidefx.md
+
 ---
 
 ## How to Read This Index
