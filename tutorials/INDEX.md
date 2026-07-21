@@ -81,9 +81,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fhgP_W-OvUE
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H21/H22 (referenced)
+- **Tags:** apex, rigging, animation, kinefx, python, procedural, hda, advanced, expert, houdini-21, houdini-22
+- **Summary:** Conference talk (Paris HUG 2026) making the production case for APEX: caching a full multi-character ragdoll animation scene as a ~745x-smaller-than-Alembic APEX cache; scripting auto-rig components with Apex Script vs. hand-wiring; visual Auto-Rig Builder drag-and-drop; procedural skinning via convex-hull capture transfer; custom CFX tools for cloth art-direction and proxy animation baking; bridging VEX/SOP/OpenCL into APEX graphs; ONNX-based wrinkle ML. Advanced/Expert; not a step-by-step build tutorial.
 - **File:** tutorials/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari.md
 
 ---

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=fhgP_W-OvUE
 author: Houdini
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H21/H22 (referenced)"
+tags: [apex, rigging, animation, kinefx, python, procedural, hda, advanced, expert, houdini-21, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # APEX in Houdini: Evolving Animation Workflows for Production | Mattéo Martinez | Paris HUG 2026
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Introduction & Demystifying Apex in Production Workflows [0:00]
@@ -624,30 +620,59 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [2:07] tutorials/frames/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari/frame_000.jpg
+- [9:01] tutorials/frames/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari/frame_001.jpg
+- [9:44] tutorials/frames/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari/frame_002.jpg
+- [10:36] tutorials/frames/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari/frame_003.jpg
+- [13:11] tutorials/frames/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari/frame_004.jpg
+- [14:44] tutorials/frames/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari/frame_005.jpg
+- [17:14] tutorials/frames/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari/frame_006.jpg
+- [27:13] tutorials/frames/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Production-oriented APEX (Animation & Rigging framework) and KineFX workflows: caching full animation scenes as lightweight APEX graphs instead of Alembic, scripting auto-rig components with Apex Script, and building procedural CFX rigging tools (proxy animation, cloth-collision skeletons, procedural skinning via convex hulls).
 
 ### Summary
-[PENDING EXTRACTION]
+Conference talk (Paris HUG 2026) by Mattéo Martinez, a freelance Houdini generalist / CFX tech lead at Brand Studio Paris, arguing APEX is production-ready and under-appreciated. He demonstrates: (1) caching an entire multi-character ragdoll scene (animation layers, keys, ragdoll sim params, constraints) as a compact APEX cache — 35MB vs. ~27.1GB for the equivalent Alembic export (~745x smaller) with comparable or faster read/eval time; (2) building auto-rig components by hand vs. scripting them with Apex Script (a Python-derived Apex DSL) to connect hundreds of controller nodes in a loop, then applying components visually via the Auto-Rig Builder (drag-and-drop onto a skeleton, similar to Unreal Engine's control rig component workflow); (3) procedural skinning of a hard-to-capture, high-resolution-clustered neck model by capturing a remeshed convex hull instead of the dense geometry, smoothing weights on the hull, then transferring them back; (4) a custom CFX toolset for art-directing cloth — drawing an interactive skeleton with a user state, auto-interpreting floating joints as an added deformation layer, colliding with a wrinkle-deformer component, and combining with Auto-Rig Builder components (e.g. wave deform); (5) a "CFX Animate Proxy" tool that reads a rough animator-driven proxy mesh (rest vs. deformed position), builds a traveling rig from the deformation, bakes it to an animation layer, and lets the artist add ragdoll/Full Body IK on top before simulation; (6) a character-merge/decombine rig tool built from Rename + Rig Pose + Auto-Rig Fuse graph nodes; (7) bridging SOP/VEX/OpenCL-built constraint networks (credited to a VFXLFX tutorial) into a compiled APEX graph so a paintbrush deformer collides/deforms in real time; and (8) a machine-learning (ONNX) blend-shape wrinkle system that learns unseen poses from a trained wrinkle panel. Talk closes with historical context (Houdini's "synthetic approach" borrowing proven animation UX from Maya/MotionBuilder/Lightwave/Animbot — Motion Mixer, animation sliders, retimable flipbooks, dynamic path tool) and an audience Q&A about adoption barriers (tooling maturity, team roles, training Maya studios into Apex).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Ragdoll-simulate characters directly in the animation scene; the resulting cache preserves animation layers, keys, ragdoll sim parameters, and constraints — read it back with an "animation" access node to reproduce the animators' exact result.
+2. Compare cache weight/eval time: an APEX cache of a 240-frame, 6-character ragdoll scene with subdivided geometry was ~35MB vs. ~27.1GB (2710GB stated as "27 and 100 gigabytes"/~745x) for Alembic, with equal-or-faster read time; importing a single character from the cache (rather than all six) is faster still.
+3. Build a per-character "registry": each character carries identifying metadata (name, version, path) into a folder-based cache structure; retrieval extracts the registry, reads it, and loops over registry instances to reapply keys/layers/ragdoll constraints/custom data — avoids long Alembic path lookups.
+4. Build an FK auto-rig manually first (one controller node per skeleton point, parented in a graph) to understand the underlying operation, then replace hand-wiring with **Apex Script** (Python-flavored Apex scripting) — e.g. `graph.addNode(name=..., callback='skel::SetPointTransforms')`, `PromoteInput`/`PromoteOutput`, `apex.guide.controlsFromGuides(graph=graph, geo=skel_geo, group='@name=*')`, then loop `graph.findAndConnectInput(dstnode, dstname='transforms', dataalias=node_name, srcnode=node_name, srcname='xform')` to wire hundreds of controllers at once.
+5. Apply a saved auto-rig component visually with the **Auto-Rig Builder**: drag a component from the Component Catalog panel onto a skeleton selection in the viewport (e.g. a joint-sector/finger auto-rig) — compared explicitly to Unreal Engine's Control Rig component workflow.
+6. Prototype manually with a **Fuse** rig component for quick IK setups, then mirror/remap the same fuse graph to other locations (e.g. arms) once validated.
+7. Procedural skinning trick for hard geometry: build a convex hull of the problem region, remesh it, capture/skin the hull (smooth weights are homogeneous on the simplified hull), then transfer the smoothed capture weights back onto the original high-resolution geometry.
+8. CFX cloth-rig tool: use a custom user state to draw points and connect them into a skeleton; an interpreter converts the drawn network into an oriented skeleton, snaps "floating" joints to the surface as an extra deformation layer, and integrates a wrinkle-deformer component for skin collision; combine with Auto-Rig Builder components (e.g. a wave-deform component) for interactive art direction before simulation.
+9. CFX Animate Proxy tool: feed it a proxy mesh in rest position and its animator-deformed position; it derives a traveling rig, bakes the motion to an animation layer, and lets the artist layer in native APEX tools (Full Body IK, ragdoll with adjustable rigidity along the chain) before handing off to simulation.
+10. Bridge non-Apex environments into Apex: build constraint/collision logic with VEX + SOP + OpenCL (VOPs/SOP2), compile that node graph into an Apex-interpretable graph, then use it inside the APEX network for real-time deform/collision (e.g. a paintbrush deformer) — also mentions the native Recal Deformer tool as an alternative.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **APEX graph nodes/concepts**: Animation access/cache node, animation layers, Auto-Rig Builder (Component Catalog), Fuse rig component, Auto-Rig Fuse graph, Rig Pose node, Rename node, ragdoll tool/pose (native APEX tool), Full Body IK tool, Wrinkle Deformer component, Recal Deformer, Motion Mixer, dynamic path tool, character picker (upcoming in H22), Animation Catalog.
+- **KineFX**: skeleton SOPs, Capture nodes/capture weights, convex-hull-based procedural skinning.
+- **Apex Script (Python-derived)** snippet shown on screen: `graph.addNode(name='setSkelTransforms', callback='skel::SetPointTransforms')`; `settransforms_node.geo_in.PromoteInput('Base.skel')`; `settransforms_node.geo_out.PromoteOutput('Base.skel')`; `character, skel_geo = findCharacterElement(character)`; `graph, skel_geo, nodeids = apex.guide.controlsFromGuides(graph=graph, geo=skel_geo, group='@name=*')`; loop over `nodeids` calling `graph.findAndConnectInput(dstnode=settransforms_node, dstname='transforms', dataalias=node_name, srcnode=node_name, srcname='xform')`.
+- **Cross-context bridge**: VEX + SOP constraints deformed via OpenCL/SOP2, compiled into an Apex-readable graph.
+- **ML**: ONNX-based model trained on blend-shape wrinkle poses to infer unseen poses (referenced generally; no ONNX SOP parameters shown on screen).
+- No specific numeric parameter values are shown on-screen beyond the code snippet above (mostly a high-level graph/UI talk, not a hands-on step-by-step build).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — assumes existing familiarity with APEX, KineFX, and rigging/CFX pipeline concepts; framed as a production case-study talk rather than a beginner tutorial.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified precisely; speaker references the then-upcoming "Houdini 22" clip (character picker icon) as future/in-progress, implying the demoed work was done on Houdini 21 with an eye toward Houdini 22 features.
 
 ### Tags
-[PENDING EXTRACTION]
+apex, rigging, animation, kinefx, python, procedural, hda, advanced, expert, houdini-21, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md` — "Animate Gaussian Splats with Houdini" (SOP Cemetery, H21); shares tags: kinefx, apex, rigging, animation.
+- `tutorials/how-to-make-a-short-film-in-houdini-magnus-møller-jesper-andkjær.md` — "How to make a Short Film in Houdini" (Studio Tumblehead HIVE talk, H20/20.5); shares tags: kinefx, apex, rigging, animation — another production-pipeline conference talk covering APEX in a real studio context.
+- `tutorials/muscles-and-tissue.md` — Muscle & Tissue system; shares tags: rigging, animation.
