@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=m2c8V94OIX8
 author: FaddyVFX
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20.5"
+tags: [dop, simulation, volumes, attributes, procedural, intermediate, houdini-20]
+extraction_status: complete
 frames_dir: tutorials/frames/new-houdini-205-feature-mastering-the-mpm-snow-solver/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # New Houdini 20.5 Feature: Mastering the MPM Snow Solver! ❄️
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py new-houdini-205-feature-mastering-the-mpm-snow-solver <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Introduction to MPM snow [0:00]
@@ -242,30 +238,53 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/new-houdini-205-feature-mastering-the-mpm-snow-solver/frame_000.jpg
+- [1:30] tutorials/frames/new-houdini-205-feature-mastering-the-mpm-snow-solver/frame_001.jpg
+- [2:25] tutorials/frames/new-houdini-205-feature-mastering-the-mpm-snow-solver/frame_002.jpg
+- [3:45] tutorials/frames/new-houdini-205-feature-mastering-the-mpm-snow-solver/frame_003.jpg
+- [5:00] tutorials/frames/new-houdini-205-feature-mastering-the-mpm-snow-solver/frame_004.jpg
+- [6:20] tutorials/frames/new-houdini-205-feature-mastering-the-mpm-snow-solver/frame_005.jpg
+- [7:30] tutorials/frames/new-houdini-205-feature-mastering-the-mpm-snow-solver/frame_006.jpg
+- [8:00] tutorials/frames/new-houdini-205-feature-mastering-the-mpm-snow-solver/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Quick practical rundown of the MPM Source "Chunky" (snow) constitutive-model parameters in Houdini 20.5, demonstrated by dropping a rounded cylinder ("snow log") of MPM points onto a static collider and comparing parameter sweeps.
 
 ### Summary
-[PENDING EXTRACTION]
+Short (8m46s) companion/practical video by FaddyVFX (Patreon creator) that complements the official H20.5 MPM Masterclass by walking through each Chunky-preset parameter one at a time on a simple drop-test scene: a cylindrical blob of snow-preset MPM particles falls onto a static collider plane. An on-screen overlay tracks the live parameter block (Density, Critical Compression, Critical Stretch, Compression Hardening, Stiffness, Volume Preserve) as the creator changes one value at a time and re-simulates, visually comparing results (color-coded particles, e.g. red vs. cyan/teal) to show how each setting changes whether the snow log holds together, crumbles, or spreads. Confirms via direct demonstration that increasing Stiffness drastically increases solve time/substep count (OpenCL GPU-bound), and that Volume Preservation trades off between the snow keeping its compacted size vs. shrinking/spreading further.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a minimal MPM scene: a rounded-cylinder "log" of geometry converted to MPM particles via an MPM Source node using the **Chunky (snow)** material preset, dropped onto a static MPM Collider plane.
+2. Baseline preset values shown on-screen: Density 4000, Critical Compression 0.0245, Critical Stretch 0.0265, Compression Hardening 10, Stiffness (E) 1.0 * 100,000, Volume Preserve 0.079.
+3. Sweep **Density** — controls particle mass; adjusted first to establish baseline behavior.
+4. Sweep **Critical Compression / Critical Stretch** — the elastic-to-plastic deformation thresholds; lower values make the material break/deform into plastic state sooner (log crumbles into scattered red particles more readily at low thresholds).
+5. Sweep **Compression Hardening** — stiffens the material further as it compresses; higher values keep the packed core intact while edges still break away.
+6. Sweep **Stiffness (E)** — demonstrated live: cranking stiffness all the way up makes the sim drastically slower because the solver needs far more OpenCL substeps to remain stable (confirmed by watching the fps/substep counter drop); creator backs the value off because "it's way too slow," noting this runs on the GPU's OpenCL and needs a strong GPU. Settled around stiffness "100" (i.e. a much lower multiplier) at ~31 million points to keep it interactive.
+7. Sweep **Volume Preservation** — higher values keep the snow log's volume/size intact even as it deforms/compacts; lower values let it shrink and compress more freely.
+8. Conclusion: by tweaking these Chunky-preset parameters you can range from light fluffy snow to dense, chunky snow suitable for an avalanche sim or a snowball fight.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Nodes:** MPM Source (Chunky/snow material preset), MPM Collider (static), implied MPM Container/Solver (not detailed on screen — this video isolates the MPM Source parameters only).
+- **Parameters demonstrated (with baseline values):** Density = 4000; Critical Compression = 0.0245; Critical Stretch = 0.0265; Compression Hardening = 10; Stiffness (E) = 1.0 × 100,000 (reduced to ~100 in the stiffness demo to keep the sim interactive at ~31M points); Volume Preserve = 0.079.
+- Color visualization on particles (red vs. cyan/teal) used throughout to show which particles remain "packed/at rest" vs. "broken/plastic."
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — a focused parameter-tuning walkthrough assuming the viewer already knows the MPM node basics (best paired with the full H20.5 MPM Masterclass for context on what each attribute means theoretically).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 20.5 (MPM solver, Chunky/snow constitutive model).
 
 ### Tags
-[PENDING EXTRACTION]
+dop, simulation, volumes, attributes, procedural, intermediate, houdini-20
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/mpm-h205-masterclass.md` — the full official SideFX MPM masterclass this video's parameters (critical compression/stretch, compression hardening, stiffness, volume preservation) directly complement; shares tags: dop, simulation, volumes, attributes, procedural, houdini-20.
+- `tutorials/houdini-21-tutorial---mpm-snowball.md` — another single-technique MPM snow tutorial; shares tags: dop, simulation.
