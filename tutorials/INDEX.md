@@ -155,7 +155,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** apex, kinefx, animation, rigging, beginner, houdini-20
 - **Summary:** Official SideFX beginner animator lesson (16m24s) posing/keyframing the "Electra" character via its embedded APEX rig using Apex Scene Animate (contrasted with old FK-only KineFX Rig Pose), covering Selection Sets (grouping controls, Ctrl+Shift group-rotation around a primary/COG control, importing sets shared by other animators), adding a second character via Apex Character + Apex Scene Add Character, keyframing both together across frames 10/75, and extracting the result with Apex Scene Invoke.
 - **File:** tutorials/houdini-20-how-to-pose-and-animate-electra.md
-- **File:** tutorials/houdini-20-how-to-pose-and-animate-electra.md
 
 ---
 
