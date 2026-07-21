@@ -54,6 +54,70 @@ directory, then run the mandatory extraction pass (see SKILL.md Mode 3).
   https://www.youtube.com/watch?v=aCAatiY53s8
   Ingested as: `tutorials/free-houdini-tutorial-machine-learning-with-onnx-in-houdini-20.md`
 
+## Completed (ingested 2026-07-20, session 2 — APEX/MPM/rigging backlog)
+
+- [x] **APEX production workflows** — the kinefx-apex.md reference existed but
+  no ingested tutorial showed APEX used in a real production pipeline context.
+  Source: Paris HUG 2026 — "APEX in Houdini: Evolving Animation Workflows for
+  Production" (Mattéo Martinez)
+  https://www.youtube.com/watch?v=fhgP_W-OvUE
+  Ingested as: `tutorials/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari.md`
+
+- [x] **APEX rigging fundamentals (Components/Subgraphs)** — no tutorial
+  covered authoring APEX rig Components/Subgraphs from scratch.
+  Source: SideFX official — "APEX Rigging | H20 MASTERCLASS" (William Harley)
+  https://www.youtube.com/watch?v=-0KbPtoP5MU
+  Ingested as: `tutorials/apex-rigging-h20-masterclass.md`
+
+- [x] **MPM solver (H20.5 introduction)** — MPM had zero dedicated tutorial
+  coverage despite being a major H20.5 feature.
+  Source: SideFX official — "MPM | H20.5 Masterclass" (Alexandre Sirois-Vigneux)
+  https://www.youtube.com/watch?v=0jJXTHjLW8g
+  Ingested as: `tutorials/mpm-h205-masterclass.md`
+  Companion practical: `tutorials/new-houdini-205-feature-mastering-the-mpm-snow-solver.md`
+  (FaddyVFX, https://www.youtube.com/watch?v=m2c8V94OIX8)
+
+- [x] **MPM solver (H21 new features)** — new-in-H21 MPM features (surface
+  tension, per-voxel friction, post-simulation fracture/retarget nodes) were
+  undocumented.
+  Source: SideFX official — "H21 MPM Overview" (Alexandre Sirois-Vigneux)
+  https://www.youtube.com/watch?v=nD183jP3H4Y
+  Ingested as: `tutorials/h21-mpm-overview.md`
+
+- [x] **Rig Builder (H21)** — the new Rig Builder tool had no coverage.
+  Source: SideFX official — "Rig Builder" series (Max Rose)
+  https://www.youtube.com/watch?v=HgX7O-q1eaY (Introduction — trailer-only,
+  needs-review) and https://www.youtube.com/watch?v=VFF2TLfbU3A (Project
+  Overview — actual asset-pipeline content)
+  Ingested as: `tutorials/rig-builder-introduction.md` (needs-review) and
+  `tutorials/rig-builder-project-overview.md`
+
+- [x] **APEX Animate for animators (Scene Animate/Invoke, Selection Sets)** —
+  no tutorial covered the animator-facing (non-rigger) side of APEX.
+  Source: SideFX official — "Houdini 20 | How to Pose and Animate Electra"
+  (Robert Magee)
+  https://www.youtube.com/watch?v=q6GE9WmZKeI
+  Ingested as: `tutorials/houdini-20-how-to-pose-and-animate-electra.md`
+
+- [x] **H22 Copernicus Adjacency nodes (seamless texturing)** — new H22
+  adjacency-node workflow for seam-free attribute rasterization was
+  undocumented.
+  Source: "Inside The Mind" — "Create Seamless Textures with Adjacency Nodes
+  and Simulations | Houdini 22"
+  https://www.youtube.com/watch?v=XKpfGoQVvQY
+  Ingested as: `tutorials/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22.md`
+
+- [x] **Metal/PBR reflection-tailoff shading theory** — off-topic for this
+  skill's Houdini scope (source video is demonstrated entirely in
+  Blender/Cycles, not Houdini) but ingested per explicit request; kept as a
+  renderer-agnostic materials-theory reference with a note on translating the
+  technique to Karma/MaterialX.
+  Source: "Forgotten Metal Knowledge | Vray, Cycles, Arnold.." (Lucas)
+  https://www.youtube.com/watch?v=uz8PIi3ELJg
+  Ingested as: `tutorials/forgotten-metal-knowledge-vray-cycles-arnold.md`
+
 ## Ruled out (already covered — do not re-suggest)
 Karma XPU, heightfield/erosion, Solaris/USD variants & layering, Redshift,
-Copernicus/COPs.
+Copernicus/COPs, PDG/TOPs (existing coverage confirmed sufficient by the
+2026-07-20 full-library gap analysis — do not add a PDG tutorial based on
+older/superseded notes).
