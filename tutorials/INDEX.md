@@ -167,6 +167,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Feature demo (9m17s) of Houdini 22's new Copernicus Adjacency nodes (Geometry to Adjacency + Attribute Sample with Adjacency), which rasterize mesh attributes/3D noise with zero UV seams — replacing the old H21 Rasterize Geometry + Fractal Noise 3D workflow. Also covers curvature-driven texturing via a SOP Measure node, a material-attribute gotcha blocking the COPs 3D preview, and adjacency-enabled simulation nodes (Reaction-Diffusion block, new Ripple solver) vs. not-yet-enabled ones (Flow block).
 - **File:** tutorials/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22.md
 
+
+### New Time Nodes in COPs | Houdini 22
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ewNpXaxZI6w
+- **Author:** Inside The Mind
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/new-time-nodes-in-cops-houdini-22.md
+
 ---
 
 ## How to Read This Index
