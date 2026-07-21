@@ -117,6 +117,5 @@ sop, cop, procedural, modelling, texturing, rigging, kinefx, animation, beginner
 ---
 
 ## Related Tutorials
-- `tutorials/rig-builder-introduction.md` — the series' 26-second trailer clip (needs-review, no real content) for the same Rig Builder Series/presenter; shares tags: apex, rigging, kinefx, houdini-21.
 - `tutorials/apex-rigging-h20-masterclass.md` — broader APEX/KineFX rigging content; shares tags: rigging, kinefx, animation.
 - `tutorials/basic-procedural-texturing-with-cops-in-houdini-21.md` — COPs texturing workflow in the same Houdini version; shares tags: cop/cops, texturing, procedural.

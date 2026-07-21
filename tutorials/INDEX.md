@@ -127,15 +127,6 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/apex-rigging-h20-masterclass.md
 
 
-### Rig Builder | Introduction
-- **Source:** YouTube
-- **URL:** https://www.youtube.com/watch?v=HgX7O-q1eaY
-- **Author:** Houdini
-- **Houdini Version:** H21
-- **Tags:** apex, rigging, kinefx, beginner, houdini-21
-- **Summary:** NEEDS-REVIEW: 26-second series-trailer clip only (title card + spoken intro by Max Rose), no actual Rig Builder technique content. Real coverage of the "Intro to Rig Builder" gap comes from the companion entry `rig-builder-project-overview.md` ingested alongside this one in the same session.
-- **File:** tutorials/rig-builder-introduction.md
-
 
 ### Rig Builder | Project Overview
 - **Source:** YouTube
