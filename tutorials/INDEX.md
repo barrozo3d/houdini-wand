@@ -125,16 +125,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** apex, rigging, kinefx, python, procedural, hda, wrangler, animation, advanced, expert, houdini-20
 - **Summary:** William Harley (SideFX) masterclass (71m35s) on APEX rigging via Components and Subgraphs. Builds a simple tube FK rig from scratch (auto-wiring controls to joints with a hand-authored Find Nodes/For Each/Find-and-Connect component), a reusable Squash & Stretch subgraph tool saved as a tab-searchable .pgeo, then walks a full production chicken rig: pole-vector auto-IK legs, a reusable Look-At component, twist/toe tricks, a blend-shape-driven Face Pose Blend system, Abstract-Control-driven IK/FK blending, Configure Control Shapes, materials, and export via Apex Scene Animate/Invoke to .bgeo.
 - **File:** tutorials/apex-rigging-h20-masterclass.md
-- **File:** tutorials/apex-rigging-h20-masterclass.md
 
 
 ### Rig Builder | Introduction
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=HgX7O-q1eaY
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H21
+- **Tags:** apex, rigging, kinefx, beginner, houdini-21
+- **Summary:** NEEDS-REVIEW: 26-second series-trailer clip only (title card + spoken intro by Max Rose), no actual Rig Builder technique content. Real coverage of the "Intro to Rig Builder" gap comes from the companion entry `rig-builder-project-overview.md` ingested alongside this one in the same session.
+- **File:** tutorials/rig-builder-introduction.md
 - **File:** tutorials/rig-builder-introduction.md
 
 ---

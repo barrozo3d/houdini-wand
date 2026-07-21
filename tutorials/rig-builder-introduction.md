@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=HgX7O-q1eaY
 author: Houdini
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
+houdini_version: "H21"
+tags: [apex, rigging, kinefx, beginner, houdini-21]
 extraction_status: needs-review
 frames_dir: tutorials/frames/rig-builder-introduction/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 1
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Rig Builder | Introduction
@@ -30,12 +31,7 @@ _Auto-generated at ingest/frame-capture time — explains why `extraction_status
 
 ---
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py rig-builder-introduction <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -48,30 +44,37 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:05] tutorials/frames/rig-builder-introduction/frame_000.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+N/A — this is a 26-second series-trailer/title-card video, not a technique video. It is episode 0 of Max Rose's "Rig Builder Series" (SideFX, Houdini 21) and contains only a spoken introduction and a title card; no APEX/Rig Builder UI, nodes, or workflow are shown.
 
 ### Summary
-[PENDING EXTRACTION]
+Presenter Max Rose (SideFX) introduces the "Rig Builder Series" for Houdini 21: by the end of the course, viewers will know how to use the new Rig Builder to rapidly assemble a character rig, plus new tricks/tools that make APEX rigging more flexible. Viewers are pointed to a linked project-file download to follow along. No actual Rig Builder content — this is a marketing/orientation clip; the real tutorial content lives in the numbered episodes of the same YouTube series (e.g. "Rig Builder 1 | FBX Import", "Rig Builder 6 | Rig Component", "Rig Builder | Project Overview"). This entry is kept `needs-review` intentionally: it accurately captures what this specific URL contains (nothing beyond the intro blurb), while the companion entry ingested alongside it (see Related Tutorials) covers the actual Rig Builder workflow.
 
 ### Key Steps
-[PENDING EXTRACTION]
+N/A — no workflow shown in this clip.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+N/A — no nodes shown; only a title card ("RIG BUILDER SERIES — Presented by Max Rose — Houdini 21") over a blurred Houdini UI background.
 
 ### Difficulty
-[PENDING EXTRACTION]
+N/A (orientation clip, not instructional).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21 (per title card).
 
 ### Tags
-[PENDING EXTRACTION]
+apex, rigging, kinefx, beginner, houdini-21
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/rig-builder-project-overview.md` — the actual Rig Builder walkthrough from the same series/presenter, ingested in this session specifically because this "Introduction" episode has no real content; shares tags: apex, rigging, kinefx, houdini-21.
+- `tutorials/apex-rigging-h20-masterclass.md` — broader APEX rigging masterclass; shares tags: apex, rigging, kinefx.
