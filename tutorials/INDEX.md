@@ -106,6 +106,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Short (8m46s) practical companion video sweeping each MPM Source "Chunky" (snow) preset parameter one at a time — Density, Critical Compression, Critical Stretch, Compression Hardening, Stiffness, Volume Preservation — on a simple snow-log-drop test scene, showing visually how each affects whether the material holds together or crumbles, and confirming that high stiffness drastically increases OpenCL substep count/solve time.
 - **File:** tutorials/new-houdini-205-feature-mastering-the-mpm-snow-solver.md
 
+
+### H21 MPM Overview
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=nD183jP3H4Y
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/h21-mpm-overview.md
+
 ---
 
 ## How to Read This Index
