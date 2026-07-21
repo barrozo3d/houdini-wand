@@ -121,9 +121,10 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=-0KbPtoP5MU
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H20
+- **Tags:** apex, rigging, kinefx, python, procedural, hda, wrangler, animation, advanced, expert, houdini-20
+- **Summary:** William Harley (SideFX) masterclass (71m35s) on APEX rigging via Components and Subgraphs. Builds a simple tube FK rig from scratch (auto-wiring controls to joints with a hand-authored Find Nodes/For Each/Find-and-Connect component), a reusable Squash & Stretch subgraph tool saved as a tab-searchable .pgeo, then walks a full production chicken rig: pole-vector auto-IK legs, a reusable Look-At component, twist/toe tricks, a blend-shape-driven Face Pose Blend system, Abstract-Control-driven IK/FK blending, Configure Control Shapes, materials, and export via Apex Scene Animate/Invoke to .bgeo.
+- **File:** tutorials/apex-rigging-h20-masterclass.md
 - **File:** tutorials/apex-rigging-h20-masterclass.md
 
 ---

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=-0KbPtoP5MU
 author: Houdini
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20"
+tags: [apex, rigging, kinefx, python, procedural, hda, wrangler, animation, advanced, expert, houdini-20]
+extraction_status: complete
 frames_dir: tutorials/frames/apex-rigging-h20-masterclass/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # APEX Rigging | H20 MASTERCLASS
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py apex-rigging-h20-masterclass <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### <Untitled Chapter 1> [0:00]
@@ -938,30 +934,62 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:10] tutorials/frames/apex-rigging-h20-masterclass/frame_000.jpg
+- [5:00] tutorials/frames/apex-rigging-h20-masterclass/frame_001.jpg
+- [15:00] tutorials/frames/apex-rigging-h20-masterclass/frame_002.jpg
+- [30:00] tutorials/frames/apex-rigging-h20-masterclass/frame_003.jpg
+- [36:00] tutorials/frames/apex-rigging-h20-masterclass/frame_004.jpg
+- [43:00] tutorials/frames/apex-rigging-h20-masterclass/frame_005.jpg
+- [53:00] tutorials/frames/apex-rigging-h20-masterclass/frame_006.jpg
+- [70:10] tutorials/frames/apex-rigging-h20-masterclass/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Full APEX character rigging workflow using **Components** (Python-based rig-graph scripts run through the Apex Autorig Component node) and **Subgraphs** (reusable HDA-like tools accessible from the tab menu), demonstrated first on a simple 3-joint tube rig, then walked through in depth on a production chicken rig.
 
 ### Summary
-[PENDING EXTRACTION]
+71m35s masterclass by William Harley (Character TD, SideFX). Part 1 builds a minimal FK rig from scratch on a tube: skeleton + capture proximity + bone deform, packed into folders (`base.shape`, `base.skel`), then run through an **Apex Autorig Component** chain — FK Transform (auto-builds transform objects + point-transform deform from a skeleton), a manual control-hierarchy setup (renaming joints `*_control`, using Attach Joint Geo to carry control shapes as skeleton data, Configure Controls to read that shape data onto the rig), and a hand-authored component (via Apex Edit Graph, using Find Nodes/For Each/String Replace/Find and Connect) that auto-wires every `*_control` transform's xform into its corresponding driven joint — demonstrating why components matter at scale (100s of controls). Part 2 builds a **Squash & Stretch subgraph**: computing a midpoint transform between root/tip controls, using Extract Local to keep the control drivable after being positionally set, calculating scale from the rest-vs-deformed distance between root and tip (clamped 0.2–10), then collapsing the whole node network into a subnet, isolating it with a blast, packing/naming it, and saving it via Rop Output Geometry to `$HIP/apex_graph/` as a `.pgeo` so it becomes a tab-searchable custom subgraph tool. Part 3 walks the full chicken rig built from these same primitives: rotation-order-per-joint via dictionary data on the FK component, automatic pole-vector IK legs (midpoint + offset + up-vector, with a Look-At component reused throughout the rig for aim constraints without flipping), ankle/eye look-at overrides, a simplified 2-joint twist component, a toe "ghost parent" FK-transform pivot trick, a squash-stretch-limited 4-joint spine/neck, a **Face Pose Blend** system driving blend shapes from named pose-skeleton primitives (weighted local-transform blending + Compute World from Local, multi-parm dictionary of blend weights), pose-control float-remapping (mapping a control's drag axis to a blend weight via a remap subgraph), an **IK/FK blend** built on Abstract Controls (a float-value control with a fixed viewport position, driving both an FK-helper-joint local-transform blend and bias parameters), Configure Control Shapes (per-primitive-name shape/scale/color overrides, plus abstract-control min/max range locking), material assignment (must unpack the control shape, apply a relative-path material network, and re-pack — materials do not travel with an exported rig), and finally exporting the finished rig as a `.bgeo` for animators via Apex Scene Animate → Output (All Character Shapes or Skeleton-only).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build the base deformable asset: tube geometry → Skeleton node (draw + orient + name joints root/mid/tip) → Capture Proximity (with an Add node stripping geometry down to points-only for smoother capture) → optional Smooth on the bone-capture attribute → Bone Deform to preview weights → Pack Folders (`base.shape` = capture mesh, `base.skel` = capture skeleton).
+2. Run **Apex Autorig Component → FK Transform** on the packed data to auto-generate transform objects (one per skeleton joint) parented to match the skeleton, plus a Point Transform node that deforms `base.skel` from those transforms; toggle Promote Translate/Rotate/Scale (supports wildcard patterns like `*_control`) to expose viewport-manipulable parameters.
+3. View the generated rig graph via **Apex Network View** on an **Unpack Folder** node set to extract pattern `rig` (isolates the rig graph from noise in the packed mesh/skeleton primitives).
+4. Build a control hierarchy: duplicate/rename joints with `_control` suffix via a skeleton wrangle, use **Attach Joint Geo** to carry a loaded (triangulated, since APEX rejects n-gons) control-shape library onto skeleton points as data, then **Order Read Component → Configure Controls** fetching `base.scale` to apply those shapes onto the actual rig controls; color-code main vs. control joints for clarity.
+5. Auto-wire controls to driven joints with a hand-built component: **Apex Edit Graph** (init with Subnet Input/Output, Extract Character Graph using `rig name` + `base.rig`) → **Find Nodes** (pattern `*control*`, promoted as a parameter) → **For Each** over matches → **String Replace** (strip `_control` suffix to derive the target joint name) → **Find Node** (locate the driven joint) → **Find and Connect** (wire `xform` output of the control to `xform` input of the joint) → **Extract Character Graph output**; finish with another Autorig Component for Bone Deform.
+6. Build the Squash & Stretch subgraph on an isolated rig: Lerp the root/tip xform for a midpoint, **Extract Local** (compute the new position's local transform relative to root, write to Rest Local so the control remains manually drivable), then compute scale from `Distance(root,tip)` rest-vs-deformed via Explode Transform → Distance → Subtract → Add(1) → Clamp(0.2, 10) → Float-to-Vector (X/Y only, Z=1) → Build Transform → multiply into the local transform → Rest Local.
+7. Package a subgraph tool: select the finished nodes → Blast to isolate → name the primitive (e.g. `squash`) → Pack Folder → **Rop Output Geometry** to `$HIP/apex_graph/squash.pgeo` → reload the Houdini session → the subgraph is now tab-searchable inside any Apex graph.
+8. Production rig patterns (chicken): per-joint dictionary data (e.g. rotation order) set via a For Each over skeleton points building a dictionary and applying it with Set Node Parms; auto pole-vector IK (midpoint between root/tip + minus-offset + up-vector axis control); a reusable **Look-At** component (root+tip alignment, avoids flip during loops) used for ankle, eye, and other aim constraints, with a root-aim-amount override to preserve original rotation instead of a hard look-at; a simplified twist component (lerp position between root/tip by a bias, then look-at to realign — 2-joint limit, author notes it needs to become more procedural); a toe/ghost-parent trick creating an intermediate FK transform to fake a pivot offset without adding real skeleton joints.
+9. Face Pose Blend: fetch all named pose primitives from a `base.pose` skeleton (Find Character Element recommended over the older node used here), build a per-primitive weight dictionary via a multi-parm ("N blends"), set primitive weight attributes with an Attribute Wrangle (`f@weight = chf("test");` pattern, driven per-control), blend local transforms across all weighted poses, then **Compute World from Local** (mandatory — blending local transforms alone does not deform the skeleton) and write to Rest Local so the joint is still controllable afterward. Pose-control values are derived by remapping a specific drag-axis of a transform control (e.g. Y-negative) to an absolute, clamped float via a small remap subgraph.
+10. IK/FK blend: build FK "helper" joints that track IK control positions so both rig states produce comparable local transforms, then Lerp between them; drive the blend factor via an **Abstract Control** — a float-only control given a fixed viewport position/parent inside the control skeleton hierarchy, whose value plugs into both the local-transform Lerp bias and any exposed parameter; range-lock the abstract control's drag distance via min/max in Configure Control Shapes.
+11. Configure Control Shapes: per-control-primitive-name entries for scale, shape override (e.g. a box on the pelvis), visibility, color, and abstract-control dictionary properties (position, parent, min/max) — author notes this hand-authored step is only needed for controls/joints created inside the Apex graph itself; Attach Joint Geo is preferable when a predefined skeleton already exists before rigging.
+12. Materials: unpack the control shape geometry, assign a material with a relative path to a material network that must live in the destination scene (materials do not travel with an exported/loaded rig), then re-pack.
+13. Export: preview via Apex Scene Animate (drivable in the viewport), then output the finished rig as a `.bgeo` (or via Rop) for animators; on the animation-side scene, output geometry via **Apex Scene Invoke** with "Output All Character Shapes" (or "Skeleton" for skeleton-only).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Setup nodes:** Skeleton, Capture Proximity, Bone Deform, Pack Folders, Unpack Folder.
+- **Apex nodes:** Apex Autorig Component (components used: FK Transform, Configure Controls, Bone Deform, custom rig-wiring component, custom Squash & Stretch component, custom IK/FK blend, custom pole-vector/twist/toe/look-at components), Apex Network View, Apex Edit Graph, Apex Scene Animate, Apex Scene Invoke, Attach Joint Geo, Find Character Element (newer, recommended over the base-pose node used in this recording).
+- **Apex graph nodes used while scripting components:** Subnet Input/Output, Extract Character Graph / Update Character Graph, Find Nodes, For Each (Apex Node ID), String Replace, Find Node, Find and Connect, Group / Group Expand (find connected nodes by shared primitive wiring — points=ports, primitives=wires), Explode Transform, Distance, Subtract Float, Add Float, Clamp Float, Float-to-Vector, Build Transform, Extract Local, Compute World from Local, Set Prim Attributes, Multi-parm "N blends" dictionary construction, Abstract Control node.
+- **VEX seen on screen:** `f@weight = chf("test");` (Attribute Wrangle driving a blend-shape weight from a control-fed channel float, run over a `@name=pose_eye_closed_upper_1`-style primitive group).
+- **Export paths/values:** subgraph saved to `$HIP/apex_graph/squash.pgeo`; squash-stretch scale clamp range 0.2–10; rotation order value 3 set via dictionary; pole vector offset examples -0.4 / -0.2 / -0.4, up-vector flip at -1.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced/Expert — assumes familiarity with KineFX skeleton SOPs and general rigging concepts; heavy custom Apex-graph scripting (Python-style component authoring) throughout, not a beginner APEX intro.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 20 (per video title "APEX Rigging | H20 MASTERCLASS").
 
 ### Tags
-[PENDING EXTRACTION]
+apex, rigging, kinefx, python, procedural, hda, wrangler, animation, advanced, expert, houdini-20
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari.md` — production-focused APEX talk covering Apex Script auto-rig authoring and Auto-Rig Builder from a different angle; shares tags: apex, rigging, kinefx, python, procedural, hda, advanced, expert.
+- `tutorials/animate-gaussian-splats-with-houdini---free-tutorial-scene-files.md` — shares tags: apex, kinefx, rigging, animation.
+- `tutorials/how-to-make-a-short-film-in-houdini-magnus-møller-jesper-andkjær.md` — shares tags: apex, kinefx, rigging, animation.
+- (Queue companions **Intro to Rig Builder** and **Pose & Animate Electra**, ingested in this same session, will share apex/kinefx/rigging tags once extracted.)
