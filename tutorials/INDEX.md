@@ -187,6 +187,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops.md
 
+
+### Morph Anything with VDBs in Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=QUnkozOK4Ro
+- **Author:** Voxyde VFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/morph-anything-with-vdbs-in-houdini.md
+
 ---
 
 ## How to Read This Index
