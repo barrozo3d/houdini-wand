@@ -76,6 +76,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Quick-start pipeline for training a native Gaussian splat in H22 from real infrared-camera photos: shoot ~100-200 parallax-moved photos, run them through free/open-source COLMAP (feature extraction (OpenCV, shared) → exhaustive feature matching → reconstruction → sparse export) to get camera poses + a sparse point cloud, then in Houdini's TOP context build an `ML Train GSplat` node pointed at a manually-created `dataset.gsplats/{images,sparse/0}` folder structure. Key settings: Dataset Type = SfM (COLMAP), VRAM-fitting Data Downscale Factor, Cache Images to VRAM (minutes vs hours), Workers = CPU−1, Testing disabled for speed. Cook to train (default 30k steps, live browser monitor via Monitoring → Open Viewer), Stop & Save the `.ply`, then import via File → GSplat SOP → Transform → Blast cleanup → Solaris Sub-Import → Karma (low samples, Pixel Oracle = Uniform) to render.
 - **File:** tutorials/new-in-houdini-22-training-gaussian-splats-from-infrared-photos.md
 
+
+### APEX in Houdini: Evolving Animation Workflows for Production | Mattéo Martinez | Paris HUG 2026
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=fhgP_W-OvUE
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari.md
+
 ---
 
 ## How to Read This Index
