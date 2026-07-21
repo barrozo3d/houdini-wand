@@ -127,6 +127,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/apex-rigging-h20-masterclass.md
 - **File:** tutorials/apex-rigging-h20-masterclass.md
 
+
+### Rig Builder | Introduction
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=HgX7O-q1eaY
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/rig-builder-introduction.md
+
 ---
 
 ## How to Read This Index
