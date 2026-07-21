@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=nD183jP3H4Y
 author: Houdini
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H21"
+tags: [dop, simulation, volumes, advanced, houdini-21]
+extraction_status: complete
 frames_dir: tutorials/frames/h21-mpm-overview/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 4
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # H21 MPM Overview
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py h21-mpm-overview <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -75,30 +71,44 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:35] tutorials/frames/h21-mpm-overview/frame_000.jpg
+- [1:25] tutorials/frames/h21-mpm-overview/frame_001.jpg
+- [2:10] tutorials/frames/h21-mpm-overview/frame_002.jpg
+- [3:00] tutorials/frames/h21-mpm-overview/frame_003.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Outline/trailer episode for the official SideFX "MPM H21 Masterclass" series — introduces the new MPM features and post-simulation nodes added in Houdini 21 as a follow-up to the H20.5 MPM Masterclass, without hands-on building (that happens in the other episodes of the same masterclass series).
 
 ### Summary
-[PENDING EXTRACTION]
+3m28s overview by Alexandre Sirois-Vigneux (SideFX, same presenter as the H20.5 masterclass) previewing what's new for MPM in Houdini 21. Explicitly **not** an MPM introduction — assumes the viewer already knows the solver basics from the H20.5 masterclass. Covers, at a high level: new solver features (surface tension, auto-sleep, continuous emission expansion for sourcing material onto existing material to build internal pressure, per-voxel varying friction/stickiness on colliders — replacing the old H20.5 workaround of duplicating colliders per friction value — and greatly improved deforming colliders), four new post-simulation nodes (MPM Surface, MPM Debris Source, MPM Post-Fracture, MPM Deform Pieces) that streamline surfacing, fracture-driven debris emission, and a "bullet-body-dynamics-style" workflow (simulate a stiff material like concrete with MPM, use the final sim state to post-fracture the original asset, then retarget the MPM dynamics onto the fractured asset), and a list of the practical demo scenes covered later in the masterclass series: Paintball Impact, Pumpkin Smash, Car Rain, Wolf Snow, Creature Breach, Train Wreck, and Building Attack.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. (Context-setting only, no hands-on steps in this episode.) New H21 MPM solver features to look for on the MPM Source/Solver: surface tension, auto-sleep, continuous emission expansion, per-voxel varying friction and stickiness (collider-level), improved deforming colliders.
+2. New post-simulation node pipeline introduced in H21: **MPM Surface** (surfacing/meshing helper) → **MPM Debris Source** (fracture-driven secondary emission) → **MPM Post-Fracture** (fractures the original asset using the final MPM sim state — for stiff materials like concrete) → **MPM Deform Pieces** (retargets MPM dynamics onto the post-fractured asset, replicating a bullet/RBD-style workflow but driven by MPM).
+3. Full masterclass series then walks through 7 demo scenes (Paintball Impact, Pumpkin Smash, Car Rain, Wolf Snow, Creature Breach, Train Wreck, Building Attack) applying these new features/nodes — covered in other episodes of the same YouTube playlist, not in this overview video itself.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **New H21 nodes named on-screen:** MPM Surface, MPM Debris Source, MPM Post-Fracture, MPM Deform Pieces.
+- **New H21 solver features named on-screen:** Surface Tension, Auto Sleep, Continuous Emission Expansion, Varying Friction and Stickiness (per-voxel), Improved Deforming Colliders.
+- No parameter values or on-screen node-graph building in this episode — purely a scoped preview/outline slide plus demo-reel B-roll (e.g. a train wreck / metal wreckage MPM shot).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — targeted at viewers who already completed the H20.5 MPM Masterclass; this episode itself has no hands-on content.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21 (MPM solver new features/nodes).
 
 ### Tags
-[PENDING EXTRACTION]
+dop, simulation, volumes, advanced, houdini-21
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/mpm-h205-masterclass.md` — the prerequisite H20.5 MPM Masterclass this overview explicitly builds on (same presenter, same solver); shares tags: dop, simulation, volumes.
+- `tutorials/new-houdini-205-feature-mastering-the-mpm-snow-solver.md` — practical MPM parameter companion; shares tags: dop, simulation, volumes.

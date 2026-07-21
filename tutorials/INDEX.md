@@ -111,9 +111,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=nD183jP3H4Y
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H21
+- **Tags:** dop, simulation, volumes, advanced, houdini-21
+- **Summary:** Outline/trailer episode (3m28s) for the MPM H21 Masterclass series, previewing new H21 MPM features (surface tension, auto-sleep, continuous emission expansion, per-voxel varying friction/stickiness, improved deforming colliders) and 4 new post-simulation nodes (MPM Surface, MPM Debris Source, MPM Post-Fracture, MPM Deform Pieces) that enable a bullet-style fracture/retarget workflow driven by MPM. No hands-on building in this episode; assumes H20.5 MPM Masterclass knowledge.
 - **File:** tutorials/h21-mpm-overview.md
 
 ---
