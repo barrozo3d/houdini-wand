@@ -177,6 +177,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Walkthrough of H22's four new Copernicus time nodes — Time Blend (hold first/last frames), Time Loop (cycle/zigzag/blend loop types), Time Shift (absolute/by-time/relative/custom retiming), and Time Pack + Cable Unpack (multi-frame sampling into color0..N planes, likely for Denoise AI-style temporal nodes) — plus the beta Copernicus auto-unload setting for freeing VRAM.
 - **File:** tutorials/new-time-nodes-in-cops-houdini-22.md
 
+
+### Houdini 22 | How to Render Terrains in Solaris | Height Fields from COPs to LOPs
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=IeVvQt0bHQ0
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops.md
+
 ---
 
 ## How to Read This Index
