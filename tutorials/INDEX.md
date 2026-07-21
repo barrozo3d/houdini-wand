@@ -166,6 +166,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** NOTE: demonstrated entirely in Blender/Cycles, not Houdini — kept as a materials-theory reference. Renderer-agnostic PBR research on why real metal shows a "reflection tail-off" (sharp core + soft halo) from microscopic scratch density/roughness variation, and how to recreate it by stacking multiple BSDF layers of increasing roughness/decreasing presence rather than one roughness value. Compares this multi-layer approach against Clearcoat (cheap but distorts base material/isn't properly metallic) and GGX Tailoff control (near-free but limited/engine-dependent). Portable to Houdini via layered `mtlxstandard_surface`/`mtlxmix` MaterialX networks in Karma; see `references/render-pipeline.md`.
 - **File:** tutorials/forgotten-metal-knowledge-vray-cycles-arnold.md
 
+
+### Create Seamless Textures with Adjacency Nodes and Simulations | Houdini 22
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=XKpfGoQVvQY
+- **Author:** Inside The Mind
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22.md
+
 ---
 
 ## How to Read This Index
