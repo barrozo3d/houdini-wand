@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=0jJXTHjLW8g
 author: Houdini
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20.5"
+tags: [dop, vex, simulation, volumes, procedural, attributes, rendering, karma, solaris, advanced, expert, houdini-20]
+extraction_status: complete
 frames_dir: tutorials/frames/mpm-h205-masterclass/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # MPM | H20.5 Masterclass
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py mpm-h205-masterclass <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -1820,30 +1816,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/mpm-h205-masterclass/frame_000.jpg
+- [3:12] tutorials/frames/mpm-h205-masterclass/frame_001.jpg
+- [20:00] tutorials/frames/mpm-h205-masterclass/frame_002.jpg
+- [41:00] tutorials/frames/mpm-h205-masterclass/frame_003.jpg
+- [62:50] tutorials/frames/mpm-h205-masterclass/frame_004.jpg
+- [90:00] tutorials/frames/mpm-h205-masterclass/frame_005.jpg
+- [107:00] tutorials/frames/mpm-h205-masterclass/frame_006.jpg
+- [129:10] tutorials/frames/mpm-h205-masterclass/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+The Material Point Method (MPM) solver introduced in Houdini 20.5 — a hybrid particle/grid solid-mechanics solver (an extension of FLIP to solids) for snow, mud, soil, concrete, sand, jello, and other granular/elastoplastic materials, covered from theory through eight full production-style example scenes.
 
 ### Summary
-[PENDING EXTRACTION]
+Official SideFX masterclass (194 min, 11 sections) by Alexandre Sirois-Vigneux (Senior 3D Software Developer, SideFX). Part 1 covers MPM theory: particles sample a continuous material and transfer data to/from a sparse background grid each substep; the deformation gradient attribute `F` (split into elastic `Fe`/`ge` and plastic `Fp`/`jp` components) drives elastic vs. plastic behavior, fracture, and secondary emission; sub-stepping is dynamically driven by both a CFL condition (particle travel speed) and a new Material Condition (impulse propagation speed through the material); the solver runs on OpenCL (CPU or GPU, GPU recommended, VRAM-bound) using sparse VDB background grids. Part 2 tours the core node ecosystem: MPM Source (material presets/attributes), MPM Collider (static / animated rigid / animated deforming, plus friction & stickiness), MPM Container (defines resolution + start frame + optional closed/delete boundaries), and the MPM Solver (solver tab, forces/ground plane, visualization, output attribute toggles, dive target). Part 3 walks eight full example scenes end-to-end (Avalanche, Rally Drift, Ship Breach, Fruit Smash, Ice Cream Scoop, Hubble Explosion, Building Collapse, plus theory-only demos) each following the same pipeline: model prep → MPM source/collider setup with noised material attributes → simulate → build SDF (VDB from particles, dilate/smooth, optional stretch-mask to avoid over-smoothing fracture edges) → secondary/debris emission driven by delta-jp (change in plastic determinant) near the surface → secondary pop sim → mesh/render in Solaris with Karma XPU. Part 4 (Tips/Troubleshooting) covers decomposing deforming colliders into per-piece animated-rigid colliders, liquid incompressibility tuning, particle-level collision modes for thin colliders, dive targets for external force fields, pin-constraint/animation workflows for "dissolve" effects, convex-geometry containers, material-blending stickiness between touching materials sharing one background grid, sub-step performance tuning, wiggling-material fixes, background-grid dilation for fast-moving particles, and the sand constitutive model (friction angle, cohesion).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build materials from MPM Source nodes using constitutive-model presets (snow/chunky, jello/elastic, water/liquid, mud/soil/viscous, sand, concrete) — each preset sets density, stiffness (E), critical compression/critical stretch (elastic-to-plastic threshold), volume preservation (Poisson ratio — controls "explosiveness"/perpendicular reaction to compression), and for viscous materials, viscosity + plasticity.
+2. Add variation with a one-line warped-noise wrangle (noise at warped position → abs → remap → multiply into stiffness or viscosity) to break up uniform-looking material.
+3. Choose MPM Collider type per object: **static**, **animated rigid** (most accurate — per-piece SDF + rigid transform interpolation, use `Segmentation` by name attribute to auto-split a multi-piece collider into per-piece rigid colliders), or **animated deforming** (less efficient, interpolates SDF via elastic field) — set friction and stickiness (unbounded above 1.0) per collider.
+4. Set up MPM Container to define simulation resolution (halving particle separation = 8x more particles/voxels) and optional boundary type (closed / delete / open) globally or per-plane via a string boundary attribute.
+5. Tune the MPM Solver: CFL condition and Material Condition jointly drive dynamic sub-stepping (view actual sub-step count in the details/attributes pane); set min/max sub-step clamps carefully — clamping too aggressively causes instability; enable "Assume no changing material properties" = off if you animate material attributes mid-sim.
+6. For post-sim rendering: convert particles to VDB → SDF (voxel size = particle separation / 1.5 recommended), dilate + smooth (use a stretch-mask built from the jp attribute to avoid smoothing fracturing edges), rebuild SDF to remove internal pockets, then rasterize a density-variation fog volume from the same particles masked by the SDF surface for a less-fuzzy, more-detailed render mesh.
+7. Drive secondary/debris emission from **delta-jp** (frame-to-frame change in the plastic determinant `jp`): prune low-delta and off-surface points (keep only a thin "banner" around the SDF surface), replicate along velocity based on speed/breakage amount, then run a lightweight secondary POP sim before merging back with a max operation against the primary MPM mesh.
+8. For destruction/retargeting workflows (Building Collapse scene): post-fracture the rest-pose geometry using the last frame's jp attribute to locate breaks, then retarget deformed vertices two ways — per-point capture of the nearest MPM point (smooth but stretches at fractures) and per-primitive-centroid capture (rigid, no stretching, "shattered glass" look) — and blend between the two using a rest-vs-deformed edge-length ratio per primitive.
+9. For thin colliders (wine glass, ice cream scoop) or drift-through-collider artifacts, enable **particle-level collisions** on the MPM Solver (Advanced tab) with mode "velocity based move outside colliders" (most physically accurate of the 3 modes: none / position-based / velocity-based) and override collider resolution to be finer than the container resolution.
+10. Use pin-to-animation attributes + "Enable Animation" on the MPM Source to constrain/release points progressively (e.g., unpin a character from top to bottom for a dissolve/disintegration effect), or wire a Dive Target pop wrangle to sample an external velocity field (e.g., a tornado) into the solver each substep.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Nodes:** MPM Source, MPM Collider, MPM Container, MPM Solver (Solver/Forces/Visualize/Output/Advanced tabs), `mpmconfigure` (tab-search example gallery), VDB from Particles, VDB Convert to Fog, Poly Extrude, Attribute Wrangle (noise-warp stiffness variation, delta-jp computation, banner/surface-distance pruning), For-Loop (per-UV-island transfer, per-partition fracturing), Transform Pieces (seed/debris instancing), Point Deform (simple squishy-object retargeting), Karma XPU (all final renders).
+- **Key attributes:** `F` (3x3 deformation gradient, elastic component tracked as `Fe`), `jp`/`ge` (determinant of plastic/elastic deformation gradient — precomputed by the solver; `jp` drives fracture-based secondary emission), stiffness `E`, critical compression / critical stretch, volume preservation (Poisson ratio, e.g. jello ~0.4, concrete <0.2, snow ~0.2), compression hardening (stiffens material under compression — 0 for flowing/non-breaking materials like ice cream, high for concrete-style brittle fracture), viscosity/plasticity (viscous constitutive model), friction angle/cohesion (sand constitutive model), incompressibility / strict incompressibility + power (liquid constitutive model), stickiness (unbounded float), pin to animation, particle separation, grid scale, dx (voxel size), min/max voxel dilation (Advanced tab — fixes particles escaping the background grid at high speed).
+- **Settings called out with real values:** compression hardening default 1.4, cranked to 70 for the Avalanche snow-slab scene; SDF voxel size = particle separation ÷ 1.51; secondary-emission "banner" width = 0.15 above/below surface; grass/pebble up-res pass uses isolated surface-edge MPM points (half a million of 10 million total) for instancing; material condition default 0.9, lowered to 0.8 to fix instability in a pinned-core demo; concrete sim sub-step clamp lowered from ~800 to 350 for a 2x speedup without instability (150 was too aggressive and caused bulging).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — assumes familiarity with FLIP-style particle sims, VDB/SDF workflows, and Solaris/Karma; the theory section and constitutive-model math (deformation gradient, Poisson ratio) are Advanced/Expert, though the node-by-node basics section is accessible to Intermediate users.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 20.5 (MPM solver introduced in H20.5; this is the official H20.5 MPM masterclass).
 
 ### Tags
-[PENDING EXTRACTION]
+dop, vex, simulation, volumes, procedural, attributes, rendering, karma, solaris, advanced, expert, houdini-20
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/houdini-21-tutorial---mpm-snowball.md` — practical single-technique MPM snowball follow-up; shares tags: dop, simulation, houdini (version differs: H21).
+- Companion queue items **MPM H21 Masterclass** and **Nine Between MPM snow** (being ingested in this same session) will share dop/simulation/volumes tags once extracted — cross-link once available.
+- No other currently-ingested tutorial shares 2+ tags with this MPM-specific content; `references/dop-nodes.md` is the primary consult reference until more MPM tutorials land.

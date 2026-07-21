@@ -91,9 +91,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=0jJXTHjLW8g
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H20.5
+- **Tags:** dop, vex, simulation, volumes, procedural, attributes, rendering, karma, solaris, advanced, expert, houdini-20
+- **Summary:** Official SideFX masterclass (194 min) by Alexandre Sirois-Vigneux covering the new MPM solver: theory (deformation gradient F/Fe/Fp, jp/ge, CFL + Material Condition sub-stepping), the full node ecosystem (MPM Source/Collider/Container/Solver), and 8 full example scenes (Avalanche, Rally Drift, Ship Breach, Fruit Smash, Ice Cream Scoop, Hubble Explosion, Building Collapse) end-to-end from sim to SDF meshing to secondary emission to Karma XPU render, plus a troubleshooting/tips section (thin-collider particle-level collisions, pin constraints, sand cohesion, performance tuning).
 - **File:** tutorials/mpm-h205-masterclass.md
 
 ---
