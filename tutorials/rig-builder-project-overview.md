@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=VFF2TLfbU3A
 author: Houdini
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H21"
+tags: [sop, cop, procedural, modelling, texturing, rigging, kinefx, animation, beginner, intermediate, houdini-21]
+extraction_status: complete
 frames_dir: tutorials/frames/rig-builder-project-overview/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 5
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Rig Builder | Project Overview
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py rig-builder-project-overview <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -78,30 +74,49 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:35] tutorials/frames/rig-builder-project-overview/frame_000.jpg
+- [1:05] tutorials/frames/rig-builder-project-overview/frame_001.jpg
+- [1:40] tutorials/frames/rig-builder-project-overview/frame_002.jpg
+- [2:10] tutorials/frames/rig-builder-project-overview/frame_003.jpg
+- [2:45] tutorials/frames/rig-builder-project-overview/frame_004.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Project/asset-prep walkthrough (not the Rig Builder tool itself) for the "iBot" character — a spherical eyeball-bodied robot — showing the fully-procedural Houdini pipeline (modeling, UDIM UVs, COPs texturing, skeleton/capture, FBX export) that feeds into the Rig Builder tutorial series' first episode.
 
 ### Summary
-[PENDING EXTRACTION]
+Max Rose (SideFX) tours the Houdini 21 project file used throughout the Rig Builder Series before the hands-on episodes begin, to show that the whole iBot character — modeling, texturing, and skeleton capture — was built entirely inside Houdini. Covers: procedural robot modeling (built once for one finger/limb piece and propagated across symmetric parts for speed), geometry processing (color-assignment per piece to aid texturing, naming/organizing pieces), UDIM UV layout, texturing via a COP2 network (noting that COPs + UDIMs currently requires manually switching between UDIM tiles — a workflow limitation the presenter says will be fixed in the future), and skeleton creation/capture (built joint-by-joint per body part — leg, arm, spine, eye, fan/ear pieces — then combined with simple parenting, cached out for faster iteration). Ends by centering the model on the joints, assigning materials, and exporting an FBX with material names — which becomes the import source for the actual first Rig Builder episode ("create a new geometry node, import the FBX, and build the rig from it").
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Model the character procedurally in Houdini SOPs — build one instance of a repeated part (e.g. one finger) and propagate/instance it across symmetric copies rather than modeling each by hand.
+2. Geometry processing pass: assign per-piece color attributes to aid the texturing step, and apply consistent naming to organize all the character's geometry pieces.
+3. UV layout: lay out UVs per piece, then author UDIM tiles for the final texture set.
+4. Texture in a **COP2 (Copernicus/COPs) network** — noted limitation: texturing with COPs across UDIMs currently requires manually switching the active UDIM tile in the network (a workflow gap the presenter expects SideFX to improve).
+5. Build the skeleton in labeled sections — Skeleton Creation (per-part joints: leg, arm, spine, eye, fan/other) → Skeleton Assembly (combine + simple parenting) → Capture (bind geometry to the assembled skeleton), then cache the capture to disk so later iteration is fast.
+6. Finishing steps before handoff to Rig Builder: center the model on its joints, assign materials, and export an FBX with proper material names — this FBX is the exact asset imported in Episode 1 of the Rig Builder series to begin building the actual rig.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Pipeline stages shown on screen (network banners):** Geometry Processing → Texturing → Skeleton and Capture → (Center Character / export).
+- **Contexts used:** SOPs (modeling, geometry processing, UV layout), COP2/Copernicus (UDIM texturing network), KineFX-style skeleton/capture SOPs (Skeleton Creation, Skeleton Assembly, Capture subnetworks visible in the network pane).
+- No VEX/parameter values called out verbally in this overview — it is a tour of network organization, not a hands-on build (the hands-on rig build is in the numbered episodes of this same series, e.g. "Rig Builder 1 | FBX Import").
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner-to-Intermediate — an orientation/context video; the procedural-modeling and COPs/UDIM content requires some prior Houdini familiarity but nothing is built hands-on here.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21 (Rig Builder Series).
 
 ### Tags
-[PENDING EXTRACTION]
+sop, cop, procedural, modelling, texturing, rigging, kinefx, animation, beginner, intermediate, houdini-21
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/rig-builder-introduction.md` — the series' 26-second trailer clip (needs-review, no real content) for the same Rig Builder Series/presenter; shares tags: apex, rigging, kinefx, houdini-21.
+- `tutorials/apex-rigging-h20-masterclass.md` — broader APEX/KineFX rigging content; shares tags: rigging, kinefx, animation.
+- `tutorials/basic-procedural-texturing-with-cops-in-houdini-21.md` — COPs texturing workflow in the same Houdini version; shares tags: cop/cops, texturing, procedural.

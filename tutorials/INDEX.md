@@ -135,16 +135,15 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Tags:** apex, rigging, kinefx, beginner, houdini-21
 - **Summary:** NEEDS-REVIEW: 26-second series-trailer clip only (title card + spoken intro by Max Rose), no actual Rig Builder technique content. Real coverage of the "Intro to Rig Builder" gap comes from the companion entry `rig-builder-project-overview.md` ingested alongside this one in the same session.
 - **File:** tutorials/rig-builder-introduction.md
-- **File:** tutorials/rig-builder-introduction.md
 
 
 ### Rig Builder | Project Overview
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=VFF2TLfbU3A
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H21
+- **Tags:** sop, cop, procedural, modelling, texturing, rigging, kinefx, animation, beginner, intermediate, houdini-21
+- **Summary:** Max Rose (SideFX) tours the Houdini 21 "iBot" character project (a spherical-eyeball robot) that the Rig Builder Series is built around: fully-procedural modeling (build-once/propagate for symmetric parts), geometry processing (color/naming), UDIM UV layout, COP2 texturing (with a noted UDIM-switching workflow limitation), and skeleton creation/assembly/capture, ending in an FBX export that becomes the import source for the series' first hands-on Rig Builder episode.
 - **File:** tutorials/rig-builder-project-overview.md
 
 ---
