@@ -86,6 +86,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Conference talk (Paris HUG 2026) making the production case for APEX: caching a full multi-character ragdoll animation scene as a ~745x-smaller-than-Alembic APEX cache; scripting auto-rig components with Apex Script vs. hand-wiring; visual Auto-Rig Builder drag-and-drop; procedural skinning via convex-hull capture transfer; custom CFX tools for cloth art-direction and proxy animation baking; bridging VEX/SOP/OpenCL into APEX graphs; ONNX-based wrinkle ML. Advanced/Expert; not a step-by-step build tutorial.
 - **File:** tutorials/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari.md
 
+
+### MPM | H20.5 Masterclass
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=0jJXTHjLW8g
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/mpm-h205-masterclass.md
+
 ---
 
 ## How to Read This Index
