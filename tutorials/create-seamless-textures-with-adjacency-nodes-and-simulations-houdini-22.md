@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=XKpfGoQVvQY
 author: Inside The Mind
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H22"
+tags: [cop, procedural, attributes, simulation, texturing, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Create Seamless Textures with Adjacency Nodes and Simulations | Houdini 22
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -124,30 +120,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:05] tutorials/frames/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22/frame_000.jpg
+- [2:15] tutorials/frames/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22/frame_001.jpg
+- [2:55] tutorials/frames/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22/frame_002.jpg
+- [3:20] tutorials/frames/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22/frame_003.jpg
+- [4:35] tutorials/frames/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22/frame_004.jpg
+- [5:15] tutorials/frames/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22/frame_005.jpg
+- [6:35] tutorials/frames/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22/frame_006.jpg
+- [8:05] tutorials/frames/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini 22's new **Adjacency nodes** in Copernicus (COPs) — `Geometry to Adjacency` + `Attribute Sample with Adjacency` — which rasterize mesh attributes/3D textures (noise, curvature, reaction-diffusion) with zero UV seams, replacing the old H21 rasterize-to-UV + Fractal Noise 3D workflow that produced visible seams.
 
 ### Summary
-[PENDING EXTRACTION]
+Quick feature demo (9m17s) by "Inside The Mind" showing the H22 Copernicus adjacency workflow. First reproduces the old H21 approach — Rasterize Geometry → Fractal Noise 3D driven by position — on the built-in COP test geometry (rubber toy, pig head, shader ball) and shows it leaves visible UV seams. Also demos an H22 UX improvement: no preview-material node is needed anymore — selecting a node's 3D-output toggle previews it directly on the selected mesh, and pressing `X` in the network toggles between the 2D and 3D COP viewer. Then rebuilds the same noise using **Geometry to Adjacency → Attribute Sample with Adjacency → Fractal Noise 3D (driven by position from the adjacency sample)** and shows the seams completely disappear — confirmed on both the rubber toy and the pig head. Shows a secondary use: computing **curvature** on template-head geometry with a SOP Measure node (set to Curvature instead of Area — also demos that Network Editor node-info panels are themeable via Edit → Preferences → Network Editor), piping that curvature attribute through Geometry to Adjacency/Attribute Sample with Adjacency into COPs, and troubleshooting a gotcha: if the imported geometry already has a material assigned on its primitives, the COPs 3D preview won't display — fixed with an Attribute Delete removing the primitive material attribute. Demonstrates that only specific nodes are "adjacency-enabled" (support wiring directly to an adjacency network) — the **Reaction-Diffusion block** is adjacency-enabled (wired an adjacency + noise into its activation input, producing a seamless reaction-diffusion pattern across the whole mesh), the new **Ripple solver** also supports it, but the **Flow block** currently does not (only has a plain pass-through, no adjacency input — author is still investigating a workaround). Closes by round-tripping the curvature attribute back out of COPs into SOPs via Attribute Sample with Adjacency set to `mono` (scalar) type, confirming it matches the SOP-side curvature visualization.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. In a COP network (Copernicus), bring in test/character geometry (built-in test assets: pig head, rubber toy, shader ball, or your own SOP-level geometry via a geometry import node).
+2. **Old H21 method (for contrast):** Rasterize Geometry (rasterizes into UV space) → Fractal Noise 3D driven by `position` → visible seams at UV island boundaries.
+3. **H22 UX shortcut:** no preview-material node needed — click a node's 3D-output toggle to preview any node directly on the selected mesh in the viewport; press `X` inside the network editor to flip between 2D and 3D COP viewers.
+4. **New seamless method:** `Geometry to Adjacency` (wire in the mesh) → `Attribute Sample with Adjacency` (wire in the adjacency output) → drive a Fractal Noise 3D (or other 3D texture node) from the adjacency-sampled position — result has zero seams, works on any geometry (verified on both the rubber toy and pig head test assets).
+5. To rasterize a custom mesh attribute (not just position/noise): compute it upstream in SOPs — e.g. a `Measure` node set to **Curvature** (instead of the default Area) on template-head test geometry — optionally theme the Network Editor's node-info panel via Edit → Preferences → Network Editor → Node Info theme.
+6. Feed that SOP attribute through the same `Geometry to Adjacency` → `Attribute Sample with Adjacency` chain into COPs; if the 3D preview doesn't display on the mesh, check whether the geometry's primitives already carry a `material` attribute — delete it with an **Attribute Delete** (primitive class) to unblock the COPs 3D preview.
+7. Certain nodes are **adjacency-enabled** and accept an adjacency network directly as an input (e.g. the **Reaction-Diffusion block**'s activation input) for seamless simulation-driven texturing across a whole mesh with no seams; others (the **Flow block**, as of this recording) are not yet adjacency-enabled and only expose a plain pass-through.
+8. To pull a COPs-side computed attribute (e.g. curvature) back into SOPs, use `Attribute Sample with Adjacency` and set its output type to **mono** (scalar) rather than the default vector/float3 — mismatched types otherwise throw an error.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **New H22 Copernicus nodes:** `Geometry to Adjacency`, `Attribute Sample with Adjacency` (parameter: output type — vector/float3 by default, set to `mono` for scalar attributes like curvature), Reaction-Diffusion block (adjacency-enabled activation input), Ripple solver (also adjacency-enabled, not demoed in depth).
+- **Legacy/contrast node:** Rasterize Geometry (H21-era UV-space rasterization workflow that produces seams), Fractal Noise 3D (position-driven 3D texture).
+- **SOP nodes:** Measure (Area vs. **Curvature** measurement type), Attribute Delete (used on primitives to remove a blocking `material` attribute before COPs 3D preview will display).
+- **UI/UX notes:** 3D-output toggle on any COP node replaces the old preview-material workflow; `X` hotkey toggles 2D/3D COP viewer; Network Editor node-info panel is themeable via Edit → Preferences → Network Editor.
+- **Not adjacency-enabled (as of this recording):** Flow block (pass-through only).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — assumes basic Copernicus/COPs and SOPs familiarity; the adjacency workflow itself is presented as "bare essentials to get started."
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (new Adjacency nodes in Copernicus).
 
 ### Tags
-[PENDING EXTRACTION]
+cop, procedural, attributes, simulation, texturing, intermediate, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/basic-procedural-texturing-with-cops-in-houdini-21.md` — earlier COPs/procedural texturing workflow (pre-adjacency-node H21 approach this video explicitly contrasts against); shares tags: cop, procedural.
+- `references/copernicus.md` is the primary consult reference for COPs/GPU compositing and should be updated to mention the H22 adjacency nodes described here.
