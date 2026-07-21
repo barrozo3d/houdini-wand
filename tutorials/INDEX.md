@@ -96,6 +96,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Official SideFX masterclass (194 min) by Alexandre Sirois-Vigneux covering the new MPM solver: theory (deformation gradient F/Fe/Fp, jp/ge, CFL + Material Condition sub-stepping), the full node ecosystem (MPM Source/Collider/Container/Solver), and 8 full example scenes (Avalanche, Rally Drift, Ship Breach, Fruit Smash, Ice Cream Scoop, Hubble Explosion, Building Collapse) end-to-end from sim to SDF meshing to secondary emission to Karma XPU render, plus a troubleshooting/tips section (thin-collider particle-level collisions, pin constraints, sand cohesion, performance tuning).
 - **File:** tutorials/mpm-h205-masterclass.md
 
+
+### New Houdini 20.5 Feature: Mastering the MPM Snow Solver! ❄️
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=m2c8V94OIX8
+- **Author:** FaddyVFX
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/new-houdini-205-feature-mastering-the-mpm-snow-solver.md
+
 ---
 
 ## How to Read This Index
