@@ -156,6 +156,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Official SideFX beginner animator lesson (16m24s) posing/keyframing the "Electra" character via its embedded APEX rig using Apex Scene Animate (contrasted with old FK-only KineFX Rig Pose), covering Selection Sets (grouping controls, Ctrl+Shift group-rotation around a primary/COG control, importing sets shared by other animators), adding a second character via Apex Character + Apex Scene Add Character, keyframing both together across frames 10/75, and extracting the result with Apex Scene Invoke.
 - **File:** tutorials/houdini-20-how-to-pose-and-animate-electra.md
 
+
+### Forgotten Metal Knowledge | Vray, Cycles, Arnold..
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=uz8PIi3ELJg
+- **Author:** Lucas
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/forgotten-metal-knowledge-vray-cycles-arnold.md
+
 ---
 
 ## How to Read This Index
