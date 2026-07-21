@@ -161,9 +161,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=uz8PIi3ELJg
 - **Author:** Lucas
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** N/A (Blender/Cycles content)
+- **Tags:** rendering, advanced
+- **Summary:** NOTE: demonstrated entirely in Blender/Cycles, not Houdini — kept as a materials-theory reference. Renderer-agnostic PBR research on why real metal shows a "reflection tail-off" (sharp core + soft halo) from microscopic scratch density/roughness variation, and how to recreate it by stacking multiple BSDF layers of increasing roughness/decreasing presence rather than one roughness value. Compares this multi-layer approach against Clearcoat (cheap but distorts base material/isn't properly metallic) and GGX Tailoff control (near-free but limited/engine-dependent). Portable to Houdini via layered `mtlxstandard_surface`/`mtlxmix` MaterialX networks in Karma; see `references/render-pipeline.md`.
 - **File:** tutorials/forgotten-metal-knowledge-vray-cycles-arnold.md
 
 ---
