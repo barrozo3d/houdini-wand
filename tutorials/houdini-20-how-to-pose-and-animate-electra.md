@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=q6GE9WmZKeI
 author: Houdini
 ingested: 2026-07-20
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20"
+tags: [apex, kinefx, animation, rigging, beginner, houdini-20]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-20-how-to-pose-and-animate-electra/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 20 | How to Pose and Animate Electra
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-20-how-to-pose-and-animate-electra <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -189,30 +185,60 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:30] tutorials/frames/houdini-20-how-to-pose-and-animate-electra/frame_000.jpg
+- [2:25] tutorials/frames/houdini-20-how-to-pose-and-animate-electra/frame_001.jpg
+- [5:30] tutorials/frames/houdini-20-how-to-pose-and-animate-electra/frame_002.jpg
+- [6:10] tutorials/frames/houdini-20-how-to-pose-and-animate-electra/frame_003.jpg
+- [7:00] tutorials/frames/houdini-20-how-to-pose-and-animate-electra/frame_004.jpg
+- [10:30] tutorials/frames/houdini-20-how-to-pose-and-animate-electra/frame_005.jpg
+- [12:10] tutorials/frames/houdini-20-how-to-pose-and-animate-electra/frame_006.jpg
+- [15:40] tutorials/frames/houdini-20-how-to-pose-and-animate-electra/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Posing and keyframe-animating a character using the APEX rig embedded in test geometry (the "Electra" character) via **Apex Scene Animate**, contrasted against the older KineFX Rig Pose (FK-only) workflow, then extracting the animated result with **Apex Scene Invoke**; also covers working with two characters simultaneously via Apex Scene Add Character.
 
 ### Summary
-[PENDING EXTRACTION]
+Official SideFX beginner-level animator lesson (16m24s) demonstrating that APEX rigs can be embedded directly in character geometry for a fully animator-friendly workflow. Starts by showing the old KineFX method (Bone Deform + Rig Pose = forward-kinematics only, no anchoring) as a contrast, then switches to Apex Scene Animate, which exposes the character's built-in APEX rig with real IK (grabbing a foot handle moves it with the leg anchored). Covers Selection Sets (grouping multiple controls, e.g. "hands_torso", choosing a primary/COG control so Ctrl+Shift rotates the group around a chosen pivot instead of individually), importing selection sets authored by another animator and sharing them via the scene, reverse-foot heel/ball controls, adding a second character ("Futura") via Apex Character + Apex Scene Add Character (renaming it, plugging into a second input, distinguishing it visually via a metallic material), keyframing both characters together (frame 10 baseline pose, frame 75 target pose, `K` to key everything scoped in the channel list), and using Ctrl+Shift group-rotation as a kind of "FK on top of the rig's kinematic control." Ends with **Apex Scene Invoke** → "Output All Character Shapes" to extract the finished multi-character animation out of the embedded scene-animate node into the regular object level.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Set up an Animate desktop: collapse the animation editor, Spacebar+B for perspective view, turn off channel groups in the sidebar to focus on the channel list.
+2. Tab → type `ELE` → Enter twice to place the Electra character asset into the scene; double-click down to the geometry level where characters live.
+3. (Old KineFX method, shown for contrast) plug the character into **Bone Deform**, set display, Tab → **Rig Pose** to expose/pose the skeleton — this is FK-only; grabbing the pelvis shows no IK anchoring on the leg. Delete this approach once demonstrated.
+4. Correct APEX method: use **Apex Scene** output on the character (a version with its rig built in) → click the Animate tool to create a **Scene Animate** node, which exposes the embedded APEX rig's handles with real kinematics (dragging a foot handle keeps the leg anchored via IK).
+5. Note that posing done inside Scene Animate does not exist at the object level until extracted: Tab → **Apex Scene Invoke** → plug it in → click "Output All Character Shapes" to make the pose available at the object level for downstream use.
+6. Selection Sets: select multiple control handles in the viewport (they're scoped in the channel list, since APEX control parameters live on the character/HUD, not the traditional parameter pane) → "Create from Selection" → name it (e.g. `hands_torso`); use **Ctrl+Shift** while dragging to rotate the whole set around the last-selected (or a chosen primary, e.g. COG) control instead of each individually — set the primary control via the **Selection Set panel**.
+7. Import selection sets authored by another animator for the same character and apply them to Electra — instantly available controls for blocking/keyframing, upper body, lower body, fingers, and reverse-foot heel/ball groups.
+8. Add a second character: place a second Electra instance, change its material (e.g. metallic) to visually distinguish it, output it as **Apex Character** (unnamed, waiting to be added) instead of Apex Scene, then use **Apex Scene Add Character** to plug it into the first character's chain and rename it (e.g. "Futura") — check the **Rig Tree** panel to see each character's `.char` name and node hierarchy.
+9. Both characters now appear together under Scene Animate; apply/import selection sets to the second character the same way (referencing which character to apply to).
+10. Keyframe workflow: select the desired scoped controls (e.g. "all mover" + first character's COG via Shift-select) → go to frame 10 → press `K` to key everything currently scoped in the channel list → go to frame 75, pose (including Ctrl+Shift group rotations), press `K` again. Posing only affects keyed frames when parked exactly on a keyframe; otherwise posing changes are not retained.
+11. Layer additional keyframed detail: scope specific control nulls (e.g. shoulder), Ctrl+Shift-rotate the arm/hand as a group for combined FK-like control on top of the rig's IK, and key those at the same target frame so multiple characters' poses stay in sync at a shared frame.
+12. Finish: **Apex Scene Invoke** → "Output All Character Shapes" again (now including the second character) to preview/export the finished multi-character animated result.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Nodes:** Bone Deform, Rig Pose (KineFX, FK-only — shown as the outdated approach), Apex Scene (embeds the rig with the character), Apex Scene Animate (animator-facing posing/keyframing node, exposes rig handles), Apex Scene Invoke ("Output All Character Shapes" toggle to extract the pose to the object level), Apex Character (unnamed character output awaiting a name), Apex Scene Add Character (merges a second named character into the animate chain), Rig Tree panel (shows `<name>.char` hierarchy per character), Selection Sets panel (create/import/apply per-character selection sets, set primary/COG control).
+- **Controls used:** COG (center of gravity, primary pivot for group rotation), reverse-foot heel/ball controls, clavicle controls, shoulder null, elbow, knee, per-finger controls.
+- **Interaction patterns:** drag a handle for direct IK posing; **Ctrl+Shift** + drag rotates an entire selection set as a group around its primary control (described as "FK on top of kinematic control"); `K` keys every control currently scoped in the channel list at the current frame; Shift+F1 toggles on-screen viewport hints.
+- **Keyframe values used in the demo:** frame 10 (base/blocking pose) and frame 75 (target pose) for both characters.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — explicitly aimed at animators, including those new to Houdini; no VEX or Python scripting involved, pure animator-facing UI workflow.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 20.
 
 ### Tags
-[PENDING EXTRACTION]
+apex, kinefx, animation, rigging, beginner, houdini-20
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/apex-rigging-h20-masterclass.md` — the rig-building counterpart (how the embedded APEX rig used here is actually authored); shares tags: apex, kinefx, rigging, houdini-20.
+- `tutorials/apex-in-houdini-evolving-animation-workflows-for-production-matteo-martinez-pari.md` — covers the same Scene Animate / ragdoll / animation-layer caching concepts from a production-pipeline angle; shares tags: apex, kinefx, rigging, animation.
+- `tutorials/rig-builder-introduction.md` — same APEX/KineFX character-rigging umbrella (H21 Rig Builder series); shares tags: apex, kinefx, rigging.
+- `tutorials/rig-builder-project-overview.md` — same character-rigging umbrella; shares tags: kinefx, rigging, animation.
