@@ -146,6 +146,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Max Rose (SideFX) tours the Houdini 21 "iBot" character project (a spherical-eyeball robot) that the Rig Builder Series is built around: fully-procedural modeling (build-once/propagate for symmetric parts), geometry processing (color/naming), UDIM UV layout, COP2 texturing (with a noted UDIM-switching workflow limitation), and skeleton creation/assembly/capture, ending in an FBX export that becomes the import source for the series' first hands-on Rig Builder episode.
 - **File:** tutorials/rig-builder-project-overview.md
 
+
+### Houdini 20 | How to Pose and Animate Electra
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=q6GE9WmZKeI
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-20-how-to-pose-and-animate-electra.md
+
 ---
 
 ## How to Read This Index
