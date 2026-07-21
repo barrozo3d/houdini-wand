@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ewNpXaxZI6w
 author: Inside The Mind
 ingested: 2026-07-21
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H22"
+tags: [cop, time, retiming, looping, flipbook, simulation, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/new-time-nodes-in-cops-houdini-22/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 9
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # New Time Nodes in COPs | Houdini 22
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py new-time-nodes-in-cops-houdini-22 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -146,30 +142,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/new-time-nodes-in-cops-houdini-22/frame_000.jpg
+- [1:08] tutorials/frames/new-time-nodes-in-cops-houdini-22/frame_001.jpg
+- [1:47] tutorials/frames/new-time-nodes-in-cops-houdini-22/frame_002.jpg
+- [2:42] tutorials/frames/new-time-nodes-in-cops-houdini-22/frame_003.jpg
+- [3:40] tutorials/frames/new-time-nodes-in-cops-houdini-22/frame_004.jpg
+- [5:08] tutorials/frames/new-time-nodes-in-cops-houdini-22/frame_005.jpg
+- [6:50] tutorials/frames/new-time-nodes-in-cops-houdini-22/frame_006.jpg
+- [8:50] tutorials/frames/new-time-nodes-in-cops-houdini-22/frame_007.jpg
+- [9:42] tutorials/frames/new-time-nodes-in-cops-houdini-22/frame_008.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Houdini 22's four new time-related Copernicus (COPs) nodes — **Time Blend**, **Time Loop**, **Time Shift**, and **Time Pack** — for holding, looping, retiming, and multi-frame sampling of animated/simulated COP sequences, demoed on a Flow-block + grunge + Fractal Noise setup. Also covers the new (beta) **Copernicus auto-unload** setting for freeing VRAM.
 
 ### Summary
-[PENDING EXTRACTION]
+Feature walkthrough (12m24s) by "Inside The Mind" of the H22 time nodes, using a simple Flow block driven by one of the new grunges plus a fractal noise as the animated source. Opens with a practical VRAM tip: Edit → Copernicus Settings → **auto-unload** (beta) can unload nodes to free VRAM if high resolutions are causing memory pressure. **Time Blend** holds a chosen first frame (`$FSTART` by default — set e.g. 10 to freeze until frame 10, then simulate) and/or holds the last frame (set e.g. 30 to freeze everything after frame 30). **Time Loop** cycles the sequence (default 24-frame length, adjustable start/length) with three loop types: normal cycle, **zigzag** (ping-pongs back and forth), and **blend** (linear or cosine blend shapes that crossfade the loop seam — demoed by flipbooking 48 frames to MPlay; the blend produces a seamless-ish loop, results vary by content). **Time Shift** defaults to an absolute shift from/to `$FSTART` (a no-op); setting the "from" frame to 30 makes frame 1 show the frame-30 state. Also supports by-time mode (like the SOP Time Shift), frame clamping, a **relative shift** mode (a progress bar on the node shows where sampling occurs; author warns it can slow playback), and a **custom** mode that oddly defaults to `$FSTART` (holds the first frame) — set it to `$F` for normal behavior or a fixed frame (e.g. 120) to hold one specific simulated frame. **Time Pack** samples multiple frames of its input into a single "cable" — unpack with **Cable Unpack** (set *fields from input*) to expose them as `color0/color1/color2...` planes (prefix/suffix naming configurable). In relative mode with step 1 you get previous/current/next frame (verified frame-by-frame with a Switch node); absolute mode with a 1–10 range packs frames 1–10; a **step** of 5 samples every 5th frame. The author's best guess at its intended pairing is nodes needing temporal context like **Denoise AI** (which wants a previous frame); the docs only say "samples multiple frames." Ends noting more H22-feature videos are coming.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build any animated COP source (here: new-style grunge → Flow block, plus Fractal Noise) to feed the time nodes.
+2. **VRAM relief:** Edit → Copernicus Settings → set **auto-unload** (beta) to a non-default option to let Houdini unload node caches and free VRAM at high resolutions.
+3. **Hold frames — Time Blend:** set the first-frame parameter (default `$FSTART`) to e.g. 10 → output freezes on frame 1's state until frame 10, then plays; set the last-frame parameter to e.g. 30 → sequence freezes from frame 30 on.
+4. **Loop — Time Loop:** choose frame start + loop length (default 24); loop types: cycle, **zigzag** (ping-pong), or **blend** with linear/cosine shapes to crossfade the seam — judge blend results via an MPlay flipbook since real-time playback is hard to read.
+5. **Retime — Time Shift:** absolute mode with "from" = 30 shows the frame-30 state at frame 1; by-time mode behaves like the SOP Time Shift; clamp options available; relative mode offsets by N frames (watch for playback slowdown); custom mode: replace the odd `$FSTART` default with `$F` (passthrough) or a constant (e.g. 120) to pin one frame.
+6. **Multi-frame sampling — Time Pack → Cable Unpack:** wire the animated input into Time Pack; downstream, Cable Unpack with *set fields from input* exposes sampled frames as `color0..colorN`; relative mode + step 1 = prev/current/next frame; absolute mode + range 1–10 = those exact frames; step N = every Nth frame. Verify which plane is which frame using a Switch node against a reference branch.
+7. Likely pairing for Time Pack: temporal nodes such as **Denoise AI** that need the previous frame — pack current+previous and wire the cable in.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **New H22 COP nodes:** Time Blend (hold first/last frame, defaults `$FSTART`/`$FEND`), Time Loop (frame start, length, loop type: cycle/zigzag/blend, blend shape: linear/cosine), Time Shift (absolute / by-time / relative / custom modes, frame clamping; custom defaults to `$FSTART` — usually change to `$F`), Time Pack (relative/absolute, frame range, **step**, by-time option).
+- **Companion nodes:** Cable Unpack (*set fields from input*, prefix/suffix plane naming → `color0/1/2...`), Switch (for frame-verification), Flow block + grunge + Fractal Noise (demo source), Denoise AI (speculated Time Pack consumer), MPlay flipbook (for judging loop blends).
+- **Settings:** Edit → Copernicus Settings → **auto-unload** (beta) — frees VRAM by unloading node caches.
+- **Caveat:** relative Time Shift can slow playback; Time Pack's official intended use is undocumented as of this recording.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — assumes working COPs familiarity; the nodes themselves are simple but the Time Pack/Cable Unpack plane-mapping takes some care.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (all four time nodes new in 22; auto-unload setting in beta).
 
 ### Tags
-[PENDING EXTRACTION]
+cop, time, retiming, looping, flipbook, simulation, intermediate, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22.md` — same author/series covering H22 Copernicus adjacency nodes; shares tags: cop, houdini-22, simulation.
+- `tutorials/basic-procedural-texturing-with-cops-in-houdini-21.md` — foundational COPs workflow the demo setup builds on; shares tags: cop.
+- `references/copernicus.md` — primary COPs consult reference; should mention the H22 time nodes (Time Blend / Time Loop / Time Shift / Time Pack) described here.

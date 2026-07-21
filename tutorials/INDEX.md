@@ -172,9 +172,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ewNpXaxZI6w
 - **Author:** Inside The Mind
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H22
+- **Tags:** cop, time, retiming, looping, flipbook, simulation, intermediate, houdini-22
+- **Summary:** Walkthrough of H22's four new Copernicus time nodes — Time Blend (hold first/last frames), Time Loop (cycle/zigzag/blend loop types), Time Shift (absolute/by-time/relative/custom retiming), and Time Pack + Cable Unpack (multi-frame sampling into color0..N planes, likely for Denoise AI-style temporal nodes) — plus the beta Copernicus auto-unload setting for freeing VRAM.
 - **File:** tutorials/new-time-nodes-in-cops-houdini-22.md
 
 ---
