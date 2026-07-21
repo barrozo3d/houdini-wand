@@ -137,6 +137,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **File:** tutorials/rig-builder-introduction.md
 - **File:** tutorials/rig-builder-introduction.md
 
+
+### Rig Builder | Project Overview
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=VFF2TLfbU3A
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/rig-builder-project-overview.md
+
 ---
 
 ## How to Read This Index
