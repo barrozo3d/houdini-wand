@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=IeVvQt0bHQ0
 author: Houdini
 ingested: 2026-07-21
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H22"
+tags: [cop, lop, solaris, karma, rendering, usd, volumes, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 22 | How to Render Terrains in Solaris | Height Fields from COPs to LOPs
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -292,30 +288,66 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [2:16] tutorials/frames/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops/frame_000.jpg
+- [5:45] tutorials/frames/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops/frame_001.jpg
+- [9:06] tutorials/frames/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops/frame_002.jpg
+- [11:20] tutorials/frames/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops/frame_003.jpg
+- [13:26] tutorials/frames/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops/frame_004.jpg
+- [15:07] tutorials/frames/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops/frame_005.jpg
+- [17:20] tutorials/frames/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Converting a COPs-built heightfield to renderable polygons with `Convert HeightField`, exporting erosion fields (debris/sediment/flow) via `Cable Pack` extra layers, and rendering the terrain in Solaris with Karma XPU — including H22's new pre-render Image Filters (chromatic aberration, vignette, tone mapping).
 
 ### Summary
-[PENDING EXTRACTION]
+Official SideFX follow-up to the H22 "terrains how-to": takes a heightfield authored inside a COP network and walks the full path to a final rendered image in Solaris. Covers resolution control on the COPnet (1K→2K→4K), volume→mesh conversion, packing extra erosion AOV-style attributes out of `HeightField Erode`, real-world scale correction (the #1 reason atmospheric haze looks wrong), Karma Physical Sky's atmosphere dome mode, Quick Surface Material lookdev, snapshot-based 2K vs 4K comparison, and the new H22 image filter stack on Karma Render Settings.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. In the heightfield COPnet, disable per-layer resolution on the first `HeightField` layer and enable **default resolution on the COP network node** itself — resolution (1K/2K/4K) then becomes a single switchable menu; author at 2K, render final at 4K.
+2. The COPnet output is a volume (height + color fields), not renderable geometry — append `Convert HeightField` (SOP) to convert to polygons (~4.19M polys at 4K; `height` and `Cd` become point attributes). Frame at 2:16 confirms: Convert to **Polygons**, Connectivity **Quadrilaterals**.
+3. Enable **Use External COP** on the copnet and pin an internal `null` (e.g. `OUT_terrain_render`) as the external node — protects the output from accidental display-flag changes inside the network.
+4. Export extra erosion data: inside the copnet, `HeightField Erode` exposes `debris`, `sediment`, `flow` fields. `HeightField Visualize` accepts only one extra-layer input, so merge them with a `Cable Pack` COP (**Fields From Inputs** on — names become attribute names), then plug the packed cable into the visualize node's layers input. After `Convert HeightField` they appear as geometry attributes usable as render masks.
+5. Jump to Solaris (`/stage` or a `LOP Network`) and bring the terrain in with `Scene Import (All)`; use the pattern field to import only the heightfield container if the OBJ level has other nodes.
+6. Light with `Karma Physical Sky` (intensity ≈ 2.5, adjust solar altitude; final solar azimuth 30°). Set **Sky Mode: Atmosphere** on the dome light, then raise Rayleigh scale (high) and scatter distribution ≈ 6.25 for distance haze.
+7. Fix world scale: the imported terrain is 1km×1km — too small for a desert vista. Insert a `Transform` LOP, set **Primitives → All Mesh Primitives** (required, otherwise nothing moves), uniform scale 5, rotate Y -90. Haze immediately reads more realistic at correct scale.
+8. Assign a `Quick Surface Material` (drop onto terrain, choose the `height` prim); default reads `displayColor` but ships too specular — raise **Roughness to 0.75** for dry rock.
+9. Compare quality levels with the viewport **snapshot strip**: snapshot at 2K, switch copnet to 4K, restart render, snapshot again, double-click to A/B compare.
+10. For final output use `Karma` (Karma Setup preset: render settings + USD Render ROP; "do not precompile" is fine for one quick material), pick Karma XPU on GPU (or CPU with samples ≈ 16), verify the camera path on the render settings, then Render to MPlay or Render to Disk.
+11. New in H22 — **Image Filters** on Karma Render Settings: click Filters → + to stack pre-render effects: chromatic aberration (divide global distortion by ~10), vignette (e.g. 0.75 / 1.25 / 0.5), tone mapping (ACES Filmic).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `COP Network` (SOP-level copnet) → default resolution menu: 1K/2K/4K; **Use External COP** toggle
+- `Convert HeightField` → Convert to: Polygons, Connectivity: Quadrilaterals (4K ≈ 4.19M polygons; `height`, `Cd` point attrs)
+- `HeightField Erode` (COP) → extra fields: `debris`, `sediment`, `flow`
+- `Cable Pack` (COP) → **Fields From Inputs: on** → into `HeightField Visualize` extra layers input
+- `Null` (`OUT_terrain_render`) pinned as External COP node
+- `Scene Import (All)` (LOP) → import pattern to filter containers
+- `Karma Physical Sky` → Intensity 2.5, Solar Azimuth 30°, **Sky Mode: Atmosphere** → Rayleigh scale high, scatter distribution 6.25
+- `Transform` (LOP) → Primitives: **All Mesh Primitives**, Uniform Scale 5, Rotate Y -90
+- `Quick Surface Material` → Roughness 0.75 (reads `displayColor` by default)
+- `Karma` (Karma Setup: Karma Render Settings + USD Render ROP) → XPU; CPU alternative with samples 16
+- Karma Render Settings → **Filters** (H22): Chromatic Aberration (global distortion ÷10), Vignette (0.75 / 1.25 / 0.5, Shape: Round, Circle Radius 0.75), Tone Map: ACES Filmic
+- Viewport snapshot strip for A/B render comparison; `U` key to jump up a network level; Spacebar+G to frame selection
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H22 (official SideFX how-to; image filters are new in 22)
 
 ### Tags
-[PENDING EXTRACTION]
+cop, lop, solaris, karma, rendering, usd, volumes, intermediate, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Create Seamless Textures with Adjacency Nodes and Simulations | Houdini 22](create-seamless-textures-with-adjacency-nodes-and-simulations-houdini-22.md) — H22 COPs feature work (shared tags: cop, houdini-22)
+- [New Time Nodes in COPs | Houdini 22](new-time-nodes-in-cops-houdini-22.md) — H22 Copernicus additions, also uses Cable Pack (shared tags: cop, houdini-22)
+- [Intro To Houdini Solaris - Full Beginner Course](intro-to-houdini-solaris---full-beginner-course.md) — foundations for the Solaris/Karma half of this workflow (shared tags: solaris, karma, rendering)
+- [Creating Cliff Shapes in Cops | Free Lesson](creating-cliff-shapes-in-cops-free-lesson.md) — authoring terrain-style shapes in COPs (shared tags: cop/terrain, procedural)

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=QUnkozOK4Ro
 author: Voxyde VFX
 ingested: 2026-07-21
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H22 (Indie 22.0)"
+tags: [vdb, sdf, volumes, vop, sop, cop, solaris, karma, compositing, animation, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/morph-anything-with-vdbs-in-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Morph Anything with VDBs in Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py morph-anything-with-vdbs-in-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -404,30 +400,67 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [3:40] tutorials/frames/morph-anything-with-vdbs-in-houdini/frame_000.jpg
+- [6:06] tutorials/frames/morph-anything-with-vdbs-in-houdini/frame_001.jpg
+- [8:14] tutorials/frames/morph-anything-with-vdbs-in-houdini/frame_002.jpg
+- [10:40] tutorials/frames/morph-anything-with-vdbs-in-houdini/frame_003.jpg
+- [14:55] tutorials/frames/morph-anything-with-vdbs-in-houdini/frame_004.jpg
+- [18:25] tutorials/frames/morph-anything-with-vdbs-in-houdini/frame_005.jpg
+- [20:14] tutorials/frames/morph-anything-with-vdbs-in-houdini/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+SDF-based morphing: blend two `VDB from Polygons` SDFs of the same object (detailed vs smoothed) inside a `Volume VOP` using `Volume Sample` + `Mix`, driven by an animated bounding-box gradient mask with noise, plus a ramp-shaped SDF push-out that creates a "leading edge" ridge along the transition front.
 
 ### Summary
-[PENDING EXTRACTION]
+Voxyde VFX production technique (used for a real shoe-sole pattern-reveal shot): morphing/transition effects are far easier on SDF volumes than on geometry — no topology matching, no self-intersections, no normal headaches. The tutorial builds the reveal from scratch (isolate sole → close it → two SDF versions → Volume VOP blend with travelling mask → ridge push → convert back to polygons), then tours the Solaris render setup (COPs-built tileable diamond sole texture, 4-light rig) and the Nuke comp where the final dark/green look was built almost entirely from reflection/rim AOV passes with bokeh depth of field added in comp.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Prep: import shoe model (Sketchfab, user AR41K), `UV Transform`, `Match Size` to rest on ground. `Assemble` (Create Packed Geometry) so viewport box-selects grab whole pieces; isolate the sole with front-view select + `Blast`/delete, then `Unpack`.
+2. Close the hollow sole with `PolyFill` (the **Poly Cap** preset — right settings out of the box) so it can become a valid SDF. Model-dependent: production would request a watertight version from modeling.
+3. `VDB from Polygons` → this is the **pattern SDF**. Work at voxel size 0.01–0.02; final resolution 0.005 recovers nearly all original detail (~600k points after conversion).
+4. Build the **smooth SDF** from a second `VDB from Polygons`: `VDB Reshape SDF` (Dilate, ~2 voxels) → `VDB Smooth SDF` (raise iterations + filter voxel radius; template original geo to keep boundaries) → `VDB Reshape SDF` set to **Erode** to shrink back to the original silhouette. Not 1:1 perfect, but good enough.
+5. Make the two SDFs compatible: `VDB Resample` on the smooth branch (Using Voxel Size Only, voxel size channel-referenced from the pattern's `VDB from Polygons` so they always match) and `VDB Activate SDF` on **both** branches (Use World Space Units, expand ~0.2) — activated voxels beyond the narrow band are required for the later push/erode; computed once since it's not animated.
+6. `Volume VOP` (smooth SDF in input 1, pattern VDB wired as input 2/OpInput2): `Volume Sample` at current voxel `P` from input 2 → `Mix` between bound `surface` value and the sample → `Bind Export` named `surface`. The mix bias is the morph control.
+7. Travelling mask (the reusable core setup): duplicate Global node → `Relative to Bounding Box` on `P` → `Vector to Float` (pick the axis along the sole — X here, not Z) → `Add` a promoted **Animate** offset parameter → `Fit Range` (promote source max as **Width** for transition sharpness) → into the Mix bias. Add a `Turbulent Noise` (3D, set to Simplex; promoted input parameters) added onto the mask for an irregular front. Note: SDFs have no color preview — judge the mask by plugging it straight into Mix.
+8. Leading-edge ridge: remap the 0→1 mask through a **spline/B-spline Ramp Parameter** shaped 0→1→0, `Multiply` by a promoted **Push** parameter (≈ -0.02; subtracting from an SDF dilates, adding erodes), and `Add` it to the surface value — the surface bulges only where the transition front currently is; B-spline ramp point placement controls where the ridge sits.
+9. Animate the **Animate** parameter (e.g. -0.09 at frame 1 → 0.14 at frame 120), then `Convert VDB` back to polygons for material assignment/rendering. Raise the two voxel sizes to 0.005 for final.
+10. Why not geometry: a `Peak` push on polygons immediately self-intersects, and erosion is essentially impossible — SDFs sidestep all of it.
+11. Solaris setup (in the project file): Scene Import of shoe-minus-sole with its supplied material, merged with camera (target/transition camera rig); sole gets a custom material whose diamond tread texture is built in a Copernicus COP network — diamond shape + **Feather** (Distance for Unit Change) + detail → **Shape Scatter** for tiling → export normal/height/color into a Material Builder. Lighting: rim + fill + secondary sharp rim + end-of-sequence shoe rim, plus a noise-material sphere background.
+12. Nuke comp (where the final look was made): rebuild beauty from shuffled AOVs, animate lights on/off in comp rather than re-rendering; the released dark version is driven almost entirely by combined reflection/rim passes desaturated then tinted green, facing-ratio pass, glow, comp-side **Bokeh** DOF (DOF removed from the 3D render), borrowed darkened background, diffusion — iterate looks in comp, re-render 3D elements only when needed.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- `Assemble` (Create Packed Geometry) → easier viewport selection; `Blast` + front-view select to isolate sole; `Unpack`
+- `PolyFill` — Poly Cap preset (Single Polygons, auto-complete boundaries) to close hollow geo
+- `VDB from Polygons` → voxel size: 0.01–0.02 working, **0.005 final**
+- Smooth branch: `VDB Reshape SDF` (Dilate 2) → `VDB Smooth SDF` (iterations + filter voxel radius up) → `VDB Reshape SDF` (**Erode**)
+- `VDB Resample` → Using Voxel Size Only, voxel size via relative channel reference to pattern branch
+- `VDB Activate SDF` → Use World Space Units, expand 0.2 (both branches; needed for push/erode later)
+- `Volume VOP`: `Volume Sample` (OpInput2, sample at voxel P) → `Mix` (bias = mask) → `Bind Export` name `surface`
+- Mask chain: `Relative to Bounding Box` → `Vector to Float` (component = travel axis) → `Add` (promoted **Animate**) → `Fit Range` (promoted source max = **Width**) → `Turbulent Noise` (Simplex, Add mode)
+- Ridge: `Ramp Parameter` (spline/B-spline, 0→1→0) → `Multiply` (promoted **Push** ≈ -0.02) → `Add` to surface; negative = dilate, positive = erode
+- `Convert VDB` → back to polygons (~600k pts at 0.005)
+- Copernicus texture: diamond shape → `Feather` (Distance for Unit Change) → `Shape Scatter` → normal/height/color maps → Material Builder
+- Keyframes: Animate -0.09 (f1) → 0.14 (f120)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+H22 (Houdini Indie 22.0 visible in title bar); technique works in any VDB-era Houdini
 
 ### Tags
-[PENDING EXTRACTION]
+vdb, sdf, volumes, vop, sop, cop, solaris, karma, compositing, animation, intermediate, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Intro To Houdini Volumes - Beginner Course](intro-to-houdini-volumes---beginner-course.md) — same author's foundations for SDF/VDB and volume VOP work (shared tags: volumes, vdb, sdf, vop)
+- [Intro To Houdini Solaris - Full Beginner Course](intro-to-houdini-solaris---full-beginner-course.md) — same author's deep dive on the Solaris/Karma render half (shared tags: solaris, karma)
+- [module i   week 03   01   introduction to volumes v1 1080p](module-i-week-03-01-introduction-to-volumes-v1-1080p.md) — VDB reshape/SDF fundamentals (shared tags: volumes, vdb, sdf)
+- [Vex Problem Solving in Houdini](vex-problem-solving-in-houdini.md) — SDF/gradient-driven procedural tricks (shared tags: vdb, sdf)

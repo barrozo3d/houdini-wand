@@ -182,9 +182,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=IeVvQt0bHQ0
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H22
+- **Tags:** cop, lop, solaris, karma, rendering, usd, volumes, intermediate, houdini-22
+- **Summary:** Official SideFX how-to (18m3s): take a COPs-authored heightfield to a final Karma XPU render in Solaris. COPnet-level resolution switching (2K work / 4K final), `Convert HeightField` volume→polygon conversion, Use External COP output pinning, exporting `HeightField Erode` debris/sediment/flow fields via `Cable Pack` (Fields From Inputs) as geometry attributes for render masks, Scene Import → Karma Physical Sky with Atmosphere dome mode (Rayleigh scale + scatter distribution 6.25 for haze), real-world scale fix via Transform LOP (All Mesh Primitives), Quick Surface Material roughness 0.75, snapshot-strip 2K/4K comparison, and H22's new Image Filters on Karma Render Settings (chromatic aberration, vignette, ACES Filmic tone map).
 - **File:** tutorials/houdini-22-how-to-render-terrains-in-solaris-height-fields-from-cops-to-lops.md
 
 
@@ -192,9 +192,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=QUnkozOK4Ro
 - **Author:** Voxyde VFX
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H22 (Indie 22.0; technique version-agnostic)
+- **Tags:** vdb, sdf, volumes, vop, sop, cop, solaris, karma, compositing, animation, intermediate, houdini-22
+- **Summary:** Voxyde VFX production technique (23m23s): reveal a shoe-sole tread pattern by morphing between two SDFs instead of deforming geometry (no topology matching or self-intersections). Pipeline: isolate + PolyFill the sole → pattern SDF via `VDB from Polygons` (final voxel 0.005) and smooth SDF via Reshape(Dilate)→Smooth→Reshape(Erode) → match voxel sizes with `VDB Resample` + expand bands with `VDB Activate SDF` (needed for push/erode) → `Volume VOP` blending via `Volume Sample`+`Mix` driven by an animated relative-bbox gradient mask (promoted Animate/Width params + simplex turbulent noise) with a 0→1→0 ramp × Push (-0.02) SDF dilation ridge as leading edge → `Convert VDB` for render. Includes Solaris walkthrough (COPs diamond tread texture via Feather + Shape Scatter, 4-light rim rig) and a Nuke comp segment building the final dark-green look from reflection/rim AOVs with comp-side bokeh DOF.
 - **File:** tutorials/morph-anything-with-vdbs-in-houdini.md
 
 ---
