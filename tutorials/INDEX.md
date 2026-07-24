@@ -217,6 +217,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/abstract-liquid-in-houdini-part-01---building-the-simulation.md
 
+
+### Abstract liquid in Houdini | Part 02 - Look Development
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=axBNpCzJuPY
+- **Author:** Kotov Roman
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/abstract-liquid-in-houdini-part-02---look-development.md
+
 ---
 
 ## How to Read This Index
