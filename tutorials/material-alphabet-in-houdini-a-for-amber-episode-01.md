@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=nyqL7CA6phk
 author: Kotov Roman
 ingested: 2026-07-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [sop, volumes, vop, procedural, modelling, rendering, redshift, attributes, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-01/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Material alphabet in Houdini: A for Amber | Episode 01
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py material-alphabet-in-houdini-a-for-amber-episode-01 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -167,30 +163,56 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:20] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-01/frame_000.jpg
+- [2:30] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-01/frame_001.jpg
+- [3:30] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-01/frame_002.jpg
+- [4:10] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-01/frame_003.jpg
+- [5:25] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-01/frame_004.jpg
+- [7:12] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-01/frame_005.jpg
+- [8:50] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-01/frame_006.jpg
+- [10:10] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-01/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Amber material study on a font letter: VDB round-tripping for thickness/bevel on complex text geometry, internal "cracks" made by Boolean-intersecting noise-displaced grids scattered inside a VDB fog volume, a refractive orange Redshift material (with the thin-walled pitfall demonstrated), rect-light-behind-subject lighting on black, and scattered pscale-randomized points as air bubbles.
 
 ### Summary
-[PENDING EXTRACTION]
+Episode 1 of Kotov Roman's "Material Alphabet" series (one material study per letter; process-focused, not a strict step-by-step). A Font SOP "A" gets thickness via PolyExtrude, but PolyBevel fails on the complex letter geometry — so it's converted to VDB (VDB from Polygons) and back (Convert VDB), with VDB Smooth + higher resolution fixing jagged edges and Remesh (low target size) fixing the poor Convert topology. Internal crack planes: VDB fog of the letter → Scatter (density modulated by anti-aliased noise in a Volume VOP, fit from ±0.3, scalar ramp, parameters promoted) → Attribute Randomize normals (inside sphere; id-seeded for animation, id exported from Scatter) → Copy to Points of small Mountain-noised grids → Boolean Intersect (letter in input A, grids in B, **B as Surface** since grids have no volume) → Normal node. Look-dev in Redshift is shown honestly with dead ends: the insides render black under a refractive shell (thin-walled experiments, trace depth changes, geometry rework), fixed by Labs Thickness (requires Boolean B=Solid), simpler noise, fewer grids, and above all lighting — black background (grid off, HDRI camera rays off), a rectangle light behind/above the subject plus a second lower-left copy, and thin-walled disabled on the shell. Air bubbles reuse the scatter recipe with points instead of grids, randomizing pscale (Render Objects as Particles + pscale attribute enabled). Continues in episode 2.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Setup container** (red, labeled `setup`): Font SOP laid flat, letter "A"; a second copy typed "Amber" with letter spacing increased (kept as an option).
+2. **Reference check**: real amber is reflective, low roughness, smooth surfaces with intricate internal/surface cracks.
+3. **Thickness**: PolyExtrude → PolyBevel *fails* on complex font geometry → instead **VDB from Polygons → Convert VDB** (fine detail doesn't need preserving), **VDB Smooth** (tone it down by raising VDB resolution) to fix jagged edges, **Remesh** with low target size to fix Convert's topology.
+4. **Internal cracks**: **VDB Fog** of the letter → **Volume VOP** (Anti-Aliased Noise, ±0.3 → Fit → scalar Ramp; promote noise parms + Create Input Parameters so you tune from outside) modulating **Scatter** density (reduced point count) → **Attribute Randomize** on N (*Inside Sphere*; seed = `id` for animation stability — export `id` from Scatter) → **Copy to Points** of small grids (+ Mountain noise) → **Boolean Intersect**: letter into input 1, grids into input 2, **Treat B as Surface** (grids have no volume) → **Normal** node after the Boolean.
+5. **MOPs Noise Falloff** added speculatively for shading masks later.
+6. **Render organization**: `OUT_`-prefixed nulls (`OUT_shell`, `OUT_insides`), separate `shell_render` / `insides_render` containers with Object Merges.
+7. **Scene**: dome light + HDRI, camera, vertical format (Alt+`[` splits a pane vertically, Alt+`]` horizontally), ROP `cam1`.
+8. **Amber material** (RS Standard): transparency 1, depth increased, orange refraction color, reflection roughness 0; iterate refraction/reflection roughness with Render View snapshots + screenshots for reference.
+9. **Debugging black insides** (documented dead ends): thin-walled on shell material — no; separate insides material with thin-walled — no; trace depth — partial; restart from a clean white transparent material; ultimately: **Labs Thickness** on the insides (needs Boolean **B = Solid**), simpler noise type, fewer/smaller grids.
+10. **Lighting fix** (the real problem): reference has a black background → disable background grid and HDRI **camera rays**; rectangle light behind and slightly above the subject (raise + boost exposure when it shines through too much; widen for more reflections on the letter), duplicate light lower-left (kept out from under the letter), **disable thin-walled on the shell**, tune light intensity.
+11. **Air bubbles**: same scatter recipe but bare points, Attribute Randomize on `pscale` instead of N; `OUT_points` null → own render container; enable **Render Objects as Particles** (Particles tab) and tick the pscale attribute.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Geometry**: Font, PolyExtrude, PolyBevel (fails on complex geo — the lesson), VDB from Polygons, Convert VDB, VDB Smooth, Remesh (target size), VDB Fog, Scatter (density by volume noise; export id), Volume VOP (Anti-Aliased Noise → Fit → scalar Ramp, promoted parms), Attribute Randomize (N inside-sphere / pscale, seed `id`), Copy to Points, Grid, Mountain, Boolean Intersect (Treat B as Surface vs Solid), Normal, Labs **Thickness**, MOPs Noise Falloff, Null (`OUT_*` convention), Object Merge per render container.
+- **Redshift**: RS Standard Material — transparency/refraction (depth, orange color), reflection roughness, thin-walled toggle (and why it hurt the shell), trace depth; dome light (disable camera rays), rectangle lights (position behind subject, exposure, size), Render Objects as Particles + pscale; Render View snapshots; ROP per camera.
+- **UI**: Alt+`[` / Alt+`]` viewport splitting; red setup / gray hidden container color conventions.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (Redshift renderer; MOPs and SideFX Labs installed)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, volumes, vop, procedural, modelling, rendering, redshift, attributes, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Abstract liquid in Houdini | Part 01 - Building the simulation](abstract-liquid-in-houdini-part-01---building-the-simulation.md) — same author; shares the noise→fit→ramp VOP pattern and Redshift workflow
+- [Abstract liquid in Houdini | Part 02 - Look Development](abstract-liquid-in-houdini-part-02---look-development.md) — same author's Redshift look-dev habits (snapshots, light rigs, render containers)
