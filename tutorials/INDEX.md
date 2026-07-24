@@ -207,6 +207,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/summon-vfx-3-set-the-character-cloth.md
 
+
+### Abstract liquid in Houdini  |  Part 01 - Building the simulation
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=pFvA23fP5I8
+- **Author:** Kotov Roman
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/abstract-liquid-in-houdini-part-01---building-the-simulation.md
+
 ---
 
 ## How to Read This Index
