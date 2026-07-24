@@ -232,9 +232,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=YqS517Rvhzo
 - **Author:** Kotov Roman
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** N/A (After Effects)
+- **Tags:** compositing, rendering, redshift, beginner
+- **Summary:** Part 3/3 — After Effects finish of the Redshift renders: Preserve RGB interpretation for linear footage, Neat Video Reduce Noise (profile built on the noisiest frame, ±2 temporal frames vs spatial detail trade-off), adjustment-layer stack (S-curve, masked exposure/gamma vignette, radial zoom blur amount 3 + Fast Box Blur for lens edges, Lumetri vibrance/faded-film/color wheels, dual Unsharp Mask + 3% noise + Add Grain 0.4/0.12), Hue vs Hue/Sat/Luma curves to match camera 2's reds, A-B-A master comp.
 - **File:** tutorials/abstract-liquid-in-houdini-part-03---color-grading.md
 
 

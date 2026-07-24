@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=YqS517Rvhzo
 author: Kotov Roman
 ingested: 2026-07-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "N/A"
+tags: [compositing, rendering, redshift, beginner]
+extraction_status: complete
 frames_dir: tutorials/frames/abstract-liquid-in-houdini-part-03---color-grading/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 6
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Abstract liquid in Houdini | Part 03 - Color Grading
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py abstract-liquid-in-houdini-part-03---color-grading <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -122,30 +118,50 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:41] tutorials/frames/abstract-liquid-in-houdini-part-03---color-grading/frame_000.jpg
+- [1:45] tutorials/frames/abstract-liquid-in-houdini-part-03---color-grading/frame_001.jpg
+- [2:45] tutorials/frames/abstract-liquid-in-houdini-part-03---color-grading/frame_002.jpg
+- [4:30] tutorials/frames/abstract-liquid-in-houdini-part-03---color-grading/frame_003.jpg
+- [5:44] tutorials/frames/abstract-liquid-in-houdini-part-03---color-grading/frame_004.jpg
+- [6:55] tutorials/frames/abstract-liquid-in-houdini-part-03---color-grading/frame_005.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+After Effects finishing pass for linear Redshift renders: Preserve RGB footage interpretation, Neat Video denoising on a worst-frame-built profile, stacked adjustment layers (curves → masked exposure vignettes → zoom blur edge artifacts → Lumetri grade → unsharp/noise/grain), Hue-vs curves to match a second camera's reds, and an A-B-A master comp.
 
 ### Summary
-[PENDING EXTRACTION]
+Part 3 (the only non-Houdini part of the series) grades the two camera renders from part 2 in After Effects. Because the renders are linear and AE assumes sRGB, each footage item gets Ctrl+Alt+G (Interpret Footage) → Color → **Preserve RGB**. Denoising uses the Reduce Noise plugin (Neat Video) on an adjustment layer: find the noisiest frame, build the profile from the noisiest area, then balance temporal frames (±2) against spatial noise reduction to keep detail. The grade is a stack of adjustment layers: S-curve + exposure, a feathered/inverted mask darkening foreground and distant particles (exposure with lowered gamma + desaturation), a subtle radial zoom blur (amount 3, masked to corners) plus a light Fast Box Blur to fake lens-edge artifacts, Lumetri Color (vibrance up/saturation down, faded film, cool shadows/warm highlights via color wheels), two-pass Unsharp Mask (~20, then radius 2 at lower amount for highlight crispness), 3% noise before the sharpen, and Add Grain (final-output view, size 0.4, intensity 0.12, ~2%). The whole stack is copied to camera 2's comp and matched by eye — Hue vs Hue / Hue vs Saturation / Hue vs Luma curves pull that camera's reds into line (light temperature/angle dependent, so no universal values). Both comps go into a master comp cut A-B-A, rendered via Ctrl+M.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Import renders; per footage item: Ctrl+Alt+G → Color tab → **Preserve RGB** (fixes linear-vs-sRGB shift). Create comps by dragging onto the comp icon.
+2. **Denoise adjustment layer** (Ctrl+Alt+Y): Reduce Noise (Neat Video; found via Video Copilot's Effects Console search). Scrub to the *noisiest* frame, select the noisiest area, **Build Profile**; in adjustment preview (MMB pans + temporarily shows "before") set temporal to 2 frames before/after, then in the Spatial tab lower noise level to trade some noise back for detail. Scrub to check for artifacts.
+3. **CG (grade) layer**: standard S-curve (raise/lower to protect clipping darks) + Exposure up for contrast.
+4. **Layer mask vignette**: Exposure effect with lowered gamma on its own adjustment layer, masked (recolored mask for visibility, feathered, inverted, repositioned) to darken near/far particles; plus Hue/Saturation dropping saturation there.
+5. **Lens-edge artifacts**: Radial Blur (Zoom type) at 15 → renamed "zoom blur" → same feathered/inverted corner mask → amount down to 3 (regular Chromatic Aberration didn't work; VR Chromatic Aberration would have been the right pick). Later augmented with a very-low-radius **Fast Box Blur**.
+6. **Lumetri Color** on the CG layer: vibrance up, saturation down, slight Faded Film, color wheels — shadows colder, highlights warmer, shadows lowered slightly.
+7. **Sharpen/texture**: "Unsharp" adjustment layer with two Unsharp Masks (amount ~20; second radius 2, lower amount — crisps highlights), **Noise 3%** *before* the sharpening, **Add Grain** (viewing mode Final Output, size 0.4, intensity 0.12–0.15, ~2%).
+8. **Second comp**: copy all layers, view side-by-side with a second viewer; match contrast on Curves, then **Hue vs Hue / Hue vs Saturation / Hue vs Luma** with the color picker on the reds to shift hue, drop saturation, and drop luminosity until the two cameras match.
+9. **Master comp**: both comps arranged A-B-A (cam1 → cam2 → cam1); Ctrl+M to queue and render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+None — this part is entirely After Effects (finishing the Houdini/Redshift renders from parts 1–2). AE tools: Interpret Footage (Preserve RGB), adjustment layers, Reduce Noise (Neat Video), Curves (incl. Hue vs Hue/Sat/Luma), Exposure, Hue/Saturation, Radial Blur (Zoom), Fast Box Blur, Lumetri Color (vibrance, faded film, color wheels), Unsharp Mask ×2, Noise, Add Grain, masks (feather/invert), master comp + render queue.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner
 
 ### Houdini Version
-[PENDING EXTRACTION]
+N/A (After Effects part of the series; renders from parts 1–2)
 
 ### Tags
-[PENDING EXTRACTION]
+compositing, rendering, redshift, beginner
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Abstract liquid in Houdini | Part 01 - Building the simulation](abstract-liquid-in-houdini-part-01---building-the-simulation.md) — the FLIP sim
+- [Abstract liquid in Houdini | Part 02 - Look Development](abstract-liquid-in-houdini-part-02---look-development.md) — the renders graded here
