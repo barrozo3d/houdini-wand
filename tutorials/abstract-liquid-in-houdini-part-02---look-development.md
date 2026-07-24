@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=axBNpCzJuPY
 author: Kotov Roman
 ingested: 2026-07-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [redshift, rendering, particles, attributes, vop, sop, animation, procedural, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/abstract-liquid-in-houdini-part-02---look-development/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Abstract liquid in Houdini | Part 02 - Look Development
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py abstract-liquid-in-houdini-part-02---look-development <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -378,30 +374,64 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:20] tutorials/frames/abstract-liquid-in-houdini-part-02---look-development/frame_000.jpg
+- [3:55] tutorials/frames/abstract-liquid-in-houdini-part-02---look-development/frame_001.jpg
+- [7:22] tutorials/frames/abstract-liquid-in-houdini-part-02---look-development/frame_002.jpg
+- [8:55] tutorials/frames/abstract-liquid-in-houdini-part-02---look-development/frame_003.jpg
+- [11:50] tutorials/frames/abstract-liquid-in-houdini-part-02---look-development/frame_004.jpg
+- [14:35] tutorials/frames/abstract-liquid-in-houdini-part-02---look-development/frame_005.jpg
+- [16:20] tutorials/frames/abstract-liquid-in-houdini-part-02---look-development/frame_006.jpg
+- [24:25] tutorials/frames/abstract-liquid-in-houdini-part-02---look-development/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Redshift look development for a particle FLIP render: density-attribute-driven color via Particle Attribute Lookup + ramps, fake SSS through RS Material back-lighting translucency, inverted-Fresnel roughness to tame particle reflection noise, rectangle-light rigs per camera, a trail-derived particle path used as a camera Follow Path constraint, and per-camera ROPs with wildcard forced lights.
 
 ### Summary
-[PENDING EXTRACTION]
+Part 2 turns part 1's cached sim into a finished render. A Redshift material samples the `density` point attribute (Particle Attribute Lookup → RS Ramp, white shifted to red) for base color; switching from RS Standard to RS Material unlocks back-lighting translucency as cheap fake subsurface scattering. Roughness is driven by an inverted Fresnel through a ramp so inter-particle reflection noise is suppressed while edge reflections stay. Lighting is built iteratively with rectangle lights (fill opposite camera, thin warm speculars, softened by a wider low-exposure copy), a reflections-only blue dome light, a black floor grid to stop light leaking through the particle bed (verified via the alpha channel), and snapshots/isolate-select for A/B comparisons. Camera 1 gets Redshift camera post FX: tone mapping (highlights 0), a default RS LUT ("Kodak 2383"-style, apply color management before LUT), saturate highlights, bladed bokeh (6 blades, spherical aberration 2, ~f/5). Camera 2 flies along an actual particle trajectory: one particle isolated by `id` with Blast, Trail (length 300) + Time Shift to frame 300, points connected into a curve with Add (by `id`), object-merged into a hidden `camera_path` container, and a camera Constraint Network → Follow Path (transforms must be zeroed first — debugging shown), position animated 0→1 with Bezier keys, X rotation −90 to look down, animated Y-rotation sway, animated focus distance and low f-stops. Lights are named per camera (`cam01_light_01`…) so each ROP forces its own lights via `cam01_light*` wildcards in Force Lights (asterisk removed from candidate lights/objects). Finally the Mountain noise gets animated (pulse duration) for vertical motion.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Split viewport (Ctrl+2): top = camera view, bottom = scene manipulation.
+2. **Material**: RS material `points` assigned to the render container → inside: **Particle Attribute Lookup** (attribute `density`) → **RS Ramp** (white→red, black squished) → Base Color. (Remember: material goes on the *render* geo, and the setup container must be hidden.)
+3. **pscale tuning** back in setup: max 0.005 → 0.003, min 0.0012; later add a 4th ramp point at value 3 (ramps can exceed 1) for sparse big particles.
+4. **Base lighting**: rectangle light opposite the camera (tall, low spread for defined shadows); fix light shining through the particle floor with a `black_render` grid just below the particles, material with base/reflection weights 0 (check alpha channel is solid white); a Transform+Merge duplicate of the points slightly lower adds floor reflections.
+5. **Fill & speculars**: colder fill; thin warm specular light opposite camera (small, minimal spread) + a wider, lower-exposure copy for soft falloff; balance exposures with all lights on (use **isolate select** and Render View **snapshots** instead of toggling lights).
+6. **Fake SSS**: swap RS Standard → **RS Material**, copy settings (IOR up, roughness ~0.25), wire color into **back-lighting translucency** and tune its weight — much faster than true SSS; add slight color to the ramp's black so shadow areas also transmit.
+7. **Fresnel roughness**: Fresnel → Ramp → Reflection Roughness, **inverted** so particles reflect from the sides — kills inter-particle reflection noise, keeps edge highlights. Re-balance lights after the material change; dome light (reflections only, tinted blue) replaces the old reflection card (colored gray as "disabled").
+8. **Camera 1 post**: enable tone mapping (highlights 0), exposure in camera, default Redshift **LUT** (his go-to; enable *apply color management before LUT*), saturate highlights, warmer reds, desaturated main light; **bokeh**: bladed, spherical aberration 2, 6 blades, focus mid-scene, size via f-stop ≈ 5.
+9. **Camera path**: find a lively particle away from edges → **Blast** by `@id` (delete non-selected; NOT ptnum — it's a sim!) → **Trail** (length 300) → **Time Shift** freeze at frame 300 → **Add** connecting points by `id` into one curve → null `OUT_path` → Object Merge in a hidden gray `camera_path` container.
+10. **Camera 2**: duplicate camera + ROP; inside the camera: **Constraint Network** → **Follow Path** pointing at the path container. Zero the camera's transform/rotation first (the shown bug), keyframe Position 0→1 (offset slightly below 1 to avoid end-of-path quirk), rotate X −90, animate Y rotation (−6 at start), convert keys to Bezier and keep only first/last.
+11. **Camera-2 lights**: widen/reshape the shadow light to cover the travel; parent thin main lights to one another (zero child transforms) so only the parent needs animating; keyframe the main light rotation across the shot (Shift+click a parm opens the Animation Editor; delete mid keys after Bezier conversion). Match grade to camera 1: white balance, deeper blacks, desaturate/increase highlights, better HDRI (scroll through the folder), warmer main light.
+12. **DOF animation**: keyframe focus distance (front particles → middle), Bezier, f-stop ~1 (deliberately non-physical) for camera 2 check, adjust f-stops/highlights/exposure per camera.
+13. **Render ROPs**: rename lights `cam01_light_01` etc.; per ROP set frame range, output path, drag render containers into **Force Objects**, clear `*` from Candidate Objects/Lights, and set **Force Lights** to `cam01_light*` / `cam02_light*` — each ROP renders with its own lights even though all are disabled in the scene.
+14. **Vertical noise animation**: on part 1's Mountain SOP tick Animation + raise pulse duration (preview against a Time Shift-frozen first frame, then remove it); reduce roughness, smaller element size, more amplitude.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Redshift shading**: RS Material Builder, Particle Attribute Lookup (`density`), RS Ramp ×2, RS Standard vs **RS Material** (back-lighting translucency = fake SSS; IOR, roughness 0.25), Fresnel (inverted) → Ramp → Reflection Roughness.
+- **Lights**: RS rectangle lights (spread, exposure, color temperature workflow: fill / specular / soft-falloff copy pairs), RS Dome Light (HDRI, diffuse off / reflections only, blue tint), light parenting with zeroed child transforms, per-camera light naming for ROP wildcards.
+- **Render View**: snapshots for A/B, isolate select, alpha channel check, IPR.
+- **Camera**: RS camera post FX — tone mapping (highlights 0), LUT (+ apply color management before LUT), saturate/desaturate highlights, white balance, exposure; bokeh (bladed, 6 blades, spherical aberration 2, f-stops 1–5), animated focus distance.
+- **Path setup**: Blast (group by `@id`, delete non-selected), Trail (length 300), Time Shift (frame 300), Add (connect by attribute `id`), Null, Object Merge, hidden geo container; camera **Constraint Network** + **Follow Path** (position 0–1), Animation Editor (Bezier conversion, first/last-key workflow).
+- **ROP**: Force Objects (drag containers), Candidate Objects/Lights cleared of `*`, Force Lights `cam01_light*`.
+- **Mountain SOP**: Animation toggle, pulse duration, roughness/element size/amplitude.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (Redshift renderer)
 
 ### Tags
-[PENDING EXTRACTION]
+redshift, rendering, particles, attributes, vop, sop, animation, procedural, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Abstract liquid in Houdini | Part 01 - Building the simulation](abstract-liquid-in-houdini-part-01---building-the-simulation.md) — the sim this look-dev renders
+- [Abstract liquid in Houdini | Part 03 - Color Grading](abstract-liquid-in-houdini-part-03---color-grading.md) — the After Effects finish
+- [Art Directing Cloth in Houdini](art-directing-cloth-in-houdini.md) — Redshift lighting/rendering of sims, similar look-dev workflow

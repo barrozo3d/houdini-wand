@@ -222,9 +222,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=axBNpCzJuPY
 - **Author:** Kotov Roman
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** redshift, rendering, particles, attributes, vop, sop, animation, procedural, intermediate
+- **Summary:** Part 2/3 — Redshift look-dev of the particle sim: density-driven color (Particle Attribute Lookup → RS Ramp), RS Material back-lighting translucency as fast fake SSS, inverted-Fresnel→ramp reflection roughness to kill inter-particle noise, rectangle-light rig with black floor grid (alpha check), reflections-only blue dome, camera post FX (tone mapping, LUT, bladed bokeh), camera 2 flying along a real particle trajectory (Blast by id → Trail 300 → Time Shift → Add curve → Follow Path constraint, zeroed transforms), per-camera ROPs with Force Lights wildcards (cam01_light*), animated Mountain noise + focus distance.
 - **File:** tutorials/abstract-liquid-in-houdini-part-02---look-development.md
 
 
