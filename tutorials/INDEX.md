@@ -202,9 +202,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=bh9PRfO-ebk
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 21.5
+- **Tags:** vellum, cloth, sop, dop, curves, simulation, animation, houdini-21, intermediate
+- **Summary:** SideFX "Summon VFX" ep.3 — tattered hooded robe for a Mixamo zombie: curve-built panels via Planar Patch from Curves (Interior Edge Length = density), Vellum Drape with Weld Seams pairing named seam groups, freeze at frame 50 + Vellum Brush sculpt, tearing via Edge Fracture (~5000 pieces) + painted pin mask + Weld Points constraint at Breaking Threshold 0, loopable rag sim (normal drag, Attach to Geometry, POP Force/Wind in the solver, Make Loop 40–120), export cloth+body as Labs VAT Soft Body Deformation for UE 5.7.
 - **File:** tutorials/summon-vfx-3-set-the-character-cloth.md
 
 

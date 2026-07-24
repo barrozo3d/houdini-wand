@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=bh9PRfO-ebk
 author: Houdini
 ingested: 2026-07-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "21.5"
+tags: [vellum, cloth, sop, dop, curves, simulation, animation, houdini-21, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/summon-vfx-3-set-the-character-cloth/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Summon VFX | 3 | Set the Character & Cloth
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py summon-vfx-3-set-the-character-cloth <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -147,30 +143,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:55] tutorials/frames/summon-vfx-3-set-the-character-cloth/frame_000.jpg
+- [2:18] tutorials/frames/summon-vfx-3-set-the-character-cloth/frame_001.jpg
+- [3:10] tutorials/frames/summon-vfx-3-set-the-character-cloth/frame_002.jpg
+- [4:40] tutorials/frames/summon-vfx-3-set-the-character-cloth/frame_003.jpg
+- [5:40] tutorials/frames/summon-vfx-3-set-the-character-cloth/frame_004.jpg
+- [7:40] tutorials/frames/summon-vfx-3-set-the-character-cloth/frame_005.jpg
+- [9:20] tutorials/frames/summon-vfx-3-set-the-character-cloth/frame_006.jpg
+- [11:05] tutorials/frames/summon-vfx-3-set-the-character-cloth/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Garment construction from curve-built panels (Planar Patch from Curves → Vellum Drape with welded seams), progressive tearing via Edge Fracture + breakable Weld Points constraints, a loopable Vellum cloth sim driven by POP Force/POP Wind, and export to Unreal Engine 5.7 as Labs Vertex Animation Textures (Soft Body Deformation).
 
 ### Summary
-[PENDING EXTRACTION]
+Episode 3 of SideFX's "Summon VFX" series: dressing a Mixamo zombie coming through a portal in a tattered hooded robe. Cloth panels are drawn as curves, meshed with Planar Patch from Curves, mirrored/fused, and stitched onto the character with Vellum Drape's Weld Seams (careful naming makes seam pairing manageable). The draped result is frozen at frame 50, sculpted with Vellum Brush, then torn: Edge Fracture into ~5000 pieces, a painted mask defines what survives, and a zero-threshold breakable Weld Points constraint drops everything outside the pin group. A second, loopable sim (cloth constraints with normal drag + Attach to Geometry pins, POP Force/POP Wind inside the Vellum solver, Make Loop over frames 40–120) animates the rags on the exaggerated character animation, and both cloth and body export via two Labs VAT ROPs for the Unreal side of the series.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Build cloth panels from curves**: draw curves matching the garment size against the character, merge/fuse points, then **Planar Patch from Curves** meshes each panel — *Interior Edge Length* sets cloth density. Mirror for L/R (e.g. `L_Hood` → mirror → `R_Hood`), fuse to close gaps, merge front/back panels. **Rename everything properly** — the Vellum Drape seam pairing depends on it.
+2. **Vellum constraints (Cloth type)** on the panels: tune density/edge length scale and stiffness.
+3. **Vellum Drape**: enable *Weld Additional Seams*; in the Weld Seams list pair each seam group with its counterpart (frames show pairs like `Front_Cloth_seam0` / `Back_Cloth_seam0`, `L_Hood_seam0`…). Simulate — panels stitch into the garment on the character.
+4. Freeze the drape with a **Time Shift at frame 50**, file-cache it, then refine folds manually with **Vellum Brush**.
+5. **Tearing setup**: **Edge Fracture** (~5000 initial pieces) → **Attribute Paint** a `mask` for areas to keep → promote mask to a `pin` group (Group + Group Invert). Two Vellum constraints: Cloth for the fabric, plus **Weld Points with Breaking Threshold 0** — every weld outside the pin group breaks and falls away.
+6. **Fuse** areas to keep together, Time Shift to frame 50, **Delete Small Parts** (threshold-based) to remove tiny floating scraps, then clean attributes (old pin groups, point attrs) and **paint a fresh mask → new pin group** for the loop sim.
+7. **Character prep**: Bone Deform to see the Mixamo animation, **Rig Pose** to manually exaggerate the arms (more cloth motion), **Blend Shape** from rest pose into animation, mesh cleanup (keep only geometry involved in the sim), Make Loop, and a second Blend Shape from T-pose into the loopable result.
+8. **Loopable sim**: Vellum cloth constraints with **normal drag**, lower stiffness and damping ratio; **Attach to Geometry** with the pin group. Inside the Vellum solver: **POP Force** (animated amplitude) + **POP Wind** (amplitude, swirl size) for the overall rag motion. File Cache the result.
+9. **Make Loop** the sim (loop range ~frame 40–120) for the final loopable cloth; body gets the same cleanup + Make Loop treatment.
+10. **Export to UE**: two **Labs Vertex Animation Textures** ROPs (`VAT_summoned_Cloth`, `VAT_summoned_Body`), Mode = *Soft Body Deformation (Soft)*, frames 40–120, target engine UE — outputs a static mesh + textures. In Unreal, install the matching **Labs VAT plugin**: Labs → Real-Time Shaders → Unreal Engine Content Plugin and Guides opens the folder with the per-version plugin (UE 5.7 used here).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Panel construction**: Curve, Fuse, Merge, **Planar Patch from Curves** (Interior Edge Length = density), Mirror, Transform, name/rename discipline for seams.
+- **Vellum**: Vellum Constraints (Cloth: edge length scale, stiffness; **Weld Points**: Breaking Threshold 0), **Vellum Drape** (Weld Additional Seams + Weld Seams pairs), Vellum Brush, Vellum Solver (with POP Force amplitude animated, POP Wind amplitude + swirl size), Attach to Geometry (pin group), normal drag, damping ratio.
+- **Tearing/cleanup**: Edge Fracture (5000 pieces), Attribute Paint (`mask`), Group / Group Invert (`pin`), Fuse, Time Shift (frame 50), Delete Small Parts, Attribute Delete.
+- **Character**: Mixamo source, Bone Deform, Rig Pose (arm exaggeration), Blend Shape (rest→anim, T-pose→loop), Make Loop (frames 40–120), File Cache, Color (pre-vis).
+- **Export**: Labs Vertex Animation Textures ×2 — Soft Body Deformation (Soft), frame range 40–120, UE target; Labs VAT plugin for UE 5.7 via Real-Time Shaders → UE Content Plugin and Guides.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 21.5 (FX 21.5.621 in title bar); Unreal Engine 5.7 target
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, cloth, sop, dop, curves, simulation, animation, houdini-21, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Art Directing Cloth in Houdini](art-directing-cloth-in-houdini.md) — Vellum cloth forces, export attributes, look-dev
+- [module ii week 02 01 introduction](module-ii-week-02-01-introduction-v1-1080p.md) — Vellum drape/stitch/tearing onto a character (same core workflow)
+- [module ii week 03 06 breaking welds and constraints](module-ii-week-03-06-breaking-welds-and-constraints-v1-1080p.md) — breakable weld constraints with thresholds, as used for the tearing here
