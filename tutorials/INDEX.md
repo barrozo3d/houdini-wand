@@ -212,9 +212,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pFvA23fP5I8
 - **Author:** Kotov Roman
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** flip, dop, sop, vop, particles, simulation, redshift, rendering, attributes, procedural, intermediate
+- **Summary:** Part 1/3 of an abstract marbled-liquid series: thin-slab (box Z=0.01) FLIP sim of ~80k particles with custom density/viscosity attributes (point VOP bind-export AND the equivalent wrangle shown), FLIP Object sourcing a particle field from a null, swirly initial velocity + closed boundaries + time scale 0.2, anti-aliased-noise→ramp density (max 15), trim to usable frames ~100–200 with subdivision playback interpolation, Attribute Delete + File Cache, id-seeded Cd/pscale randomize, Mountain + density-driven Y displacement in a VOP, Redshift particle render setup (1080×1920 vertical, 150mm, HDRI dome).
 - **File:** tutorials/abstract-liquid-in-houdini-part-01---building-the-simulation.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=pFvA23fP5I8
 author: Kotov Roman
 ingested: 2026-07-23
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [flip, dop, sop, vop, particles, simulation, redshift, rendering, attributes, procedural, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/abstract-liquid-in-houdini-part-01---building-the-simulation/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Abstract liquid in Houdini  |  Part 01 - Building the simulation
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py abstract-liquid-in-houdini-part-01---building-the-simulation <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -245,30 +241,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:45] tutorials/frames/abstract-liquid-in-houdini-part-01---building-the-simulation/frame_000.jpg
+- [3:20] tutorials/frames/abstract-liquid-in-houdini-part-01---building-the-simulation/frame_001.jpg
+- [5:05] tutorials/frames/abstract-liquid-in-houdini-part-01---building-the-simulation/frame_002.jpg
+- [6:40] tutorials/frames/abstract-liquid-in-houdini-part-01---building-the-simulation/frame_003.jpg
+- [7:25] tutorials/frames/abstract-liquid-in-houdini-part-01---building-the-simulation/frame_004.jpg
+- [13:00] tutorials/frames/abstract-liquid-in-houdini-part-01---building-the-simulation/frame_005.jpg
+- [15:10] tutorials/frames/abstract-liquid-in-houdini-part-01---building-the-simulation/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A thin-slab FLIP simulation driven by custom `density`/`viscosity` point attributes (sourced from anti-aliased noise through a ramp) with swirly initial velocity and a slow time scale, producing abstract marbled liquid patterns — then flattened, displaced by its own density attribute in a point VOP, and set up for Redshift particle rendering.
 
 ### Summary
-[PENDING EXTRACTION]
+Part 1 of Kotov Roman's 3-part abstract liquid series (pt.2 look-dev, pt.3 compositing/grading). A box squashed to a 2D slab is filled with ~80k particles; a `density` group covering half the box gets `density` and `viscosity` attributes (shown twice: point VOP bind-exports and the equivalent 2-line wrangle). The FLIP object sources those particles directly (Input = Particle Field pointing at a null), the collision box is relative-referenced to the source box, and the solver runs with swirly initial velocity, closed boundaries, and time scale 0.2 for slow marbling. Flat density is replaced by anti-aliased noise → fit → spline ramp for organic variation (density up to 15). Usable range is trimmed to ~frames 100–200 with keyframed playback and subdivision interpolation to kill jitter, attributes pruned to `density`+`id`, and the sim file-cached. Post: randomized color and pscale (seeded by `id`), the slab laid flat, Mountain noise on Y, and a VOP that adds `density × ramp` (~0.01, clamped at 0) to particle Y — density literally displaces the surface. Rendered as Redshift particles, 1080×1920 vertical, 150mm lens, HDRI dome light.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Setup geo**: Box with Z scale 0.01 (thin slab) → **Points from Volume**, particle separation 0.01→0.005 (~80k points).
+2. **Group** `density` (points, bound by box, shifted to cover half the slab on Y; sized relative to the box so it survives box changes).
+3. **Attributes** two equivalent ways: point VOP with **Bind Export** nodes named `density`/`viscosity` (middle-click → Promote Parameter, copy name into Label); or an Attribute Wrangle over the `density` group: `f@density = chf("density"); f@viscosity = chf("viscosity");` (click the plug icon to create channels; density = 10). Null `FLIP` as source marker.
+4. **DOP network**: FLIP Object + FLIP Solver + Gravity. FLIP Object: *Input = Particle Field*, SOP Path = the null; particle separation relative-referenced to Points from Volume; enable density & viscosity attributes, enable **ID attribute** (needed later for seeding); preview type Particles instead of Spheres. Collision box size/center relative-referenced from the source box. Solver: *Velocity Type = Swirly*, **Close Boundaries**, **Time Scale 0.2** to slow the swirls. (Tip: hold N in the network editor to jump contexts.)
+5. **Noise-driven density**: in the point VOP add **Anti-Aliased Noise** (output −0.3…0.3) → **Fit** → **spline Ramp** (`ramp_noise`) → density; right-click → Create Input Parameters to expose controls. Density raised to 15; visualization max set to 15 to see the detail.
+6. **Trim & cache**: sim degrades to noise past ~frame 200 → playback keyframed 1→200, cache memory increased, start frame moved to ~100 (skip the boring start), *interpolation = Subdivision* to remove jitter. **Attribute Delete** (Delete Non-Selected: keep `density`, `id`) → **File Cache** (`flip_scene_02`).
+7. **Post attributes**: Attribute Randomize on `Cd` (seed = `id`) and on `pscale` (float, seed = `id`, custom ramp, min/max ~0.01, previewed as disks).
+8. **Displacement**: Transform lays the sim flat; **Mountain** with *Noise Along Vector* on Y only (amplitude ~0.2, element size ~0.2, low roughness); **Attribute Remap** density to itself (input max 15 → 0–1 range); point VOP: Bind `density` → scalar Ramp (`ramp_density`, values ~0.01, clamped ≥0) → **Add** onto Y (position split/reassembled with Vector to Float / Float to Vector). Null `OUT_WISPS`.
+9. **Render prep**: separate green-colored render geo with **Object Merge** of the null; enable *Render Objects as Particles* (Redshift); camera `cam_01`, resolution 1080×1920, focal length 150; **RS Dome Light** with a favorite HDRI pack (#13); Redshift ROP `cam_01` + Redshift Render View at frame 150.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- SOPs: Box (Z 0.01), Points from Volume (sep 0.005), Group (bounding box), Point VOP (Bind Export, Anti-Aliased Noise, Fit, Ramp spline, Bind, Vector to Float / Float to Vector, Add), Attribute Wrangle, Null, Attribute Delete (delete non-selected), File Cache, Attribute Randomize (Cd, pscale; seed attribute `id`), Transform, Mountain (noise along vector, Y-only), Attribute Remap, Object Merge.
+- VEX: `f@density = chf("density"); f@viscosity = chf("viscosity");`
+- DOPs: FLIP Object (Input = Particle Field, SOP subpath null, particle separation ref, density/viscosity/ID attrs), FLIP Solver (Velocity Type Swirly, Close Boundaries, Time Scale 0.2), Gravity.
+- Workflow: relative references (`copy/paste relative reference`) to keep collision box and particle separation synced; Ctrl+MMB on a node to toggle attribute visualization; playback keyframing + subdivision interpolation; cache memory size.
+- Redshift: Render Objects as Particles, RS Dome Light + HDRI, RS ROP, Redshift Render View; camera 1080×1920 @ 150mm.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (Redshift renderer)
 
 ### Tags
-[PENDING EXTRACTION]
+flip, dop, sop, vop, particles, simulation, redshift, rendering, attributes, procedural, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Abstract liquid in Houdini | Part 02 - Look Development](abstract-liquid-in-houdini-part-02---look-development.md) — direct continuation (Redshift look-dev)
+- [Abstract liquid in Houdini | Part 03 - Color Grading](abstract-liquid-in-houdini-part-03---color-grading.md) — series finale (compositing/grading)
