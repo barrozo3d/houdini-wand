@@ -197,6 +197,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Voxyde VFX production technique (23m23s): reveal a shoe-sole tread pattern by morphing between two SDFs instead of deforming geometry (no topology matching or self-intersections). Pipeline: isolate + PolyFill the sole → pattern SDF via `VDB from Polygons` (final voxel 0.005) and smooth SDF via Reshape(Dilate)→Smooth→Reshape(Erode) → match voxel sizes with `VDB Resample` + expand bands with `VDB Activate SDF` (needed for push/erode) → `Volume VOP` blending via `Volume Sample`+`Mix` driven by an animated relative-bbox gradient mask (promoted Animate/Width params + simplex turbulent noise) with a 0→1→0 ramp × Push (-0.02) SDF dilation ridge as leading edge → `Convert VDB` for render. Includes Solaris walkthrough (COPs diamond tread texture via Feather + Shape Scatter, 4-light rim rig) and a Nuke comp segment building the final dark-green look from reflection/rim AOVs with comp-side bokeh DOF.
 - **File:** tutorials/morph-anything-with-vdbs-in-houdini.md
 
+
+### Summon VFX | 3 | Set the Character & Cloth
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=bh9PRfO-ebk
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/summon-vfx-3-set-the-character-cloth.md
+
 ---
 
 ## How to Read This Index
