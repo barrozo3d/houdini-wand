@@ -237,6 +237,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/abstract-liquid-in-houdini-part-03---color-grading.md
 
+
+### Material alphabet in Houdini: A for Amber | Episode 01
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=nyqL7CA6phk
+- **Author:** Kotov Roman
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/material-alphabet-in-houdini-a-for-amber-episode-01.md
+
 ---
 
 ## How to Read This Index
