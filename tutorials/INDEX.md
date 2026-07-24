@@ -227,6 +227,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/abstract-liquid-in-houdini-part-02---look-development.md
 
+
+### Abstract liquid in Houdini | Part 03 - Color Grading
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=YqS517Rvhzo
+- **Author:** Kotov Roman
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/abstract-liquid-in-houdini-part-03---color-grading.md
+
 ---
 
 ## How to Read This Index
