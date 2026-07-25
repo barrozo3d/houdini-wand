@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=xu0zRT-L2aE
 author: Rebelway
 ingested: 2026-07-25
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: needs-review
+houdini_version: "Houdini 19.5"
+tags: [pyro, dop, sop, particles, volumes, vex, wrangler, simulation, advanced, houdini-19]
+extraction_status: complete
 frames_dir: tutorials/frames/fantasy-fx-in-houdini-dragon-fire/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Fantasy FX in Houdini | DRAGON FIRE
@@ -30,12 +31,7 @@ _Auto-generated at ingest/frame-capture time — explains why `extraction_status
 
 ---
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py fantasy-fx-in-houdini-dragon-fire <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -1370,30 +1366,63 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [18:23] tutorials/frames/fantasy-fx-in-houdini-dragon-fire/frame_000.jpg
+- [30:24] tutorials/frames/fantasy-fx-in-houdini-dragon-fire/frame_001.jpg
+- [38:45] tutorials/frames/fantasy-fx-in-houdini-dragon-fire/frame_002.jpg
+- [43:50] tutorials/frames/fantasy-fx-in-houdini-dragon-fire/frame_003.jpg
+- [68:30] tutorials/frames/fantasy-fx-in-houdini-dragon-fire/frame_004.jpg
+- [73:40] tutorials/frames/fantasy-fx-in-houdini-dragon-fire/frame_005.jpg
+- [85:11] tutorials/frames/fantasy-fx-in-houdini-dragon-fire/frame_006.jpg
+- [122:05] tutorials/frames/fantasy-fx-in-houdini-dragon-fire/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Full production dragon-fire shot pipeline: an animation-driven POP stream (mouth emitter built from extracted centroids + a velocity wrangle) trailed into noisy curves as a Pyro source, simmed with a customized Ground Explosion preset solver (vortex boost/confinement microsolvers, BFECC advection), plus a secondary "ground fire" sim sourced from `Attribute from Volume` contact data — all cached as resampled 16-bit VDBs.
 
 ### Summary
-[PENDING EXTRACTION]
+A Rebelway course week (2h07m, 32 chapters) building three-headed dragon fire from scratch in Houdini 19.5: reference breakdown (thin fast stream, FLIP-like ground flow, blue-to-orange grading), optimized VDB collisions for terrain and dragon head, a POP-driven emitter that follows the animated dragon, trail-based source shaping with age/curveu-masked anti-aliased noise, and two pyro sims — the main breath (adapted from the Ground Explosion shelf preset) and a ground fire ignited wherever the breath touches the terrain (Bonfire preset, smokeless flame). Ends with VDB caching best practices (57 MB → 2 MB per frame) and duplicating the whole setup for the other two heads.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Collisions first** — `Object Merge` the terrain, trim with `Delete` (delete by bounding volume, ~160 units around the action), close it with `Extrude Volume`, add `Normal`, then `Collision Source` with voxel size 0.2; expose `geo` and `VDB` nulls. Repeat for the fire-breathing head only: convert packed → polys, blast the head, `PolyFill` (triangles) the neck opening, own `Collision Source`.
+2. **Animation-following emitter** — blast down to 2 points inside the mouth → `Extract Centroid`; same for 2 points at the mouth tip. A Point Wrangle with the tip centroid in input 1 computes the aim vector: `v@v = point(1, "P", @ptnum) - @P;` (frame [18:23]). The emitter point inherits the head animation automatically.
+3. **Control wrangles** — `v@v *= chf("vel_mult");` (set 15) and `vector dir = set(0, chf("up"), 0); v@v += dir;` for art-directable aim. `Copy to Points` a small poly sphere (freq 2) as the emission surface.
+4. **POP stream** — `POP Network` starting frame 1068; particle life 0.1 + tiny variance; stop emission with Impulse/Const Activation `$FF < 1106`; velocity scale ~3 keyframed up from 3.5 at first frame for a ramp-in burst; 4 substeps to kill stepping; `POP Force` gravity −50 for a slight arc; `Static Object` with Volume Sample mode pointing at the terrain VDB proxy; on the `POP Solver` → Collision Behavior create a `hit` group, then a `POP Drag` (0.4) on that group so landed particles hug the ground (frame [30:24]).
+5. **Source shaping** — `Trail` (length 4, increment 0.5) → `Transform` (recenter) → `Add` (Polygon by group, By Attribute `id`) to connect particle trails into lines → `Resample` (+ curveu attribute) → Point VOP "add_noise": `Anti-Aliased Noise` (3D) added to P, amplitude = (age/life normalized via divide) × `mult_amp` (8) × a `ramp_curveu` spline ramp bound to curveu, frequency 1.2, offset animated `$T*5` (frame [38:45]). Straight at the mouth, chaotic at the tail — matching the reference.
+6. **Pyro source** — `Pyro Source` (Initialize: Burn → burn + temperature) on a `Surface Scatter` of the noisy lines (tune particle separation ≈ shape threshold); `Volume Rasterize Attributes` for burn/temperature (particle scale 0.16) and a **separate** rasterize for v, verified with `Scatter` + `Volume Trail` (frame [43:50]); merge volumes into the solver.
+7. **Main pyro sim** — start from shelf `Pyro Configure Ground Explosion`, keep its pyrosolver + `Pyro Bake Volume`, delete its keyframes. Settings: timescale 0.75, voxel 0.2 (final 0.1), start frame referenced from the POP sim, substeps 2–3, bounds padding 10, source velocity mode Add ×0.25, burn 1, smoke from burn with high dissipation, reference temp 2000, buoyancy 2.85, collisions SDF+Volume Velocity fed by merged terrain+head VDBs.
+8. **Shape microsolvers** — disturbance 75 at block size 0.4 (checked against a unit box in the viewport — 0.2 is invisible at sim res), speed-field range from 0, turbulence 0.1→ swirl size 4, shredding stronger with block size > disturbance, flame expansion 1/range 0.35; Advanced tab → advection **BFECC**; inside the solver wire `Gas Vortex Boost` (defaults) + `Gas Vortex Confinement` (1) into the force output via a `Merge` (frame [68:30]) for rolling-fire detail.
+9. **Cache smart** — pyrosolver Output/Post-Process: Convert to VDB ✓ + 16-bit float ✓ + resample velocity ÷4 (frame [73:40]) → 57 MB/frame drops to ~2 MB. `File Cache` in V-explicit mode, `$HIP`→`$JOB`, `$OS`-named folders per cache (`geo/Shot01/cache_dragonfire_01`).
+10. **Ground fire** — `Attribute from Volume` transfers flame from the cached breath onto the terrain (use the collision **VDB converted back to polys** for uniform resolution, `Clip` the underside, dense `Scatter`); `Blast` points with `@Cd < 0.01`; POP net emitting from all points with "remove overlapping with existing"; `Pyro Configure Bonfire` preset (frame [85:11]), density-only sourcing, Emit From Flame OFF for smokeless fire, timescale 1.5, buoyancy 1, viscosity/flame expansion OFF, layered `Attribute Noise` on density (static shapes + animated multiply layer, post-process clamp 0–1) + zero-centered vector noise as v (amp 10), second `Gas Turbulence` on the **flame** field (scale 2.5, swirl 12, slow pulse), vortex boost 4 + confinement 10, terrain SDF collisions (compensate halved source with flame amount 1.5, slower temp cooldown).
+11. **Render fix** — `Pyro Bake Volume` needs a density field: blast the empty density, duplicate-blast to isolate flame, `Name` it "density", merge back (frame [122:05]); untick temperature export to save disk.
+12. **Reuse per head** — duplicate the whole FX geo, reselect mouth points, update start/stop frames and keyframes, rename every cache before writing (or you overwrite the previous head's cache).
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- VEX (Point Wrangle, frame [18:23]): `v@v = point(1, "P", @ptnum) - @P;` then `v@v *= chf("vel_mult");` (15) and `v@v += set(0, chf("up"), 0);`
+- SOPs: `Object Merge`, `Delete` (bounding volume), `Extrude Volume`, `Collision Source` (voxel 0.2), `PolyFill`, `Extract Centroid`, `Copy to Points`, `Trail` (4 / 0.5), `Add` (polys by id attr), `Resample` (curveu ✓), `Attribute from Volume`, `Clip`, `Scatter`, `Blast` (`@Cd<0.01`), `Attribute Noise` (density + vector v layers), `Volume Rasterize Attributes`, `Volume Trail`, `Time Shift` (look-dev freeze), `Name`, `File Cache` ($OS folders).
+- POPs: source life 0.1, activation `$FF<1106`, 4 substeps, `POP Force` gravity −50, `Static Object` (Volume Sample + VDB proxy), `POP Solver` collision behavior → `hit` group, `POP Drag` 0.4.
+- Pyro (main): Ground Explosion preset; timescale 0.75; voxel 0.25→0.15 WIP→0.1 final; padding 10; substeps 2–3; vel Add 0.25; buoyancy 2.85; ref temp 2000; disturbance 75 @ block 0.4; turbulence 0.1 swirl 4; BFECC; `Gas Vortex Boost` + `Gas Vortex Confinement` (1); collisions SDF+Volume Velocity.
+- Pyro (ground): Bonfire preset; timescale 1.5; substeps 2; buoyancy 1; viscosity OFF; flame expansion OFF; Emit From Flame OFF; shredding 15 @ block 0.1; `Gas Turbulence` #2 on flame (2.5 / swirl 12); vortex boost 4 / confinement 10; voxel 0.1 (~5 min sim), final 0.05.
+- Output: Convert to VDB + 16-bit float + resample vel ÷4 (57 MB → 2 MB per frame); viewport texture limit → 500 (Display Options → Texture) for hi-res volume preview.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini FX 19.5.368 (visible in title bar)
 
 ### Tags
-[PENDING EXTRACTION]
+pyro, dop, sop, particles, volumes, vex, wrangler, simulation, advanced, houdini-19
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/intro-to-houdini-pyro---full-beginner-course.md` — the foundations for every solver setting touched here (sourcing, shape microsolvers, fields, collisions); shares pyro, simulation, volumes.
+- `tutorials/houdini-tutorial---wispy-smoke.md` — same POP→pyro sourcing philosophy with animated noise layers, gas turbulence + vortex confinement microsolvers; shares pyro, pop/particles, volumes.
+- `recipes/pyro-hero-shot.md` — the skill's own end-to-end pyro production recipe (sourcing → DOP → caching → render); this tutorial is a worked production example of it.
+
+> Note: ingest flagged chapter "Flipbook" [51:54] as an empty transcript — verified intentional: it's a silent flipbook-playback chapter with no narration; the surrounding chapters cover the content. Safe to treat extraction as complete.
