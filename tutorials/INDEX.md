@@ -247,6 +247,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Ep.1 of a per-letter material-study series: amber "A" — Font + PolyExtrude thickened via VDB round-trip (PolyBevel fails on font geo; VDB from Polygons → Convert → VDB Smooth → Remesh), internal cracks from Boolean-intersecting Mountain-noised grids copied onto a volume-noise-modulated scatter inside a VDB fog (B as Surface; id-seeded normals), refractive orange RS material with the thin-walled/black-insides debugging shown (Labs Thickness + B=Solid fix), black-background rect-light-behind-subject lighting, pscale-randomized point bubbles rendered as particles.
 - **File:** tutorials/material-alphabet-in-houdini-a-for-amber-episode-01.md
 
+
+### Fantasy FX in Houdini | DRAGON FIRE
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=xu0zRT-L2aE
+- **Author:** Rebelway
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/fantasy-fx-in-houdini-dragon-fire.md
+
 ---
 
 ## How to Read This Index
