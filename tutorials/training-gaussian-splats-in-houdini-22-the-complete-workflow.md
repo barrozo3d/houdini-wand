@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=vP609ccWOKo
 author: Nodeconnector
 ingested: 2026-07-27
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [gaussian-splats, photogrammetry, colmap, top, pdg, solaris, usd, karma, rendering, procedural, houdini-22, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/training-gaussian-splats-in-houdini-22-the-complete-workflow/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Training Gaussian Splats in Houdini 22 – The Complete Workflow
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py training-gaussian-splats-in-houdini-22-the-complete-workflow <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -337,30 +333,61 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [2:01] tutorials/frames/training-gaussian-splats-in-houdini-22-the-complete-workflow/frame_000.jpg
+- [4:40] tutorials/frames/training-gaussian-splats-in-houdini-22-the-complete-workflow/frame_001.jpg
+- [7:40] tutorials/frames/training-gaussian-splats-in-houdini-22-the-complete-workflow/frame_002.jpg
+- [12:10] tutorials/frames/training-gaussian-splats-in-houdini-22-the-complete-workflow/frame_003.jpg
+- [13:39] tutorials/frames/training-gaussian-splats-in-houdini-22-the-complete-workflow/frame_004.jpg
+- [17:17] tutorials/frames/training-gaussian-splats-in-houdini-22-the-complete-workflow/frame_005.jpg
+- [19:24] tutorials/frames/training-gaussian-splats-in-houdini-22-the-complete-workflow/frame_006.jpg
+- [21:14] tutorials/frames/training-gaussian-splats-in-houdini-22-the-complete-workflow/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+End-to-end 3D Gaussian Splat reconstruction from a real-world object using Houdini 22's native PDG/TOPs training pipeline (`ML Train Gsplats`), fed by COLMAP-aligned photogrammetry data rather than Houdini-rendered cameras.
 
 ### Summary
-[PENDING EXTRACTION]
+The author scans a handmade toy with an iPhone video, extracts a still-image sequence in Copernicus, aligns the images externally in COLMAP (chosen over Epic's RealityScan), then trains a Gaussian splat directly inside a Houdini 22 TOP network using the `ML Train Gsplats` node against that COLMAP dataset. After training, the resulting `.ply` splat is imported, baked with `Bake Gsplats`, cleaned up (transform + bounding-box group + blast), and finally piped into Solaris for a Karma XPU render — with a callout that splats can't be relit by scene lights since they only carry baked color/alpha, not shading response.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Capture:** walk around the object in circles with an iPhone video (irregular speed/lighting is tolerated).
+2. **Extract stills (Copernicus):** load the video in a COP network `File` node, feed a `ROP Image Output` node, and render every Nth frame (author used every 30th of 6,647 frames → ~200 images) at full native 4K resolution.
+3. **Align in COLMAP** (not RealityScan, though that also works): New Project → new database → select the image folder → **Feature Extraction** with Camera Model set to `OPENCV` → **Feature Matching** in `Exhaustive` mode (best for small ~200-500 image object sets; use `Sequential` for drone/walkthrough footage with far more frames) → **Reconstruction** → **Export model**, producing `cameras`, `images`, `points3D` bin files (the `.rig` file and project file are not needed).
+4. **Build the required disk folder structure** under `$HIP`: `$HIP/ML/<hipfile-name-no-extension>/dataset.gsplats/{images/, sparse/0/}`. Copy the COP-rendered PNG sequence into `images/`, and the COLMAP-exported bin files into `sparse/0/`. The subfolder name under `ML/` must exactly match the `.hip` filename.
+5. **Train in a TOP network** (object level or inside a `tasks` context): add an **`ML Train Gsplats`** node (`ml_traingsplats1`). Key parameters:
+   - *Directory Structure* — Base Directory = `$HIP`, Base Name = `$HIPNAME` (must match folder from step 4).
+   - *Import Data Source* — Dataset Path/Name pointing at `dataset.gsplats`; Data Set Type = **COLMAP** (not "Houdini EXRs" — that's the alternative path for training directly off Karma renders); Data Downscale Factor = 2 for a 4K source (halves resolution, re-renders a downscaled image copy, trades quality for speed).
+   - *Training tab* — disable **Enable Testing** (saves a validation render every N steps; costly, skip for a quick result); Total Steps = 30,000 (usable results from ~20-25k; lower for quick tests); Max Batch Size raised to 6 on a 24GB RTX 4090 (larger batch = smoother gradients, more VRAM); Checkpoint export interval left at 10,000 steps (also has an **Export USD** toggle for direct USD output).
+   - *Execution tab* — enable **Cache Images to VRAM** (biggest single speed lever — turns a multi-hour train into minutes); Number of Workers set to CPU-count-minus-one.
+   - Right-click the node → **Cook Node** to start training; monitor via the Task Graph Table → work-item → **Work Item Info** console log, or **Monitoring → open viewer** (launches a live browser-based splat preview once a step has completed). ~12-15 min training time for this dataset/settings on an RTX 4090.
+6. **Import & bake:** `File` SOP pointed at the trained `.ply` inside `ML/<name>/gsplats/`, feeding a **`Bake Gsplats`** SOP. A raw Gaussian splat is just points carrying `P` (position), `Cd` (color), alpha, `orient`, and `scale` attributes — each point renders as an oriented, colored, semi-transparent disc.
+7. **Clean up:** `Transform` (correct up-axis orientation) → `Group` (bounding-box group over points, isolating the object of interest from background scan noise) → `Blast` (delete ungrouped points).
+8. **Render:** feed the cleaned splat geometry into Solaris (via SOP Import, or alternatively export as USD), then render with **Karma XPU**. Gotcha: splats **cannot be relit** — adding a scene light has zero visible effect, since a splat's color/alpha is baked data, not a shaded response to lighting.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- COP: `File` (video source), `ROP Image Output` (image-sequence render with frame increment).
+- TOP: `ML Train Gsplats` (`ml_traingsplats1`) — Directory Structure / Import Data Source / Training / Optimization / Execution / Monitoring / Checkpoints tabs; Data Set Type = COLMAP; Cache Images to VRAM.
+- SOP: `File` (load trained `.ply`), `Bake Gsplats`, `Transform`, `Group` (bounding box, point-based), `Blast`.
+- LOP/Solaris: SOP-to-LOP style import of the cleaned splat geometry, rendered with **Karma XPU**.
+- External tools (not Houdini): iPhone video capture, COLMAP (camera model `OPENCV`, Exhaustive matching) — RealityScan mentioned as a free alternative.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced (requires an external photogrammetry-alignment tool, exact manual folder-structure creation, and GPU training tuning — but no scripting).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+22 (uses the new-in-H22 native Gaussian Splats TOP training pipeline).
 
 ### Tags
-[PENDING EXTRACTION]
+gaussian-splats, photogrammetry, colmap, top, pdg, solaris, usd, karma, rendering, procedural, houdini-22, advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [[new-in-houdini-22-training-gaussian-splats-from-infrared-photos]] — also trains H22 native Gaussian Splats via TOPs, but from infrared photo capture instead of iPhone video + COLMAP alignment.
+- [[animate-gaussian-splats-with-houdini---free-tutorial-scene-files]] — picks up conceptually where this leaves off: rigging/animating an already-trained splat (H21, uses the G-SOP plugin rather than H22-native nodes).
+- [[h22---gaussian-splats-and-machine-learning-jakob-ringler-houdini-22-hive]] and [[h22---gaussian-splats-peter-sanitra-houdini-22-hive]] — other H22 HIVE talks covering the same native Gaussian Splats toolset from different angles.
