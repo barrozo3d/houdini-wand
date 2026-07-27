@@ -267,6 +267,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** A Point Wrangle recipe for a curve "unfolding" animation — blends points between their original curve position and a straight vertical line using `vertexcurveparam`, `primintrinsic("measuredperimeter")`, `fit()` and `smooth()` for a rounded S-curve transition, driven by `offset` (progress) and `radius` (corner softness) parameters.
 - **File:** tutorials/unfolding-curves-with-vex.md
 
+
+### Training Gaussian Splats in Houdini 22 – The Complete Workflow
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=vP609ccWOKo
+- **Author:** Nodeconnector
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/training-gaussian-splats-in-houdini-22-the-complete-workflow.md
+
 ---
 
 ## How to Read This Index
