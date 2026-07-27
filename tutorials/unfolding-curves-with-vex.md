@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=hAD4u2oHFo0
 author: cgside
 ingested: 2026-07-27
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [vex, sop, curves, attributes, procedural, animation, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/unfolding-curves-with-vex/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Unfolding curves with vex
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py unfolding-curves-with-vex <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -186,30 +182,77 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:45] tutorials/frames/unfolding-curves-with-vex/frame_000.jpg
+- [1:58] tutorials/frames/unfolding-curves-with-vex/frame_001.jpg
+- [3:05] tutorials/frames/unfolding-curves-with-vex/frame_002.jpg
+- [6:08] tutorials/frames/unfolding-curves-with-vex/frame_003.jpg
+- [7:25] tutorials/frames/unfolding-curves-with-vex/frame_004.jpg
+- [10:15] tutorials/frames/unfolding-curves-with-vex/frame_005.jpg
+- [11:30] tutorials/frames/unfolding-curves-with-vex/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A single Point Wrangle drives a curve "unfolding" animation: it blends each point between its original curve position and a straight vertical line, using an S-curve mask driven by curve parameterization (`vertexcurveparam`) and perimeter measurement, so the curve peels itself upright from a flat lay-down pose.
 
 ### Summary
-[PENDING EXTRACTION]
+The tutorial (recreating the "Marmalade" unfolding look seen on the SideFX channel) builds a self-contained VEX wrangle that takes any resampled curve and progressively straightens a portion of it into a vertical line, with an `offset` parameter controlling how much of the curve has "unfolded" and a `radius` parameter controlling how rounded/smooth the transition corner is. The final setup is reusable on any curve — the perimeter-based math (rather than hardcoded values) makes it scale correctly to curves of different lengths.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start from a `Line` SOP resampled with a `Resample` SOP to get enough points along the curve.
+2. In an `Attribute Wrangle` (Point context), compute `u` per point with `vertexcurveparam(0, i@ptnum)` — a 0→1 parametric value along the curve.
+3. Add an `offset` float parameter (`chf("offset")`) marking the transition point between "flat" and "straight up" sections.
+4. Sample the world position at that offset point on the curve with `primuv`/`prim` sampling (`vector endPos = prim(0, "P", i@primnum, set(offset,0,0))`).
+5. Build a mask `bias` as a simple step: `f@bias = u >= offset` (visualize with an attribute-to-color / visualizer to confirm the split).
+6. Read the curve's total length via `primintrinsic(0, "measuredperimeter", i@primnum)`, then compute the remaining perimeter after the offset: `post_per = per * (1.0 - offset)`.
+7. Remap `u` into the transition zone with `fit()` to get `post_u` (0→1 across just the unfolding section) — visualize the ramp to confirm it starts at 0 at the offset and reaches 1 at the curve end.
+8. Build the straightened target position `straightP` (flat X/Z, keep base position) and drive its Y with `post_u * post_per` so the straightened segment length matches the real remaining arc length.
+9. Blend: `v@P = lerp(v@P, straightP, bias)` — this alone produces a hard-edged fold; the video then softens it.
+10. To round the transition, add a `radius` parameter, compute `anchor_u = 1.0 - offset` and `blend_start = max(0.0, anchor_u - radius)`, and replace the hard step bias with `smooth(blend_start, anchor_u, u)` — an S-curve interpolation instead of a binary mask. Remap `post_u` using `fit(u, blend_start, 1.0, 0.0, 1.0)` to match.
+11. Animate/drive `offset` from 0→1 to get the full unfolding animation; the technique maps cleanly onto other curves with different perimeters since everything is computed from intrinsics rather than hardcoded lengths.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- Nodes: `Line` SOP → `Resample` SOP → `Attribute Wrangle` (`unfold1`, Point context)
+- Key VEX functions: `vertexcurveparam()`, `chf()`, `prim()` (position sampling via `set(offset,0,0)` UV), `primintrinsic(0, "measuredperimeter", i@primnum)`, `fit()`, `lerp()`, `smooth()`, `max()`
+- Full final wrangle (reconstructed from frames):
+```vex
+float u = vertexcurveparam(0, i@ptnum);
+float offset = chf("offset");
+float radius = chf("radius");
+
+// the remaining part of the curve
+float anchor_u = 1.0 - offset;
+float blend_start = max(0.0, anchor_u - radius);
+
+vector endPos = prim(0, "P", i@primnum, set(offset, 0.0, 0.0));
+f@bias = smooth(blend_start, anchor_u, u);
+
+float per = primintrinsic(0, "measuredperimeter", i@primnum);
+float post_per = per * (1.0 - offset);
+float post_u = fit(u, blend_start, 1.0, 0.0, 1.0);
+f@post_u = post_u;
+
+vector straightP = v@P;
+straightP.y = post_u * post_per;
+
+v@P = lerp(v@P, straightP, f@bias);
+```
+- Spare parameters: `offset` (float, 0–1, transition point), `radius` (float, corner smoothness, default ~0.5)
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — requires comfort with VEX attribute math, curve intrinsics, and remapping functions, but no simulation/DOP knowledge needed.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (author: cgside; techniques used are stable across H18–H22, no version-specific nodes).
 
 ### Tags
-[PENDING EXTRACTION]
+vex, sop, curves, attributes, procedural, animation, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet in the library sharing 2+ tags — first VEX/curves-animation entry ingested.
