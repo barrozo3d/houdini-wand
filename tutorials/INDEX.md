@@ -257,6 +257,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Rebelway course week (2h07m) building a full dragon-fire shot in H19.5. Animation-driven mouth emitter (Extract Centroid ×2 + wrangle `v@v = point(1,"P",@ptnum) - @P` with vel_mult/up controls), POP stream with hit-group POP Drag ground hugging, Trail→Add→Resample source lines with age/curveu-masked anti-aliased noise, main pyro from the Ground Explosion preset (BFECC, disturbance 75 @ 0.4 block, Gas Vortex Boost + Confinement, buoyancy 2.85, SDF+Volume Velocity collisions), secondary ground fire ignited via Attribute from Volume contact transfer (Bonfire preset, smokeless flame, layered density/velocity Attribute Noise, flame-field Gas Turbulence). Ends with VDB caching best practices (Convert to VDB + 16-bit + vel resample ÷4: 57→2 MB/frame), the Pyro Bake Volume flame→density rename render fix, and duplicating the setup for all three heads.
 - **File:** tutorials/fantasy-fx-in-houdini-dragon-fire.md
 
+
+### Unfolding curves with vex
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=hAD4u2oHFo0
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/unfolding-curves-with-vex.md
+
 ---
 
 ## How to Read This Index
