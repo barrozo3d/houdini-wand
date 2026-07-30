@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=fbRhHne8x4E
 author: cgside
 ingested: 2026-07-30
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified (Solaris/LOPs + Karma, recent H19.5+ era UI)"
+tags: [karma, solaris, lops, lighting, texture-projection, look-at-constraint, color-management, substance-painter]
+extraction_status: complete
 frames_dir: tutorials/frames/karma-and-solaris-tricks-i-wish-i-knew-before/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Karma and Solaris Tricks I wish I knew before
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py karma-and-solaris-tricks-i-wish-i-knew-before <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -93,30 +89,64 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:53] tutorials/frames/karma-and-solaris-tricks-i-wish-i-knew-before/frame_000.jpg
+- [1:14] tutorials/frames/karma-and-solaris-tricks-i-wish-i-knew-before/frame_001.jpg
+- [2:34] tutorials/frames/karma-and-solaris-tricks-i-wish-i-knew-before/frame_002.jpg
+- [3:19] tutorials/frames/karma-and-solaris-tricks-i-wish-i-knew-before/frame_003.jpg
+- [3:55] tutorials/frames/karma-and-solaris-tricks-i-wish-i-knew-before/frame_004.jpg
+- [4:16] tutorials/frames/karma-and-solaris-tricks-i-wish-i-knew-before/frame_005.jpg
+- [5:05] tutorials/frames/karma-and-solaris-tricks-i-wish-i-knew-before/frame_006.jpg
+- [5:46] tutorials/frames/karma-and-solaris-tricks-i-wish-i-knew-before/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Three independent Solaris/Karma production tricks: (1) projecting a texture from a light's local space onto arbitrary geometry using a hand-built matrix-transform + masking VEX/VOP network, (2) constraining a light to always aim at a "hero" object via a Look At Constraint LOP, and (3) matching Substance Painter-exported texture colors correctly in Karma by tagging exported files with explicit OCIO color-space suffixes.
 
 ### Summary
-[PENDING EXTRACTION]
+A rapid-fire tips video (no chapters, ~6 min) from cgside covering three separate Solaris/Karma workflows he wishes he'd known earlier. Trick 1 (0:46-3:44) builds a from-scratch light-based texture projector: extract the light's world transform into a primitive var via a wrangle, read that matrix on the target mesh, transform the mesh's object-space position into the light's local space, build a square mask from the local X/Y bounds, cull the back face with a normal·lightZ dot product, then use the local X/Y as UVs to sample an image and composite it over a background color — the projection follows the light in real time and works in both XPU and CPU (but not in the viewport, matrix math isn't previewed live there). Trick 2 (3:44-4:34) uses Solaris's Look At Constraint LOP to keep a light always oriented at a chosen "hero" object as you freely reposition the light — set Source to the light primitive, Target to the hero-object primitive, pick the look-at axis (he used -Z) and the up axis (Y). Trick 3 (4:34-6:00) fixes texture color mismatches between Substance Painter and Karma: set Substance's project color management to OpenColorIO / ACES 2.0, then create a custom export template that appends a color-space suffix tag (e.g. ACEScg, RAW, sRGB) to each exported filename (and a UDIM tag if using UDIMs) — Houdini/Karma's OCIO texture color-space auto-detection matches those filename suffixes, so without the tag the color space silently falls back to a default and colors look wrong.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**Light texture projection:**
+1. Position a light (e.g. a rectangle/area light) so it faces the target geometry; set its diffuse and specular contribution to 0 so it doesn't otherwise light the scene, and use flat/unlit shading on the receiver for a clean preview.
+2. On the light primitive, add an Attribute Wrangle that reads the light's world transform via `primintrinsic` and writes it out as a primitive var (named e.g. `xform`) — this bakes the light's position/orientation into a matrix attribute other nodes can read.
+3. On the receiving mesh, add a Primvar Reader (or equivalent) targeting the light primitive to pull in that same `xform` matrix primvar.
+4. In a VOP/wrangle network: read `P` (object-space position), invert the imported light matrix, and transform `P` by the inverted matrix — this re-expresses each surface point's position in the light's local space.
+5. Build a square mask by splitting the transformed position into X and Y and remapping/clamping each into a 0-1 falloff band (fit range), multiplying X-mask × Y-mask.
+6. Build a backface mask: extract the Z-axis/basis vector of the light's matrix, dot it against the surface normal, and threshold with an "if greater" comparison so the projection only appears on the light-facing side.
+7. Multiply the square mask by the backface mask to get the final projection mask.
+8. Use the local-space X/Y (from step 4) as UV coordinates to sample the projected image texture, then mix that sampled color with a base/background color using the combined mask as the blend factor.
+9. Result: moving the light anywhere in the scene moves the projected texture with it, live, on both CPU and XPU Karma — but the effect won't preview inside the 3D viewport itself since it depends on evaluated matrix math, not native viewport projection.
+
+**Light Look At Constraint:**
+1. Import the hero object and create/position the light as normal.
+2. Add a Look At Constraint LOP; set its Source primitive path to the light and its Target (look-at) primitive path to the hero object.
+3. Choose the axis that should point at the target (creator used -Z) and the up axis (Y) for correct roll orientation.
+4. The light can now be freely translated anywhere and will continuously re-aim itself at the hero object.
+
+**Substance Painter → Karma color matching:**
+1. In Substance Painter's project settings, set Color Management to OpenColorIO with the ACES 2.0 config (leave other settings default).
+2. When exporting textures, build/use a custom export template that includes the Color Space filename variable (append it to the output filename), and also append the UDIM tag if the project uses UDIM tiling.
+3. This produces exported filenames carrying a color-space suffix (e.g. `_ACEScg`, `_RAW`, `_sRGB`).
+4. In Houdini, when the textures are referenced (e.g. via a texture/material node), check Color Preferences → OCIO: Houdini auto-detects color space from filename patterns matching tags like ACEScg/sRGB/RAW — with the tag present the correct space is assigned automatically; without it, the default assignment is wrong and colors won't match Substance's preview.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Solaris/LOPs context throughout. Attribute Wrangle (`primintrinsic` transform extraction, primvar write), Primvar Reader (matrix import on receiving mesh), VOP network for: invert-matrix + transform-position, Separate/Fit-Range nodes (square mask), dot-product + "if greater" comparison (backface mask), multiply (mask combine), texture sample node using local X/Y as UV, mix/composite node (image over background color). Look At Constraint LOP (Source, Target/Look At primitive paths, Look At Axis, Up Axis parameters). Houdini Color Preferences → OCIO panel (pattern-matches filename color-space suffixes like ACEScg/sRGB/RAW).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced — the texture-projection network (trick 1) requires comfort with matrix math, primvars, and VOP wrangling; the Look At Constraint and Substance/OCIO tricks are Beginner/Intermediate parameter-level workflow fixes.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified on screen; Solaris (LOPs) + Karma XPU/CPU workflow consistent with a recent H19.5+ release.
 
 ### Tags
-[PENDING EXTRACTION]
+karma, solaris, lops, lighting, texture-projection, look-at-constraint, color-management, substance-painter
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet with overlapping Solaris/Karma-lighting-trick tags — first light-projection/Look-At-Constraint/OCIO-focused entry in this library.

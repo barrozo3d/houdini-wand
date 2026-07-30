@@ -282,9 +282,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=fbRhHne8x4E
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (Solaris/LOPs + Karma, recent H19.5+ era UI)
+- **Tags:** karma, solaris, lops, lighting, texture-projection, look-at-constraint, color-management, substance-painter
+- **Summary:** Three rapid-fire Solaris/Karma tips: (1) a from-scratch light-based texture projector built from a wrangle-extracted light transform matrix, local-space position remapping, and a square + backface mask; (2) a Look At Constraint LOP to keep a light always aimed at a hero object while freely repositioning it; (3) matching Substance Painter export colors in Karma by tagging exported textures with OCIO color-space filename suffixes (ACEScg/RAW/sRGB) so Houdini's auto-detection assigns the right space.
 - **File:** tutorials/karma-and-solaris-tricks-i-wish-i-knew-before.md
 
 ---
