@@ -277,6 +277,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Full pipeline for scanning a real object (iPhone video) and training a Gaussian splat natively in Houdini 22: extract stills in Copernicus, align them externally in COLMAP, build the required `$HIP/ML/<name>/dataset.gsplats/{images,sparse/0}` folder structure, train via a TOPs `ML Train Gsplats` node (COLMAP dataset type, Cache Images to VRAM for speed), then import/bake/clean the resulting `.ply` and render it in Solaris with Karma XPU. Notes that splats can't be relit by scene lights.
 - **File:** tutorials/training-gaussian-splats-in-houdini-22-the-complete-workflow.md
 
+
+### Karma and Solaris Tricks I wish I knew before
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=fbRhHne8x4E
+- **Author:** cgside
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/karma-and-solaris-tricks-i-wish-i-knew-before.md
+
 ---
 
 ## How to Read This Index
