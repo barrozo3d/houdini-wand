@@ -86,3 +86,4 @@ H18.5
 ## Related Tutorials
 - module-i-week-01-09-setting-the-active-attribute-v1-1080p.md (active attribute + RBD Configure)
 - module-ii-week-01-01-introduction-v1-1080p.md (Module II intro: Vellum)
+- [a Full Houdini Mini Course - RBD Marbles [All Lessons]](a-full-houdini-mini-course---rbd-marbles-all-lessons.md) — shares `rbd` + `dop`; production-scale version of this exact SOP-level-solver-vs-manual-DOP-network pairing, plus the full Solaris/Karma/compositing pipeline downstream of the sim.

@@ -333,3 +333,4 @@ rbd, glue-constraints, voronoi-fracture, convex-hull-collision, karma-xpu, mardi
 - [Procedural Food in Houdini | Mardini 2026](procedural-food-in-houdini-mardini-2026.md) — companion Mardini 2026 breakdown from the same channel, covering French-toast/fruit RBD and FLIP simulation instead of a barrel break.
 - [RBD Rock Surfaces with Houdini](rbd-rock-surfaces-with-houdini.md) — shares the RBD-Material-Fracture-as-modeling-tool philosophy used here.
 - [Procedural Rock Wall without intersections](procedural-rock-wall-without-intersections.md) — shares the RBD/Bullet-as-modeling-tool approach to building irregular shapes without manual sculpting.
+- [a Full Houdini Mini Course - RBD Marbles [All Lessons]](a-full-houdini-mini-course---rbd-marbles-all-lessons.md) — shares `rbd`, `karma`, `animation`; a much longer full-pipeline RBD course (falling marbles rather than a glue-constraint break) rendered in the same Karma XPU context.

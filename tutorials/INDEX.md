@@ -292,9 +292,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=2hYLgWms72Q
 - **Author:** WTTR Labs
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** H20.5+ (Copernicus compositing confirmed on-screen; exact version not stated)
+- **Tags:** rbd, sop, dop, lop, solaris, karma, rendering, procedural, simulation, attributes, modelling, vex, compositing, usd, animation, intermediate, houdini-20
+- **Summary:** 16-lesson, 5.5-hour full-pipeline course (marbles falling through a rotating pegboard) taken from a whiteboard workflow-planning sketch to a graded final render. Covers procedural peg/marble layout with attribute-driven activation, two parallel RBD approaches (SOP-level Bullet solver vs. a hand-built DOP network), Solaris/MaterialX look-dev (including Rest-attribute + Connectivity/class-seeded random marble coloring, glass/subsurface shading), multi-light Karma XPU lighting with LPE-tagged AOVs, USD caching + multi-camera animation, a batched ROP-network render setup, and a final Copernicus per-light AOV compositing/rebalancing pass. Ends with four production-quality rendered camera angles.
 - **File:** tutorials/a-full-houdini-mini-course---rbd-marbles-all-lessons.md
 
 ---

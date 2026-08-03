@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=2hYLgWms72Q
 author: WTTR Labs
 ingested: 2026-08-03
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "H20.5+ (Copernicus compositing confirmed on-screen; exact version not stated)"
+tags: [rbd, sop, dop, lop, solaris, karma, rendering, procedural, simulation, attributes, modelling, vex, compositing, usd, animation, intermediate, houdini-20]
+extraction_status: complete
 frames_dir: tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 12
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # a Full Houdini Mini Course - RBD Marbles [All Lessons]
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py a-full-houdini-mini-course---rbd-marbles-all-lessons <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Lesson 00: Course Trailer [0:00]
@@ -3450,30 +3446,66 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [49:00] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_000.jpg
+- [70:00] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_001.jpg
+- [96:18] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_002.jpg
+- [117:31] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_003.jpg
+- [139:02] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_004.jpg
+- [165:56] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_005.jpg
+- [180:35] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_006.jpg
+- [219:10] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_007.jpg
+- [238:00] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_008.jpg
+- [272:50] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_009.jpg
+- [279:01] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_010.jpg
+- [317:36] tutorials/frames/a-full-houdini-mini-course---rbd-marbles-all-lessons/frame_011.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+An end-to-end procedural RBD pipeline: pack-and-attribute-drive a pegboard/marble scene for a Bullet-based rigid-body simulation (built two ways — a SOP-level solver and a from-scratch DOP network), then carry that sim through Solaris/MaterialX look-dev, Karma XPU lighting and batched multi-camera rendering, to a final Copernicus (COPs) per-light AOV compositing pass.
 
 ### Summary
-[PENDING EXTRACTION]
+A 16-lesson, 5.5-hour "start to finish" course (WTTR Labs) that builds one shot — marbles falling through a rotating pegboard — from a whiteboard workflow-planning sketch all the way to a graded final render. It covers procedural peg/marble layout with attribute-driven activation, two parallel approaches to rigid-body simulation (SOP-level RBD solver vs. a hand-built DOP network), Solaris/MaterialX look-dev for both pegboard and marble materials (including per-sim-cluster random color variation, glass/subsurface shading), multi-light Karma XPU lighting with LPE-tagged AOVs, USD caching + multi-camera animation, a batched ROP-network render setup, and a final Copernicus compositing pass that rebalances individual light contributions before export. The viewer ends with four finished camera angles rendered at production quality (256 samples, ACEScg, denoised) and a graded final sequence.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Peg-board + marble layout** (Lessons 02-05): `Grid` scattered with recomputed point normals → small `Box` peg primitive → `Match Size` → `Copy to Points` to instance pegs; three boards rotate via `$F*3` / `-$F*3` Z-rotation `Transform`s, carved out with `Group` + `Blast`. Marbles placed with `Line` → `Resample` → `Copy to Points`; an `Attribute Wrangle` sets an `active` int attribute two ways — a `v@P.y` height threshold, and a per-point `fit()`-randomized activation frame — visualized as red (inactive) → green (active) point colors.
+2. **SOP-level RBD sim** (Lesson 06): geometry is packed, `RBD Configure` marks pegs and the static board `active = 0`, an `RBD Bullet Solver` drives the marbles falling and bouncing off a glass-cover collision plane. `Transfer Groups` (not `Transfer Attributes`) is needed to carry a primitive group like "board glass cover" through the packed geometry so it can still be `Blast`-ed after packing.
+3. **DOP-net-from-scratch alternative** (Lesson 07): a hand-built `DOP Network` — `Gravity` + two `RBD Packed Object`s (one for marbles, one for "not marbles") + `RBD Solver`, merged together. The "Overwrite Active" toggle on the marbles RBD Packed Object lets the SOP-authored `active` attribute drive which marbles are simulating on each frame.
+4. **Sim → Solaris** (Lesson 08): packed sim results are fetched into LOPs via nulls; first material assignment is a `MaterialX Builder` ("simple marbles", orange base color) via `Assign Material`; multiple cameras (hero cam, cam01-03) are set up at different focal lengths.
+5. **Lookdev geometry prep** (Lesson 09): marble spheres are subdivided once via a `Time Shift` → `Unpack` → `Subdivide` → re-pack trick, avoiding an expensive per-frame unpack/subdivide; a dedicated lookdev camera is used to test depth of field (focus-stop parameter + shift-click to set focus distance).
+6. **Karma pegboard material** (Lesson 10): a `MaterialX Builder` network (`mtlxstandard_surface`, `mtlxsurface_unlit` for a lighting-free preview, `mtlxdisplacement`) driven by channel-packed ARM textures (Tiled `Image` → Separate-RGB `Vector3` node) — one channel into a `Color Ramp` for diffuse tint, another through `mtlxheighttonormal` → `Normal Map` for bump/roughness. A single `Constant` color + `Color Correct` + `Mix` combo is shown as a faster alternative to hand-tuning ramps.
+7. **Karma marble material** (Lesson 11): a `Rest` SOP (computed after unpack, per-sphere) gives texture variation without UVs; `Connectivity` + `Attribute Randomize` (seeded by the resulting `class` attribute) — or equivalently a wrangle `f@ran = ran@class` — produces one random float per simulated cluster. A `Primvar Reader` inside the Solaris MaterialX network fetches that `ran` attribute and drives an orange/blue `Mix` through a `Float Ramp`. Glass (Transmission) and Subsurface variants are layered onto the same blend-color network, with `mtlxstandard_surface` roughness tuned much lower (~0.02-0.2) for glass than for concrete (~0.5-0.8).
+8. **Karma lighting** (Lesson 12): an HDRI dome light plus several `Area Light`s (rectangle) — one shaped as a `Spotlight` with barn doors closed down for a goboed rim highlight, others for left/rim fill. Each light gets an `$OS`-based LPE tag so Karma's "split by LPE tag" AOV output can preview each light's isolated contribution; the viewport's Shadow placement mode (shift+left-click on the target surface) is used to aim lights precisely.
+9. **Camera setup + batched rendering** (Lessons 13-14): a `File Cache` SOP bakes both static and animated marbles/pegboards out to USD (`$HIP/USD/...`) so scrubbing is fast during camera work; a `Time Shift` + delete-channels freezes geometry that isn't animated. Hero cam + cam01-04 are keyframed with Linear interpolation; aspect ratio is copied between cameras via right-click Copy Parameter / Paste Relative Reference. For rendering, one `Karma Render Settings` node per camera (ACEScg color space, split-by-LPE-tag AOVs, up to 256 path-trace samples, depth of field + motion blur) feeds one `USD Render ROP` per camera, and all of those are chained through duplicated `Fetch` nodes into a single "render_all" ROP Network for one batched multi-camera render.
+10. **Final compositing** (Lesson 15): a Copernicus (COPs) network — `File` loads the rendered EXR sequence, `Add AOVs From File` pulls in the per-light LPE layers, each layer gets its own `HSV Adjust` / `Bright` node for intensity and tint rebalancing, then the layers are recombined with `Over` nodes set to Add mode. A `Switch` A/B-compares the recombined image against the original beauty pass to sanity-check the rebalance before a final render-to-disk export.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **SOP:** Grid, Scatter, Box, Match Size, Copy to Points, Group, Blast, Transform (`$F*3`/`-$F*3` rotation), Line, Resample, Attribute Wrangle, Pack, RBD Configure, RBD Bullet Solver, Transfer Groups, Rest, Connectivity, Attribute Randomize, UV Unwrap, UV Transform, Time Shift, Unpack, Subdivide, File Cache
+- **DOP:** DOP Network, Gravity, RBD Packed Object (x2: marbles / not-marbles), RBD Solver, "Overwrite Active" toggle
+- **LOP / Solaris:** Material Library, MaterialX Builder (`mtlxstandard_surface`, `mtlxsurface_unlit`, `mtlxdisplacement`, `mtlxheighttonormal`, Normal Map, Separate Vector3/Split RGB, Color Ramp, Color Correct, Mix, Constant, Primvar Reader), Assign Material, Camera (hero cam, cam01-06, lookdev cameras), Dome Light (HDRI), Area Light (rectangle, Spotlight shaping + barn doors), Karma Render Settings (per-camera camera override, ACEScg, split-by-LPE), USD Render ROP, Fetch, ROP Network
+- **VEX / attributes:** `active` (int), `ran` (float, seeded by `class`), `class` (Connectivity output), `rest` (from Rest SOP), `f@ran = ran@class`, `v@v *= 100` (motion-blur test) / `v@v *= 0.4` (motion-blur scale-down), `$OS` LPE tag expression
+- **COP / Copernicus:** File, Add AOVs From File, HSV Adjust, Bright, Over (Add mode), Switch, Render To Disk
+- **Render settings:** test res 1280 wide → final 2400x1080; 16-256 path trace samples; ACEScg color space; denoiser toggled on/off per test; motion blur (instance velocity blur) and depth of field (focus stop + shift-click focus distance) enabled per camera
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate (self-labeled "K[ind of] intermediate" in the trailer). Most of the modeling/lighting/rendering steps are approachable, but a few techniques lean Advanced — the from-scratch DOP network as an alternative to the SOP-level solver, the Rest-attribute + Connectivity/class-seeded random-color workflow, and the per-light LPE AOV compositing/rebalancing pass in Copernicus.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated explicitly in the video. However, Lesson 15's compositing network is confirmed on-screen (frame_011, panel labeled "Copernicus") to use Copernicus, the COP2 replacement introduced in Houdini 20.5 — this sets a hard floor of **H20.5 or later**. Karma XPU + MaterialX Builder usage throughout is consistent with the H20.5-H22 era; no version-specific UI elements pin it down further.
 
 ### Tags
-[PENDING EXTRACTION]
+rbd, sop, dop, lop, solaris, karma, rendering, procedural, simulation, attributes, modelling, vex, compositing, usd, animation, intermediate, houdini-20
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [module ii week 01 01 basic bullet sim v1 1080p](module-ii-week-01-01-basic-bullet-sim-v1-1080p.md) — shares `rbd` + `dop`; a short beginner-scale demo of the exact same pairing this course teaches at production scale (SOP-level RBD Bullet Solver vs. manual DOP network for the same falling-object sim).
+- [w01 01 introduction v1 1080p](w01-01-introduction-v1-1080p.md) — shares `rbd`, `dop`, `simulation`, `rendering`; another from-scratch Bullet-network RBD course, useful as a parallel beginner-level walkthrough of the same DOP-network-by-hand approach used in Lesson 07 here.
+- [CGI Integration | The Indie Way with Houdini(USD) and Nuke](cgi-integration-the-indie-way-with-houdiniusd-and-nuke.md) — shares `solaris`, `usd`, `karma`, `rbd`; complementary for the USD/Solaris/Karma pipeline half of this course (camera + color-pipeline concerns this video doesn't cover in depth).
+- [Karma and Solaris Tricks I wish I knew before](karma-and-solaris-tricks-i-wish-i-knew-before.md) — shares `karma`, `solaris`, `lop`; a grab-bag of Solaris/Karma lighting and texture-projection tricks that complement this course's Lesson 10-12 look-dev/lighting work.
+- [RBD Procedural Animations in Houdini | Mardini 2026](rbd-procedural-animations-in-houdini-mardini-2026.md) — shares `rbd`, `karma`, `animation`; a different RBD-as-modeling-tool use case (glue-constraint barrel break) using the same Karma XPU rendering context.
+- [From sops to final render with Karma](from-sops-to-final-render-with-karma.md) — shares `solaris`, `karma`, `compositing`, `procedural`; another full SOP→Solaris→Karma→compositing pipeline example, useful for comparing compositing/AOV-rebalancing approaches against this course's Copernicus pass.

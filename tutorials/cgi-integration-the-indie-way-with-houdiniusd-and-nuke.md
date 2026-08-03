@@ -445,3 +445,4 @@ Houdini 21 (Solaris/Karma XPU render engine, USD-based LOP workflow); companion 
 
 ## Related Tutorials
 Cross-link with [Camera Match tool for Houdini 21](camera-match-tool-for-houdini-21.md) — shares #camera; that tutorial's native in-Houdini camera-matching HDA is a complementary/alternative approach to this video's Nuke-based camera tracking for footage without a dedicated tracking app.
+- [a Full Houdini Mini Course - RBD Marbles [All Lessons]](a-full-houdini-mini-course---rbd-marbles-all-lessons.md) — shares `solaris`, `usd`, `karma`, `rbd`; a from-scratch RBD sim carried through the same USD-caching/Solaris/Karma XPU pipeline, useful as a full-course counterpart to this video's CGI-integration-focused workflow.

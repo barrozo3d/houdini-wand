@@ -394,3 +394,4 @@ Advanced/Expert — combines rest-attribute-driven VDB fog authoring, Solaris li
 
 ## Related Tutorials
 Author references two prior CGI-integration videos (camera orientation from EXIF data, background-image removal from Scene Import Camera) as prerequisites — cross-link once those are ingested from this batch. Also shares the Karma Cloud/VDB fog vocabulary with the environments-in-houdini-part-4/5 tutorials.
+- [a Full Houdini Mini Course - RBD Marbles [All Lessons]](a-full-houdini-mini-course---rbd-marbles-all-lessons.md) — shares `solaris`, `karma`, `compositing`, `procedural`; another complete SOP→Solaris→Karma→compositing pipeline, useful for comparing this video's compositing approach against that course's Copernicus per-light AOV rebalancing pass.

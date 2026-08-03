@@ -149,4 +149,4 @@ karma, solaris, lops, lighting, texture-projection, look-at-constraint, color-ma
 ---
 
 ## Related Tutorials
-None yet with overlapping Solaris/Karma-lighting-trick tags — first light-projection/Look-At-Constraint/OCIO-focused entry in this library.
+- [a Full Houdini Mini Course - RBD Marbles [All Lessons]](a-full-houdini-mini-course---rbd-marbles-all-lessons.md) — shares `karma`, `solaris`, `lop`; that course's Lesson 10-12 look-dev/lighting sections (LPE-tagged multi-light setup, barn-door spotlight shaping) pair well with this video's Solaris/Karma lighting tricks.

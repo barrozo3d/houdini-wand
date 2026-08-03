@@ -68,3 +68,4 @@ Houdini 18 (Tabletop Food Simulation course)
 - [Module II Week 01 Basic Bullet Sim](module-ii-week-01-01-basic-bullet-sim-v1-1080p.md) — foundational RBD Bullet techniques
 - [Module I Intro](module-i-week-01-01-intro-v1-1080p.md) — parallel beginner RBD intro
 - [Tabletop Week 05 Intro](w05-01-intro-v1-1080p.md) — the final course week combining RBD with FLIP
+- [a Full Houdini Mini Course - RBD Marbles [All Lessons]](a-full-houdini-mini-course---rbd-marbles-all-lessons.md) — shares `rbd`, `dop`, `simulation`, `rendering`; a production-scale course covering the same instancing-onto-points + Bullet-network RBD approach, extended through Solaris/Karma lighting and final compositing.
