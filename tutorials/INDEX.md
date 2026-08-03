@@ -287,6 +287,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Three rapid-fire Solaris/Karma tips: (1) a from-scratch light-based texture projector built from a wrangle-extracted light transform matrix, local-space position remapping, and a square + backface mask; (2) a Look At Constraint LOP to keep a light always aimed at a hero object while freely repositioning it; (3) matching Substance Painter export colors in Karma by tagging exported textures with OCIO color-space filename suffixes (ACEScg/RAW/sRGB) so Houdini's auto-detection assigns the right space.
 - **File:** tutorials/karma-and-solaris-tricks-i-wish-i-knew-before.md
 
+
+### a Full Houdini Mini Course - RBD Marbles [All Lessons]
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=2hYLgWms72Q
+- **Author:** WTTR Labs
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/a-full-houdini-mini-course---rbd-marbles-all-lessons.md
+
 ---
 
 ## How to Read This Index
