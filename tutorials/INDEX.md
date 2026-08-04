@@ -302,9 +302,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=SDyjrpW1ZB8
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 22
+- **Tags:** kinefx, apex, animation, rigging, rbd, secondary-motion, spring, procedural, fbx, intermediate, houdini-22
+- **Summary:** Max Rose (SideFX) webinar tour of Houdini 22's KineFX/Apex character-animation toolset: pose-based keyframing and config/selection-set controls on a biped rig, reworking a clip into a ragdoll-driven exit (locator + tether constraint, baked to a layer), Shot Sculpt for hand-authored squash-and-stretch, Set-Driven Keys on a jack-in-the-box rig (including a rig control's own rotate channel acting as the SDK driver), Secondary Motion (spring) baking, combining clips in the Motion Mixer and round-tripping the result back into Apex, plus Q&A demos of prop-parenting, character unpack/repack, cloth-skinning transfer, and FBX character/animation export for game engines.
 - **File:** tutorials/animate-in-kinefx-part-i-max-rose-2026-illume.md
 
 ---

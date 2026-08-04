@@ -117,5 +117,6 @@ sop, cop, procedural, modelling, texturing, rigging, kinefx, animation, beginner
 ---
 
 ## Related Tutorials
+- `tutorials/animate-in-kinefx-part-i-max-rose-2026-illume.md` — the biped rig built here (Harry) is used in this animation-basics webinar to demonstrate posing, ragdoll, secondary motion, and set-driven keys.
 - `tutorials/apex-rigging-h20-masterclass.md` — broader APEX/KineFX rigging content; shares tags: rigging, kinefx, animation.
 - `tutorials/basic-procedural-texturing-with-cops-in-houdini-21.md` — COPs texturing workflow in the same Houdini version; shares tags: cop/cops, texturing, procedural.

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=SDyjrpW1ZB8
 author: Houdini
 ingested: 2026-08-04
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [kinefx, apex, animation, rigging, rbd, secondary-motion, spring, procedural, fbx, intermediate, houdini-22]
+extraction_status: complete
 frames_dir: tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 19
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Animate in KineFX | Part I | Max Rose | 2026 Illume
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py animate-in-kinefx-part-i-max-rose-2026-illume <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -1018,30 +1014,73 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [3:59] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_000.jpg
+- [6:07] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_001.jpg
+- [7:03] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_002.jpg
+- [11:12] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_003.jpg
+- [16:16] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_004.jpg
+- [18:04] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_005.jpg
+- [20:15] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_006.jpg
+- [21:02] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_007.jpg
+- [24:11] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_008.jpg
+- [25:00] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_009.jpg
+- [29:24] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_010.jpg
+- [33:41] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_011.jpg
+- [36:03] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_012.jpg
+- [39:33] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_013.jpg
+- [46:03] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_014.jpg
+- [48:16] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_015.jpg
+- [68:37] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_016.jpg
+- [70:17] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_017.jpg
+- [79:57] tutorials/frames/animate-in-kinefx-part-i-max-rose-2026-illume/frame_018.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Live-webinar tour of Houdini 22's KineFX character-animation workflow (Part 1 of a multi-part series) — Max Rose (SideFX in-house specialist) animates two pre-built rigs (a biped "Harry" and a spring-jointed "Jack-in-the-box") using Apex Scene Animate, covering pose-based keyframing, config/selection-set controls, ragdoll baking, shot sculpting, set-driven keys, secondary motion (spring), the Motion Mixer, and FBX export for game engines/Maya — closing with 20+ minutes of live Q&A.
 
 ### Summary
-[PENDING EXTRACTION]
+The webinar opens on Harry (a pre-rigged biped built with the Rig Builder) in **Apex Scene Animate**: click-drag posing, the gear icon's config controls (IK/FK toggle per limb), selection sets (create-from-selected or import a saved Apex Sets list), and the animation-slider tool for in-betweens/moving holds/overlap. Rather than animate live, Max drops in saved clips from the **Animation Catalog** (select all controls → Apply), showing that all animation data lives on a single Scene Animate node and can be freely duplicated. He then reworks a "waves and flies away" clip into "waves and gets yanked offscreen by ragdoll": enter the **Ragdoll substate** (press C), deactivate via selection-set + active toggle so the character doesn't collapse prematurely, tune **stiffness** (~25) for a controlled flop, re-blend IK/FK to 1 one frame before the ragdoll starts (avoids a visible snap once baked), add a **locator** substate near the foot with keyframed translate (Shift+T) as a target, and use a **tether constraint** (select foot control + locator, press H) to yank the ragdoll along that path. Ragdoll motion is baked to a new additive layer over a frame range (Settings → Bake → frame range → new layer → Bake Keys); eye RBD objects slamming shut is fixed by deleting those keys on a new "fix" layer. For cartoon squash-and-stretch not built into the rig, Max uses **Shot Sculpt** (world-space default recommended) — press B to enter, G for brush settings, 3 for the Move brush — to hand-sculpt a pose at a chosen frame, which auto-creates an in/out Bezier-interpolated sculpt track that can be stacked with more sculpts. Second half switches to a spring-jointed jack-in-the-box rig to demonstrate **Set-Driven Keys**: create two named animation layers (doll-close rest pose, box-open lid animation) inside an Apex Rig Pose node, then wire them into the Auto Rig component's Set-Driven-Key entries (layer name + frame range) so a single Apex Scene Animate slider scrubs each; a control's **Rotate X channel** can itself act as the driver (via Copy Current Selection → paste into the Driver field, then fit-range-remap so several physical crank rotations map to the 0-1 driven range). **Secondary Motion** (Pose Tools → Secondary Motion) attaches Spring behavior per-control — translate-only on the spring coil, rotation-only on the doll's other controls, tuned via an Effect strength slider (values like 4 shown) and keyed on/off — then baked to an additive layer just like ragdoll (watch for double-application if a control still has secondary motion attached from a prior state). Two clips on one Scene Animate node (Animation tab → New Clip) get combined via the **Motion Mixer**: drag clips onto its timeline, blend/crossfade between them, then switch the Mixer's output mode to "Apex Scene" and use a **Motion Mixer Fetch** node to pull the blended result back into Apex for further editing (e.g. fixing geometry penetration on a new layer). Bonus mini-demos from Q&A: adding **props** (Apex Add Prop / Scene Add Prop) and parenting them to a foot IK control (child→parent order, press H) for e.g. high heels; unpacking/repacking a character (Unpack Character → edit geometry → Pack) to hot-swap geometry without losing animation; transferring clothing skinning via **Attribute Transfer** of the `bonecapture` attribute from an already-skinned character onto new garment geometry; exporting via **Unpack Character → FBX Character Output** (geo + rest scale required) for a static/posed FBX, or **FBX Animation Output** for a separate animation-only FBX (Max's preferred game-engine workflow — keep geometry and animation as separate FBX files); a Character-Creator-5 import caveat (broken/floating rest-skeleton joints — use the **FBX Character** recipe and the *animated* skeleton, not the base rest skeleton, and freeze via Time Shift before Capture Pose); and building a minimal one-line IK rig from raw points using **Rig Doctor → Initialize Transforms** (points to joints) → **Attribute Tags** (tag joints e.g. "arm") → Pack Folder → **Auto Rig component (FK Transform)** → **Multi IK** (driven by the same tag).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Pose/animate basics** [frame_000, 3:59] — `Scene Add Character` + `Scene Animate` on a rig node; press P for the parameters window and enable click-drag posing; the gear/config control per limb toggles IK↔FK [frame_001, 6:07]; selection sets (create-from-selected, or import a saved `Apex Sets` list) group controls for fast show/hide [frame_002, 7:03]; animation-slider tool adds in-betweens, moving holds, and overlap on top of two hand-set key poses.
+2. **Reuse saved clips** [frame_003, 11:12] — Animation Catalog → select all controls → Apply drops in a pre-made animation; all animation data lives on the single Scene Animate node, so duplicating the node duplicates the whole performance (useful for iterating variations without new files).
+3. **Ragdoll exit** [frame_004, 16:16] → [frame_005, 18:04] — enter Ragdoll substate (C); use a selection set + Active toggle to keep the ragdoll inert until the desired frame; tune Stiffness (~25); one frame before ragdoll engages, blend the limb's IK/FK config back to 1 so the post-bake transition doesn't visibly snap.
+4. **Locator + tether pull** [frame_006, 20:15] — add a Locator substate near the target body part, keyframe its translate (Shift+T) as the pull path; in Ragdoll, select the body control + locator and press H to create a Tether Constraint (locators driving ragdoll must NOT be set Active).
+5. **Bake ragdoll** [frame_007, 21:02] — select all ragdoll controls → Settings → Bake → set frame range → Additive/new layer → Bake Keys; clean up side effects (e.g. delete unwanted eye-RBD keyframes) on a separate "fix" layer.
+6. **Shot Sculpt for squash/stretch** [frame_008, 24:11] → [frame_009, 25:00] — set Shot Sculpt defaults to World Space; route the Apex character through a Scene Invoke (unpacks it to real geometry) before sculpting; press B to enter the sculpt state, G for brush settings, 3 for the Move brush; each sculpt stroke auto-creates a Bezier in/out track, and multiple sculpts stack.
+7. **Set-Driven Keys** [frame_010, 29:24] → [frame_011, 33:41] — build named animation layers in an Apex Rig Pose node (e.g. `doll close`, `box open`) with their own frame ranges; register each as an entry (layer name + start/end frame) on the Auto Rig component's Set-Driven-Key list; the component then exposes one slider per entry to scrub that sub-animation independently.
+8. **Control-driven SDK** [frame_012, 36:03] — with a driving control selected, use "current selection" → Copy → paste into the Driver field to avoid hand-typing control paths; pick the driving channel (e.g. Rotate X); since raw rotation may span many turns, sample two rotation values and plug them into Fit Min/Fit Max so several physical rotations remap cleanly to the SDK's 0-1 range.
+9. **Secondary Motion (spring)** [frame_013, 39:33] — Pose Tools → Secondary Motion; controls needing motion turn gray, gold once attached; choose Spring, pick Translate or Rotate channel to affect, tune the Effect strength slider; bake to a new additive layer (same recipe as ragdoll baking); remove secondary motion from a control before reapplying it in a new pass to avoid doubling up.
+10. **Combine clips in Motion Mixer** [frame_014, 46:03] → [frame_015, 48:16] — author extra takes as additional clips on one Scene Animate node (Animation tab → New Clip); drop a Motion Mixer, drag clips onto its sequencer timeline to order/blend them; switch the Mixer's output mode to Apex Scene, then use a Motion Mixer Fetch node to pull the blended result back into an Apex Scene → Scene Animate for further hand-editing.
+11. **Character/animation export** [frame_016, 68:37] → [frame_017, 70:17] — Unpack Character exposes 4 outputs (Apex scene, geo, rest scale, animated scale); feed geo + rest scale into **FBX Character Output** for a posed static export, or use a standalone **FBX Animation Output** node (set file path + frame range) to export just the animation clip — Max's preferred pattern for game-engine work (Unreal) is separate geometry and animation FBX files rather than one combined export.
+12. **Minimal one-line IK rig** [frame_018, 79:57] — start from raw points (e.g. a 3-point line); Rig Doctor → Initialize Transforms converts points to joints; Attribute Tags assigns a group tag (e.g. `arm`); Pack Folder formats it for Apex; Auto Rig component set to FK Transform initializes a basic FK rig; add a Multi IK component with its Driven field set to the same tag to get working IK off nothing but tagged points.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Character/animation nodes:** Scene Add Character, Scene Animate, Apex Sets (selection-set import), Animation Catalog, Apex Rig Pose (rest pose / set-driven-key source layers), Auto Rig component (FK Transform, Multi IK, Set-Driven-Key entries), Rig Doctor (Initialize Transforms), Attribute Tags, Pack Folder / Pack Character / Unpack Character.
+- **Secondary/dynamics nodes:** Ragdoll substate (Active toggle, Stiffness, Bake to layer), Locator substate (Shift+T translate key, Shift+R rotate key; must be inactive when driving a tether), Tether Constraint (H shortcut on selected controls), Secondary Motion / Spring (per-control Translate or Rotate target, Effect strength, bake-to-layer).
+- **Sculpt/finishing:** Shot Sculpt (World Space default, Move brush = shortcut 3, per-stroke Bezier in/out tracks), Attribute Transfer (for copying a `bonecapture` skin attribute onto new garment geometry), Motion Mixer + Motion Mixer Fetch (Apex Scene output mode to round-trip a blended performance back into Apex).
+- **Export nodes:** FBX Character Output (requires geo + rest scale inputs), FBX Animation Output (separate animation-only FBX, with its own frame-range/file settings), FBX Character recipe (Character-Creator-5 import — use the *animated* skeleton, not the broken rest skeleton, and freeze with a Time Shift before Capture Pose).
+- **Rig used:** "Harry" (biped, `harry_rig_v2`/`v4`, built with the Rig Builder — companion asset to [[rig-builder-project-overview]] / the Rig Builder episode series) and a custom spring-jointed "Jack-in-the-box" rig (3-point spline spring + FK body).
+- No raw VEX authored on-screen — this is a Scene-Animate/Apex UI workflow session, not a scripting one.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — assumes comfort with basic KineFX/Apex posing already; ragdoll baking, set-driven keys, secondary motion, and the Motion Mixer round-trip are all shown as guided step-by-step workflows rather than assumed prior knowledge.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (KineFX/Apex animation toolset; presenter references "Houdini 22 launch" and the upcoming Houdini Hive Anoxia/Toronto event).
 
 ### Tags
-[PENDING EXTRACTION]
+kinefx, apex, animation, rigging, rbd, secondary-motion, spring, procedural, fbx, intermediate, houdini-22
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- `tutorials/h22---kinefx-rigging-and-animation-max-rose-houdini-22-hive.md` — companion piece by the same presenter (Max Rose) building the *rigging* side of this exact jack-in-the-box spring rig (spiral-joint centerline trick, Configure Ragdoll recipe, SDK setup) that this video then animates; watch together.
+- `tutorials/rig-builder-project-overview.md` — shows how the "Harry"/iBot-style biped rig used for the animation-basics section of this video was originally modeled, textured, and skinned via the Rig Builder pipeline.
+- `tutorials/experimental-motion---chops.md` — alternate (CHOPs-based) approach to secondary motion / spring / jiggle, useful contrast to the Apex Secondary-Motion tool shown here.
+- `tutorials/houdini-20-how-to-pose-and-animate-electra.md` — another beginner-friendly Apex pose/animate walkthrough on a different pre-built character (Electra), good companion for reinforcing the Scene-Animate basics covered in Key Step 1.

@@ -528,5 +528,6 @@ rigging, animation, rbd, simulation, procedural, intermediate, advanced, houdini
 ---
 
 ## Related Tutorials
+- `tutorials/animate-in-kinefx-part-i-max-rose-2026-illume.md` — companion piece by the same presenter (Max Rose), animating this exact jack-in-the-box spring rig using Set-Driven Keys, Secondary Motion, and the Motion Mixer; watch together.
 - [H22 - Animation | Motion Mixer | Sasa Budimir | Houdini 22 HIVE](h22---animation-motion-mixer-sasa-budimir-houdini-22-hive.md) — the deeper Motion Mixer session referenced in this talk
 - [H22 - KineFX Rigging and Procedural Animation | Henry Dean | Houdini 22 HIVE](h22---kinefx-rigging-and-procedural-animation-henry-dean-houdini-22-hive.md) — companion HIVE rigging talk (G-splat centipede)
