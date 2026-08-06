@@ -312,9 +312,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=zESg7I8IS4Q
 - **Author:** Kotov Roman
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified (Redshift renderer; LOP/Solaris used for final color management and render view)
+- **Tags:** sop, vop, attributes, procedural, rendering, redshift, lop, solaris, intermediate
+- **Summary:** Continues the Amber ("A") piece from Episode 1: sharpens the internal shatter geometry (lower subdivision, second noise layer), brightens and repositions lights for a single strong top-right highlight, then wires several Redshift textures through a Triplanar node (no UVs on the geometry) into a Bump node — one texture for fine surface bubbling, one for larger patterning, and a compressed reflection-roughness map, all balanced by toggling roughness and internal geometry in isolation. Two noises (one driving the other's global scale) build the main bump map; a third "crystallized" noise is masked with a second noise + Multiply so it only reads on select areas. Finishes with a LOP-based color pass (Apply Color Management, highlights rolled down, exposure raised, blacks crushed) and multi-camera framing before render.
 - **File:** tutorials/material-alphabet-in-houdini-a-for-amber-episode-02.md
 
 

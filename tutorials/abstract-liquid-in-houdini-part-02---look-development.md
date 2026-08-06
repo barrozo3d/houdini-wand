@@ -435,3 +435,4 @@ redshift, rendering, particles, attributes, vop, sop, animation, procedural, int
 - [Abstract liquid in Houdini | Part 01 - Building the simulation](abstract-liquid-in-houdini-part-01---building-the-simulation.md) — the sim this look-dev renders
 - [Abstract liquid in Houdini | Part 03 - Color Grading](abstract-liquid-in-houdini-part-03---color-grading.md) — the After Effects finish
 - [Art Directing Cloth in Houdini](art-directing-cloth-in-houdini.md) — Redshift lighting/rendering of sims, similar look-dev workflow
+- [Material alphabet in Houdini: A for Amber | Episode 02](material-alphabet-in-houdini-a-for-amber-episode-02.md) — same author's Redshift look-dev habits applied to a material study: triplanar texture/roughness tuning, snapshot iteration, light placement for a key highlight

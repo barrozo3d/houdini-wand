@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=zESg7I8IS4Q
 author: Kotov Roman
 ingested: 2026-08-06
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [sop, vop, attributes, procedural, rendering, redshift, lop, solaris, intermediate]
+extraction_status: complete
 frames_dir: tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-02/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Material alphabet in Houdini: A for Amber | Episode 02
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py material-alphabet-in-houdini-a-for-amber-episode-02 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -121,30 +117,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:55] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-02/frame_000.jpg
+- [1:18] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-02/frame_001.jpg
+- [1:53] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-02/frame_002.jpg
+- [2:48] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-02/frame_003.jpg
+- [3:13] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-02/frame_004.jpg
+- [4:51] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-02/frame_005.jpg
+- [5:50] tutorials/frames/material-alphabet-in-houdini-a-for-amber-episode-02/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Finishing pass on the Amber material study: sharpening the internal "shatter" geometry, sculpting the key reflection with light placement, layering triplanar Redshift textures (bump + reflection roughness) onto UV-less geometry, masking a crystallized detail layer with a noise-driven multiply, and grading the final look in the LOP network before multi-camera rendering.
 
 ### Summary
-[PENDING EXTRACTION]
+Episode 2 of Kotov Roman's "Material Alphabet" series continues the Amber ("A") piece from Episode 1. It opens by fixing the internal shatter chunks (frame_000, [0:55]) — lowering subdivision and adding a second noise level so the pieces read as sharp/broken rather than soft blobs, disabling thickness temporarily so the noise reads correctly, and patching disconnected points with an Add SOP. The middle section is a full Redshift look-dev pass: brightening lights and repositioning one for a single strong highlight top-right of the letter (frame_001, [1:18], "exactly what I was looking for"), then — because the geometry has no UVs — wiring several textures through a **Triplanar** node into a **Bump** node rather than using Redshift's newer UV-projection option (fine for static geo only) (frame_002, [1:53], shown as a flat grey preview while dialing in the base texture read). Reflection roughness gets its own texture, squished down because the source map reads too bright, and tuned by toggling roughness and the internal shatter geometry on/off in isolation to isolate variables (frame_003 [2:48], frame_004 [3:13] — inside geometry back on, texture detail reads "a lot more... might be too much" so it's dialed back). Two more noise layers build the main bump map (one plugged into the other's global scale for varied density), then a third "crystallized surface" noise is masked with a second noise + Multiply VOP so it only affects select areas rather than the whole letter (frame_005, [4:51] — the raw black/white mask pattern). The piece is finished by enabling the LOP for render, applying color management before it, rolling down highlights while raising exposure to compensate, and crushing blacks pre-grade; then several cameras are framed for the final send-to-render (frame_006, [5:50]).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Shatter geometry fix**: lower Subdivide on the internal shatter chunks so they read sharp/broken instead of soft; layer in a second noise level; **disable thickness** temporarily so the added noise reads cleanly (thickness + the 2nd Boolean level come back later); patch stray disconnected points with an **Add** SOP.
+2. **Key light pass**: brighten the lights for wider reflections; nudge one light so its highlight sits top-right on the letter — the single most important cue for selling glossiness (frame_001).
+3. **Texture wiring (no UVs)**: connect a texture straight to the surface to preview; since the geometry has no UVs, use a **Triplanar** node (RS Triplanar) instead of Redshift's newer UV-projection feature (works, but triplanar reads better on static, non-animated geometry) → feed several textures through triplanar into a **Bump** node.
+4. **Bump texture layering**: first texture drives fine surface "bubble" detail on the amber; swapped out when it didn't read well; a second texture drives larger, denser surface patterning.
+5. **Reflection roughness texture**: reflection-roughness map is too bright — squish/compress it; A/B test with roughness fully disabled to judge whether the map is even helping; bring roughness back gradually once confirmed useful.
+6. **Isolation testing**: toggle the internal shatter geometry off to judge the surface textures alone, then back on to confirm textures still read correctly combined with the internal shatter — balancing roughness vs. bump strength is called out as the trickiest part.
+7. **Procedural bump build**: two noise nodes, the second plugged into the **global scale** parameter of the first, to get simultaneously highly-detailed and sparser regions — this composite becomes the main bump map.
+8. **Crystallized detail layer**: an additional noise for a crystallized surface look reads across the *whole* letter (undesired) → mask it using a second noise driving a **Multiply** VOP so the crystallized detail only appears on selected areas (frame_005 shows the raw mask: white noise blobs on black).
+9. **Final grade / LOP setup**: enable the LOP for the render view; turn on **Apply Color Management** ahead of the LOP so highlights don't clip harshly; roll down highlights and raise exposure to compensate; crush blacks slightly before the color grade for this particular piece (not the author's usual habit).
+10. **Camera pass**: organize the scene, set up multiple cameras looking for interesting angles (frame_006), then send everything to render.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Geometry**: Subdivide (lowered on shatter pieces), Boolean (thickness re-enabled via a 2nd level), Add (fixes disconnected/stray points).
+- **Redshift shading**: RS Triplanar (feeds multiple textures without needing UVs — preferred over Redshift's UV-projection feature for static geo), Bump node, RS Texture nodes (surface-detail texture, larger-pattern texture, reflection-roughness texture), Noise ×3 (two composited via global-scale linking for the main bump map, one for the crystallized-detail layer), Multiply VOP (noise × noise → mask for the crystallized layer), reflection roughness parameter (squished/compressed texture input).
+- **Lighting**: light intensity increase; light repositioned for a single top-right key highlight.
+- **LOP / color management**: "the LOP" render-view node enabled; Apply Color Management (placed before the LOP), Highlights roll-down, Exposure increase, Blacks crush (pre-grade).
+- **Cameras**: multiple camera setups for angle selection before final render.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified (Redshift renderer; LOP/Solaris used for final color management and render view)
 
 ### Tags
-[PENDING EXTRACTION]
+sop, vop, attributes, procedural, rendering, redshift, lop, solaris, intermediate
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Material alphabet in Houdini: A for Amber | Episode 01](material-alphabet-in-houdini-a-for-amber-episode-01.md) — same piece, same author; Episode 1 builds the shatter/scatter geometry and base Redshift material that this episode refines (triplanar textures, bump layering, lighting, LOP color grade)
+- [Abstract liquid in Houdini | Part 02 - Look Development](abstract-liquid-in-houdini-part-02---look-development.md) — same author's Redshift look-dev habits: iterative texture/roughness tuning, snapshot comparisons, light-rig refinement
+- [Abstract liquid in Houdini | Part 03 - Color Grading](abstract-liquid-in-houdini-part-03---color-grading.md) — same author's approach to final color grading (highlights/exposure/blacks) before render
