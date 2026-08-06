@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=uYQGsriGNm4
 author: Kotov Roman
 ingested: 2026-08-06
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "Not specified"
+tags: [sop, vop, volumes, particles, procedural, attributes, modelling, advanced]
+extraction_status: complete
 frames_dir: tutorials/frames/material-alphabet-in-houdini-b-for-bubbles-episode-01/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 7
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Material alphabet in Houdini: B for Bubbles | Episode 01
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py material-alphabet-in-houdini-b-for-bubbles-episode-01 <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -168,30 +164,63 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:44] tutorials/frames/material-alphabet-in-houdini-b-for-bubbles-episode-01/frame_000.jpg
+- [1:05] tutorials/frames/material-alphabet-in-houdini-b-for-bubbles-episode-01/frame_001.jpg
+- [2:10] tutorials/frames/material-alphabet-in-houdini-b-for-bubbles-episode-01/frame_002.jpg
+- [3:43] tutorials/frames/material-alphabet-in-houdini-b-for-bubbles-episode-01/frame_003.jpg
+- [5:45] tutorials/frames/material-alphabet-in-houdini-b-for-bubbles-episode-01/frame_004.jpg
+- [8:15] tutorials/frames/material-alphabet-in-houdini-b-for-bubbles-episode-01/frame_005.jpg
+- [10:28] tutorials/frames/material-alphabet-in-houdini-b-for-bubbles-episode-01/frame_006.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Fully procedural, simulation-free liquid-with-bubbles look: a MOPs Shape Falloff (0-1 gradient) drives displacement, appearance and bubble motion on a VDB-round-tripped font letter, while the bubbles themselves are pscale-randomized, time-shifted points scattered from the same volume — all sculpted by hand instead of run through a DOP solver.
 
 ### Summary
-[PENDING EXTRACTION]
+Episode 1 of Kotov Roman's "B for Bubbles" builds a liquid letter "B" with internal bubbles **without any dynamics simulation** — pure procedural geometry for full control over placement and motion. Starting from a flat Font SOP letter (frame_000, [0:44]), thickness comes from VDB from Polygons (bevel was abandoned after failing on complex geometry in the Amber episodes) plus a strong VDB Smooth pass that immediately reads as liquid (frame_001, [1:05]). A **MOPs Shape Falloff** node becomes the single driver for the whole effect: fed through Displace Along Normal (with noise layered on top, scaled/shaped via a ramp on the falloff) to bulge the surface, then multiplied into a copy of the falloff feeding **Points from Volume → pscale** so that low-falloff points vanish, and finally through **VDB from Particles → VDB Smooth → Convert** to rebuild the liquid mesh with a noise-broken (not perfectly smooth) edge (frame_002, [2:10], showing the raw falloff gradient colorized on the letter). The falloff is animated bottom-to-top to make the liquid "appear" over time and cached to disk (frame_003, [3:43], showing the falloff's animation curve). Bubbles reuse the same interior points: a Point VOP-based delete-by-threshold (VEX didn't work for the author here, so Point VOP substituted) thins them out, pscale is randomized per point (`random()` off point number, fit + ramp to control the small/large mix) and displayed as disks (frame_004, [5:45]). Because point number reshuffles every frame, a **Timeshift frozen on the last frame** plus a relative copy of the falloff keeps point identity stable while still driving size and a hand-built rise-and-settle motion (falloff added to the Y position, offset by noise, with a `$T`-based expression in the noise offset for continuous drift) — deliberately built from scratch instead of using Mountain SOP. Stray bubbles are cleaned up with two **Mask from Geometry** passes (one deletes points outside the shell via Blast, one shrinks points near the surface) (frame_005, [8:15], "I am done with the bubbles"). Final assembly uses per-element geometry containers + Object Merge, a camera, and a second falloff-driven speed control (time multiplied by the falloff, then remapped through a ramp) so bubbles move fast on first appearing and slow down over the shot (frame_006, [10:28]), with staged File Cache nodes at each major iteration.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. **Setup container** (`setup`, colored red), gray viewport background; **Font** SOP typed "B" (font swapped for a rounder look).
+2. **Thickness**: skip PolyBevel (known to fail on complex letterforms per the Amber episodes) — go straight to **VDB from Polygons**; adjust FPS settings before proceeding into the volume workflow.
+3. **Liquid read**: **VDB Smooth**, cranked up, immediately sells the shape as liquid (frame_001).
+4. **Shape driver**: **MOPs Shape Falloff** (0-1 gradient) — used for displacement, appearance, and bubble motion throughout; full-link-copy the node (Ctrl+Alt+Shift+drag) wherever it's needed downstream so all instances stay synced.
+5. **Displacement**: **Displace Along Normals** — Position → `position`, MOPs Falloff → `amount`; a **Ramp** on the falloff shapes where displacement is strongest; a **Noise** multiplied with the falloff adds irregularity.
+6. **Volume re-scatter**: **Points from Volume** on the letter volume; a linked copy of the falloff multiplies into **pscale** so points at low falloff shrink toward zero — visualized by switching the viewport to Points display; **VDB from Particles** (pscale must be scaled up first to register) rebuilds a volume from only the surviving points.
+7. **Re-mesh**: **VDB Smooth → Convert to Polygons**; the cutoff reads too smooth, so a second **Noise** is fed through the (again-copied) MOPs Shape Falloff to break up the edge; **File Cache** to disk once acceptable.
+8. **Falloff animation**: animate the Shape Falloff bottom-to-top so the liquid appears to rise into frame over time; iterate displacement amount and noise pattern, re-caching each pass; compare cached versions and partially revert changes that didn't read well.
+9. **Bubble points**: reuse the interior points already generated; delete most of them down to a sparse set — attempted in VEX first (didn't work, cause undetermined), rebuilt as a **Point VOP** thresholding a value against the falloff.
+10. **Bubble sizing**: multiply pscale by the (linked) MOPs falloff, but drive it from `random()` seeded by point number instead of a constant, run through **Fit** then a **Ramp** to control the ratio of small vs. large bubbles; display as disks to check.
+11. **Stable point identity**: point numbers reshuffle every frame → **Timeshift** frozen on the last frame supplies stable points, combined with a *relative* copy of the falloff so only size (not identity) animates off it.
+12. **Bubble motion (hand-built, not Mountain SOP)**: add the falloff value to each point's Y position (rise higher the earlier they appear, then settle), offset by **Noise** so bubbles don't rise uniformly; a `$T`-based time expression in the noise's offset parameter keeps points drifting continuously rather than freezing once risen.
+13. **Cleanup**: two **Mask from Geometry** nodes — one flags points outside the liquid shell (mask = 0) and deletes them with **Blast**; a second shrinks points close to the surface so bubbles don't poke through.
+14. **Bubble preview/cache**: **Null**, temporary **Alpha** node for interior visibility (preview-only, skippable), then **File Cache**.
+15. **Render assembly**: a geometry container per render element with **Object Merge**, plus a camera.
+16. **Motion polish**: adjust the drift noise for a "moving together but independently" feel; re-cache; replace a flat time-based drive with **time × MOPs Falloff** (via a parameter for the base time value) so bubbles move faster right after appearing, then use the falloff's **Ramp** to control speed dynamically across the whole animation; a second, earlier File Cache stage added before the final one as the network gets heavy.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Geometry / volumes**: Font, VDB from Polygons (thickness, replacing PolyBevel), VDB Smooth (×2 — shape read, and edge break-up before Convert), Convert (VDB → polygons), Points from Volume, VDB from Particles, Timeshift (frozen on last frame), Blast, Null, File Cache (multiple staged caches through the iteration).
+- **MOPs**: Shape Falloff (0-1 gradient; the single driver node, full-link-copied wherever reused), its built-in Ramp (reshapes the gradient per use), Mask from Geometry (×2 — outside-shell delete, near-surface shrink).
+- **VOP / attributes**: Displace Along Normals (position + MOPs falloff → amount), Volume/Point VOP with Noise (surface irregularity, edge break-up, and bubble drift), `random()` seeded by point number, Fit, Ramp, Point VOP threshold-delete (substituted for a non-working VEX attempt), pscale multiplied by falloff for both volume-thinning and bubble-size control, time expression (`$T`-driven) in a noise offset parameter for continuous drift, time × falloff for appear-fast-then-settle bubble speed.
+- **Assembly**: geometry containers per element + Object Merge, camera, Alpha (interior preview only).
+- **UI**: full-link node copy via Ctrl+Alt+Shift+drag; switching viewport display to Points to check scatter/pscale results.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not specified
 
 ### Tags
-[PENDING EXTRACTION]
+sop, vop, volumes, particles, procedural, attributes, modelling, advanced
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Material alphabet in Houdini: A for Amber | Episode 01](material-alphabet-in-houdini-a-for-amber-episode-01.md) — same author, same series; shares the VDB from Polygons (bevel-avoidance) and scatter/randomize-attribute patterns
+- [Material alphabet in Houdini: A for Amber | Episode 02](material-alphabet-in-houdini-a-for-amber-episode-02.md) — same author, same series; continuation-style material study on a letterform
+- [Abstract liquid in Houdini | Part 01 - Building the simulation](abstract-liquid-in-houdini-part-01---building-the-simulation.md) — same author's other liquid-look project, useful contrast: a real FLIP sim vs. this episode's fully procedural, sim-free approach to the same "liquid" read

@@ -293,3 +293,4 @@ flip, dop, sop, vop, particles, simulation, redshift, rendering, attributes, pro
 ## Related Tutorials
 - [Abstract liquid in Houdini | Part 02 - Look Development](abstract-liquid-in-houdini-part-02---look-development.md) — direct continuation (Redshift look-dev)
 - [Abstract liquid in Houdini | Part 03 - Color Grading](abstract-liquid-in-houdini-part-03---color-grading.md) — series finale (compositing/grading)
+- [Material alphabet in Houdini: B for Bubbles | Episode 01](material-alphabet-in-houdini-b-for-bubbles-episode-01.md) — same author's other liquid-look project, useful contrast: this uses a real FLIP sim where the Bubbles episode fakes the same "liquid" read with fully procedural, sim-free geometry

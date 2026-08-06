@@ -322,9 +322,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=uYQGsriGNm4
 - **Author:** Kotov Roman
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** Not specified
+- **Tags:** sop, vop, volumes, particles, procedural, attributes, modelling, advanced
+- **Summary:** Builds a liquid letter "B" with internal bubbles **without any dynamics simulation** — a MOPs Shape Falloff (0-1 gradient) drives displacement, appearance, and bubble motion on a VDB-round-tripped Font letter. Points from Volume + pscale (multiplied by the falloff) thin the shape into bubble candidates; VDB from Particles rebuilds the mesh with a noise-broken edge. Bubbles get randomized pscale (`random()` off point number, fit + ramp), a Timeshift-frozen point set for stable identity, hand-built rise-and-settle motion (falloff added to Y position + drifting noise), and two Mask from Geometry passes to clean up strays. Finishes with falloff-driven variable bubble speed and staged File Cache iterations. A strong contrast piece to the author's other liquid project (Abstract Liquid), which uses a real FLIP sim for the same visual read.
 - **File:** tutorials/material-alphabet-in-houdini-b-for-bubbles-episode-01.md
 
 ---

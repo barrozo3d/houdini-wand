@@ -215,5 +215,6 @@ sop, volumes, vop, procedural, modelling, rendering, redshift, attributes, inter
 
 ## Related Tutorials
 - [Material alphabet in Houdini: A for Amber | Episode 02](material-alphabet-in-houdini-a-for-amber-episode-02.md) — same piece, same author; Episode 2 continues directly from here (triplanar bump textures, roughness tuning, LOP color grade, final cameras)
+- [Material alphabet in Houdini: B for Bubbles | Episode 01](material-alphabet-in-houdini-b-for-bubbles-episode-01.md) — same author, same series; shares the VDB from Polygons (bevel-avoidance) and scatter/randomize-attribute patterns
 - [Abstract liquid in Houdini | Part 01 - Building the simulation](abstract-liquid-in-houdini-part-01---building-the-simulation.md) — same author; shares the noise→fit→ramp VOP pattern and Redshift workflow
 - [Abstract liquid in Houdini | Part 02 - Look Development](abstract-liquid-in-houdini-part-02---look-development.md) — same author's Redshift look-dev habits (snapshots, light rigs, render containers)
