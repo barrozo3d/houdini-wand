@@ -487,6 +487,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-for-beginners--part-10-contexts.md
 
+
+### Houdini COPs Datamoshing HDA
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=G77PFMXnUMU
+- **Author:** vanity_ibex
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-cops-datamoshing-hda.md
+
 ---
 
 ## How to Read This Index
