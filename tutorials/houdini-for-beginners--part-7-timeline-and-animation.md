@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Nb2YJJ7OHPU
 author: Jordan Allen
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.x"
+tags: [beginner, timeline, keyframing, animation-editor, bezier-handles, auto-keyframe, flip-book, playblast, scoped-channel-keyframes, real-time-toggle, mplay, jordan-allen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 16
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini for Beginners-  Part 7:  Timeline and Animation
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-for-beginners--part-7-timeline-and-animation <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -483,30 +479,72 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:48] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_000.jpg
+- [1:46] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_001.jpg
+- [3:14] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_002.jpg
+- [3:34] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_003.jpg
+- [5:36] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_004.jpg
+- [6:52] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_005.jpg
+- [9:05] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_006.jpg
+- [9:47] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_007.jpg
+- [11:53] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_008.jpg
+- [13:31] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_009.jpg
+- [15:45] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_010.jpg
+- [18:02] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_011.jpg
+- [19:02] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_012.jpg
+- [20:47] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_013.jpg
+- [22:04] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_014.jpg
+- [23:41] tutorials/frames/houdini-for-beginners--part-7-timeline-and-animation/frame_015.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Comprehensive beginner pass over Houdini's timeline, keyframing mechanics, the Animation Editor (curve editing), and the **Flip Book** (a fast cached viewport preview render used to actually judge animation timing/quality without waiting on a real render).
 
 ### Summary
-[PENDING EXTRACTION]
+**Timeline basics:** default scene length is 240 frames at 24 fps (10 seconds). The leftmost/rightmost timeline number fields are the **global animation start/end frame** (the real scene duration); the two inner fields are just in/out **view clamps** for the visible timeline window (dragging/shrinking them zooms the timeline display without changing actual scene length — entering new start/end values in the *outer* fields is what actually trims scene duration). The **Real-Time toggle** (a clock-like icon near the transport controls) must be on for played-back animation timing to be meaningful — off, Houdini just plays frames as fast as it can compute them, which for anything non-trivial is far faster than real motion; the presenter leaves this on permanently and can't think of a good reason not to. **Global Animation Options** (**Alt+Shift+G**, or its toolbar icon) exposes FPS, start/end, and other project-wide settings, including **Playback Integer Frame Values** — unchecking it lets the frame counter show sub-frame fractional values (e.g. 13.1, 13.2) instead of only whole frames, useful when you need to inspect sub-step simulation data.
+
+**Keyframing:** hover a parameter field and **Alt+LMB-click** to set a keyframe on just that value (turns the field green — green always means "this is keyframed," regardless of what the value actually is); **Alt-click** (or **Ctrl-click**) on a multi-value parameter's *label* (e.g. "Translate") keyframes all of its components (X/Y/Z) at once. **Ctrl+LMB-click** on a keyframed field deletes that keyframe. The timeline itself shows a small green marker on any frame that has at least one keyframe somewhere in the scene (doesn't distinguish what/how many). Houdini interpolates parameter values between keyframes automatically. An **auto-keyframe toggle** (icon at the right end of the timeline) controls whether moving a parameter on a later frame automatically creates a new keyframe there; with it off, changed-but-unconfirmed values show as a "dirty mustard" color and are silently discarded if you navigate away without locking them in (the presenter demonstrates this happening by accident) — turning auto-keyframe back on avoids that trap. There's also a direct keyframe button on nodes, but the presenter distrusts/avoids it since its logic for which parameters it keyframes isn't obvious or fully controllable (it picked up Translate/Rotate/Scale but skipped Pivot Translate/Pivot Rotate in the demo) — Alt/Ctrl-click is the reliable, intentional method.
+
+**Animation Editor** (separate tab from Scene View — navigation: right-click-drag to pan, middle-mouse-drag to scale/zoom, scroll wheel to zoom, left-click to select keyframes): shows keyframed parameters (per-object channel list at bottom-left, e.g. Translate X/Y/Z in green if animated) as curves plotted against frame number. Click a channel to view its curve; Shift-click adds more channels to the view simultaneously. Dragging a keyframe point moves its value; dragging its Bezier **handles** changes the ease-in/ease-out shape and duration of the interpolation around that key. **Ctrl+drag** on a handle locks movement to just shifting handle length/duration (prevents accidentally nudging the value up/down). Selecting a handle exposes a numeric **acceleration/duration** field directly (e.g. an easing duration in seconds, tied to the current fps — a value of 3 at 24fps spans 72 frames) for precise control instead of dragging by eye. Toolbar buttons over the curve area: **Straight** (snap handles to zero-length = pure linear interpolation instantly), **Bezier** (restore curved handles), and **Set Selected Slopes to Automatic** (auto ease-in/ease-out). Display-fit buttons: **Vertical Adapt** / **Horizontal Adapt** reframe the curve view top-to-bottom or left-to-right; selecting keyframes (Ctrl+A to select all on a curve) and pressing **F** (or its toolbar button) frames exactly that selection in the editor. The presenter notes they rarely touch handle shaping in depth — mostly just adjusting easing amount or flattening to fully linear.
+
+**Framing shortcuts (Scene View):** **Space+F** frames the currently selected object/geometry; **Space+H** frames the entire scene ("home"/macro view) — handy when you've lost track of where something is after moving it far away.
+
+**Lightweight in-viewport curve popup:** hovering a parameter and **Shift+click** opens a small popup version of the Animation Editor right there in the Scene View, letting you add/adjust keyframes without leaving the viewport — a less disruptive alternative to the full separate tab.
+
+**Repositioning keyframes on the timeline:** don't click-and-drag directly on the timeline (that just scrubs playback position) — **middle-mouse-drag** on a keyframe marker "claims" and moves it. You can also middle-mouse-drag to draw a selection window that captures multiple keyframe markers at once (revealing draggable edge-handles to expand the window), then middle-mouse-drag the whole captured group to shift multiple keyframes together in time.
+
+**Flip Book** (the button at the bottom-right of the Scene View, next to the transport controls): once a scene has enough geometry/complexity that real-time viewport playback can't keep up (demonstrated with a large grid of animated copied spheres — 24 frames took ~4 real seconds to compute), the Flip Book renders a fast, low-quality **cached preview** of the viewport across a frame range and plays it back in a separate window (mplay) at true real-time speed, without waiting on an actual final render. Right-click the Flip Book button for **Flip Book With Settings**. Key parameters (Output tab): **Frame Range** (in/out/step — defaults reference `$RFSTART`/`$RFEND` HScript expressions; the presenter replaces these with explicit numbers matching the scene's actual range, e.g. 1 to 120). **Critical gotcha:** the **"Scoped Channel Keyframes Only"** checkbox, if left on, restricts the flip book to *only* rendering frames that literally have a keyframe on them — with no traditional keyframes in a procedurally-animated scene (e.g. driven by expressions/sim, not manual keys), this silently produces **zero images** and no error beyond "flip book generation complete" with nothing to show for it; the presenter calls this out explicitly as something that "got me so hard in the beginning" and always turns it off. The top-right button on the resulting mplay window **disconnects** that playback window from the live Houdini session — without disconnecting, re-running the Flip Book on the same range overwrites the existing preview frame-by-frame in place; with it disconnected, the old preview window becomes an independent, permanent snapshot you can keep open side-by-side with a newly generated one for direct A/B comparison of two versions of an animation/look. Flip book output is intentionally low quality by default (small resolution, e.g. 1280x720, low anti-aliasing) since its only job is showing rough timing/motion, not final image quality — but resolution (Size tab) and anti-aliasing quality plus optional motion blur (Effects tab, though motion blur is warned to look grainy in this fast/cheap preview context) can both be raised via Flip Book With Settings if a cleaner preview is needed.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Enable the **Real-Time** toggle on the timeline before judging any animation's actual timing.
+2. Use the outer timeline number fields to set true scene start/end (duration); use the inner fields only to zoom the visible timeline window without affecting scene length.
+3. Open **Global Animation Options** (Alt+Shift+G) for FPS, scene range, and sub-frame ("Playback Integer Frame Values") settings.
+4. **Alt+click** a parameter to keyframe it (or its label to keyframe all its components at once); **Ctrl+click** to delete a keyframe; toggle **auto-keyframe** so moved values on later frames are captured automatically rather than silently discarded when you navigate away.
+5. Open the **Animation Editor** tab to see/edit keyframed values as curves: drag keyframes to change values, drag/Ctrl-drag Bezier handles to reshape easing, or use the Straight / Bezier / Set Selected Slopes to Automatic buttons for one-click interpolation styles; use Vertical/Horizontal Adapt or select-then-F to reframe the view.
+6. Use **Space+F** / **Space+H** in the Scene View to frame a selected object or the whole scene when you've lost track of something.
+7. **Shift+click** a parameter for a lightweight in-viewport curve-editing popup instead of switching to the full Animation Editor tab.
+8. **Middle-mouse-drag** to move a single keyframe marker on the timeline, or draw a selection window (then drag) to move a whole group of keyframes together.
+9. When real-time viewport playback can't keep up with a complex scene, use the **Flip Book** to render a fast cached preview: set an explicit Frame Range, and make sure **Scoped Channel Keyframes Only is OFF** unless every frame you want previewed genuinely has a manual keyframe on it.
+10. Use the mplay preview window's **disconnect** button to freeze a preview as a permanent reference for A/B comparison against a newly generated one; raise resolution/anti-aliasing/motion blur via Flip Book With Settings when a higher-fidelity preview is needed.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Timeline transport (play/stop/step, Real-Time toggle), global animation start/end fields vs. in/out view-clamp fields, **Global Animation Options** popup (Alt+Shift+G: FPS, scene range, Playback Integer Frame Values), keyframe creation/deletion (**Alt+click** / **Ctrl+click**, label-click for multi-component), **auto-keyframe** toggle, **Animation Editor** tab (channel list, curve view, Bezier handle editing, Ctrl+drag to lock handle-length-only, numeric acceleration/duration field, Straight/Bezier/Set Selected Slopes to Automatic buttons, Vertical Adapt/Horizontal Adapt, Ctrl+A select-all-on-curve, F to frame selection), Scene-View framing shortcuts **Space+F** / **Space+H**, in-viewport Shift+click curve popup, timeline keyframe **middle-mouse-drag** (single or window-selected group). **Flip Book** button + **Flip Book With Settings** (right-click): Output tab (Frame Range using `$RFSTART`/`$RFEND` HScript expressions by default, **Scoped Channel Keyframes Only** — critical gotcha, must usually be off), mplay preview window **disconnect** button for A/B comparisons, Size tab (resolution), Effects tab (anti-aliasing quality, motion blur/shutter).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — pure UI/workflow reference (timeline, keyframing, Animation Editor, Flip Book); no procedural technique, though the Flip Book's Scoped-Keyframes gotcha is a real practical trap worth remembering at any skill level.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; part of the same Houdini 20.x beginner series as Parts 2-6.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, timeline, keyframing, animation-editor, bezier-handles, auto-keyframe, flip-book, playblast, scoped-channel-keyframes, real-time-toggle, mplay, jordan-allen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini for Beginners - Part 6: Visualisers](houdini-for-beginners--part-6-visualisers.md) — same beginner series; that part covers viewport display/attribute visualizers, this part covers the timeline, keyframing, and the Flip Book preview-render workflow.

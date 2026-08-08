@@ -209,3 +209,4 @@ beginner, visualizers, display-options, uv-grid, display-normals, point-trails, 
 
 ## Related Tutorials
 - [Houdini for Beginners - Part 5: The Viewport](houdini-for-beginners--part-5-the-viewport.md) — same beginner series; that part covers shading modes/layout/camera-lock/viewport lighting, this part covers the remaining display/attribute visualizer toggles and the full Display Options popup.
+- [Houdini for Beginners - Part 7: Timeline and Animation](houdini-for-beginners--part-7-timeline-and-animation.md) — same beginner series; this part covers viewport display/attribute visualizers, that part covers the timeline, keyframing, and the Flip Book preview-render workflow.

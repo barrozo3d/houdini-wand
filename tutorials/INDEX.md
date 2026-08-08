@@ -452,9 +452,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Nb2YJJ7OHPU
 - **Author:** Jordan Allen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.x
+- **Tags:** beginner, timeline, keyframing, animation-editor, bezier-handles, auto-keyframe, flip-book, playblast, scoped-channel-keyframes, real-time-toggle, mplay, jordan-allen
+- **Summary:** Beginner reference for the timeline (Real-Time toggle, scene-duration vs. view-clamp fields, Global Animation Options), keyframing (Alt/Ctrl-click, auto-keyframe, the green "dirty" vs. committed indicator), the Animation Editor (curve/Bezier-handle editing, Straight/Bezier/Auto-Slope buttons), and the Flip Book fast preview-render workflow — including the critical "Scoped Channel Keyframes Only" gotcha that silently produces zero preview frames on procedurally-animated (non-keyframed) scenes, and the disconnect button for A/B comparing two preview passes.
 - **File:** tutorials/houdini-for-beginners--part-7-timeline-and-animation.md
 
 
