@@ -492,9 +492,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=G77PFMXnUMU
 - **Author:** vanity_ibex
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5+ (Copernicus context)
+- **Tags:** copernicus, cops, datamoshing, pixel-mosh, pixel-advect, pixel-pusher, optical-flow, block-matching, motion-vectors, glitch-effect, feedback-loop, compositing
+- **Summary:** A custom Copernicus (COPs) HDA suite for video datamoshing: the automatic `pixel_mosh` node extracts motion (Optical Flow or Block Matching), builds a mask (difference/movement thresholds, block-size pixelization, temporal blend), and advects color along motion paths (color shift, soft blend, custom mask/motion-vector inputs). Split-apart lower-level nodes `pixel_advect` (requires a manual feedback loop of video/motion) and `pixel_pusher` (iteration-driven, no loop needed, with warp/sample-distance controls) expose the same core advection process for more manual creative control.
 - **File:** tutorials/houdini-cops-datamoshing-hda.md
 
 

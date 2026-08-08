@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=G77PFMXnUMU
 author: vanity_ibex
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5+ (Copernicus context)"
+tags: [copernicus, cops, datamoshing, pixel-mosh, pixel-advect, pixel-pusher, optical-flow, block-matching, motion-vectors, glitch-effect, feedback-loop, compositing]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-cops-datamoshing-hda/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 15
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini COPs Datamoshing HDA
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-cops-datamoshing-hda <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -152,30 +148,64 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:43] tutorials/frames/houdini-cops-datamoshing-hda/frame_000.jpg
+- [1:13] tutorials/frames/houdini-cops-datamoshing-hda/frame_001.jpg
+- [2:08] tutorials/frames/houdini-cops-datamoshing-hda/frame_002.jpg
+- [2:36] tutorials/frames/houdini-cops-datamoshing-hda/frame_003.jpg
+- [3:12] tutorials/frames/houdini-cops-datamoshing-hda/frame_004.jpg
+- [3:53] tutorials/frames/houdini-cops-datamoshing-hda/frame_005.jpg
+- [4:17] tutorials/frames/houdini-cops-datamoshing-hda/frame_006.jpg
+- [5:01] tutorials/frames/houdini-cops-datamoshing-hda/frame_007.jpg
+- [5:52] tutorials/frames/houdini-cops-datamoshing-hda/frame_008.jpg
+- [6:23] tutorials/frames/houdini-cops-datamoshing-hda/frame_009.jpg
+- [6:48] tutorials/frames/houdini-cops-datamoshing-hda/frame_010.jpg
+- [7:55] tutorials/frames/houdini-cops-datamoshing-hda/frame_011.jpg
+- [9:02] tutorials/frames/houdini-cops-datamoshing-hda/frame_012.jpg
+- [10:05] tutorials/frames/houdini-cops-datamoshing-hda/frame_013.jpg
+- [10:31] tutorials/frames/houdini-cops-datamoshing-hda/frame_014.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Overview of a custom **datamoshing** HDA suite built in Houdini's Copernicus (COPs) 2D context: an all-in-one `pixel_mosh` node that extracts motion from video and advects color data along that motion to produce classic glitch/datamosh smearing, plus the individual lower-level building blocks (`pixel_advect`, `pixel_pusher`) split out for more manual control.
 
 ### Summary
-[PENDING EXTRACTION]
+**`pixel_mosh` (the main automatic node):** plug in a video; it extracts a **motion vector field** using one of two selectable algorithms — **Optical Flow** or **Block Matching** — both estimate how pixels are moving frame-to-frame. It then automatically builds a **mask** from that motion data and **advects** (smears/displaces) the color data along the motion paths, producing the classic datamosh smear artifact. Mask-generation controls: **Difference Threshold** (how large a pixel-to-pixel color difference must be to register — lower values make the mask more responsive/sensitive) and **Movement Threshold** (same idea, but keyed to motion magnitude instead of color difference); the default blends both together. **Block Size** settings pixelize the mask in two passes that get merged, controlling the chunkiness of the moshed regions — turned down, you get pixel-sized blocks instead of larger ones (the algorithm's default/"standard" block size is relatively large). The mask can optionally be **smoothed before pixelization**, which softens/enlarges the affected regions and removes high-frequency noise in the mask shape. **Temporal Blend** controls how much of the *previous* frame's mask carries forward into the current one — a low value keeps a long-lasting, accumulating mask; a high value (closer to only-current-frame) is more responsive; ~0.5 is called a good default. A related **fade speed** parameter controls how quickly that carried-over previous-frame mask decays. **Color Shift**: the core moshing process measures the color difference between a pixel's origin and destination along its motion vector and distorts color accordingly as it advects — this is what actually produces the color-smearing look, distinct from just spatial displacement. **Soft Blend**: by default the mask applies as a **hard cutoff** (values above 0.5 fully advect, below 0.5 stay static); enabling Soft Blend instead smoothly interpolates between the original and fully-moshed footage based on the mask's actual 0-1 value, avoiding the hard on/off edge. A **custom black-and-white mask** can be plugged in to constrain where moshing is allowed to happen (compatible with Soft Blend too). A **custom motion vector** input can replace the built-in optical-flow/block-matching extraction entirely — demonstrated by converting footage to mono, scaling it down, feeding it as the time input to a fractal noise, running that through a **slope-direction** node, and pixelating the result, so the "motion" driving the mosh is actually noise shaped by the footage rather than real extracted motion (used here as a creative/stylistic choice, "I quite like to do"); any rendered-out or independently-computed motion vector field can be plugged in this way. Node outputs: the processed **video**, the generated **mask**, and the **motion** (the merged motion field actually used to displace the footage).
+
+**Split-apart lower-level nodes** (added because the presenter found more creative control was possible by breaking the all-in-one node into pieces): **`pixel_advect`** exposes the *core advection process* on its own — soft-mask settings, motion blend, motion strength, and motion normalization — but does **not** include the automatic mask-generation/masking logic that `pixel_mosh` handles for you; you must build and blend your own mask before/after. Critically, `pixel_advect` **requires a feedback loop** to work: it needs both the previous frame's output (video/motion "feedback" inputs) and the current incoming frame's data ("current video"/"current motion") wired in — the node's inputs are explicitly labeled Feedback Video / Feedback Motion vs. the live incoming stream, and this loop structure is what the automatic `pixel_mosh` node is doing internally, just exposed here for direct control.
+
+**`pixel_pusher`:** a simpler standalone node taking a source image and a motion vector, advecting pixels along that vector — but unlike `pixel_advect`, it does **not** need to run in a feedback loop; instead it has an **Iterations** parameter that repeats the push multiple times in one evaluation. Also has a **Warp** option (pixels that would go out of frame bounds wrap around to the opposite side) and motion normalization + a **Sample Distance** parameter controlling effect strength. Conceptually compared to Houdini/COPs' existing "Glitch/Distort"-style node (similar underlying idea), but framed as serving a different purpose since it's iteration-driven rather than loop-driven, giving a different kind of pixel-pushing control.
+
+The presenter notes all nodes ship with tooltips and Houdini help pages, and are unlocked (viewable/editable internally) for anyone wanting to see how they're built.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Plug a video into `pixel_mosh`; choose a motion-extraction algorithm (**Optical Flow** or **Block Matching**).
+2. Tune the automatic mask via **Difference Threshold** / **Movement Threshold** (or a blend of both).
+3. Adjust **Block Size** (pixelization chunkiness, two merged passes) and optionally **smooth the mask** before pixelization for softer, cleaner regions.
+4. Set **Temporal Blend** (how much previous-frame mask persists — ~0.5 as a starting point) and its fade-speed companion for how the accumulated mask decays.
+5. Tune **Color Shift** behavior (color distortion along the advection path) for the amount of color smearing.
+6. Toggle **Soft Blend** for a smooth 0-1 mask-driven blend instead of the default hard 0.5 cutoff between original and moshed footage.
+7. Optionally plug in a **custom black-and-white mask** to constrain where moshing occurs, and/or a **custom motion vector** (e.g. footage-driven noise via mono conversion → fractal noise time input → slope direction → pixelate) to replace the built-in motion extraction entirely.
+8. For finer manual control, drop down to `pixel_advect` directly: build your own mask, wire up a feedback loop (previous-frame video/motion feeding back in alongside the current incoming frame), and tune motion blend/strength/normalization yourself.
+9. For a simpler non-looping pixel-push effect, use `pixel_pusher` with a source image + motion vector, controlling repetition via **Iterations**, edge behavior via **Warp**, and strength via **Sample Distance**.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Copernicus (COPs) 2D context. **`pixel_mosh`**: Select Input (Optical Flow / Block Matching motion extraction), Difference Threshold, Movement Threshold, Block Size (two-pass pixelization), mask-smoothing-before-pixelization toggle, Temporal Blend + fade speed, Color Shift / Colorshift Strength, Soft Blend, custom black-and-white mask input, custom motion vector input, outputs: video / mask / motion. **`pixel_advect`**: soft mask settings, Motion Blend, Motion Strength, Normalize Motion, Feedback Video / Feedback Motion inputs (requires an explicit feedback loop), current-video/current-motion inputs. **`pixel_pusher`**: source + motion vector inputs, Iterations, Warp (edge wrap-around), Normalize Motion, Sample Distance (strength) — conceptually similar to a Glitch/Distort-style node but iteration- rather than loop-driven. Motion-vector construction example: mono conversion → scale down → fractal-noise time input → slope-direction node → pixelate.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — no VEX authoring required to use the HDAs, but understanding motion vectors, mask blending, and (for the split-apart nodes) COPs feedback-loop wiring is needed to get past the automatic default behavior.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated on screen; Copernicus (COPs) context places this at Houdini 20.5+. Screenshots show "Houdini Indie Non-Commercial" 21.0.729.
 
 ### Tags
-[PENDING EXTRACTION]
+copernicus, cops, datamoshing, pixel-mosh, pixel-advect, pixel-pusher, optical-flow, block-matching, motion-vectors, glitch-effect, feedback-loop, compositing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini COPS Distortion | breakdown & project file](houdini-cops-distortion-breakdown-project-file.md) — shares the Copernicus (COPs) 2D context and UV/motion-driven pixel-displacement technique, applied there to product-render distortion rather than video datamoshing.
