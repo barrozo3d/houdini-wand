@@ -457,6 +457,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-for-beginners--part-7-timeline-and-animation.md
 
+
+### Houdini for Beginners-  Part 8:  The Geometry Spreadsheet
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=KnUXXm7YVSU
+- **Author:** Jordan Allen
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-for-beginners--part-8-the-geometry-spreadsheet.md
+
 ---
 
 ## How to Read This Index
