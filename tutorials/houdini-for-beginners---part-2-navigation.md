@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=VpkcIxYUOos
 author: Jordan Allen
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.x"
+tags: [beginner, navigation, ui-basics, houdini-env, obj-context, sop-context, display-flag, template-flag, bypass-flag, node-info, orthographic-views, uv-viewport, jordan-allen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-for-beginners---part-2-navigation/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 14
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini for Beginners - Part 2:  Navigation
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-for-beginners---part-2-navigation <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -406,30 +402,62 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_000.jpg
+- [1:18] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_001.jpg
+- [2:44] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_002.jpg
+- [3:39] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_003.jpg
+- [4:56] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_004.jpg
+- [5:56] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_005.jpg
+- [6:47] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_006.jpg
+- [8:13] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_007.jpg
+- [10:20] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_008.jpg
+- [11:20] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_009.jpg
+- [12:33] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_010.jpg
+- [13:45] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_011.jpg
+- [15:09] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_012.jpg
+- [18:06] tutorials/frames/houdini-for-beginners---part-2-navigation/frame_013.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Foundational UI/navigation orientation for absolute beginners: default camera controls (and how to remap them via `houdini.env`), the three main interface panes, the OBJ vs. SOP context distinction (and the I/U keys to move between them), the five orthographic/UV view shortcuts, and the node-flag system (display/template/lock/bypass/info) that controls what you actually see and how nodes chain together.
 
 ### Summary
-[PENDING EXTRACTION]
+**Navigation defaults:** Alt+LMB-drag rotates around the object; by default Alt+MMB pans and Alt+RMB zooms, which the presenter finds backwards (they zoom with scroll wheel anyway) and prefers swapped. To remap: close Houdini, open `Documents/houdini20.x/houdini.env` (the environment file Houdini reads on every launch — lines starting `#` are comments, ignored as code; anything else is parsed as a setting), and add the line `HOUDINI_MIDDLE_MOUSE_BUTTON_PAN = 0` (uppercase, `=` with spaces, `0` = false/off) to disable middle-mouse-pan, then save and relaunch. The same Alt+drag scheme also applies inside the network (node graph) view, not just the 3D scene view.
+
+**Three main panes:** the **Scene View** (3D viewport), the **Network View** (where nodes live — press Tab inside it to search/place a node, e.g. typing "sphere" and choosing the polygon variant over the primitive variant, then clicking to actually place the ghosted preview), and the **Parameters** pane (shows parameters for whatever node is currently selected/highlighted). Hovering any numeric parameter field and holding the middle mouse button reveals a horizontal scrub strip of increment sizes (0.001, 0.01, 0.1, 1, 10, 100...) — scrubbing left/right on that strip picks how coarsely/finely the value changes; double-clicking a field also allows direct numeric entry.
+
+**OBJ vs. SOP context:** the top/object level (**OBJ**) is the "macro" scene — where whole objects, lights, cameras live and get positioned/scaled/organized relative to each other, but has no controls to actually reshape geometry. Double-clicking an object (or selecting it and pressing **I**) drops down into its **SOP** ("Surface Operator") context — the node network that actually builds/deforms that object's geometry; pressing **U** goes back up one level. Inside SOP, the same sphere gets real shape controls (radius, rows/columns polygon density, primitive-type toggle, point-level edits, etc.) that don't exist at the OBJ level — the OBJ level only ever shows whichever node inside has its **display flag** (the blue flag) turned on. Multiple objects/geometry networks can be merged together inside a single SOP network (demoed with a `merge` node combining a sphere and a cube).
+
+**View shortcuts (must click into the Scene View first — these are context-sensitive, same keys do something else if focus is in the Network View):** `Space+1` = perspective view (free navigation), `Space+2` toggles top/bottom orthographic view, `Space+3` toggles front/back, `Space+4` toggles right/left, `Space+5` = UV viewport (where UVs are edited once a `uvtexture` node or similar has generated them — geometry has no UVs by default). These are also selectable from a "Set View" dropdown in the viewport.
+
+**Node flags:** on a node, hovering reveals icon toggles matching buttons in the toolbar: **Display flag** (blue) — determines which single node's output is what OBJ level (or downstream) actually sees; only one can be active per network in the simple case. **Template flag** (purple) — overlays a node's geometry as a wireframe on top of whatever is currently displayed, without making it the actual display node; Ctrl+click cycles a node's template flag through off → wireframe-overlay → solid "deep purple" (fully opaque secondary geometry, only one node can be deep-purple at a time) → off; multiple nodes can have the plain wireframe template active simultaneously, but a plain (non-Ctrl) click on any template flag clears all others and sets only that one. **Lock/freeze flag** (snowflake icon) — freezes a node's output so no upstream changes propagate through it (Houdini is procedural/trickle-down, so this can silently mask a lot of in-progress work); unfreezing prompts a "this will discard locked changes" warning and everything recalculates at once — the presenter says they almost never use this but flags it as something to know about. **Bypass flag** (arrow icon at a node's end) — skips that node in the chain entirely, keyboard shortcut **B**. Display flag keyboard shortcut is **R**, template flag is **E**. **Node info** — click the info icon for a persistent popup (point/primitive/vertex/polygon counts, world-space bounding box center/min/max, size, attribute list), or middle-mouse-click-and-hold on a node for the same info as a temporary popup that disappears on release.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. (Optional) Remap Alt+MMB/Alt+RMB pan-vs-zoom by editing `houdini.env` (`HOUDINI_MIDDLE_MOUSE_BUTTON_PAN = 0`) while Houdini is closed, then relaunch.
+2. Learn the three panes: Scene View, Network View (Tab to add nodes), Parameters (reflects the currently selected node).
+3. Understand OBJ (macro scene, no shape controls) vs. SOP (per-object geometry-building network, entered via double-click or **I**, exited via **U**) — only the node with the display (blue) flag on is what's actually shown/passed up.
+4. Use `Space+1` through `Space+5` (with focus in the Scene View) to jump between perspective, top/bottom, front/back, right/left, and UV viewport views.
+5. Use the display (blue/R), template (purple/E), lock/freeze, and bypass (B) flags to control what's visible, overlay reference geometry, freeze a node against upstream changes, or skip a node in the chain.
+6. Use a node's info icon (click for persistent, middle-click-hold for temporary) to inspect point/primitive/vertex/polygon counts and bounding-box data.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+`sphere` (polygon vs. primitive type choice), `cube`, `merge` (combining multiple geometry streams in one SOP network), `mountain` (displacement noise, used here just to produce an example deformed/"hideous" shape for demonstrating navigation and flags — not explained in depth in this video), `uvtexture` (generates UVs so the UV viewport, Space+5, has something to show). `houdini.env` environment-variable file (`HOUDINI_MIDDLE_MOUSE_BUTTON_PAN`). Node flags: display (blue, shortcut R), template (purple, shortcut E, Ctrl+click for solid/deep-purple mode), lock/freeze, bypass (shortcut B), node info (click or middle-click-hold).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — pure UI/workflow orientation, no procedural-modeling technique taught in depth (the sphere/mountain/UV examples are just visual aids for demonstrating navigation, not a tutorial on those nodes themselves).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 20.x referenced explicitly (the `houdini.env` file path shown is `Documents/houdini20.x`); presenter notes the node-info popup's visual styling has changed in newer versions but the underlying functionality is the same.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, navigation, ui-basics, houdini-env, obj-context, sop-context, display-flag, template-flag, bypass-flag, node-info, orthographic-views, uv-viewport, jordan-allen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet in this library on Houdini's basic navigation/UI mechanics — first entry in the "Houdini for Beginners" series covering this.

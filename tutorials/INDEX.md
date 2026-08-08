@@ -402,9 +402,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=VpkcIxYUOos
 - **Author:** Jordan Allen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.x
+- **Tags:** beginner, navigation, ui-basics, houdini-env, obj-context, sop-context, display-flag, template-flag, bypass-flag, node-info, orthographic-views, uv-viewport, jordan-allen
+- **Summary:** Beginner UI orientation: remapping default Alt+MMB/RMB pan-zoom via houdini.env, the three main panes (Scene View, Network View, Parameters), the OBJ (macro scene) vs. SOP (per-object geometry-building, entered with I / exited with U) context split, the five Space+1-5 orthographic/UV view shortcuts, and the node-flag system — display (blue/R), template (purple/E, wireframe overlay vs. solid "deep purple"), lock/freeze, bypass (B) — plus node-info popups for point/primitive/bounding-box data.
 - **File:** tutorials/houdini-for-beginners---part-2-navigation.md
 
 
