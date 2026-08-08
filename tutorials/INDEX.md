@@ -497,6 +497,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-cops-datamoshing-hda.md
 
+
+### Edge Bundling / Bundling Curves – Houdini Tutorial
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Mypavnx92tw
+- **Author:** Konstantin Magnus
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/edge-bundling-bundling-curves-houdini-tutorial.md
+
 ---
 
 ## How to Read This Index
