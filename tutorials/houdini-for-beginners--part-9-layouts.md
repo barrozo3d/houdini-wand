@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=K9aMZvNCRF0
 author: Jordan Allen
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.x"
+tags: [beginner, layouts, panes, desktop, geometry-spreadsheet, quick-marks, pin-panes, workspace-customization, jordan-allen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-for-beginners--part-9-layouts/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini for Beginners-  Part 9:  Layouts
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-for-beginners--part-9-layouts <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -166,30 +162,61 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:18] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_000.jpg
+- [2:35] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_001.jpg
+- [2:55] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_002.jpg
+- [3:19] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_003.jpg
+- [4:42] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_004.jpg
+- [5:14] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_005.jpg
+- [5:38] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_006.jpg
+- [6:04] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_007.jpg
+- [7:37] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_008.jpg
+- [7:54] tutorials/frames/houdini-for-beginners--part-9-layouts/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Building a custom **desktop layout** (pane/tab arrangement) so the Geometry Spreadsheet (introduced in Part 8) is visible at the same time as the Scene View, plus a general pane-splitting/pinning/quick-mark workflow for having two independently-navigable Network View + Parameters panes open side by side — then saving the whole arrangement as a named, persistent **desktop**.
 
 ### Summary
-[PENDING EXTRACTION]
+**Closing/reopening tabs:** unneeded default tabs (e.g. Render View — tied to the legacy Mantra renderer, not covered yet; Composite View; Motion FX View) can simply be closed via their tab's X. If something needed gets closed by accident, **Ctrl+T** (or the "new tab" + button) opens a picker for any pane type, organized by category (e.g. Viewers → Scene View) — useful as a manual fallback for a glitched/closed Scene View even without the Labs shelf's Reset Viewport available.
+
+**Splitting panes:** each pane has a **Pane Tab Operations** dropdown (small arrow next to the maximize-pane button) offering **Split Pane Top/Bottom** or **Split Pane Left/Right**, which duplicates the current pane into two independently-sized regions (dragged via the divider between them, or fully collapsed/expanded via small arrow buttons at each border). The presenter's preferred general-purpose layout: Geometry Spreadsheet split to the **bottom** of the Scene View (chosen over left/right specifically because most work targets a 16:9-ish aspect ratio, so eating into vertical space preserves more usable width), and the Network View + Parameters pane **split left/right** into two duplicate copies.
+
+**The problem with naive duplicate panes:** splitting Network View/Parameters left-right by default creates two panes that mirror each other — navigating into a different node/context in one immediately changes both, defeating the purpose of having two independent views.
+
+**Fix — pane pinning/linking via numbered groups:** each pane has a small pin/link control (default state showing they're all "linked to the same numbered pane," e.g. all showing "1"). Click-and-hold the pin control on one pane and choose a different number (e.g. 2) for both a Network View pane and its paired Parameters pane — this decouples that pair from the rest, so it now navigates independently while its own Network View / Parameters pair stays synced to each other. Demoed use case: keep the primary (left, number 1) Network View/Parameters pair following whatever's currently selected/being visualized, while the secondary (right, number 2) pair is used purely to jump into and tweak a *different* node's parameters without disturbing what's currently shown in the main view. The Scene View pane itself can similarly be pinned away from "follow selection" behavior if desired. In daily use, the presenter keeps the secondary pane pair **collapsed** by default and only pops it open when actually needed, then collapses it again.
+
+**Quick marks (an alternative/complementary navigation aid):** **Ctrl+1** through **Ctrl+5** while focused in a pane sets a numbered "quick mark" bookmark at the current network location; afterward, pressing just **1**-**5** (no Ctrl) while that pane has focus jumps straight back to the bookmarked location — handy for hopping between two node-network locations without needing a second split pane at all.
+
+**Saving the layout persistently:** by default, closing and reopening Houdini reverts to the stock "Build" desktop layout — any pane customization is lost unless saved. The **desktop dropdown** (labeled with the currently active desktop's name, e.g. "Build") offers **Save Current Desktop** (overwrites the currently-named layout) or **Save Current Desktop As** (saves the customization under a new name, e.g. "Jordan's Default"). Saved/available desktops are effectively **preset workspace configurations** — Houdini ships several for different work contexts (the video specifically mentions a "Solaris Look Dev" desktop, purpose-built for lighting/final-render layout work), and creating a personal custom desktop (like the one just built) is the same mechanism. This ties into the broader idea of **contexts** (different areas of Houdini having different relevant tools/panels) that the series has touched on previously and flags as warranting its own dedicated video next.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Close unneeded default tabs (their own X button); reopen any pane type via **Ctrl+T** (categorized picker, e.g. Viewers → Scene View) if something gets closed by accident.
+2. Use each pane's **Pane Tab Operations** dropdown to Split Pane Top/Bottom or Left/Right as needed; drag dividers or use the collapse/expand arrow buttons at pane borders to resize.
+3. Split the Geometry Spreadsheet to the bottom of the Scene View (or left/right, per preference/aspect ratio) so both are visible simultaneously.
+4. Split Network View + Parameters left/right for two working areas; use the pin/link control to change one pair's numbered group (e.g. to 2) so it navigates independently from the other pair (which stays on 1).
+5. Use **Ctrl+1-5** to set quick-mark bookmarks in a pane, then **1-5** (no Ctrl) to jump back to them — an alternative to a second split pane for quick two-location navigation.
+6. Once the layout is arranged as desired, use the desktop dropdown's **Save Current Desktop** (overwrite) or **Save Current Desktop As** (new named layout) so the arrangement persists across Houdini sessions.
+7. Be aware that Houdini ships multiple preset desktops for different work contexts (e.g. Solaris Look Dev for lighting/render setup); a custom desktop like the one built here is just another entry in that same system.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Tab close (X) / **Ctrl+T** new-tab picker (categorized: Viewers, Inspectors, etc.), **Maximize Pane** button, **Pane Tab Operations** dropdown (Split Pane Top/Bottom, Split Pane Left/Right), pane border collapse/expand arrows and drag-resize dividers, pane **pin/link numbered-group** control (decouples a Network View + Parameters pair from other panes so they navigate independently), **Ctrl+1-5** quick marks (set) / **1-5** (jump), **desktop dropdown** (Save Current Desktop, Save Current Desktop As) for persisting a custom pane layout, built-in preset desktops (e.g. Solaris Look Dev).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — pure UI/workspace-organization reference, no procedural technique.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; part of the same Houdini 20.x beginner series as Parts 2-8. Mentions the legacy Mantra renderer's Render View tab as something being deprecated/not covered, consistent with a modern Karma-centric release.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, layouts, panes, desktop, geometry-spreadsheet, quick-marks, pin-panes, workspace-customization, jordan-allen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini for Beginners - Part 8: The Geometry Spreadsheet](houdini-for-beginners--part-8-the-geometry-spreadsheet.md) — same beginner series; that part introduces the Geometry Spreadsheet and attributes, this part builds a custom layout so the spreadsheet and Scene View are visible together.

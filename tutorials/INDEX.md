@@ -472,9 +472,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=K9aMZvNCRF0
 - **Author:** Jordan Allen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.x
+- **Tags:** beginner, layouts, panes, desktop, geometry-spreadsheet, quick-marks, pin-panes, workspace-customization, jordan-allen
+- **Summary:** Beginner workspace-customization reference: closing/reopening tabs (Ctrl+T), splitting panes (Pane Tab Operations dropdown, top/bottom or left/right), getting the Geometry Spreadsheet visible alongside the Scene View, the pin/link numbered-group trick for making duplicate Network View + Parameters panes navigate independently, Ctrl+1-5 quick-mark bookmarks as an alternative, and saving the whole arrangement as a persistent named desktop (vs. built-in presets like Solaris Look Dev).
 - **File:** tutorials/houdini-for-beginners--part-9-layouts.md
 
 

@@ -216,3 +216,4 @@ beginner, geometry-spreadsheet, attributes, points-vertices-primitives-detail, a
 
 ## Related Tutorials
 - [Houdini for Beginners - Part 7: Timeline and Animation](houdini-for-beginners--part-7-timeline-and-animation.md) — same beginner series; that part covers the timeline/keyframing/Flip Book, this part introduces the Geometry Spreadsheet and attributes.
+- [Houdini for Beginners - Part 9: Layouts](houdini-for-beginners--part-9-layouts.md) — same beginner series; this part introduces the Geometry Spreadsheet and attributes, that part builds a custom layout so the spreadsheet and Scene View are visible together.
