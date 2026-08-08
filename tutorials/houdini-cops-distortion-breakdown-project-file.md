@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=OHf8On_FMOk
 author: nscr
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5+ (Copernicus context)"
+tags: [copernicus, cops, distort, uv-map, product-render, post-process, compositing, mask, object-position-pass, glitch, procedural-texturing]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-cops-distortion-breakdown-project-file/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 12
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini COPS Distortion | breakdown & project file
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-cops-distortion-breakdown-project-file <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Intro [0:00]
@@ -130,30 +126,60 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:29] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_000.jpg
+- [1:12] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_001.jpg
+- [1:52] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_002.jpg
+- [2:26] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_003.jpg
+- [2:42] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_004.jpg
+- [3:42] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_005.jpg
+- [5:03] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_006.jpg
+- [5:33] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_007.jpg
+- [6:26] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_008.jpg
+- [7:13] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_009.jpg
+- [8:16] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_010.jpg
+- [8:36] tutorials/frames/houdini-cops-distortion-breakdown-project-file/frame_011.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Post-render product distortion built entirely in Houdini's **Copernicus (COPs) 2D context**: a UV-space `Distort` node pushes pixels around a rendered product shot (a shoe), driven by masks built either simply (a hand-shaped ramp) or, in the "advanced" version, from actual render passes (object-space position AABB tracking) so the distortion mask reacts to the object's real geometry/depth instead of being a static painted shape.
 
 ### Summary
-[PENDING EXTRACTION]
+Workflow used in production (Future Deluxe) to add stylized pixel-distortion/glitch to product renders, done entirely as a 2D post-process in COPs rather than in the 3D render itself. Two versions are shown:
+
+**Simple version:** Composite the render over a blurred gradient background, then use a "soft light" blend of the background color onto the (black-and-white, colorless) foreground render to tint it and integrate it with the backdrop before any distortion is applied. Drop a `Distort` node — its `Streak` mode gives the desired look, but at the wrong orientation. Fix the orientation/aspect by feeding a `UV Map` node (matched to the render's aspect ratio via a Size Reference) into the Distort node's UV input, keeping only the vertical (U) cycles so the image runs -1 (bottom) to +1 (top) — COPs' native image space. Shape *where* the distortion is strongest by building a `Ramp` (matched to the same 16:9 size ref) with cubic interpolation, feeding it into the Distort node's Scale input as a multiplier/mask.
+
+**Advanced version:** Instead of a hand-painted ramp mask, use an **Object Position** render pass (tracks the object's bounding box/position even as it moves) split to its blue channel and remapped in brightness — an animated `sin()`-driven value (chosen over manual keyframing, loops cleanly on the timeline) sweeps this mask across the shoe from front to back, so the distortion band appears to travel across the object using real render-derived spatial information rather than a static shape. The mask is inverted so white = distorted, black = protected. `Remap` node's input min/max controls the width of the traveling distortion band. The render's alpha channel (inverted) is used as a separate mask to blend the distorted result back over the clean background, keeping the distortion effect contained to just the product silhouette. A second, independent distortion layer is added post-render: an animated/looping noise pattern drives extra UV break-up across the whole image, combined with the same position-derived mask to modulate how much of that secondary noise-distortion shows — this "wispy smoke"-like layered result reads as more organic than a single distortion pass.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Bring a rendered product shot (with at least an object-position/AABB-tracking pass and an alpha pass) into COPs.
+2. Composite over a blurred gradient background; soft-light the background color onto the (colorless, B&W) foreground render to tint/integrate it before distorting.
+3. Add a `Distort` node; test its Scale (strength) and Streak (direction/style) parameters to find the base look.
+4. Feed a `UV Map` node (aspect-matched via Size Reference to the render) into Distort's UV input; strip unwanted U/V cycles to control which axis the streaking runs along, using COPs' native -1..1 image space.
+5. For a simple static mask: build a `Ramp` node (same aspect ratio via Size Reference, cubic interpolation) and plug it into Distort's Scale to shape where distortion is strongest/weakest.
+6. For a render-reactive mask: pull an **Object Position** pass, split out one color channel, remap brightness, and drive it with an animated `sin()` expression so a mask band sweeps across the object over the timeline (loops automatically, no keyframing needed).
+7. Invert the mask as needed (white = affected, black = protected); use `Remap`'s input min/max to widen or narrow the affected band.
+8. Use the render's inverted alpha channel as a compositing mask so the distortion effect only shows within the product's silhouette against the clean background.
+9. Layer a second distortion pass: animated/looping 2D noise driving extra UV break-up across the whole frame, gated by the same object-derived mask, for a more organic multi-layered result.
+10. Everything remains parametric/non-destructive — adjusting the Remap range or Ramp shape after the fact changes how much of the object is affected without re-rendering.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Copernicus (COPs) 2D context throughout: **Distort** (Scale = strength/multiplier input, Streak mode, direction driven by UV input), **UV Map** + **Size Reference** (aspect-correct procedural UV generation matched to a render's resolution), **Ramp** (cubic interpolation, used as a distortion-strength mask), **Remap** (input min/max reshapes/widens a mask band), soft-light blend/composite node (color-integrate a B&W foreground with a colored background), channel split (isolating a single color channel from a position pass as a mask source), animated `sin()` expression (looping sweep without keyframes), alpha-channel invert-and-mask compositing, secondary animated/looping 2D noise layer for UV break-up.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — no VEX/scripting shown, but requires understanding COPs' image-space conventions (-1 to 1 UV range), multi-pass render compositing (object position, alpha), and iterative mask-shaping via Ramp/Remap.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated on screen; Copernicus (COPs) context places this at Houdini 20.5+.
 
 ### Tags
-[PENDING EXTRACTION]
+copernicus, cops, distort, uv-map, product-render, post-process, compositing, mask, object-position-pass, glitch, procedural-texturing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Creating a shot from start to finish in Houdini - Free Lesson](creating-a-shot-from-start-to-finish-in-houdini---free-lesson.md) — shares the Copernicus (COPs) 2D context for procedurally driving surface/image patterns from render/attribute data rather than plain VEX noise.

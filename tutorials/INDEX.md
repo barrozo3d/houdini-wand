@@ -352,9 +352,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=OHf8On_FMOk
 - **Author:** nscr
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5+ (Copernicus context)
+- **Tags:** copernicus, cops, distort, uv-map, product-render, post-process, compositing, mask, object-position-pass, glitch, procedural-texturing
+- **Summary:** Post-render product distortion (a shoe) built entirely in Copernicus (COPs): a UV-space Distort node driven by a Ramp mask (simple version) or, in the advanced version, by an animated sin()-swept mask derived from the render's Object Position pass so the distortion band travels across the object using real spatial data. Covers COPs' -1..1 UV-space conventions, soft-light background integration, alpha-masked compositing back over a clean backdrop, and a layered secondary looping-noise UV break-up pass for a more organic "wispy smoke" result.
 - **File:** tutorials/houdini-cops-distortion-breakdown-project-file.md
 
 ---
