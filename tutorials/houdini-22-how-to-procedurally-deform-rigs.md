@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=BRSJx1lWlJM
 author: Houdini
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [apex, procedural-animation, apex-unpack-character, apex-animation-from-skeleton, flow-noise, bone-deform, animation-layers, kinefx, secondary-motion, non-destructive, sidefx-official]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 11
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 22 | How to Procedurally Deform Rigs
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-22-how-to-procedurally-deform-rigs <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -131,30 +127,63 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:22] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_000.jpg
+- [0:51] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_001.jpg
+- [1:10] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_002.jpg
+- [2:37] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_003.jpg
+- [2:56] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_004.jpg
+- [3:16] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_005.jpg
+- [3:44] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_006.jpg
+- [4:06] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_007.jpg
+- [5:16] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_008.jpg
+- [6:39] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_009.jpg
+- [7:08] tutorials/frames/houdini-22-how-to-procedurally-deform-rigs/frame_010.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+The companion/follow-up to [[houdini-22-how-to-apex-animate-in-lops]]: pull an APEX character's **animated skeleton** out into plain SOP/KineFX geometry, apply arbitrary procedural deformation to it with ordinary point-manipulation tools (here, VEX flow noise), then bake that procedural motion back into the APEX rig as a **new animation layer** via the **APEX Animation from Skeleton** node — so procedural effects (noise, sim-driven motion, anything expressible as point movement) can be layered non-destructively on top of existing keyframed APEX animation and you retain full rig control afterward.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting point: an already-animated APEX character (Harry, doing a scripted "heel-pop-hello" action) inside an APEX Scene Animate network. Because everything is packed APEX-scene data, nothing inside it is directly selectable/editable — you first need an **APEX Unpack Character** node (Character Name parameter set to the character, e.g. "Harry") to break the packed scene open. It exposes four outputs: (1) the APEX scene passed straight through (for continuing to animate normally upstream), (2) the character's rest geometry, (3) the rest skeleton, and (4) the **animated skeleton** — the one this workflow cares about, since it already carries the existing keyframed motion baked onto its points.
+
+The animated skeleton is just point geometry, so any SOP/VEX technique applies directly: the video wires an **Attribute VOP** feeding the skeleton's point position into an **Anti-Aliased Flow Noise** node (mode set to 3D Motion, driven by `$T`/time into the noise's Flow Value input) and adds the noise offset back onto the original position, producing a "crazy" wild deformation layered on top of the existing pose. A **Bone Deform** node downstream (using the deformed skeleton to drive the character's Capture-weighted mesh) is used purely as a fast preview to see the combined result without needing to go back into APEX — the original keyframed animation is still visible underneath the new noisy motion, i.e. they compose additively.
+
+To make the noise controllable/animatable rather than a constant flood, the noise's **Amplitude** parameter is promoted up to the containing node and keyframed directly (e.g. 0 → a peak like 0.6 → back to 0 across a few frames) so the procedural jiggle only kicks in briefly, timed to when the character's heels land — turning a generic noise field into an art-directed secondary-motion accent.
+
+**Bridging back into APEX:** the deformed-but-still-SOP-level skeleton can't be used to keep animating in APEX until it's converted back into APEX's own channel/clip data. That's the job of **APEX Animation from Skeleton** — described as extremely useful/frequently used, since it's the bridge between the SOPs/KineFX world and APEX. Its first input takes the APEX-scene pass-through from the Unpack node; its parameters need a **Rig Path** (the character's base rig) and **Skeleton Path** (the base/rest skeleton), plus a **Frame Range** (trimmed down to just the relevant window, e.g. ~150 frames, to keep bake time reasonable — this node has to walk the whole animation and convert it into channel primitives APEX can read, so it isn't instant). A **Clip Name** (left default here, so it writes to the default clip on the Scene Animate) and, importantly, a **Layer Name** (given a custom name here, "proc motion") control where the result lands — using a distinct layer name means this procedural pass doesn't overwrite the original animation, it stacks as a separate layer. A Controls field can restrict the bake to specific named rig controls; left blank, it applies to all of them. The node's second input takes the actual deformed animated skeleton (the flow-noise output). Once wired, the node's output plugs into a **Scene Animate** node, and jumping into that node's viewer state shows the procedural motion now genuinely driving the APEX rig's controls.
+
+Because it landed on its own named layer, the procedural layer can be toggled off, or have its **weight** dialed down (e.g. to blend in "just a little bit"), independent of the base animation. From there you can select all controls, add yet another new layer on top (e.g. named "fix"), and continue hand-animating additional adjustments — stacking as many non-destructive layers as needed. The presenter notes this whole chain (Unpack → procedural SOP/VEX deformation → Animation from Skeleton → Scene Animate) is generic enough to be packaged as a reusable HDA/tool for a team or marketplace.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Start from an APEX character with existing keyframed animation inside a Scene Animate network.
+2. Add **APEX Unpack Character** (Character Name = your character) to break open the packed scene; take its 4th output (animated skeleton) for procedural work — the 1st output (APEX scene pass-through) is what you'll eventually feed into the bridge-back node.
+3. Apply any SOP/VEX point-deformation technique to the animated skeleton's points (e.g. Attribute VOP → Anti-Aliased Flow Noise in 3D Motion mode, driven by time, added onto position).
+4. Preview the combined result quickly with a **Bone Deform** node (skeleton → mesh) rather than round-tripping through APEX just to look at it.
+5. Promote any noise/deformation parameters you want to art-direct (e.g. Amplitude) and keyframe them so the effect is timed/targeted rather than constant.
+6. Add **APEX Animation from Skeleton**: input 1 = the APEX scene pass-through from Unpack Character, input 2 = your deformed animated skeleton. Set Rig Path (base rig) and Skeleton Path (base/rest skeleton).
+7. Trim the Frame Range to just the window you need — this node re-walks the whole range and converts it to APEX channel primitives, so it isn't cheap on long ranges.
+8. Give the bake a distinct **Layer Name** (e.g. "proc motion") so it stacks as a new layer rather than overwriting existing animation; leave Clip Name default unless you need otherwise; optionally restrict which rig Controls it targets.
+9. Plug the result into Scene Animate; enter its viewer state to confirm the procedural motion now drives the actual APEX rig controls.
+10. Toggle the new layer on/off or adjust its weight independently of the base animation; add further layers on top (e.g. "fix") to keep hand-animating non-destructively.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+**APEX Unpack Character** (Character Name; outputs: APEX-scene pass-through, rest geo, rest skeleton, animated skeleton). SOP/KineFX side: Attribute VOP, **Anti-Aliased Flow Noise** (3D Motion mode; Flow Value driven by time; position piped in and the noise offset added back onto position), promoted/keyframed Amplitude parameter, **Bone Deform** (fast preview of a deformed skeleton driving Capture-weighted mesh). **APEX Animation from Skeleton** (bridges SOPs/KineFX deformation back into APEX; params: Rig Path, Skeleton Path, Frame Range, Clip Name, Layer Name, Controls — converts skeleton animation into APEX channel primitives; can be slow over long ranges). **APEX Scene Animate** (final node the result feeds into; supports multiple named animation layers with independent on/off + weight, selectable controls, and further hand-animation on new layers).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced — assumes familiarity with APEX's packed-scene structure and basic VEX/VOP point manipulation; the specific noise example is simple, but the broader technique (treating a rig's animated skeleton as arbitrary point geometry you can run any procedural system on) requires understanding what's actually being bridged between APEX and SOPs.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (APEX workflow; explicitly the sequel to the H22 APEX Animate in LOPs video).
 
 ### Tags
-[PENDING EXTRACTION]
+apex, procedural-animation, apex-unpack-character, apex-animation-from-skeleton, flow-noise, bone-deform, animation-layers, kinefx, secondary-motion, non-destructive, sidefx-official
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini 22 | How to APEX Animate in LOPs](houdini-22-how-to-apex-animate-in-lops.md) — same official series; that video covers importing/animating APEX characters in Solaris and animation-layer basics, this one covers bridging procedural SOP/VEX deformation back into an APEX rig as a new layer.

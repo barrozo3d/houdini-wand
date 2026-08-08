@@ -392,9 +392,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=BRSJx1lWlJM
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 22
+- **Tags:** apex, procedural-animation, apex-unpack-character, apex-animation-from-skeleton, flow-noise, bone-deform, animation-layers, kinefx, secondary-motion, non-destructive, sidefx-official
+- **Summary:** Sequel to the APEX Animate in LOPs video: pulls an APEX character's animated skeleton out via APEX Unpack Character, applies arbitrary SOP/VEX point deformation to it (flow noise example, previewed fast with Bone Deform), then bridges that procedural motion back into the APEX rig as a new named animation layer via APEX Animation from Skeleton (Rig Path, Skeleton Path, trimmed Frame Range, Clip/Layer Name) — the layer can be toggled/weighted independently and further hand-animated on top, all non-destructively.
 - **File:** tutorials/houdini-22-how-to-procedurally-deform-rigs.md
 
 ---

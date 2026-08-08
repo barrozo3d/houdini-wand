@@ -198,4 +198,4 @@ apex, solaris, lops, character-rig, apex-animate, apex-scene-add-character, sop-
 ---
 
 ## Related Tutorials
-None yet in this library on APEX character import/animation workflows in Solaris — first entry covering this.
+- [Houdini 22 | How to Procedurally Deform Rigs](houdini-22-how-to-procedurally-deform-rigs.md) — same official series; this video covers importing/animating APEX characters in Solaris, that one covers bridging procedural SOP/VEX deformation back into an APEX rig as a new animation layer.
