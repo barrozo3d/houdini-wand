@@ -442,9 +442,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ebFJhYj54Cg
 - **Author:** Jordan Allen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.x
+- **Tags:** beginner, visualizers, display-options, uv-grid, display-normals, point-trails, point-numbers, primitive-numbers, background-color-scheme, particle-display, jordan-allen
+- **Summary:** Beginner reference for viewport attribute visualizers on the pig-head test geometry: Display Material/UV-grid toggles, Labs-tab viewport reset, Display Points/Normals/Point Trails (via a trail node computing frame-to-frame velocity)/Point Numbers/Primitive Numbers, the custom-visualizers tab, and the full Display Options popup (D key) — notably the Background tab's viewport color scheme and the Geometry tab's particle point-size/pixel-display controls for dense simulations.
 - **File:** tutorials/houdini-for-beginners--part-6-visualisers.md
 
 ---

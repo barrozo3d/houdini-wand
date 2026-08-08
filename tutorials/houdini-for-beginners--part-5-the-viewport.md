@@ -294,3 +294,4 @@ beginner, viewport, shading-modes, wireframe, reference-grid, lock-camera-to-vie
 
 ## Related Tutorials
 - [Houdini for Beginners - Part 4: Tools](houdini-for-beginners--part-4-tools.md) — same beginner series; that part covers the transform/handle tool and node creation, this part covers viewport display/shading/lighting settings.
+- [Houdini for Beginners - Part 6: Visualisers](houdini-for-beginners--part-6-visualisers.md) — same beginner series; this part covers shading modes/layout/camera-lock/viewport lighting, that part covers the remaining display/attribute visualizer toggles and the full Display Options popup.

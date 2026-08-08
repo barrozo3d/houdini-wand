@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ebFJhYj54Cg
 author: Jordan Allen
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.x"
+tags: [beginner, visualizers, display-options, uv-grid, display-normals, point-trails, point-numbers, primitive-numbers, background-color-scheme, particle-display, jordan-allen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-for-beginners--part-6-visualisers/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 11
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini for Beginners-  Part 6:  Visualisers
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-for-beginners--part-6-visualisers <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -159,30 +155,57 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:23] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_000.jpg
+- [1:40] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_001.jpg
+- [3:21] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_002.jpg
+- [4:07] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_003.jpg
+- [5:08] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_004.jpg
+- [5:26] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_005.jpg
+- [5:52] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_006.jpg
+- [6:01] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_007.jpg
+- [7:18] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_008.jpg
+- [8:19] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_009.jpg
+- [9:11] tutorials/frames/houdini-for-beginners--part-6-visualisers/frame_010.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+The rest of the right-hand viewport toolbar's display/visualizer toggles (material + UV grid display, viewport reset, per-attribute visualizers for points/normals/point-trails/point-numbers/primitive-numbers, custom visualizer stashes) plus the much deeper **Display Options** popup (**D** key) that houses everything not promoted to a one-click toolbar icon, including per-scene background color scheme and particle/point display size — all viewport-only conveniences for reading a scene's data, unrelated to render output.
 
 ### Summary
-[PENDING EXTRACTION]
+Demonstrated using Houdini's built-in **pig head** test geometry (one of several premade test-geometry presets meant as starting points for testing systems) — unlike a bare primitive (e.g. a default sphere), it ships with a material and UVs already set up, so it displays shaded/textured by default. **Display Material on Objects** toggles whether that assigned material renders in the viewport at all; its sibling, the **UV grid visualizer**, overlays a checker/grid pattern derived from the object's actual UV layout so you can sanity-check UV distribution without a real texture — both toggles can be active simultaneously, and picking a different option from the click-and-hold submenu (UV Grid Gray / UV Color) can also serve as a manual "reset" if the viewport visually glitches (which the presenter notes still happens occasionally, though less than it used to) — a persistent glitch can also be cleared via the **Labs** tab's **Reset Viewport** command, which fully relaunches the viewport display.
+
+**Attribute visualizers:** **Display Points** forces point markers to stay visible regardless of which tool/mode is active (normally you'd only see points in Select mode + points sub-mode) — handy when you want point visibility while, say, the transform handle is active. **Display Normals** shows each point's normal as a directional line pointing "out" from the surface — conceptually, the direction information a surface uses to tell lights which way is outward-facing (demonstrated by adding a `normal` node first, since raw geometry may not have normals authored). **Display Point Trails** is the inverse idea: rather than showing where a point is currently facing, it shows a line back to where each point *was* on the previous frame, computed via a `trail` node that derives per-point velocity from frame-to-frame position differences — demonstrated on a keyframe-animated pig; scaling the trail node's velocity value up produces visibly longer trail lines, and this is specifically useful for reasoning about motion blur and other velocity-dependent effects. **Display Point Numbers** and **Display Primitive Numbers** overlay each point's/primitive's unique index — Houdini identifies and tracks every point, vertex, and primitive by such an ID internally, and these visualizers surface that bookkeeping directly in the viewport (useful later once VEX/expressions reference points and primitives by number). A separate **visualizers tab** (right-click for existing/preset visualizer definitions) is where custom, user-authored visualizers can be toggled on/off — a deeper topic that gets its own attention later in the series.
+
+**Display Options popup (press D with the Scene View focused):** the toolbar only has room for the most common toggles; D opens a full popup covering everything else, organized into tabs (Markers, Guides, Housing, Geometry, Scene, Camera, Lights, Material, Fog, Grid, Background, Texture, Optimize as shown on screen). Toggles here are two-way synced with the toolbar buttons already covered (e.g. checking "Show Point Numbers" here lights up the same toolbar icon). Two examples highlighted: (1) in the **Background** tab, the viewport's **color scheme** (light/dark/gray, or fully custom) — useful for e.g. judging white smoke density, which is hard to read against a light background and easier against dark; (2) in the **Geometry** tab, **Display Particles as Points** plus a **point size** slider for enlarging how big points render in the viewport — and, for genuinely massive point counts (large simulations), switching the display mode to render points **no bigger than pixels**, since oversized point markers on a dense simulation can obscure the actual shape/silhouette you're trying to read.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Toggle **Display Material on Objects** to show/hide a geometry's assigned material in the viewport (only meaningful if the object actually has a material + UVs, unlike a bare default primitive).
+2. Toggle the **UV grid** visualizer (UV Grid Gray / UV Color via click-and-hold) to sanity-check UV layout without a real texture; re-picking an option here can also clear a visual glitch, or use **Labs → Reset Viewport** for a full reset.
+3. Use **Display Points** to force point visibility regardless of active tool/mode.
+4. Add a `normal` node and use **Display Normals** to visualize surface-outward directions per point.
+5. Add a `trail` node (after some keyframed motion) and use **Display Point Trails** to visualize where each point was on the previous frame — scale the trail's velocity value to make trails more/less pronounced; useful for reasoning about motion blur.
+6. Use **Display Point Numbers** / **Display Primitive Numbers** to see each component's unique index directly in the viewport.
+7. Check the right-click **visualizers tab** for existing custom visualizer presets (authoring your own is covered later in the series).
+8. Press **D** in the Scene View for the full **Display Options** popup when you need a setting not on the toolbar — notably the **Background** tab's color scheme (helpful for judging density against light-colored volumetrics like smoke) and the **Geometry** tab's particle/point display size and pixel-sized rendering for very dense point sets.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Test geometry presets (pig head demoed), **Display Material on Objects** toggle, UV grid visualizer (UV Grid Gray / UV Color), Labs tab → **Reset Viewport**, **Display Points**, `normal` node + **Display Normals**, `trail` node (frame-to-frame velocity from position deltas) + **Display Point Trails**, **Display Point Numbers**, **Display Primitive Numbers**, visualizers tab (right-click, for custom/preset visualizer toggles). **Display Options popup** (**D** key): tabs Markers / Guides / Housing / Geometry / Scene / Camera / Lights / Material / Fog / Grid / Background / Texture / Optimize; Background tab's viewport color scheme (light/dark/gray/custom); Geometry tab's **Display Particles as Points** + point-size control + pixel-sized display mode for dense simulations. `add` SOP (used here with its delete-geometry-keep-points toggle to isolate a sphere's points for the particle-size demo).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — pure viewport-display/UI reference, no procedural technique explained in depth.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; part of the same Houdini 20.x beginner series as Parts 2-5.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, visualizers, display-options, uv-grid, display-normals, point-trails, point-numbers, primitive-numbers, background-color-scheme, particle-display, jordan-allen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini for Beginners - Part 5: The Viewport](houdini-for-beginners--part-5-the-viewport.md) — same beginner series; that part covers shading modes/layout/camera-lock/viewport lighting, this part covers the remaining display/attribute visualizer toggles and the full Display Options popup.
