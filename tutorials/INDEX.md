@@ -347,6 +347,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/lightning-effect-in-houdini-houdini-tutorial-project-file.md
 
+
+### Houdini COPS Distortion | breakdown & project file
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=OHf8On_FMOk
+- **Author:** nscr
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-cops-distortion-breakdown-project-file.md
+
 ---
 
 ## How to Read This Index
