@@ -342,9 +342,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=J4xHdSZ-YbQ
 - **Author:** Fx Guru
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5+/20.x (Solaris + MaterialX)
+- **Tags:** rbd, bullet-solver, reverse-gravity, procedural-lightning, vex, curve-growth, vdb, pyro, solaris, lops, materialx, glow-material, render-visibility, compositing, hindi-narration
+- **Summary:** Full VFX shot pipeline for a lightning-charged hammer prop: RBD Bullet dynamics with reversed gravity for rising-debris motion, a from-scratch procedural lightning-bolt generator (scattered points grown into VEX/resample curves, converted to VDB/mesh), a secondary surface-hugging arc pass, Solaris/LOPs assembly with a shared pure-emission MaterialX Glow material, per-primitive render visibility (Phantom + Diffuse-only matte setup), and final glow/grade compositing in an external node-based compositor. Hindi-narrated (see in-file note); notes reconstructed from transcript + on-screen node names after Whisper's small model failed and required a medium-model re-ingest.
 - **File:** tutorials/lightning-effect-in-houdini-houdini-tutorial-project-file.md
 
 

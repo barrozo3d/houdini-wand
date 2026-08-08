@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=J4xHdSZ-YbQ
 author: Fx Guru
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5+/20.x (Solaris + MaterialX)"
+tags: [rbd, bullet-solver, reverse-gravity, procedural-lightning, vex, curve-growth, vdb, pyro, solaris, lops, materialx, glow-material, render-visibility, compositing, hindi-narration]
+extraction_status: complete
 frames_dir: tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 15
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Lightning Effect In Houdini | Houdini Tutorial +Project File
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py lightning-effect-in-houdini-houdini-tutorial-project-file <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -243,30 +239,74 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:51] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_000.jpg
+- [1:42] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_001.jpg
+- [2:34] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_002.jpg
+- [2:44] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_003.jpg
+- [3:04] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_004.jpg
+- [4:25] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_005.jpg
+- [7:28] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_006.jpg
+- [10:09] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_007.jpg
+- [10:30] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_008.jpg
+- [12:15] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_009.jpg
+- [13:35] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_010.jpg
+- [13:53] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_011.jpg
+- [15:23] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_012.jpg
+- [18:48] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_013.jpg
+- [21:34] tutorials/frames/lightning-effect-in-houdini-houdini-tutorial-project-file/frame_014.jpg
+
+---
+
 ## Structured Notes
 
+> **Note on source:** this video is narrated in Hindi (mixed with English Houdini terminology). Whisper's `small` model failed completely on it (produced non-language hallucinated gibberish that passed the safeguard check silently — re-ingested with `--force --whisper-model medium`, which transcribed real Hindi). These notes were reconstructed from the Hindi transcript plus the captured frames (Houdini's UI/node names are in English regardless of narration language), not a literal translation. Treat step order/intent as reliable; treat exact parameter values as approximate unless visible on-screen.
+
 ### Core Technique
-[PENDING EXTRACTION]
+A full VFX shot pipeline for a "lightning-charged hammer" prop: (1) an RBD Bullet dynamics sim with **reversed gravity** used to make debris/dust drift upward like rising smoke, (2) a from-scratch procedural lightning-bolt generator built from scattered points grown into curves via VEX/Resample and converted to a volume/mesh, (3) a secondary "creeping arc" pass confined to the hammer's own surface, (4) Solaris/LOPs assembly with a pure-emission MaterialX Glow material merged across all three lightning elements, and (5) final glow/bloom + color grading done in an external node-based compositor (Read/Grade/Glow-style nodes, UI consistent with Nuke) rather than inside Houdini.
 
 ### Summary
-[PENDING EXTRACTION]
+Starts from an imported hammer/axe model. A DOP network (`dopnet1`/`dopimport1` driving an `rbdbulletsolver1`, preceded by `matchsize1`/`transform1`/`assemble1`, and a `timeshift1` to freeze/offset the settle frame) runs an RBD Bullet sim with gravity reversed, so fractured/scattered debris appears to rise and drift like smoke instead of falling — described as "converting a static shot into something that feels animated," i.e. adding cheap secondary motion to an otherwise-static hero prop shot.
+
+For the main lightning bolts: the creator first sketches the intended bolt paths directly over a paint-program screenshot of the hammer silhouette (planning the branch directions before touching nodes). In Houdini: scatter points over the hammer's edge/surface, offset them out into free space, then grow/orient them into strand-like curves using a VEX Builder network and a chain of `resample`/`attribinterpolate`/`shapecurve` nodes (parameters referenced include a "Length"/segment-count style control, described in-video as being like bristle/hair generation) with noise added along the growth direction so the bolts don't read as straight lines. Curve topology is finalized with Add Vertex + Add Prim, normals are computed and unneeded attributes are stripped (kept: velocity, P, id only) to keep the network light. The finished curve bundle is converted to a volume with `vdbfromparticles1` → `convertvdb1` and cached out as `Main_Lightning`.
+
+A second, independent "small lightning" pass repeats a simplified version of the same idea (anim/shape/presample/noise) but scattered directly across the hammer's own surface for small creeping arcs, rather than the large branching bolts. A `pyrosolver2` smoke sim (cached as `smokeSparks`) was also built for spark smoke trails but — per the creator — not actually used in the final render (kept in the project file as an optional extra).
+
+Everything is assembled in **Solaris (LOPs)**: a merge node combines `main_lightning`, `small_lightning`, and `sparks` primitives, and a single **Glow** MaterialX network (`mtlxstandard_surface` + `mtlxdisplacement` feeding `Material_Outputs_and_AOVs`) is assigned to all of them — the glow material needs no real shading, just an emission color/intensity ("black, or sky-blue, or whatever color you want"). A ground plane gets a separate plain material with a red-ish texture. Because the emissive lightning geometry alone left the hammer itself looking too dark/flat, an extra scene light was added specifically to key the prop. Render visibility is set per-primitive in a Render Geometry Settings LOP — objects are flagged Phantom + Diffuse-only where a matte/reflection-only contribution is wanted (e.g. so lightning affects reflections/lighting on the hammer without the emitter geometry itself being directly camera-visible everywhere).
+
+Final assembly happens outside Houdini in a separate node-based compositor: multiple render layers (main lightning, small lightning, sparks) are read in and merged, then a **Glow** node (Size/Falloff-style controls) is applied — explicitly noted that this glow affects the *entire* image/environment, not just a local area, so it needs to be dialed back rather than left at default — with adjustable tint (pushing it pink-ish or green-ish). A **Grade** node handles final color balance/contrast, plus added grain, for a "cinematic lighting" look. The creator catches and fixes a continuity mistake late in the edit: the main hammer light and the small-arc lighting had drifted to mismatched color casts (one blue-ish, one green-ish) and had to be brought back in line with each other for a consistent look.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Import hero prop model; set up an RBD Bullet DOP sim with **reversed gravity** so debris drifts upward like smoke, using a Time Shift to control which frame the "settled" pose freezes on.
+2. Sketch the intended lightning-bolt branch paths as a 2D reference drawing over the prop's silhouette before building nodes.
+3. Scatter points on the prop surface where bolts should emerge; offset them outward into free space along the sketched directions.
+4. Grow points into strand-like curves via VEX + a resample/attribute-interpolate/shape-curve chain (bristle/hair-style generation), adding noise along the growth path so bolts don't look straight.
+5. Finalize curve topology with Add Vertex + Add Prim; compute normals; delete all attributes except velocity/P/id to keep the network lean.
+6. Convert the curve bundle to a volume (`vdbfromparticles` → `convertvdb`) and cache it as the main lightning mesh.
+7. Build a second, simpler "small lightning" pass confined to the prop's own surface for creeping-arc detail (same anim/shape/resample/noise idea, smaller scale).
+8. (Optional/unused in final render) A Pyro smoke sim for spark trails, left in the project file but not composited into the final result.
+9. In Solaris: merge all lightning primitive groups, assign one shared MaterialX **Glow** material (pure emission color/intensity, no real shading network needed) across all of them.
+10. Add a plain textured material to the ground plane; add an extra scene light specifically because the emissive-only lightning wasn't sufficiently lighting the hero prop itself.
+11. Set per-primitive render visibility (Phantom + Diffuse-only where appropriate) in a Render Geometry Settings LOP for matte/reflection-only contributions.
+12. Render out separate layers (main lightning, small lightning, sparks) and composite them in an external node-based compositor.
+13. Apply a Glow/bloom node — note it affects the whole frame, not just the emissive area, so intensity/falloff needs restraint — adjust its color tint if desired.
+14. Apply a Grade node for final color balance/contrast plus grain for a cinematic look.
+15. Do a final continuity pass across separately-lit elements (main hammer light vs. small-arc lighting) to catch and correct any color-cast mismatch between them.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+DOPs: `dopnet1`, `dopimport1`, `rbdbulletsolver1` (gravity reversed), `matchsize1`, `transform1`, `assemble1`, `timeshift1`. SOPs: VEX Builder point-attribute network, `resample`/`attribinterpolate`/`shapecurve`/`prim_curve` chain for curve growth (bristle/hair-style length & segment controls), Add Vertex + Add Prim for curve topology, attribute delete (keep only velocity/P/id), `vdbfromparticles` → `convertvdb` for volume conversion. Pyro: `pyrosource`, `volumerasterizeattributes`, `pyrosolver` (built, unused in final render). Solaris/LOPs: merge LOP combining lightning/sparks primitives, MaterialX Builder network (`mtlxstandard_surface`, `mtlxdisplacement`, `material_properties` → `Material_Outputs_and_AOVs`) for a pure-emission Glow material, Render Geometry Settings LOP (per-primitive visibility, Phantom + Diffuse-only matte setup). External compositor (Nuke-style node graph): Read, Merge, Glow (Size/Falloff, whole-frame effect), Grade (lift/gamma/gain-style color balance), grain.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — combines DOPs dynamics, custom VEX/curve-growth procedural generation, Solaris/LOPs material and visibility setup, and a separate compositing pass. Not a single-technique beginner tutorial; closer to a full production shot breakdown.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated on screen; Solaris/LOPs + MaterialX workflow consistent with a recent H19.5+/20.x release.
 
 ### Tags
-[PENDING EXTRACTION]
+rbd, bullet-solver, reverse-gravity, procedural-lightning, vex, curve-growth, vdb, pyro, solaris, lops, materialx, glow-material, render-visibility, compositing, hindi-narration, fx-guru
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet in this library on procedural lightning-bolt generation, RBD reverse-gravity debris, or MaterialX Glow-material setups in Solaris — first entry covering these.
