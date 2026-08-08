@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=kSIn2FCzW0c
 author: Alexander Weber
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5+/20.x (Solaris Feather Procedural)"
+tags: [feather, feather-groom, gumi, hair-clump, hair-gen, hair-split, hair-mask, curveu, primvar, solaris, feather-procedural, reference-imagery, featherbase, renderman]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 13
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini Feather Groom Detail and how to use Feather Attributes for Rendering
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### How to use the Node [0:00]
@@ -73,30 +69,66 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:18] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_000.jpg
+- [0:43] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_001.jpg
+- [1:22] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_002.jpg
+- [1:39] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_003.jpg
+- [2:12] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_004.jpg
+- [3:14] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_005.jpg
+- [3:54] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_006.jpg
+- [4:07] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_007.jpg
+- [5:02] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_008.jpg
+- [5:52] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_009.jpg
+- [6:19] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_010.jpg
+- [6:34] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_011.jpg
+- [7:19] tutorials/frames/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering/frame_012.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A creator-made custom HDA, **Feather Groom Detail**, that goes beyond the stock Feather Template/Feather Width/Feather Noise/Feather Clump nodes: it decomposes a feather into individual curves so any of Houdini's standard hair/fur grooming tools (Guide/Gumi nodes — Hair Gen, Hair Bend, Hair Clump, Hair Split, Hair Mask, Hair Frizz, Hair Groups) can be applied directly to the barbs for fine detail, plus a separate second half covering how to get non-standard barb attributes (curveu, width, UVs) onto the actual render-time curves for use in a shader.
 
 ### Summary
-[PENDING EXTRACTION]
+**Part 1 — Feather Groom Detail node:** Drop the node after building a feather with the stock Feather Template/Width/Noise/Clump chain; it exposes a Shaft Width param but works fine at defaults. Internally it decomposes the feather geometry into individual curves, which unlocks the full Gumi/hair-tool palette (Guide Process and friends) instead of being limited to the feather-specific nodes. A quirk noted: **you must connect the shaft as the "skin" input** on the Gumi nodes for them to actually work — without that connection the standard Gumi tools silently fail to affect anything, for reasons the creator says they don't fully understand ("not that much of a Gumi [expert]"). Demonstrated chain: **Hair Gen** to grow/bend hairs off the barbs, then **Hair Clump** to transfer that adjustment back onto the visualized barb geometry — critically, any heavy curve-level adjustment (bend, frizz, etc.) needs to go through a node like Hair Clump to actually apply to the render-visible barbs; editing the decomposed curves alone does nothing to the barbs on its own. Do **not** change barb count or point count when doing this — it breaks. **Hair Split** and **Hair Mask** both let you restrict which hairs/barbs an adjustment affects (functionally similar, situationally one or the other is more convenient). **Hair Groups** + frizz can add further per-group randomized variation. A second included example repeats the same idea but demonstrates using **Hair Split** to isolate a subset of barbs, adjust them independently, then merge back — for localized rather than whole-feather detail. Finally, the node supports **image-based feather texturing**: a Cop2 network reads a reference photo (the creator recommends **featherbase.info** — a site organized by bird species/biological name where you can browse real reference photos of each species' actual feathers) plugged into the node, with a rotation adjustment as needed and a "Quickshade" checkbox to preview the image mapped onto the feather; the node auto-generates UVs that always fit the feather shape for this purpose. If you don't want image-driven UVs for final rendering, the node also includes a normal Project UV option as an alternative.
+
+**Part 2 — Transferring non-standard attributes onto barbs for shading:** Feather barbs don't carry `curveu` (the standard root-to-tip 0-1 gradient used for e.g. color ramps in shaders) by default, and you can't directly inspect per-barb channel data. Fix: use **Resample** nodes upstream (never resample the actual final barb curves directly — apply the fix earlier in the chain, on the pre-barb curve source, since resampling final barbs risks breaking things downstream) on both the left (`barb_l`) and right (`barb_r`) curve sources to establish even segment spacing, then feed those into the Feather Groom Detail-style channel setup so a `curveu` channel is generated automatically per barb, running root-to-tip along the shaft (not perfectly matching the original per-barb geometry, but functional). The same channel mechanism also carries width and UV data per barb even though those can't be directly inspected on the curve visualization. In **Solaris/LOPs**: create a feather primitive, import your feather SOP network, run it through the **Houdini Feather Procedural** LOP with the feather primitive and your groom plugged in. **Uncheck Velocity** on that node unless you're actually using the node's built-in deformation — leaving it checked when you don't need deformation silently overwrites any velocity attribute already authored on your feathers, causing motion-blur/sim problems. Plug the generated `curveu` in (barb L/R channels aren't needed separately — the node converts a single `curveu` back to the correct per-barb data internally). In the shader (demoed in RenderMan, but the same idea applies to Karma or any renderer with an equivalent node), read the curve attribute via a primvar/curve-attribute node (`primvar` called with a curve-bind mode) to drive shading — confirmed working by rendering the feather with `curveu`-driven variation visible along each barb.
 
 ### Key Steps
-[PENDING EXTRACTION]
+**Feather Groom Detail node:**
+1. Build a feather with the standard Feather Template → Feather Width → Feather Noise → Feather Clump chain first.
+2. Drop Feather Groom Detail after that chain; leave Shaft Width at default unless you need to change it.
+3. Wire the shaft as the **skin** input on any Gumi/hair node you plug in downstream (Guide Process, Hair Gen, Hair Bend, etc.) — without this the Gumi tools don't affect anything.
+4. Use Hair Gen/Hair Bend for coarse shaping, then route the result through **Hair Clump** to actually transfer the adjustment onto the visualized barb curves (adjusting the decomposed curves alone does not affect the barbs without a transfer node).
+5. Never change barb/point count while doing this — breaks the setup.
+6. Use Hair Split or Hair Mask to restrict an adjustment to a subset of barbs; use Hair Groups + Frizz for randomized per-group variation.
+7. For image-based texturing: build a Cop2 network reading a reference photo (featherbase.info for real per-species feather references), plug it into the node, adjust rotation as needed, enable Quickshade to preview — auto-generated UVs always fit the current feather shape. Use the included Project UV node instead if you don't want image-driven UVs for final render.
+
+**Attribute transfer for rendering:**
+1. Add Resample nodes upstream on both `barb_l` and `barb_r` curve sources (not on final barb curves) to get even segment spacing.
+2. Feed those into the groom-detail channel setup to auto-generate a `curveu` (root-to-tip) channel per barb; width and UV channels are also carried this way even though they can't be directly inspected on the curve display.
+3. In Solaris: create a feather primitive, import the feather SOP, run through the Houdini Feather Procedural LOP with the feather primitive + your groom network plugged in.
+4. Uncheck Velocity on that node unless actually using its deformation feature — otherwise it silently overwrites any pre-existing velocity attribute.
+5. Plug the generated `curveu` into the node's curveu input (no need to separately handle barb L/R — it's converted back to per-barb data internally).
+6. In the shader, read the curve attribute via a curve-bind/primvar node (RenderMan shown; Karma/other renderers have an equivalent) to drive shading variation along each barb.
+7. Render to confirm the attribute is actually driving visible per-barb variation.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Feather Template, Feather Width, Feather Noise, Feather Clump (stock feather nodes), custom **Feather Groom Detail** HDA (Shaft Width param; decomposes feather into curves), Gumi/hair tools: Guide Process, Hair Gen, Hair Bend, **Hair Clump** (transfers curve edits onto visualized barbs — required step), Hair Split, Hair Mask, Hair Groups, Frizz — all require the shaft wired as the **skin** input to function. Cop2 network (image read + rotation) for reference-photo texturing, Quickshade toggle, auto-fit UV generation, alternate Project UV node. Resample (applied upstream on `barb_l`/`barb_r`, not final barbs) to establish even spacing before channel generation; auto-generated `curveu`/width/UV per-barb channels. Solaris/LOPs: feather primitive creation, **Houdini Feather Procedural** LOP (Velocity checkbox — uncheck unless using built-in deformation), curve-attribute/primvar bind node in the shader (shown in RenderMan) to read `curveu` for shading.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate/Advanced — assumes familiarity with Houdini's hair/fur (Gumi) grooming toolset and feather-specific nodes already; the value here is bridging feather workflows into that broader hair toolset and getting custom per-barb attributes through to a shader, not a from-scratch feather tutorial.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated on screen; Solaris/LOPs Feather Procedural workflow consistent with a recent H19.5+/20.x release.
 
 ### Tags
-[PENDING EXTRACTION]
+feather, feather-groom, gumi, hair-clump, hair-gen, hair-split, hair-mask, curveu, primvar, solaris, feather-procedural, reference-imagery, featherbase, renderman
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet in this library on feather grooming or barb-level attribute transfer for rendering — first entry covering this.

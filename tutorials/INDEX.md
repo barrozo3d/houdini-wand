@@ -372,9 +372,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=kSIn2FCzW0c
 - **Author:** Alexander Weber
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5+/20.x (Solaris Feather Procedural)
+- **Tags:** feather, feather-groom, gumi, hair-clump, hair-gen, hair-split, hair-mask, curveu, primvar, solaris, feather-procedural, reference-imagery, featherbase, renderman
+- **Summary:** A custom "Feather Groom Detail" HDA decomposes a feather into curves so Houdini's standard hair/fur (Gumi) tools — Hair Gen, Hair Bend, Hair Clump, Hair Split, Hair Mask, Hair Groups — can add fine detail beyond the stock Feather Noise/Clump nodes (requires wiring the shaft as the Gumi "skin" input, and routing edits through Hair Clump to actually transfer onto the barbs). Also covers image-based feather texturing from real species reference photos (featherbase.info), and a second technique for getting non-standard per-barb attributes (curveu, width, UVs) onto render-time curves via upstream Resample + the Houdini Feather Procedural LOP (with a velocity-checkbox gotcha) for use in a shader.
 - **File:** tutorials/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering.md
 
 
