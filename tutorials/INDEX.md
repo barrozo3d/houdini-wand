@@ -377,6 +377,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering.md
 
+
+### Houdini 22 | How to APEX Animate in LOPs
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=-7aIsTQc6kg
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-22-how-to-apex-animate-in-lops.md
+
 ---
 
 ## How to Read This Index
