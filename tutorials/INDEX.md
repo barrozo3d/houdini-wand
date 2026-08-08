@@ -462,9 +462,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=KnUXXm7YVSU
 - **Author:** Jordan Allen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.x
+- **Tags:** beginner, geometry-spreadsheet, attributes, points-vertices-primitives-detail, attribute-create, blast-node, random-attribute, color-attribute, jordan-allen
+- **Summary:** Beginner introduction to the Geometry Spreadsheet and attributes: the four attribute classes (Points/Vertices/Primitives/Detail), reading a random-per-primitive color as Cd.r/Cd.g/Cd.b columns, manually authoring an attribute with an Attribute Create node, and the general pattern of assigning a per-component value (e.g. a random float via a wrangle) then referencing it downstream (a Blast node's delete-condition group expression) to conditionally act on matching components.
 - **File:** tutorials/houdini-for-beginners--part-8-the-geometry-spreadsheet.md
 
 

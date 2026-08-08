@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=KnUXXm7YVSU
 author: Jordan Allen
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.x"
+tags: [beginner, geometry-spreadsheet, attributes, points-vertices-primitives-detail, attribute-create, blast-node, random-attribute, color-attribute, jordan-allen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-for-beginners--part-8-the-geometry-spreadsheet/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 8
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini for Beginners-  Part 8:  The Geometry Spreadsheet
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-for-beginners--part-8-the-geometry-spreadsheet <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -168,30 +164,55 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:20] tutorials/frames/houdini-for-beginners--part-8-the-geometry-spreadsheet/frame_000.jpg
+- [1:49] tutorials/frames/houdini-for-beginners--part-8-the-geometry-spreadsheet/frame_001.jpg
+- [2:47] tutorials/frames/houdini-for-beginners--part-8-the-geometry-spreadsheet/frame_002.jpg
+- [3:06] tutorials/frames/houdini-for-beginners--part-8-the-geometry-spreadsheet/frame_003.jpg
+- [4:21] tutorials/frames/houdini-for-beginners--part-8-the-geometry-spreadsheet/frame_004.jpg
+- [4:48] tutorials/frames/houdini-for-beginners--part-8-the-geometry-spreadsheet/frame_005.jpg
+- [5:32] tutorials/frames/houdini-for-beginners--part-8-the-geometry-spreadsheet/frame_006.jpg
+- [6:02] tutorials/frames/houdini-for-beginners--part-8-the-geometry-spreadsheet/frame_007.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Introduces the **Geometry Spreadsheet** tab — described as "the hub of Houdini's brain" — as the raw-data view into every **attribute** on every point/vertex/primitive/detail in a scene, and uses it to make concrete what an attribute actually is (a named per-component value) via two examples: a built-in random-per-primitive color, and a hand-built random-float attribute used to drive conditional deletion.
 
 ### Summary
-[PENDING EXTRACTION]
+Houdini geometry is organized into four **attribute classes**, each with its own tab/section in the spreadsheet: **Points** (every point — e.g. `P` / position X, Y, Z by default), **Vertices** (every vertex), **Primitives** (every primitive — e.g. a Sphere node here has a "color by primitive" option turned on, which shows up as `Cd.r` / `Cd.g` / `Cd.b` columns, three float values 0-1 each combining to form the random per-primitive color seen in the viewport), and **Detail** (attributes on the geometry as a whole, not any individual component). Turning on **Display Primitive Numbers** and cross-referencing a specific primitive's index against its spreadsheet row is how you confirm which viewport color corresponds to which row of `Cd.r`/`Cd.g`/`Cd.b` data.
+
+Attributes aren't limited to built-ins like color or position — **any name, any value, on any class** is fair game, and this is the core mechanism used throughout Houdini for passing information between nodes/steps. Canonical example given: a particle sim where each point holds an "age" attribute (frames/seconds it has existed), later used to delete any particle whose age exceeds a threshold — "points are very responsible adults... we give them a value, and then when we call out that value, we say everyone with a value above X, step forward."
+
+**Manually creating an attribute:** an **Attribute Create** node lets you author a new named attribute (demoed: an attribute called `new`, value `0`, applied to every point) — bypassing/unbypassing the node makes the attribute disappear/reappear in the spreadsheet live, and changing its value updates every point that has it simultaneously.
+
+**Practical pattern — random deletion:** to delete a random ~half of a geometry's primitives (motivating example: thinning an overly dense particle/point cloud), two nodes are chained: (1) a small VEX/wrangle snippet assigns a random float attribute between 0 and 1 to every primitive (not explained in depth here — flagged as a topic covered later in the series, just shown as a working example not to be intimidated by), then (2) a **Blast** node (described as a simplified version of the Delete node, used constantly) is given a group expression checking that random attribute — e.g. "if this primitive's random value is greater than 0.5, delete it" — which primitives satisfying the condition then get removed. This demonstrates the general pattern: assign a per-component value via an attribute, then reference that same attribute later to conditionally act on components (delete, select, drive a parameter, etc.).
+
+The video ends by flagging a real limitation: right now you can only see either the Scene View or the Geometry Spreadsheet, not both at once — solved in the next part of the series with a custom split layout.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Open the **Geometry Spreadsheet** tab to inspect all attribute data on the current node's output.
+2. Understand the four attribute classes: Points, Vertices, Primitives, Detail — each row/column breakdown corresponds to a different component granularity.
+3. Cross-reference a specific component (e.g. via Display Primitive Numbers in the viewport) against its spreadsheet row to connect a visible result (like a color) to its underlying attribute values (`Cd.r`/`Cd.g`/`Cd.b`).
+4. Use an **Attribute Create** node to manually author a new named attribute on a chosen class, with a starting value applied to every component of that class.
+5. To conditionally act on geometry based on a value: assign a per-component attribute (e.g. a random float via a wrangle), then reference that attribute in a downstream node's group expression (e.g. a **Blast** node's delete condition) to select/act on only the components matching a threshold.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Geometry Spreadsheet tab (Points / Vertices / Primitives / Detail attribute-class views), Sphere node's "color by primitive" random-color option (produces `Cd.r`/`Cd.g`/`Cd.b` primitive attributes), Display Primitive Numbers visualizer (cross-referencing viewport components to spreadsheet rows), **Attribute Create** node (name + starting value, applied across a chosen attribute class), a wrangle assigning a random float attribute (0-1) per primitive (implementation deferred to later in the series), **Blast** node (simplified Delete node; group expression referencing an attribute value, e.g. `random > 0.5`, to conditionally delete matching primitives).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — conceptual introduction to attributes and the spreadsheet; the random-attribute VEX snippet is shown but deliberately not explained in depth yet.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; part of the same Houdini 20.x beginner series as Parts 2-7.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, geometry-spreadsheet, attributes, points-vertices-primitives-detail, attribute-create, blast-node, random-attribute, color-attribute, jordan-allen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini for Beginners - Part 7: Timeline and Animation](houdini-for-beginners--part-7-timeline-and-animation.md) — same beginner series; that part covers the timeline/keyframing/Flip Book, this part introduces the Geometry Spreadsheet and attributes.

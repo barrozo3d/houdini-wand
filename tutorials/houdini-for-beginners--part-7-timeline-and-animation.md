@@ -548,3 +548,4 @@ beginner, timeline, keyframing, animation-editor, bezier-handles, auto-keyframe,
 
 ## Related Tutorials
 - [Houdini for Beginners - Part 6: Visualisers](houdini-for-beginners--part-6-visualisers.md) — same beginner series; that part covers viewport display/attribute visualizers, this part covers the timeline, keyframing, and the Flip Book preview-render workflow.
+- [Houdini for Beginners - Part 8: The Geometry Spreadsheet](houdini-for-beginners--part-8-the-geometry-spreadsheet.md) — same beginner series; this part covers the timeline/keyframing/Flip Book, that part introduces the Geometry Spreadsheet and attributes.
