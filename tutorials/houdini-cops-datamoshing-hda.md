@@ -209,3 +209,4 @@ copernicus, cops, datamoshing, pixel-mosh, pixel-advect, pixel-pusher, optical-f
 
 ## Related Tutorials
 - [Houdini COPS Distortion | breakdown & project file](houdini-cops-distortion-breakdown-project-file.md) — shares the Copernicus (COPs) 2D context and UV/motion-driven pixel-displacement technique, applied there to product-render distortion rather than video datamoshing.
+- [Recursive Flow Simulations in COPs Houdini](recursive-flow-simulations-in-cops-houdini.md) — shares the Copernicus (COPs) 2D context and a feedback-loop-driven advection/motion technique, applied there to a self-modifying flow simulation rather than video pixel displacement.

@@ -512,9 +512,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=pOQ8HUl-GTY
 - **Author:** newa
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5+ (Copernicus context)
+- **Tags:** copernicus, cops, flow-solver, curvature, recursive-simulation, feedback-loop, sdf-shape, slope-direction, procedural-smoke, splitting-pattern, noise-driven
+- **Summary:** A Copernicus Flow solver whose velocity is continuously multiplied by the shape's own Curvature field (finite difference / mean+concavity-convexity), creating a feedback loop where the shape recursively splits and rebubbles rather than just diffusing. Covers the blur/sharpen/gain chain needed to surface subtle curvature values, Max/Min compositing to keep re-seeding the base shape, vector normalization as a key fix, and variants (pixelated blocky splits, noise-driven curvature source, added UV velocity, crude gravity via a Bright-node channel shift).
 - **File:** tutorials/recursive-flow-simulations-in-cops-houdini.md
 
 ---

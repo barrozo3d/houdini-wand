@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=pOQ8HUl-GTY
 author: newa
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5+ (Copernicus context)"
+tags: [copernicus, cops, flow-solver, curvature, recursive-simulation, feedback-loop, sdf-shape, slope-direction, procedural-smoke, splitting-pattern, noise-driven]
+extraction_status: complete
 frames_dir: tutorials/frames/recursive-flow-simulations-in-cops-houdini/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 15
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Recursive Flow Simulations in COPs Houdini
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py recursive-flow-simulations-in-cops-houdini <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -166,30 +162,69 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:18] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_000.jpg
+- [0:44] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_001.jpg
+- [0:54] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_002.jpg
+- [1:24] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_003.jpg
+- [2:11] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_004.jpg
+- [2:56] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_005.jpg
+- [3:38] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_006.jpg
+- [3:51] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_007.jpg
+- [4:57] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_008.jpg
+- [5:31] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_009.jpg
+- [5:54] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_010.jpg
+- [6:40] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_011.jpg
+- [6:56] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_012.jpg
+- [8:14] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_013.jpg
+- [9:13] tutorials/frames/recursive-flow-simulations-in-cops-houdini/frame_014.jpg
+
+---
+
 ## Structured Notes
 
+> **Note on source:** this is an informal, exploratory "playing around with parameters" session (lots of live trial-and-error, not a clean step-by-step recipe) — the notes below capture the underlying mechanism and the parameters that mattered, not a literal reproducible step order.
+
 ### Core Technique
-[PENDING EXTRACTION]
+A **Flow solver inside Copernicus (COPs)** driven by a velocity field that is continuously self-modified by the *shape's own curvature* — feeding a shape's concave/convex curvature back into its own advection velocity creates a feedback loop where the shape recursively splits, bubbles, and re-splits over time, rather than just diffusing outward like a normal fluid/smoke sim.
 
 ### Summary
-[PENDING EXTRACTION]
+Base setup: inside a `copnet`, an **SDF Shape** node (any shape works — an infinity/figure-eight shape is used here) is converted to mono and fed into a **Flow** solver node. On its own this does nothing until a **velocity** input is built: the mono shape is blurred, then run through a **Slope Direction** node (angle set to 180) to derive a directional flow field from the shape's gradient — plugged into the Flow solver's velocity input, this alone produces ordinary shape-following advection (comparable to a normal "inflection"/diffusion effect).
+
+**The recursive part — curvature-driven velocity modulation:** the flow's evolving color/shape output is fed into a **Curvature** node (mode: **Finite Difference**, later experiments also try **Mean** + **Concavity/Convexity**), which produces a signed field — roughly 0.5 = flat, darker = concave, lighter = convex (visualized directly with a fractal-noise-style ramp to check the 0-1 range). Because the raw curvature values are subtle, they get **blurred** (to introduce more graduated values) then **sharpened** and **gained/brightened** to make the concave/convex structure clearly visible. That curvature field is then **multiplied with the velocity** — this is the actual feedback mechanism: at any point, how much and which way the shape locally advects now depends on how curved that region of the shape currently is, so as the shape deforms, its curvature changes, which changes its velocity, which changes its shape again — a self-reinforcing loop that produces branching/splitting behavior instead of simple diffusion.
+
+**Taming/shaping the result** was mostly a matter of iterating on a handful of interacting parameters: a **Bright** node scaling the velocity down (e.g. ×0.1) to slow an otherwise-too-hectic simulation; additional **blur passes** after the multiply step (too little blur = chaotic/noisy result, too much = shape dissolves — there's a sweet spot); a **Max** (or **Min**) composite between the original shape/color and the evolving simulation to keep re-seeding/retaining the base shape each step rather than losing it entirely to the feedback (Max gives rounder "bubbly" results, Min gives sharper/more angular splits); a **Remap** node with a custom curve shape applied to the curvature or velocity response to bias how aggressively the effect kicks in; and, called out explicitly as a key missing piece that improved the whole setup once added, **normalizing the incoming velocity vector** before use. **Sub-steps** on the Flow solver can be raised for a more resolved (but slower) simulation. Grid resolution can be pushed higher (e.g. toward 4K) at a performance cost. **Pixelating** the input before deriving curvature produces a distinct blocky/faceted variant of the splitting pattern instead of smooth organic bubbles. Swapping the curvature source for **animated procedural noise** (with added contrast/clamping, e.g. a Perlin-family noise) instead of shape-derived curvature produces a different, more patterned family of results. Additional **velocity contributions** (e.g. UV-space motion, made fairly strong, optionally animated) can be added into the mix before the multiply step for extra directional motion in the result. A **Bright** node offset (shift the value, e.g. by 0.1 on one channel) can double as crude **gravity**, biasing the whole field to drift in one direction over time. The same underlying idea (curvature → multiply into velocity) is noted to work equally well on ordinary "normal inflection" style effects, not just this recursive-splitting look.
+
+Several finished example setups are shown with only the curvature source/mode changed: a "floating particles that split and leave trailing strings" look (driven mainly by the sharpen + final remap settings), and an "outline-based, mean + convexity curvature" variant where the shape both contracts inward and pushes outward simultaneously, producing a self-competing, splitting-yet-reconverging pattern (sometimes needing the curvature to be **inverted** depending on mode, to get the desired direction of the effect).
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build an SDF shape (any shape), convert to mono, feed into a **Flow** solver.
+2. Derive a base velocity: blur the mono shape, run it through **Slope Direction** (angle 180), plug into the Flow solver's velocity input.
+3. Feed the flow's evolving output into a **Curvature** node (try Finite Difference, or Mean + Concavity/Convexity) to get a concave/convex field.
+4. Blur the curvature output (to graduate the values), then sharpen/gain it (to make the structure clearly visible).
+5. **Multiply the curvature field with the velocity** — this is the core feedback step that produces recursive splitting behavior.
+6. Slow the result with a Bright node scaling velocity down (e.g. ×0.1); add extra blur after the multiply to reduce chaotic noise.
+7. Composite the evolving result against the original shape/color with **Max** (rounder/bubblier) or **Min** (sharper) to keep re-seeding the base shape each step.
+8. Use a **Remap** with a custom curve to bias how the curvature/velocity response behaves.
+9. **Normalize the velocity vector** before it's used — called out as a key fix that meaningfully improved the whole setup.
+10. Tune sub-steps (quality vs. speed) and grid resolution (up to ~4K, at a performance cost) as needed.
+11. Explore variants: pixelate the input for a blocky look, swap in animated noise instead of shape curvature for a different pattern family, add extra UV-based velocity contributions for more motion, or offset a channel via a Bright node for crude gravity.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Copernicus (COPs) context inside a `copnet`. **SDF Shape** (mono conversion), **Flow** solver (velocity input, sub-steps, closed/open border behavior), **Slope Direction** (angle parameter, e.g. 180, for deriving a directional field from a gradient), **Curvature** node (modes: Finite Difference, Mean, Concavity/Convexity; optionally inverted depending on mode), **Blur** (used at multiple stages — on the base velocity source, on the curvature field, and after the velocity×curvature multiply), **Sharpen** / **Gain** (making subtle curvature values visible), **Multiply** (velocity × curvature — the core feedback operation), **Bright** node (scaling velocity for speed control; also repurposed with a channel shift for crude gravity), **Max** / **Min** composite (blending the evolving sim against the original shape — rounder vs. sharper results), **Remap** (custom curve shaping the response), vector-normalize step (on the incoming velocity — flagged as important), **Pixelate** (blocky variant), animated procedural noise (alternate curvature-field source, e.g. Perlin/"Berlin"-family), extra UV-based velocity contributions (added pre-multiply for motion).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — not because any single node is complex, but because the technique is a feedback system with several interacting parameters (blur amounts at multiple stages, multiply strength, remap shaping, normalization) that must be tuned together by iterative visual feedback; the source video itself is presented as live experimentation rather than a settled recipe.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated on screen; Copernicus (COPs) context places this at Houdini 20.5+.
 
 ### Tags
-[PENDING EXTRACTION]
+copernicus, cops, flow-solver, curvature, recursive-simulation, feedback-loop, sdf-shape, slope-direction, procedural-smoke, splitting-pattern, noise-driven
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini COPs Datamoshing HDA](houdini-cops-datamoshing-hda.md) — shares the Copernicus (COPs) 2D context and a feedback-loop-driven advection/motion technique, applied there to video pixel displacement rather than a self-modifying flow simulation.
+- [Houdini COPS Distortion | breakdown & project file](houdini-cops-distortion-breakdown-project-file.md) — shares the Copernicus (COPs) 2D context for procedural image-space effects driven by derived fields (position/curvature) rather than plain noise.

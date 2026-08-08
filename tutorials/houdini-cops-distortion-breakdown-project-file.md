@@ -184,3 +184,4 @@ copernicus, cops, distort, uv-map, product-render, post-process, compositing, ma
 ## Related Tutorials
 - [Creating a shot from start to finish in Houdini - Free Lesson](creating-a-shot-from-start-to-finish-in-houdini---free-lesson.md) — shares the Copernicus (COPs) 2D context for procedurally driving surface/image patterns from render/attribute data rather than plain VEX noise.
 - [Houdini COPs Datamoshing HDA](houdini-cops-datamoshing-hda.md) — shares the Copernicus (COPs) 2D context and UV/motion-driven pixel-displacement technique, applied there to video datamoshing rather than product-render distortion.
+- [Recursive Flow Simulations in COPs Houdini](recursive-flow-simulations-in-cops-houdini.md) — shares the Copernicus (COPs) 2D context for procedural image-space effects driven by derived fields (curvature) rather than plain noise.
