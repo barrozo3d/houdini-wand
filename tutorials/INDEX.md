@@ -382,9 +382,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=-7aIsTQc6kg
 - **Author:** Houdini
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 22
+- **Tags:** apex, solaris, lops, character-rig, apex-animate, apex-scene-add-character, sop-import-apex-scene, round-trip-workflow, animation-layers, sidefx-official
+- **Summary:** Official SideFX tutorial on animating APEX characters directly in Solaris/LOPs. Covers hiding raw APEX rig noise in a SOP Create subnet, importing single characters via SOP Import APEX Scene (Character mode) + APEX Animate, an alternative SOPs-first round-trip workflow (APEX Scene Add Character inside a SOP Create, animate multi-character interaction there, reimport the whole scene via Scene mode), and layering new animation on top of a locked/grayed-out pre-baked animation via animation layers.
 - **File:** tutorials/houdini-22-how-to-apex-animate-in-lops.md
 
 

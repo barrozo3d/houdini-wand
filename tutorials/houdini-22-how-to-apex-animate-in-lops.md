@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=-7aIsTQc6kg
 author: Houdini
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "22"
+tags: [apex, solaris, lops, character-rig, apex-animate, apex-scene-add-character, sop-import-apex-scene, round-trip-workflow, animation-layers, sidefx-official]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-22-how-to-apex-animate-in-lops/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 12
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini 22 | How to APEX Animate in LOPs
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-22-how-to-apex-animate-in-lops <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -148,30 +144,58 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:50] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_000.jpg
+- [1:58] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_001.jpg
+- [2:33] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_002.jpg
+- [3:08] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_003.jpg
+- [3:16] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_004.jpg
+- [4:26] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_005.jpg
+- [5:11] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_006.jpg
+- [5:40] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_007.jpg
+- [6:21] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_008.jpg
+- [6:49] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_009.jpg
+- [7:49] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_010.jpg
+- [8:14] tutorials/frames/houdini-22-how-to-apex-animate-in-lops/frame_011.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Official SideFX tutorial on getting APEX character rigs animating **directly inside Solaris/LOPs**, alongside two alternative workflows for combining SOP-level animation with a Solaris scene, since Solaris doesn't natively understand APEX rig data out of the box.
 
 ### Summary
-[PENDING EXTRACTION]
+An APEX character (built via SOP Create → a character node, e.g. Electra, with its **Output set to "APEX Character"**) is just packed geometry to Solaris by default — dropping the raw SOP Create output straight into Solaris makes Solaris draw *everything*: mesh, skeleton, and rig control logic all at once, because APEX's rig logic is literally written onto points and Solaris has no built-in interpretation for that. A tidy pattern for authoring the character network without that visual noise: inside the SOP Create, route the real output through a **Null** (renamed, e.g. "Electra") and terminate the SOP Create's own displayed output on an unrelated dummy object (a plain cube) — since what's flagged inside the subnet doesn't matter, only the subnet's designated output node does, this keeps the outer network clean while you keep working inside.
+
+**Workflow 1 — animate natively in Solaris:** Bring the character into Solaris with a **SOP Import APEX Scene** node (beta) with its **Import Mode set to "APEX Character"**, pointing its SOP Path at the Null from the character network. Merge that imported character LOP stream into the rest of the scene (lights, props, floor), then drop an **APEX Animate** LOP directly on the merged stream to pose/animate the character's controls right there in the Solaris viewport, with the whole lit scene visible around it. Multiple independent characters can be imported this way (repeat SOP Import APEX Scene per character, each pointed at its own character Null) and merged together, letting you build a scene the same way you'd add any other object — lights, props, or a full APEX character are all just more things to merge in.
+
+**Workflow 2 — animate in SOPs, then round-trip the whole scene into Solaris:** Instead of importing characters individually into Solaris, first import the *entire* Solaris scene back down into SOPs with a plain **SOP Create** fed from the LOP stream — this gives a simplified SOP-level stand-in representation of everything currently in the scene. Inside that SOP Create, use **APEX Scene Add Character** nodes (one per character, e.g. Electra A / Electra B) to add each character directly into the SOP-level scene representation, then animate them there — useful because SOP-level interaction can feel snappier, and it lets characters interact directly with each other (the video's example: posing two characters to hold hands) using ordinary SOP tools. Output the finished animated scene through a **Null** (e.g. "Apex Scene Out"), then back in Solaris use a **SOP Import APEX Scene** node in **Scene mode** (distinct from single-character mode) pointed at that Null to bring the whole animated SOP scene back into LOPs, merging it with the rest of the Solaris scene (lights, etc.).
+
+**Layering animation on top of a SOP-authored bake:** if you already baked animation onto an APEX Animate node inside SOPs and then reimport that scene into Solaris via another APEX Animate node, the original SOP-authored animation shows as **grayed-out and locked** — you cannot edit it directly at that point. The fix: explicitly tell the new APEX Animate node to take in that existing animation (there's a step to point it at the incoming baked animation), and then, to make further adjustments, select the relevant controls and add a **new animation layer** (arbitrarily named, e.g. "fix") on top — the original bake stays intact underneath while the new layer lets you make additive final tweaks directly in the lit Solaris scene.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a character with SOP Create → character node (e.g. Electra) with Output set to "APEX Character."
+2. To keep the authoring network clean: route the real character output through a renamed Null, and set the SOP Create's own flagged/displayed output to a throwaway object (e.g. a cube) so Solaris doesn't render raw rig noise when you're not inside the subnet.
+3. **Single-character-into-Solaris workflow:** SOP Import APEX Scene (beta), Import Mode = APEX Character, SOP Path → the character Null; merge into the scene; drop APEX Animate on the merged stream to pose/animate directly in Solaris. Repeat per character for multiple characters.
+4. **SOPs-first round-trip workflow:** pipe the whole Solaris scene into a SOP Create; inside it, use APEX Scene Add Character (one per character) to build a SOP-level scene with all characters present; animate/pose them there (including multi-character interaction); output through a Null.
+5. Back in Solaris, use SOP Import APEX Scene in **Scene mode** (not Character mode) pointed at that output Null to reimport the whole animated SOP scene; merge with lights/props.
+6. If reimporting a SOP-baked animation into a new APEX Animate node in Solaris, the original animation appears grayed-out/locked — explicitly set the node to take in that incoming animation, then select controls and add a new named animation layer to make further edits on top without disturbing the base bake.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+SOP Create (character-building subnet with a controllable flagged/output object independent of its internal contents), character rig node with **Output: APEX Character** setting, Null (used both to name/export a character and to name/export a full animated scene), **SOP Import APEX Scene** (beta; two modes — "APEX Character" for a single character, "Scene" for a whole round-tripped scene — SOP Path parameter points at the source Null), **APEX Scene Add Character** (adds a character into a SOP-level scene representation, one node per character), **APEX Animate** LOP (posing/animation directly in Solaris; can be pointed at incoming pre-baked animation, which then locks as grayed-out; supports adding new named animation layers on top), Merge LOP (combining characters/props/lights into one Solaris scene).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — no deep rigging/VEX knowledge needed, but requires understanding the SOPs↔LOPs boundary and APEX's beta import nodes; mostly a workflow/plumbing tutorial rather than a technique-heavy one.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Houdini 22 (APEX character workflow in Solaris/LOPs; SOP Import APEX Scene and APEX Scene Add Character both explicitly marked beta on screen).
 
 ### Tags
-[PENDING EXTRACTION]
+apex, solaris, lops, character-rig, apex-animate, apex-scene-add-character, sop-import-apex-scene, round-trip-workflow, animation-layers, sidefx-official
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet in this library on APEX character import/animation workflows in Solaris — first entry covering this.
