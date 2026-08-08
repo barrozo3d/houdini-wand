@@ -507,6 +507,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/edge-bundling-bundling-curves-houdini-tutorial.md
 
+
+### Recursive Flow Simulations in COPs Houdini
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=pOQ8HUl-GTY
+- **Author:** newa
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/recursive-flow-simulations-in-cops-houdini.md
+
 ---
 
 ## How to Read This Index
