@@ -362,9 +362,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=eQBSMVwHB40
 - **Author:** newa
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 19.5+/20.x (Solaris + Karma volumes)
+- **Tags:** bubbles, foam, scatter, non-overlap-packing, pscale, vdb, pyro-bake, volume-shading, thin-film, karma, boolean-avoidance, clip, ambient-occlusion, procedural-texturing
+- **Summary:** Procedural soap-bubble/foam pipeline without a liquid sim: bubbles built as three size-tiered scattered spheres with a from-scratch non-overlap fix (set pscale to half the nearest-neighbor distance, then delete any still-overlapping pairs), remeshed and merged, then kept off a soap bar's surface by displacing bubble positions through the bar's volume, clipping, and restoring rest position/normal instead of using a Boolean. A separate foam layer scatters millions of points into a curl-noise VDB revealed via Pyro Bake, masked out inside the soap bar's SDF. Shading covers a distorted double-noise thin-film-thickness bubble material and Karma's white-water volume preset for the foam, plus a gotcha where volumes render near-black in the Karma viewport until the render settings' volume step/limit is raised.
 - **File:** tutorials/procedural-foam-bubbles-houdini-walkthrough.md
 
 

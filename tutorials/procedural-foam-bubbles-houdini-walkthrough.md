@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=eQBSMVwHB40
 author: newa
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "19.5+/20.x (Solaris + Karma volumes)"
+tags: [bubbles, foam, scatter, non-overlap-packing, pscale, vdb, pyro-bake, volume-shading, thin-film, karma, boolean-avoidance, clip, ambient-occlusion, procedural-texturing]
+extraction_status: complete
 frames_dir: tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 15
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Procedural Foam Bubbles Houdini Walkthrough
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py procedural-foam-bubbles-houdini-walkthrough <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -222,30 +218,73 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:15] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_000.jpg
+- [0:38] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_001.jpg
+- [1:20] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_002.jpg
+- [2:33] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_003.jpg
+- [2:46] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_004.jpg
+- [4:02] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_005.jpg
+- [6:35] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_006.jpg
+- [7:18] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_007.jpg
+- [8:28] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_008.jpg
+- [9:44] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_009.jpg
+- [12:51] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_010.jpg
+- [13:35] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_011.jpg
+- [14:20] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_012.jpg
+- [15:57] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_013.jpg
+- [17:14] tutorials/frames/procedural-foam-bubbles-houdini-walkthrough/frame_014.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A full procedural soap-bubble/foam pipeline: bubbles are built as non-overlapping, size-varied scattered spheres (three density tiers) remeshed into a single connected mesh, clipped against a soap-bar volume so they never poke through it, plus a separate finer foam layer built as scattered points converted to a VDB volume and rendered as a Karma volume shader — all driven by a logo-shaped height/mask field rather than a full liquid sim.
 
 ### Summary
-[PENDING EXTRACTION]
+Starting geometry is a subdivided grid with normals/UVs. A logo image is read into a **Copnet**, its alpha converted to an **SDF** (for a smoother falloff than a hard mask) and blurred to produce a height field, which is baked to the grid via **Attribute from Map**, then used to displace the grid (normalized, re-meshed, color attribute deleted since the SDF conversion also writes one). Ambient occlusion is computed on this displaced mesh purely to get a cleaner bubble-outline mask later.
+
+Bubble placement uses **three deliberately scattered size tiers instead of a dart-throwing/Poisson-disk algorithm**, specifically for more manual control over shape/distribution: a mask (built from `1 - height`, combined with layered noise and the inverted AO) drives a scatter for large bubbles first, then medium, then small, each in its own group with its own remesh frequency (bigger bubbles get denser remesh polycount so final mesh density reads as roughly uniform across bubble sizes). Two bubbles are manually added by hand on top of the scatter for art-directed placement.
+
+**Non-overlap fix (the key trick):** after scattering each tier, a wrangle searches nearby points within a radius, and for each pair sets `pscale` to (distance to the nearest other point) / 2 — this guarantees no two bubble spheres overlap by construction, rather than relying on collision/relaxation. A second pass then explicitly checks, for every nearby point pair, whether the distance is smaller than the sum of the two half-pscales, and masks/deletes the point if so, catching any pairs the pure-nearest-distance rule left overlapping. This two-pass radius/pscale procedure is repeated per size tier (large → medium → small), each building on the previous tier's already-placed points so smaller bubbles fill gaps without overlapping the larger ones already placed. A **Camera Cull** node removes points not visible to camera before the expensive remesh step (with the caveat that reflections can reveal culled/missing bubbles, so cull conservatively). Each tier is visualized as spheres via a **VDB from Particles → Remesh Bubbles**-style step (note: Remesh Bubbles doesn't propagate the `pscale` attribute through, so it must be re-saved as a separate attribute beforehand), then merged into one mesh; some overlap between size tiers is expected/acceptable ("that's how bubbles are") as long as it isn't heavy nesting. A slight bulge + smooth + tiny offset gap is added post-remesh for a nicer bubble read, and any small bubbles too close to the biggest ones get extra subdivision so their faces aren't oversized relative to neighbors.
+
+**Keeping bubbles off the soap bar (the second key trick):** rather than a boolean cut (tried first, far too slow), the soap bar is modeled as an extruded grid and converted to a volume; bubble point positions are displaced by that volume's field, clipped at the zero axis, and then restored back to their original rest position/normal afterward — this produces a clean carved-out contact silhouette where bubbles meet the bar without ever computing a boolean. Bubble geometry is stripped down to only the attributes actually needed (rest position, rest normal) before being promoted/exported for use in Solaris (with per-size-tier naming so e.g. HDRI reflections can later be restricted to only the larger, more visible bubbles).
+
+**Foam layer (separate from the bubble mesh):** ambient occlusion is again used, this time as the seed region for foam, lightly noised to break up the shape, then scattered densely (millions of points, reduced from an original 4M to 1M for a faster preview during recording). Local point density (points found within a search radius, fit 0→1) is mapped to point color, driving a curl-noise-perturbed **VDB from Particles** volume — visually near-invisible until baked through a **Pyro Bake** step, which is what actually reveals the foam structure. The volume is smoothed, then culled to zero density anywhere inside the soap-bar SDF (so foam doesn't render inside solid geometry), a touch of multiplicative noise breaks up flat density regions, and the volume's gradient (its "volume normal" equivalent) is computed and merged alongside density — the gradient volume is deliberately resampled to a coarser voxel size purely as an optimization before final caching.
+
+**Shading:** the soap bar uses a simple subsurface-scattering material. The bubble shader drives **thin-film thickness** from a distorted double-noise pattern (one noise field used as the position input to a second noise, for a swirlier soap-film pattern instead of plain Perlin), remapped between a min/max thickness and blended toward an average around 600 (units implied nm, standard thin-film iridescence range), with low transmission roughness. The foam volume uses Karma's white-water/foam preset volume shader, fed the merged density+gradient volume, with density remapped to a larger range, a set reflection color, roughness ~0.15 and a negative (~-0.4) some "stroke"/anisotropy-like parameter. A late gotcha: the foam volume renders essentially black by default in the Karma viewport preview unless the render setting's volume step/limit is raised — once increased, the foam reads correctly as bright/white.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a height/mask field from an arbitrary 2D image (Copnet: alpha → SDF → blur) and bake it onto a subdivided grid via Attribute from Map + displacement.
+2. Derive multiple auxiliary masks (inverted height, layered noise, inverted ambient occlusion) to control where each bubble-size tier scatters.
+3. Scatter points per size tier (large → medium → small), each building on the previous tier's placed points.
+4. Fix overlap with a two-pass radius search: (a) set each point's `pscale` to half the distance to its nearest neighbor, (b) explicitly re-check and delete any pair whose true half-pscale sum still exceeds their distance.
+5. Camera-cull points not visible to the render camera before the expensive remesh (watch for reflections revealing gaps).
+6. Convert points to spheres and remesh into one connected mesh per tier (save `pscale` separately first — Remesh Bubbles doesn't carry it through); merge tiers, accepting minor inter-tier overlap as natural.
+7. Add a slight bulge, smoothing, and tiny offset gap for a better bubble silhouette; extra-subdivide any small bubbles abutting much larger ones so face size stays consistent.
+8. Model the contact surface (soap bar) as an extruded/volumed grid; displace bubble positions by that volume, clip at zero, then restore rest position/normal — avoids booleans entirely for keeping bubbles off the bar's surface.
+9. Strip bubble geometry to only the needed attributes and promote/export for Solaris use, with tier-based naming for later selective shading (e.g. reflections only on larger bubbles).
+10. Build the separate foam layer: seed from ambient occlusion, noise-break the shape, scatter millions of points, map local point density to color, and build a curl-noise VDB from those particles.
+11. Bake the VDB through Pyro Bake to reveal actual foam structure (raw VDB from particles looks nearly empty beforehand).
+12. Zero out density anywhere inside the soap-bar SDF so foam never renders inside solid geometry; add fine multiplicative noise; compute and merge the volume's gradient (resampled coarser as an optimization) before final caching.
+13. Shade bubbles with a thin-film-thickness material driven by double-layered distorted noise (one noise offsetting another) remapped to a thickness range; shade foam with Karma's white-water volume preset fed density+gradient.
+14. If a volume shader renders as flat black in Karma's viewport preview, check/raise the render settings' volume step/limit before assuming the shader is broken.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+COPs: alpha extraction, `sdftomono`, `blur`. SOPs: `subdivide`, `attribfrommap` (height baking), `attribvop`/wrangle displacement, `normal`, `attribdelete` (strip SDF's extra color attribute), ambient occlusion node, mask construction via noise (`attribnoisefloat`) layering and inversion, `scatter` (per size tier), `attribwrangle` (pscale-from-nearest-distance fix; overlap-pair delete-mask pass), `attribadjustfloat` (pscale bookkeeping), `cameracull`, VDB-from-particles → **Remesh Bubbles** (per-tier frequency control; does not propagate `pscale`), `group` (per-tier), `merge`, bulge/smooth/offset finishing chain, `clip` (soap-bar contact carving, used with volume-based position displacement + rest-position/rest-normal restore instead of a Boolean), `attribpromote`. Foam: dense `scatter` (point-count reduced 4M→1M for preview speed), density-in-radius → fit 0-1 → color, curl noise, `vdbfromparticles`, `vdbsmooth`, Pyro Bake, SDF-based density zeroing, `volumevop`/gradient computation, `volumeresample` (coarser voxel size for the gradient only), file cache. Solaris/Karma: thin-film-thickness bubble shader (double noise, remapped thickness range, low transmission roughness), Karma white-water/foam volume preset (density + gradient inputs, remapped density, reflection color, roughness ~0.15), Karma render-setting volume step/limit (must be raised or volumes preview near-black).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — no single hard technique, but a long chain of interacting procedural systems (mask-driven multi-tier scattering, a custom non-overlap algorithm, volume-based Boolean-avoidance, and a from-scratch foam VDB pipeline) that only reads clearly by following the whole video; several steps are presented as "trial and error I found worked" rather than a principled recipe.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated on screen; Karma volume rendering + Solaris promotion workflow consistent with a recent H19.5+/20.x release.
 
 ### Tags
-[PENDING EXTRACTION]
+bubbles, foam, scatter, non-overlap-packing, pscale, vdb, pyro-bake, volume-shading, thin-film, karma, boolean-avoidance, clip, ambient-occlusion, procedural-texturing
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet in this library on procedural bubble/foam packing or thin-film shading — first entry covering this technique.
