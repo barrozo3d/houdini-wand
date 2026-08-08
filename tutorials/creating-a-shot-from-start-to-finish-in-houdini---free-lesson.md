@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=mweYGIlmD_Q
 author: cgside
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5+ (Copernicus context)"
+tags: [vellum, rest-position, vex, quaternion, matrix, findattribval, copernicus, cops, procedural-texturing, uv-to-polar, fractal-noise, attribute-transfer]
+extraction_status: complete
 frames_dir: tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 12
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Creating a shot from start to finish in Houdini - Free Lesson
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py creating-a-shot-from-start-to-finish-in-houdini---free-lesson <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -202,30 +198,66 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:38] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_000.jpg
+- [1:02] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_001.jpg
+- [1:52] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_002.jpg
+- [2:26] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_003.jpg
+- [4:12] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_004.jpg
+- [6:05] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_005.jpg
+- [7:18] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_006.jpg
+- [8:18] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_007.jpg
+- [8:58] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_008.jpg
+- [9:47] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_009.jpg
+- [10:16] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_010.jpg
+- [11:40] tutorials/frames/creating-a-shot-from-start-to-finish-in-houdini---free-lesson/frame_011.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A YouTube "free lesson" excerpt from a longer Patreon tutorial (grapes shot): reconstructing a per-piece **rest position** for simulated geometry that never had one baked in, then using that rest position to drive UV-independent procedural texturing (stripes + noise) via Houdini's **Copernicus (COPs) 2D context**, sampled back onto the mesh.
 
 ### Summary
-[PENDING EXTRACTION]
+The grapes were already modeled/animated/Vellum-simulated coming into this lesson (that part isn't shown). Starting point: texturing the grapes needs a stable per-grape orientation frame, but no rest position was saved before the sim ran, and re-simulating isn't an option. The workaround reconstructs it after the fact from the stems' Vellum hair `orient` attribute:
+1. Copy the first frame of the whole rig (grapes + stems) into a separate COP net area, then `objectmerge` a **Time Shift to frame 0** of the ungrown/pre-sim geometry as a reference.
+2. On the stems, isolate the last point of each hair strand (`tip == 1`, found via a stashed `tip` id attribute copied over with **Attribute Copy** before it got deleted upstream) — that point already carries the correct per-strand `orient` (Vellum hair orientation) at every frame.
+3. Use `findattribval()` in an Attribute Wrangle to match each grape's `tipID` to the corresponding stem-tip point, pull that point's `orient` (as `vector4`) and `P`, convert the quaternion to a 3x3 matrix with `qconvert()`, and apply `v@P *= invert(m3x3)` to un-rotate each grape back to a neutral, comparable local frame. Translate by the tip position to re-center at the origin. Store the result as a custom `rest` attribute (`v@rest = v@P`).
+4. With a per-grape `rest` position now available at every frame (not just frame 0), sample it through an **Adjacency** node (`geometry to adjacency`) + **Attribute Sample with Adjacency** to build fractal-noise-driven masks in the Copernicus 2D context.
+5. Naive world-space noise (`fractal3d` on raw axis position) doesn't work — the stripes don't follow the grape's own orientation, only world space. Fix: derive custom UVs directly from the reconstructed rest position instead — **Channel Split** the rest `P` into X/Y/Z, **Channel Join** two of the axes into a UV pair, then **Transform: UV to Polar** to turn that into an angle-based coordinate that wraps cleanly around the grape's surface (avoids the polar-pinch stretching seen with a first attempt, fixed by bumping the underlying image resolution to 2K/4K).
+6. Multiply the polar angle channel by a constant (repeat count, e.g. 25) and take it through a **Modulo** node to produce evenly repeating stripes; increasing the multiplier increases stripe count/density (the video jokes you can dial this down to "watermelon" stripes).
+7. Add organic irregularity: run a 2D **Noise** node (small amplitude, ~0.2) over the pre-polar UV coordinates via an **Add** node before the UV-to-Polar conversion, then blur it slightly — this warps the stripe edges so they aren't perfectly straight, and the distortion still follows the grape's own orientation because it's applied before the polar remap.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Reconstruct a missing rest position after simulation, using a still-animated reference attribute (Vellum hair `orient` on the stems) rather than re-running the sim.
+2. `findattribval()` to cross-reference a per-grape ID against a per-stem-tip ID and pull that point's orient/position.
+3. `qconvert()` a `vector4` orient into a 3x3 matrix; `invert()` it and multiply into `P` to cancel out the grape's world rotation.
+4. Build procedural surface patterns (stripes, noise) in the Copernicus 2D COP context rather than pure 3D VEX noise, driven by custom polar UVs derived from the rest position so the pattern follows each grape's own orientation.
+5. Increase COP image resolution (2K/4K) when a Polar UV remap looks stretched/pinched at the poles.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+- **Vellum** `orient` point attribute (hair simulation) — reused as an orientation reference for unrelated geometry (the grapes), not just for the hair itself
+- `findattribval(input, "point", "attribname", id_value)` — VEX cross-reference lookup between two inputs by a shared ID attribute
+- `qconvert()` — quaternion/vector4 → 3x3 matrix conversion in VEX
+- `invert()` on a matrix, applied via `v@P *= invert(m3x3)` — un-rotate geometry back to a local/rest frame
+- **Object Merge** with a **Time Shift** (frame 0 / `$FSTART`) — pull a frozen first-frame reference copy of animated geometry into a side network
+- **Attribute Copy**, **Blast** — used repeatedly to move a needed attribute (`tip` id) to a safe place before deleting the geometry that originally carried it
+- **Adjacency** node (`geometry to adjacency`) + **Attribute Sample with Adjacency** — bridge from SOP geometry into the Copernicus 2D image context
+- **Copernicus (COPs) context** nodes: **Fractal Noise (2D)**, **Channel Split**, **Channel Join**, **Transform → UV to Polar**, **Multiply Constant**, **Modulo**, **Add**, **Noise**, **Blur** — procedural 2D pattern generation later sampled back onto the mesh as texture-driving attributes
+- Custom UV construction from world/rest position (Channel Split → recombine two axes → UV to Polar) as a workaround when a mesh's baked UVs are unusable ("not very famous")
 
 ### Difficulty
-[PENDING EXTRACTION]
+Advanced — depends on already having Vellum-simulated geometry with a usable secondary attribute (hair `orient`) to borrow as a rest-position stand-in, plus comfort in both VEX (quaternion/matrix math) and the newer Copernicus 2D COP context. Not a from-scratch beginner workflow; this is mid-pipeline problem-solving on an existing rig.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not stated on screen, but the Copernicus context places this at Houdini 20.5+ (Copernicus shipped in 20.5).
 
 ### Tags
-[PENDING EXTRACTION]
+vellum, rest-position, vex, quaternion, matrix, findattribval, copernicus, cops, procedural-texturing, uv-to-polar, fractal-noise, attribute-transfer, hard-problem-workaround
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet in this library on reconstructing a missing rest position post-simulation or on the Copernicus (COPs) 2D context — first entries covering both.

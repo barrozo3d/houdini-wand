@@ -332,9 +332,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=mweYGIlmD_Q
 - **Author:** cgside
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5+ (Copernicus context)
+- **Tags:** vellum, rest-position, vex, quaternion, matrix, findattribval, copernicus, cops, procedural-texturing, uv-to-polar, fractal-noise, attribute-transfer
+- **Summary:** Reconstructs a missing per-piece rest position after a Vellum sim (no rest was baked in) by borrowing the still-animated hair `orient` attribute from a related object, cross-referenced via `findattribval()` and un-rotated with `qconvert()`/`invert()` matrix math in VEX. Uses that reconstructed rest position to build custom polar UVs and drives procedural stripe/noise texturing through Houdini's newer Copernicus (COPs) 2D context rather than plain 3D VEX noise, so patterns follow each piece's own orientation.
 - **File:** tutorials/creating-a-shot-from-start-to-finish-in-houdini---free-lesson.md
 
 ---
