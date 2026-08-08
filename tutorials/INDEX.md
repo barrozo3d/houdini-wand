@@ -477,6 +477,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-for-beginners--part-9-layouts.md
 
+
+### Houdini for Beginners- Part 10:  Contexts
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=i_xuEjjQtDc
+- **Author:** Jordan Allen
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-for-beginners--part-10-contexts.md
+
 ---
 
 ## How to Read This Index
