@@ -432,9 +432,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=rgzRA8IXZuw
 - **Author:** Jordan Allen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.x
+- **Tags:** beginner, viewport, shading-modes, wireframe, reference-grid, lock-camera-to-view, viewport-lighting, headlight, area-shadows, layout-splits, jordan-allen
+- **Summary:** Beginner viewport reference: shading modes (Smooth/Flat Shaded, wireframe variants, W to toggle wireframe-ghost), cross-context visibility for sibling OBJ objects, multi-pane layout splits (Ctrl+1-4), the meters-based reference grid (Ruler on Main Axes vs. Grid Points), Lock Camera to View for positioning a camera via normal navigation, and the viewport-only lighting ladder (Disable/Headlight/Normal/High Quality/High Quality with Shadows) including area-light shadow softness — all display conveniences unrelated to final render output.
 - **File:** tutorials/houdini-for-beginners--part-5-the-viewport.md
 
 

@@ -240,3 +240,4 @@ beginner, show-handle, transform-tool, translate-rotate-scale, node-creation, ta
 
 ## Related Tutorials
 - [Houdini for Beginners - Part 3: Selection](houdini-for-beginners--part-3-selection.md) — same beginner series; that part covers component selection, this part covers the transform/handle tool and node creation.
+- [Houdini for Beginners - Part 5: The Viewport](houdini-for-beginners--part-5-the-viewport.md) — same beginner series; this part covers the transform/handle tool and node creation, that part covers viewport display/shading/lighting settings.

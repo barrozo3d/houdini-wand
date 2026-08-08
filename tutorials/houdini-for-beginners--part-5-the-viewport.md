@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=rgzRA8IXZuw
 author: Jordan Allen
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.x"
+tags: [beginner, viewport, shading-modes, wireframe, reference-grid, lock-camera-to-view, viewport-lighting, headlight, area-shadows, layout-splits, jordan-allen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-for-beginners--part-5-the-viewport/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 14
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini for Beginners-  Part 5:  The Viewport
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-for-beginners--part-5-the-viewport <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -236,30 +232,65 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:40] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_000.jpg
+- [1:57] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_001.jpg
+- [2:20] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_002.jpg
+- [3:43] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_003.jpg
+- [4:44] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_004.jpg
+- [6:53] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_005.jpg
+- [7:45] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_006.jpg
+- [8:23] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_007.jpg
+- [9:02] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_008.jpg
+- [10:31] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_009.jpg
+- [12:39] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_010.jpg
+- [12:50] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_011.jpg
+- [14:09] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_012.jpg
+- [15:08] tutorials/frames/houdini-for-beginners--part-5-the-viewport/frame_013.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+A tour of the Scene View's own control row (top-right shading dropdown, cross-context visibility, viewport layout splits) and the right-hand-side viewport visualizer stack (reference grid, camera lock, and a full ladder of temporary viewport-only lighting quality levels) — all "what you're looking at while you work" settings, entirely separate from actual render output.
 
 ### Summary
-[PENDING EXTRACTION]
+**Shading modes** (top-right dropdown, icon shows current mode): **Smooth Shaded** (default) fakes a smoothing/interpolation over the geometry's specular highlight so low-poly objects look less faceted than they really are, though the silhouette/outline is never faked — that's purely a function of the real normals; **Smooth Wire Shaded** adds a wireframe overlay on top (the presenter's preferred default); **Flat Shaded** strips the fake smoothing entirely, showing the geometry exactly as coarse as it really is, with **Flat Wire Shaded** as its wireframe-overlay variant; **Wireframe** shows only the edges, no polygon fill; **Wireframe Ghost** shows the wireframe with the polygons still visible underneath at roughly 50% opacity. **W** toggles between whatever shading mode you're currently on and its wireframe-ghost counterpart, then back — a fast way to peek at topology without permanently switching modes.
+
+**Cross-context visibility icon** (next to the shading dropdown): controls whether sibling OBJ-level geometry stays visible (as translucent "ghost" geometry) when you drop into one specific object's SOP network to edit it — click-and-hold reveals options to show everything as ghosted, hide other objects entirely, or show them fully solid, letting you keep the rest of the scene as reference (or not) while working inside one piece.
+
+**Viewport layout / multi-view:** a layout icon lets you split the Scene View into multiple panes (2 stacked, 2 side-by-side, 4-way, etc.); each individual pane can independently be set to a different view via the Space+1/2/3/4/5 shortcuts (perspective / top-bottom / front-back / left-right / UV) covered in Part 2, so e.g. you can have perspective + top view visible simultaneously. **Ctrl+1/2/3/4** quickly switches between 1/2/3/4-pane layouts (there is no Ctrl+5 equivalent). A **radial menu** (shortcut **backtick** — described in-video as "`, think of it as short for view") bundles view-settings, layout switching, shading-mode switching, and some selection-mode toggles (box/lasso, visible-only) into one popup — presenter doesn't personally use it but flags it as available.
+
+**Reference grid (right-side visualizer stack, top item):** shows the world ground plane with ruled measurements — Houdini works in **meters**, so grid lines are labeled in meters from world origin (0,0,0); the bottom-left axis gizmo shows which direction is +X/+Y/+Z in real time as you orbit (the line's direction = positive; the opposite direction = negative). Click-and-hold the grid icon for sub-options: **Ruler on Main Axes** (default; only the center X/Z lines show numbered ticks) vs. **Ruler on Grid Points** (numbered ticks at every grid intersection, useful when working away from the center so you don't have to count squares manually). The grid can be toggled off entirely (useful when it visually clutters a below-ground-plane shot) and back on.
+
+**Lock Camera to View:** after creating a camera (Tab → camera; defaults to world origin 0,0,0) and switching the viewport's camera dropdown (next to the Perspective dropdown) from "No cam" to the created camera, directly dragging the camera's own transform handle feels awkward. Instead: look through the camera, enable **Lock Camera to View** (a lock icon in the visualizer stack), and now normal scene navigation (orbit/pan/zoom) actually repositions the camera itself in real time (visible as a letterboxed frame matching the camera's aspect ratio) — turn the lock off once positioned so you don't accidentally keep moving the camera during unrelated navigation. Explicitly flagged as an easy setting to forget you left on.
+
+**Viewport lighting ladder (right-side visualizer stack, lighting section)** — entirely a *display convenience*, unrelated to actual render lighting/output: **Disable Lighting** (flat, no shading at all — combined with Smooth Shaded this can make geometry unreadable); **Headlight Only** (a temporary light tethered to the current camera/view angle, giving consistent specular/dimensionality regardless of where you're actually looking — handy default when just modeling); **Normal Lighting** (uses actual scene lights, e.g. a point light, each with toggleable specular/diffuse contribution); **High Quality Lighting** (subtle specular/quality improvement, unlocks extra toggles like depth of field and bloom); **High Quality Lighting with Shadows** (adds real-time shadow casting in the viewport). Shadow softness follows real-world light theory demonstrated live: a small/point light source produces hard shadows because all its rays originate from effectively one point; switching the light's shape to something with physical area (e.g. a disc light, rotated to face down) and enabling **Area Shadows** (vs. default hard/point shadows) produces visibly softer falloff, because different parts of a larger light source fill in what would otherwise be a hard shadow edge from a single point.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Use the shading dropdown (top-right of Scene View) to pick Smooth Shaded / Smooth Wire Shaded / Flat Shaded / Flat Wire Shaded / Wireframe / Wireframe Ghost as needed; press **W** for a quick toggle to/from the wireframe-ghost variant of your current mode.
+2. Use the cross-context visibility icon to control whether sibling OBJ-level objects stay visible (ghosted, solid, or hidden) while editing one object's internals.
+3. Use the layout icon (or **Ctrl+1/2/3/4**) to split the Scene View into multiple panes; set each pane's view independently with Space+1-5.
+4. Check the reference grid for world-scale orientation (meters, centered at 0,0,0); switch Ruler on Main Axes → Ruler on Grid Points when you need numbered ticks away from center; toggle the grid off if it's visually in the way.
+5. To reposition a camera by navigating normally instead of dragging its transform handle: look through it, enable Lock Camera to View, navigate as usual, then disable the lock once positioned (don't forget to turn it off).
+6. Use the viewport lighting ladder (Disable → Headlight Only → Normal → High Quality → High Quality with Shadows) purely to make modeling/layout work easier to see — none of it affects final render output.
+7. For softer viewport shadow previews, give a light physical area (e.g. use a disc/area light shape) and enable Area Shadows instead of relying on default hard point-light shadows.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Scene View shading-mode dropdown (Smooth Shaded, Smooth Wire Shaded, Flat Shaded, Flat Wire Shaded, Wireframe, Wireframe Ghost; **W** toggle), cross-context visibility icon (ghost/hide-other/solid options), viewport layout splitter + **Ctrl+1-4** pane-count shortcuts, radial view menu (backtick), reference-grid visualizer (Ruler on Main Axes vs. Ruler on Grid Points, meters-based world scale, on/off toggle), bottom-left axis orientation gizmo, camera node (Tab → camera, defaults to origin), viewport camera-select dropdown ("No cam" vs. named cameras), **Lock Camera to View** toggle, viewport lighting visualizer stack (Disable Lighting / Headlight Only / Normal Lighting / High Quality Lighting / High Quality Lighting with Shadows, each with sub-toggles like specular/diffuse/depth-of-field/bloom), light shape (point vs. disc/area) and **Area Shadows** toggle for shadow softness.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — pure viewport-display/UI reference, no procedural technique.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; part of the same Houdini 20.x beginner series as Parts 2-4.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, viewport, shading-modes, wireframe, reference-grid, lock-camera-to-view, viewport-lighting, headlight, area-shadows, layout-splits, jordan-allen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini for Beginners - Part 4: Tools](houdini-for-beginners--part-4-tools.md) — same beginner series; that part covers the transform/handle tool and node creation, this part covers viewport display/shading/lighting settings.
