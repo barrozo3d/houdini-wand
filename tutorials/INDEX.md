@@ -417,6 +417,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-for-beginners--part-3-selection.md
 
+
+### Houdini for Beginners-  Part 4:  Tools
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=ClPDNCDMCBE
+- **Author:** Jordan Allen
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-for-beginners--part-4-tools.md
+
 ---
 
 ## How to Read This Index
