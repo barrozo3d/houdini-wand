@@ -482,9 +482,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=i_xuEjjQtDc
 - **Author:** Jordan Allen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.x
+- **Tags:** beginner, contexts, obj, sop, chops, cops, mat, out, shop, tops, wedging, solaris, stage, usd, network-box, sticky-note, houdini-help, jordan-allen
+- **Summary:** Series finale: a guided tour of every top-level context (OBJ, SOP, CHOPs/motion-effects, COPs/compositing needing the Composite View, MAT, legacy OUT/Mantra and SHOP, TOPs/wedging for multi-value parameter iteration, and Stage/Solaris for USD-based final lighting/materials prep) plus Network View organization tools — node color (C) and shape (Z) customization, A+drag row/column alignment, network boxes (Shift+O), sticky notes, and Houdini's unusually thorough built-in Help documentation.
 - **File:** tutorials/houdini-for-beginners--part-10-contexts.md
 
 

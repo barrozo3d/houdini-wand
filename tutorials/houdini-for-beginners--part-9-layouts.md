@@ -220,3 +220,4 @@ beginner, layouts, panes, desktop, geometry-spreadsheet, quick-marks, pin-panes,
 
 ## Related Tutorials
 - [Houdini for Beginners - Part 8: The Geometry Spreadsheet](houdini-for-beginners--part-8-the-geometry-spreadsheet.md) — same beginner series; that part introduces the Geometry Spreadsheet and attributes, this part builds a custom layout so the spreadsheet and Scene View are visible together.
+- [Houdini for Beginners - Part 10: Contexts](houdini-for-beginners--part-10-contexts.md) — same beginner series; this part builds a custom pane layout, that part (the series finale) tours all of Houdini's contexts and network-organization/help tooling.

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=i_xuEjjQtDc
 author: Jordan Allen
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.x"
+tags: [beginner, contexts, obj, sop, chops, cops, mat, out, shop, tops, wedging, solaris, stage, usd, network-box, sticky-note, houdini-help, jordan-allen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-for-beginners--part-10-contexts/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 11
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini for Beginners- Part 10:  Contexts
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-for-beginners--part-10-contexts <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -221,30 +217,65 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [1:11] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_000.jpg
+- [1:47] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_001.jpg
+- [2:23] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_002.jpg
+- [3:22] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_003.jpg
+- [7:51] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_004.jpg
+- [8:25] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_005.jpg
+- [8:46] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_006.jpg
+- [9:23] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_007.jpg
+- [10:24] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_008.jpg
+- [11:01] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_009.jpg
+- [13:06] tutorials/frames/houdini-for-beginners--part-10-contexts/frame_010.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Closing entry of the "Houdini for Beginners" series: a guided tour of every top-level **context** ("room") in Houdini — what each is for, at a high level — plus Network View organization tools (node color/shape, alignment, network boxes, sticky notes) and the built-in Help documentation system.
 
 ### Summary
-[PENDING EXTRACTION]
+Contexts are described via a school-rooms analogy: dedicated areas for dedicated work, with data able to pass between them. Tour, via the context dropdown near the network breadcrumb:
+- **OBJ** — the scene/object level already covered extensively (Parts 2-9).
+- **SOP** — inside a Geometry node; "surface operators," where an object's actual geometry gets built (also already covered).
+- **CHOPs** ("motion effects network," Channel Operators / animation channel operators) — needs its own Motion Effects View to visualize; the series will use this later specifically for crowd work.
+- **COPs** ("image context," Compositing Operators) — a real compositing system inside Houdini (load an image with a `file` node — defaults to a stock butterfly test image — then chain e.g. a `color correct` node to adjust it); needs the **Composite View** pane (one of the tabs closed in Part 9) to actually see results, and each node needs its display flag set to preview that step. The presenter notes Houdini is investing more in this area but personally still uses **Nuke** for compositing rather than COPs.
+- **MAT** (Material/Matte context) — where materials are authored/assigned.
+- **OUT** — legacy **Mantra** renderer settings context (ray samples, etc.); still functional but being phased out in favor of Karma, and not used in this series.
+- **SHOP** — an older shader-authoring context, superseded by MAT; still present for legacy workflows but not covered here.
+- **TOPs** (Task Operators, inside a "topnet") — generates **work items**, primarily useful for **wedging**: automatically iterating a node network across multiple values of a parameter (e.g. testing liquid stickiness at 1, 10, and 100) instead of manually re-running with each value by hand. Described as confusing in the abstract but will be revisited later in the series.
+- **Stage** (also called **Solaris**) — Houdini's USD (Universal Scene Description — a cross-application file format/scene-graph standard for geometry + cameras + lights + materials together) workflow context. Framed as the destination for final lighting/materials/render prep: typical workflow is do geometry and camera work at the OBJ level, then import into Stage/Solaris to light, shade, and prepare for final render. Along with OBJ, this is called out as one of the two contexts the series will live in most.
+
+**Network View organization tools** (separate from the context concept, but grouped here as "final UI tour" material): node type/purpose is visually distinguished by default shape/color (e.g. a light is a yellow lightbulb-shaped node, a camera has its own distinct shape/color) — fully customizable: press **C** in the Network View for a color-palette popup (click-and-drag to resize it) to recolor a selected node, or **Z** for a shape popup to change a node's icon shape; both can be reset back to the default white box. Holding **A** and dragging left/right or up/down on a set of selected nodes snaps them into a straight horizontal or vertical line (whichever node you're dragging on acts as the anchor). **L** attempts automatic layout of the whole network — flagged as "hit or miss" and potentially network-scrambling, generally safer to organize manually. **Shift+O** (or its toolbar button) draws a **network box** around selected nodes that can be resized, recolored, renamed (double-click its title), and collapsed/expanded via a minimize/plus button — useful for grouping related nodes (e.g. "Geometry," "Lighting") visually. A **sticky note** button drops a floating, recolorable, resizable (right-click for size options), freely-editable text note directly in the network — the presenter uses these constantly, e.g. leaving a red note reading "re-render this in the morning" before ending a work session, so the next task is obvious on return.
+
+**Houdini Help:** the **?** icon present in the corner of most panels opens Houdini's built-in documentation, praised as unusually thorough for 3D software. Hovering most node parameters shows an inline tooltip explaining that parameter (not 100% coverage, but close). Clicking a node's help icon opens a full documentation page for that node (demonstrated on a `mountain` node — internally the "Attribute Noise" geometry node — which displaces points along a noise pattern), covering an overview, usage tips, and a breakdown of every parameter.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Recognize each context by what room/purpose it serves: OBJ (scene), SOP (per-object geometry), CHOPs (animation channels, e.g. crowds), COPs (image compositing, needs Composite View), MAT (materials), OUT (legacy Mantra render settings), SHOP (legacy shading, superseded by MAT), TOPs (task/work-item generation, e.g. parameter wedging), Stage/Solaris (USD-based final lighting/materials/render prep).
+2. For COPs work: build a node chain (e.g. `file` → `color correct`), open the **Composite View** pane, and toggle display flags per node to preview each step.
+3. For quick multi-value parameter testing without manual re-runs, look to **TOPs/wedging** later in the series.
+4. Plan on spending most time bouncing between **OBJ** (geometry/camera work) and **Stage/Solaris** (lighting, materials, final render prep) per the presenter's stated workflow.
+5. Use **C** (color) and **Z** (shape) in the Network View to customize or reset node appearance for visual organization; use **A**+drag to align a set of nodes in a row/column; use **L** cautiously for automatic layout.
+6. Use **Shift+O** for a network box to visually group and label related nodes; use the sticky-note tool to leave notes for your future self or teammates directly in the network.
+7. Use the **?** help icon (or hover-tooltips on parameters) whenever a node or parameter's purpose is unclear — Houdini's built-in docs are unusually complete.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Context dropdown (near the network breadcrumb) listing OBJ / SOP / CHOPs / COPs / MAT / OUT / SHOP / TOPs / Stage. COPs example: `file` node (defaults to a stock butterfly image), `color correct` node, Composite View pane, per-node display flags. TOPs/topnet (work-item generation, wedging use case). Stage/Solaris context (USD-based). Network View organization: **C** (node color palette), **Z** (node shape palette), **A**+drag (align selected nodes in a row/column), **L** (automatic layout, unreliable), **Shift+O** (create Network Box: resizable, recolorable, renameable via double-click, collapsible), sticky-note tool (floating recolorable/resizable text note). Houdini Help (**?** icon per panel; hover-tooltips on parameters; per-node full documentation pages) — demoed on the `mountain` node (internally `attribute noise` / Attribute Noise Geometry node).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — high-level conceptual orientation to Houdini's context system plus pure UI/organization tooling; no context is explored in technical depth here (each is explicitly deferred to later in the series or flagged as out of scope).
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; final part of the same Houdini 20.x beginner series as Parts 2-9. Explicitly frames Mantra/SHOP as legacy, Karma/MAT/Solaris as current.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, contexts, obj, sop, chops, cops, mat, out, shop, tops, wedging, solaris, stage, usd, network-box, sticky-note, houdini-help, jordan-allen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini for Beginners - Part 9: Layouts](houdini-for-beginners--part-9-layouts.md) — same beginner series; that part builds a custom pane layout, this part (the series finale) tours all of Houdini's contexts and network-organization/help tooling.
