@@ -427,6 +427,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-for-beginners--part-4-tools.md
 
+
+### Houdini for Beginners-  Part 5:  The Viewport
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=rgzRA8IXZuw
+- **Author:** Jordan Allen
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-for-beginners--part-5-the-viewport.md
+
 ---
 
 ## How to Read This Index
