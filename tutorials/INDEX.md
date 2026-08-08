@@ -397,6 +397,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Sequel to the APEX Animate in LOPs video: pulls an APEX character's animated skeleton out via APEX Unpack Character, applies arbitrary SOP/VEX point deformation to it (flow noise example, previewed fast with Bone Deform), then bridges that procedural motion back into the APEX rig as a new named animation layer via APEX Animation from Skeleton (Rig Path, Skeleton Path, trimmed Frame Range, Clip/Layer Name) — the layer can be toggled/weighted independently and further hand-animated on top, all non-destructively.
 - **File:** tutorials/houdini-22-how-to-procedurally-deform-rigs.md
 
+
+### Houdini for Beginners - Part 2:  Navigation
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=VpkcIxYUOos
+- **Author:** Jordan Allen
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-for-beginners---part-2-navigation.md
+
 ---
 
 ## How to Read This Index
