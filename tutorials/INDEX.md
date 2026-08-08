@@ -387,6 +387,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-22-how-to-apex-animate-in-lops.md
 
+
+### Houdini 22 | How to Procedurally Deform Rigs
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=BRSJx1lWlJM
+- **Author:** Houdini
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-22-how-to-procedurally-deform-rigs.md
+
 ---
 
 ## How to Read This Index
