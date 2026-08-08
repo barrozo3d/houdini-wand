@@ -447,6 +447,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Beginner reference for viewport attribute visualizers on the pig-head test geometry: Display Material/UV-grid toggles, Labs-tab viewport reset, Display Points/Normals/Point Trails (via a trail node computing frame-to-frame velocity)/Point Numbers/Primitive Numbers, the custom-visualizers tab, and the full Display Options popup (D key) — notably the Background tab's viewport color scheme and the Geometry tab's particle point-size/pixel-display controls for dense simulations.
 - **File:** tutorials/houdini-for-beginners--part-6-visualisers.md
 
+
+### Houdini for Beginners-  Part 7:  Timeline and Animation
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=Nb2YJJ7OHPU
+- **Author:** Jordan Allen
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-for-beginners--part-7-timeline-and-animation.md
+
 ---
 
 ## How to Read This Index
