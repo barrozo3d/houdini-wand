@@ -337,6 +337,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** Reconstructs a missing per-piece rest position after a Vellum sim (no rest was baked in) by borrowing the still-animated hair `orient` attribute from a related object, cross-referenced via `findattribval()` and un-rotated with `qconvert()`/`invert()` matrix math in VEX. Uses that reconstructed rest position to build custom polar UVs and drives procedural stripe/noise texturing through Houdini's newer Copernicus (COPs) 2D context rather than plain 3D VEX noise, so patterns follow each piece's own orientation.
 - **File:** tutorials/creating-a-shot-from-start-to-finish-in-houdini---free-lesson.md
 
+
+### Lightning Effect In Houdini | Houdini Tutorial +Project File
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=J4xHdSZ-YbQ
+- **Author:** Fx Guru
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/lightning-effect-in-houdini-houdini-tutorial-project-file.md
+
 ---
 
 ## How to Read This Index
