@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=9n4qDqi5qjc
 author: Jordan Allen
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.x"
+tags: [beginner, selection, points-primitives-vertices, select-tool, lasso-select, area-select, row-selection, loop-selection, flood-fill, grow-shrink, jordan-allen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-for-beginners--part-3-selection/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 10
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini for Beginners-  Part 3:  Selection
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-for-beginners--part-3-selection <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -181,30 +177,65 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:12] tutorials/frames/houdini-for-beginners--part-3-selection/frame_000.jpg
+- [0:37] tutorials/frames/houdini-for-beginners--part-3-selection/frame_001.jpg
+- [1:31] tutorials/frames/houdini-for-beginners--part-3-selection/frame_002.jpg
+- [2:50] tutorials/frames/houdini-for-beginners--part-3-selection/frame_003.jpg
+- [4:06] tutorials/frames/houdini-for-beginners--part-3-selection/frame_004.jpg
+- [5:06] tutorials/frames/houdini-for-beginners--part-3-selection/frame_005.jpg
+- [5:41] tutorials/frames/houdini-for-beginners--part-3-selection/frame_006.jpg
+- [6:19] tutorials/frames/houdini-for-beginners--part-3-selection/frame_007.jpg
+- [6:40] tutorials/frames/houdini-for-beginners--part-3-selection/frame_008.jpg
+- [7:48] tutorials/frames/houdini-for-beginners--part-3-selection/frame_009.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Foundational selection mechanics: what points/primitives/vertices actually are, the component-mode shortcuts to select each, the Select tool's own toggleable parameters (visible-geometry-only, picking style), additive/subtractive selection with Shift/Ctrl, and several higher-level selection shortcuts (row, loop, grow/shrink, flood fill) for working with clean topology.
 
 ### Summary
-[PENDING EXTRACTION]
+With the Select tool active (shortcut **S**, the arrow icon), geometry breaks down into three component types, explained with a tent analogy: **points** are the nails (pinned positions in 3D space), **vertices** are the loops connecting the tarp to the nails (rarely edited directly — mainly relevant later for UV work), and **primitives** are the tarp itself (the actual face/surface, infinitely stretchable until pinned down by its points). The node-info panel (pinned open via its pin icon) confirms exact counts — e.g. a default sphere shown here has 266 points, 288 primitives, 1104 vertices — and also shows the primitive type at the bottom (switching from Polygon to NURBS changes the sphere to a single NURBS-surface primitive; switching between Polygon [triangles] and Polygon Mesh [quads] changes the underlying tessellation — the presenter prefers Polygon Mesh/quads).
+
+**Component mode shortcuts:** with Select active, press **2** for Points, **3** for Edges, **4** for Faces/Primitives (equivalently clickable/holdable from the mode icon in the tool's parameter row above the viewport, which also exposes each tool's own sub-parameters via click-and-hold — indicated by a small arrow in a tool icon's corner). One useful toggle there: **"Area Select Visible Geometry Only"** (shortcut **Shift+V**) — enabled, a drag-select only grabs components actually visible/unoccluded from the current camera angle; disabled (default toggle state varies), a drag-select grabs everything within the 2D marquee regardless of occlusion, including geometry hidden behind the near side of the object.
+
+**Picking style:** click-and-hold on the selection-mode arrow icon reveals alternatives to the default box/marquee select — **Lasso** picking (shortcut **F3**) for freeform region selection, and **Brush** select for painting a selection by dragging over components.
+
+**Additive/subtractive selection:** a plain click/drag **replaces** the current selection. **Shift**+click or Shift+drag **adds** to the selection; **Ctrl**+click **removes** from it.
+
+**Row and loop selection (clean topology):** with two components already selected, **Shift+A held, then left-click** a third component selects a straight **row** of polygons/edges between the first two selections ("A" mnemonic: add-all-between). **Shift+A held, then middle-click** instead selects a full **loop** (e.g. a ring band around a sphere) rather than just a straight segment — the on-screen hint text spells this out live: hold A + left-click for a partial/row selection, A + middle-click for a full loop.
+
+**Grow/shrink/flood fill:** **Shift+G** grows the current selection outward by one ring of adjacent components; **Shift+S** shrinks it inward by one. **Shift+H** is flood fill: select two separate regions/boundaries first, then Shift+H fills in and selects everything topologically "between" them — described as effectively coloring in the boundary edges and then fill-selecting the interior.
+
+The presenter repeatedly notes there's no single "correct" way to select in Houdini — multiple UI paths (keyboard shortcuts, toolbar icons, click-and-hold sub-menus) reach the same result, and the point of this video is exposure to the options rather than memorization.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Activate the Select tool (**S**).
+2. Switch component mode with **2** (points) / **3** (edges) / **4** (primitives/faces), or via the mode icon in the tool-parameters row above the viewport.
+3. Toggle **Area Select Visible Geometry Only** (**Shift+V**) when you want drag-selects to ignore occluded/hidden-side geometry.
+4. Switch picking style via click-and-hold on the select-mode icon: default box/marquee, **Lasso** (**F3**), or **Brush**.
+5. **Shift**+click/drag to add to a selection; **Ctrl**+click to remove from it; plain click/drag replaces it.
+6. With two components selected, hold **Shift+A** and **left-click** a third for a row selection between them, or **middle-click** for a full loop instead.
+7. **Shift+G** / **Shift+S** to grow/shrink the current selection by one adjacency ring.
+8. **Shift+H** to flood-fill select everything between two already-selected boundary regions.
+9. Check the node-info panel (pinned open) to confirm exact point/primitive/vertex counts and current primitive type (Polygon/Polygon Mesh/NURBS) on any geometry.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Select tool (S) with component-mode toggles (Points=2, Edges=3, Primitives=4, also Vertices=5, Breakpoints=9 per the shown menu), tool-parameter toggles: Area Select Visible Geometry Only (Shift+V), Area Select Fully Contained Geometry (Shift+C), Select Front/Back Facing options, Select Groups/Connected Geometry, Select Whole Geometry, picking-style submenu (Lasso F3, Brush), selection modifiers Shift (add) / Ctrl (subtract), Shift+A+LMB (row), Shift+A+MMB (loop), Shift+G (grow), Shift+S (shrink), Shift+H (flood fill). Sphere node's Primitive Type parameter (Polygon vs. Polygon Mesh vs. NURBS) as a demonstration example. Node-info panel (pin icon to keep it open) for point/primitive/vertex counts.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — no procedural technique, pure selection-tool/keyboard-shortcut reference.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; part of the same Houdini 20.x beginner series as Part 2.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, selection, points-primitives-vertices, select-tool, lasso-select, area-select, row-selection, loop-selection, flood-fill, grow-shrink, jordan-allen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini for Beginners - Part 2: Navigation](houdini-for-beginners---part-2-navigation.md) — same beginner series; that part covers viewport/UI navigation and node flags, this part covers component selection mechanics.

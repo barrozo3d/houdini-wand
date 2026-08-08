@@ -412,9 +412,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=9n4qDqi5qjc
 - **Author:** Jordan Allen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.x
+- **Tags:** beginner, selection, points-primitives-vertices, select-tool, lasso-select, area-select, row-selection, loop-selection, flood-fill, grow-shrink, jordan-allen
+- **Summary:** Beginner selection-tool reference: points/primitives/vertices explained via a tent analogy, component-mode shortcuts (2/3/4 for points/edges/primitives), the Select tool's own toggles (Area Select Visible Geometry Only = Shift+V, Lasso = F3, Brush), additive Shift-click / subtractive Ctrl-click selection, row selection (Shift+A+LMB) vs. full loop selection (Shift+A+MMB), grow/shrink (Shift+G/Shift+S), and flood fill (Shift+H) between two boundary selections.
 - **File:** tutorials/houdini-for-beginners--part-3-selection.md
 
 

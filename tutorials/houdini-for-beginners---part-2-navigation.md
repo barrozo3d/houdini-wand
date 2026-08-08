@@ -460,4 +460,4 @@ beginner, navigation, ui-basics, houdini-env, obj-context, sop-context, display-
 ---
 
 ## Related Tutorials
-None yet in this library on Houdini's basic navigation/UI mechanics — first entry in the "Houdini for Beginners" series covering this.
+- [Houdini for Beginners - Part 3: Selection](houdini-for-beginners--part-3-selection.md) — same beginner series; this part covers viewport/UI navigation and node flags, that part covers component selection mechanics.
