@@ -467,6 +467,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/houdini-for-beginners--part-8-the-geometry-spreadsheet.md
 
+
+### Houdini for Beginners-  Part 9:  Layouts
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=K9aMZvNCRF0
+- **Author:** Jordan Allen
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-for-beginners--part-9-layouts.md
+
 ---
 
 ## How to Read This Index
