@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=Mypavnx92tw
 author: Konstantin Magnus
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.5.684"
+tags: [edge-bundling, curve-bundling, attribute-blur, proximity, laplacian, volume-preserving, for-loop, solver, group-expression, point-valence, procedural-modeling]
+extraction_status: complete
 frames_dir: tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 13
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Edge Bundling / Bundling Curves – Houdini Tutorial
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py edge-bundling-bundling-curves-houdini-tutorial <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -59,30 +55,65 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:34] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_000.jpg
+- [1:06] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_001.jpg
+- [1:18] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_002.jpg
+- [1:42] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_003.jpg
+- [2:03] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_004.jpg
+- [2:17] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_005.jpg
+- [2:57] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_006.jpg
+- [3:20] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_007.jpg
+- [4:06] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_008.jpg
+- [4:37] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_009.jpg
+- [5:09] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_010.jpg
+- [5:30] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_011.jpg
+- [5:41] tutorials/frames/edge-bundling-bundling-curves-houdini-tutorial/frame_012.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Procedural **edge bundling**: starting from a set of straight point-to-point curves with random endpoints, iteratively pull nearby curve segments toward each other using an **Attribute Blur** (proximity mode) + **Smooth** node pair run inside a **For Loop** (or a **Solver** for an animated version), producing either organic "bubble"-shaped bundled networks or, with endpoints pinned, road-network-like converging bundles.
 
 ### Summary
-[PENDING EXTRACTION]
+**Base setup:** a `grid` (1×1, XY plane, connectivity set to Rows, 2 columns/0 row-divisions) gives exactly two points per row — the endpoints of a set of straight lines. The whole grid is collapsed to zero (all points at the origin) so a `pointjitter` node has full control randomly scattering each endpoint independently, producing a set of straight 2D curves (X-axis disabled/flattened) with potentially intersecting/crossing paths. A `resample` node (set to a small length like 0.01) subdivides each curve into many points — bundling needs enough point density along each curve to actually deform smoothly, not just move the two endpoints.
+
+**Core bundling pair:** an **Attrib Blur** node set to **Proximity** influence (not topological adjacency) with **Pin Border Points disabled** looks at each point's spatially-nearby neighbors (within a **Proximity Radius**, e.g. 0.06) *across all curves*, not just along its own curve, and blurs/averages positions toward them — this is what actually pulls separate curves together where they pass near each other. Two blur **Mode** options: **Volume Preserving** (produces rounded "bubble"/blob-like bundled shapes) and **Laplacian** (produces a more angular, road-network-like converging look — used later for the pinned-endpoint variant). Because the raw blur result looks somewhat "damaged"/jagged, a **Smooth** node (low quality setting, strength ~5) is chained after it to clean the shape back up.
+
+**Iterating the effect:** cutting the Attrib Blur + Smooth pair out and placing them inside a **For Loop** (Feedback mode) lets the same operation repeat many times (demoed at 40 iterations) — the effect compounds each pass, and the loop is where you actually dial in the final look by tuning resample length, blur radius, iteration count, and smooth strength together as a system rather than any single parameter in isolation.
+
+**Pinning endpoints (for the road-network variant):** in a separate parallel geometry stream, a **Group Expression** node selects points using the preset **Point Valence = 1** (i.e., points with only one connected edge — the curve endpoints, re-selected *after* resampling since resampling changes which points exist) into a group (e.g. named "pin"). That group, referenced with a **leading exclamation mark** (negated — "everyone except these points") inside the Attrib Blur's point-group field, excludes the endpoints from being moved/blurred, so they stay fixed in place while everything else bundles toward the interior — combined with **Laplacian mode**, this produces the road-network look. The Smooth node is likewise constrained to respect the same pinned group. Over-blurring the *positions* (not just over-smoothing) was found to push this look "too extreme" — backing off how strongly positions get blurred (vs. leaning more on the smooth pass) gives more control over rounded-vs-strict curve character.
+
+**Animating it:** once a static look is dialed in, copying the same node chain (blur + smooth, or blur + smooth + resample as needed) inside a **Solver** node turns it into a frame-by-frame animation — with the viewport's real-time toggle on, playback shows the curves bundling into their final shape over time rather than as a single static pass. A `color` node set to **primitive random** coloring is recommended purely to make individual curves/strands visually distinguishable while iterating on the effect. The same overall approach (with the pinned-endpoint/Laplacian variant) works inside its own separate Solver to animate the road-network look as well.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Build a grid with Rows connectivity and exactly 2 points per row (endpoints of straight lines); collapse it to zero.
+2. Randomize endpoint positions with a `pointjitter` node (flatten to 2D by disabling the unused axis).
+3. `resample` each curve to a small step size for enough point density to bundle smoothly.
+4. Chain **Attrib Blur** (Proximity influence, Pin Border Points off, tuned radius) → **Smooth** (low quality, moderate strength) to pull nearby curve points together and clean up the result.
+5. Choose blur **Mode**: Volume Preserving for rounded "bubble" bundles, or Laplacian for a more angular road-network look.
+6. Move the blur+smooth pair inside a **For Loop** (Feedback) and iterate (e.g. ~40 times) to compound the bundling effect; tune resample length / blur radius / iteration count / smooth strength together as one system.
+7. For pinned endpoints: build a `Group Expression` selecting Point Valence = 1 points (post-resample) into a named group; reference that group with a leading `!` in the Attrib Blur's (and Smooth's) point-group field to exclude endpoints from movement.
+8. If a pinned/Laplacian result looks too extreme, reduce how strongly positions get blurred rather than only adjusting smooth strength, to control rounded vs. strict curve character.
+9. To animate: copy the finished blur/smooth node chain inside a **Solver** node; enable the real-time viewport toggle and play back to see the bundling happen over time.
+10. Add a `color` node (primitive random) for visual clarity while iterating on either variant.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+`grid` (Rows connectivity, 2 points per row, collapsed to origin), `pointjitter` (random endpoint scatter), `resample` (small step size, e.g. 0.01, for point density), **Attrib Blur** (Influence Type: Proximity, Proximity Radius, Max Neighbors, Pin Border Points off, Mode: Volume Preserving vs. Laplacian, Blurring Iterations, Step Size), `smooth` (Quality, Strength), **For Loop** (Feedback mode, wrapping the blur+smooth pair for repeated iteration), `group expression` (Point Valence = 1 preset, post-resample, for endpoint selection), negated group reference (`!groupname`) to exclude points from an operation, `solver` (wrapping the same node chain for frame-by-frame animation), `color` node (primitive random, for visual clarity).
 
 ### Difficulty
-[PENDING EXTRACTION]
+Intermediate — no VEX required, but the technique depends on understanding how proximity-based blurring, loop/feedback iteration, and group-based point exclusion interact as a system; tuning the several interlocking parameters (radius, iterations, smooth strength) to get a specific look takes some trial and error.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Screenshots show Houdini Core 20.5.684.
 
 ### Tags
-[PENDING EXTRACTION]
+edge-bundling, curve-bundling, attribute-blur, proximity, laplacian, volume-preserving, for-loop, solver, group-expression, point-valence, procedural-modeling, konstantin-magnus
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+None yet in this library on procedural edge/curve bundling — first entry covering this technique.

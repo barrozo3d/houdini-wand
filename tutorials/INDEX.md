@@ -502,9 +502,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=Mypavnx92tw
 - **Author:** Konstantin Magnus
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.5.684
+- **Tags:** edge-bundling, curve-bundling, attribute-blur, proximity, laplacian, volume-preserving, for-loop, solver, group-expression, point-valence, procedural-modeling
+- **Summary:** Procedural edge bundling: random straight point-to-point curves get pulled into organic bundled networks via an Attrib Blur (Proximity influence, Volume Preserving or Laplacian mode) + Smooth pair iterated inside a For Loop, producing rounded "bubble" shapes. Pinning curve endpoints (Group Expression's Point Valence=1 preset, excluded via a negated group reference) plus Laplacian mode instead produces a road-network-like converging look. Copying the same node chain into a Solver animates the bundling process over time.
 - **File:** tutorials/edge-bundling-bundling-curves-houdini-tutorial.md
 
 
