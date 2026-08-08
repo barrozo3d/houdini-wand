@@ -367,6 +367,16 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Summary:** [PENDING EXTRACTION]
 - **File:** tutorials/procedural-foam-bubbles-houdini-walkthrough.md
 
+
+### Houdini Feather Groom Detail and how to use Feather Attributes for Rendering
+- **Source:** YouTube
+- **URL:** https://www.youtube.com/watch?v=kSIn2FCzW0c
+- **Author:** Alexander Weber
+- **Houdini Version:** [PENDING]
+- **Tags:** [PENDING]
+- **Summary:** [PENDING EXTRACTION]
+- **File:** tutorials/houdini-feather-groom-detail-and-how-to-use-feather-attributes-for-rendering.md
+
 ---
 
 ## How to Read This Index
