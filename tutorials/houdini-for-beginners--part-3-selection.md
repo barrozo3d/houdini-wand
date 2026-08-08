@@ -239,3 +239,4 @@ beginner, selection, points-primitives-vertices, select-tool, lasso-select, area
 
 ## Related Tutorials
 - [Houdini for Beginners - Part 2: Navigation](houdini-for-beginners---part-2-navigation.md) — same beginner series; that part covers viewport/UI navigation and node flags, this part covers component selection mechanics.
+- [Houdini for Beginners - Part 4: Tools](houdini-for-beginners--part-4-tools.md) — same beginner series; this part covers component selection, that part covers the transform/handle tool and node creation.

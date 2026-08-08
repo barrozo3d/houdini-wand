@@ -422,9 +422,9 @@ This is the skill's growing knowledge base. Every ingested tutorial, article, an
 - **Source:** YouTube
 - **URL:** https://www.youtube.com/watch?v=ClPDNCDMCBE
 - **Author:** Jordan Allen
-- **Houdini Version:** [PENDING]
-- **Tags:** [PENDING]
-- **Summary:** [PENDING EXTRACTION]
+- **Houdini Version:** 20.x
+- **Tags:** beginner, show-handle, transform-tool, translate-rotate-scale, node-creation, tab-menu, shelf-tools, radial-menu, contexts, obj-sop, flip-fluid, jordan-allen
+- **Summary:** Beginner reference for the Show Handle/transform tool (T/R/E for isolated translate/rotate/scale) and why per-node custom viewport controls (Clip's draggable plane, UV Flatten's interface) only appear in Handle mode, not Select mode. Covers the three ways to create nodes (Tab menu, shelf Create tab, Scene-View C radial menu), how contexts (OBJ vs. SOP) gate which nodes are available, and an explicit warning against relying on one-click "final result" shelf tools (demoed with Flip Fluid from Object) before understanding the node network they generate.
 - **File:** tutorials/houdini-for-beginners--part-4-tools.md
 
 

@@ -4,12 +4,13 @@ source: YouTube
 url: https://www.youtube.com/watch?v=ClPDNCDMCBE
 author: Jordan Allen
 ingested: 2026-08-08
-houdini_version: "[PENDING]"
-tags: []
-extraction_status: pending
+houdini_version: "20.x"
+tags: [beginner, show-handle, transform-tool, translate-rotate-scale, node-creation, tab-menu, shelf-tools, radial-menu, contexts, obj-sop, flip-fluid, jordan-allen]
+extraction_status: complete
 frames_dir: tutorials/frames/houdini-for-beginners--part-4-tools/
-frame_count: 0
-frame_status: pending-selection
+frame_count: 12
+frame_status: complete
+frame_selection: content-anchored (manual timestamps chosen from transcript, not blind percentages)
 ---
 
 # Houdini for Beginners-  Part 4:  Tools
@@ -22,12 +23,7 @@ frame_status: pending-selection
 
 ## Raw Data (for Claude Code extraction)
 
-Frames are not captured yet. Read the timestamped transcript below, pick moments
-that actually show a technique/result worth a still (not blind percentages —
-even within a named chapter, verify the real moment against its timestamps), then run:
-  python select_frames.py houdini-for-beginners--part-4-tools <ts1> <ts2> ...
-(seconds or mm:ss). This appends a "Captured Frames" section and updates the
-frontmatter before you write the Structured Notes below.
+Frames captured — see "Captured Frames" section below.
 
 
 ### Full Content [0:00]
@@ -184,30 +180,63 @@ frontmatter before you write the Structured Notes below.
 
 ---
 
+## Captured Frames
+
+- [0:43] tutorials/frames/houdini-for-beginners--part-4-tools/frame_000.jpg
+- [2:19] tutorials/frames/houdini-for-beginners--part-4-tools/frame_001.jpg
+- [3:29] tutorials/frames/houdini-for-beginners--part-4-tools/frame_002.jpg
+- [4:41] tutorials/frames/houdini-for-beginners--part-4-tools/frame_003.jpg
+- [4:52] tutorials/frames/houdini-for-beginners--part-4-tools/frame_004.jpg
+- [6:53] tutorials/frames/houdini-for-beginners--part-4-tools/frame_005.jpg
+- [7:20] tutorials/frames/houdini-for-beginners--part-4-tools/frame_006.jpg
+- [8:09] tutorials/frames/houdini-for-beginners--part-4-tools/frame_007.jpg
+- [8:58] tutorials/frames/houdini-for-beginners--part-4-tools/frame_008.jpg
+- [9:40] tutorials/frames/houdini-for-beginners--part-4-tools/frame_009.jpg
+- [11:06] tutorials/frames/houdini-for-beginners--part-4-tools/frame_010.jpg
+- [11:39] tutorials/frames/houdini-for-beginners--part-4-tools/frame_011.jpg
+
+---
+
 ## Structured Notes
 
 ### Core Technique
-[PENDING EXTRACTION]
+Beginner reference for the **Show Handle / transform tool** (interactive on-screen manipulation, distinct from Select mode), why a node's custom viewport handles only appear when this tool is active, the three ways to create nodes (Tab menu, shelf/Create tab, radial C-menu), how node availability is scoped per **context** (OBJ vs. SOP have entirely different node sets), and a deliberate warning against relying on one-click shelf tools (e.g. "Flip Fluid from Object") before understanding the underlying node network they generate.
 
 ### Summary
-[PENDING EXTRACTION]
+Selection (previous part) only picks components; **transformation** happens via the **Show Handle** tool (referred to informally as "the transform tool" / "the handle tool," though its exact official name isn't certain) — clicking it reveals on-screen gizmos for translate/rotate/scale on individual or combined axes, functionally mirroring what the Parameters pane already offers but far more interactive. A row of magnet icons beneath the handle controls are **snapping tools** — the presenter warns these can cause confusing "sticky"/glitchy dragging behavior (e.g. unwanted snapping to the ground plane) if accidentally left on, though they're not on by default.
+
+**Handle tool is mandatory for node-specific interactivity:** whichever tool designed a node (e.g. Sphere, Clip) can expose its own custom on-screen handles/widgets in the viewport — but only when the Handle tool is active, not Select. A default Sphere shows a traditional handle (translate/rotate) plus a bounding box in Handle mode; switching to Select mode hides all of that. A **Clip** node (default: keeps primitives above a Y-axis plane) exposes a plane-visualizer handle you can drag/rotate directly in the viewport, plus an on-screen numeric popup ("clip distance") — none of which is visible in Select mode. A **UV Flatten** node likewise swaps in its own custom interface and extra parameter icons above the Scene View when Handle mode is active; these context-specific tool icons disappear again when you select a different node. Takeaway: if a node's designed interactive controls seem to be missing, check whether Handle mode (not Select mode) is active.
+
+**Handle sub-modes:** with Handle active, pressing **T** isolates just the Translate handle, **R** isolates just Rotate, **E** isolates just Scale — useful when the combined all-in-one handle is too fiddly for a specific adjustment.
+
+**Contexts gate node availability:** OBJ (object/macro level) and SOP (per-object geometry-building level, aka "Surface Operations") are different **contexts**, and each context only offers the subset of nodes actually designed to operate there — pressing Tab at the OBJ level shows a comparatively short list of subcategories; double-clicking into a Geometry node's SOP level and pressing Tab reveals a vastly larger set of geometry-building nodes. Beyond OBJ/SOP, many more contexts exist (Dynamics, Cameras, Lights, Digital Assets, etc. — click-and-hold on the context icon near the network breadcrumb to see the full list); the series will explore more of them later but stays in OBJ/SOP for now.
+
+**Three ways to create a node** (all equivalent, personal preference which to use): (1) **Tab** in the Network View and type the node name (the method used throughout the series so far); (2) the **shelf/Create tab** in the top-left — clicking e.g. "Sphere" there, then clicking in the viewport (or just pressing Enter) to place it at a chosen position or at world origin (0,0,0); (3) a **radial pop-up menu** — click into the Scene View and press **C** ("Create") to open a radial menu of creation categories, useful when you can't remember an exact node name since the shelf/radial options show icons. The shelf area has multiple tabs (Create, Modify — duplicate, copy-to-points, delete, sweep-along-curve, scatter, etc. — and further specialized tabs), plus custom shelves you can enable via the "+" icon (the presenter has a Greyscale Gorilla shelf installed as a personal example).
+
+**Explicit warning about "danger zone" shelf tools:** further-right shelf tabs contain one-click **compound/final-result tools** — demonstrated with "Flip Fluid from Object" (Particle Fluids tab): clicking it, selecting an existing object, and pressing Enter auto-generates an entire pre-wired node network producing a working FLIP fluid simulation instantly. The presenter deliberately does **not** want beginners relying on these yet — the philosophy is to understand the fundamental building-block nodes a system is made of before using a shortcut that assembles them for you, since without that foundation you can't actually tweak or debug what the shelf tool built. This is framed as something to "unlock" later in the series once fundamentals are covered, not something to avoid forever. Personal habit disclosed: the presenter mostly uses Tab-to-type, rarely the radial menu, and only occasionally browses the shelves to jog their memory on a forgotten node name.
 
 ### Key Steps
-[PENDING EXTRACTION]
+1. Use the **Show Handle** tool (not Select) whenever you need on-screen interactive transform gizmos or a node's own custom viewport controls.
+2. Watch for the snapping-tool icons (magnets) beneath the handle controls — turn them off if dragging behaves strangely (e.g. snapping to the ground plane unexpectedly).
+3. If a node's documented/expected interactive controls (e.g. a Clip node's drag-able plane, a Sphere's shift-scale handles) aren't appearing, check whether Handle mode is actually active rather than Select mode.
+4. Use **T** / **R** / **E** while in Handle mode to isolate Translate / Rotate / Scale individually instead of the combined handle.
+5. Remember node availability is context-scoped: Tab at OBJ level shows a short, OBJ-relevant node list; Tab inside a Geometry node's SOP level shows the much larger geometry-building node set. Other contexts (Dynamics, Lights, Cameras, etc.) exist too, accessible via the context breadcrumb icon.
+6. Create nodes via whichever of the three methods you prefer: Tab-and-type, the shelf's Create tab (click tool, then click-to-place or Enter for world origin), or Scene-View **C** for the radial creation menu.
+7. Avoid relying on compound "final result" shelf tools (e.g. Flip Fluid from Object) until you understand the underlying node network they generate — use them to see *what's possible*, not as your first way of building something.
 
 ### Houdini Nodes / VEX / Settings
-[PENDING EXTRACTION]
+Show Handle / transform tool (Translate/Rotate/Scale gizmos; shortcuts T/R/E for isolated sub-handles), snapping-tool toggles (magnet icons), Sphere node (default interactive handle + bounding box + shift-scale viewport interactivity, contrasted with Select mode showing none of it), `clip` node (Keep Primitives Above Plane default; draggable plane-visualizer handle + on-screen clip-distance popup, both Handle-mode-only), `UV Flatten` node (custom viewport interface as another example of per-node designed tools). Context system: OBJ level vs. SOP level Tab menus (different node sets), context-switcher icon near the network breadcrumb (Dynamics, Cameras, Character FX, Digital Assets, Environments, File I/O, Geometry, Lights, Managers, ODFs, Parenting, Primitive, Project, Render, Scene Graph, Sound, Utility, etc.). Node-creation methods: Tab menu, shelf **Create** tab, Scene-View **C** radial menu, shelf **Modify** tab (Duplicate, Copy to Points, Delete, sweep/scatter tools), custom/enable-able shelves (+ icon). Example "danger zone" compound tool: **Flip Fluid from Object** (Particle Fluids shelf tab) — select an existing object, Enter, auto-builds a full FLIP simulation node network.
 
 ### Difficulty
-[PENDING EXTRACTION]
+Beginner — pure UI/workflow orientation; the Clip/UV Flatten/Flip Fluid nodes are used only as illustrative examples of interactivity and node-creation methods, not explained as techniques in their own right.
 
 ### Houdini Version
-[PENDING EXTRACTION]
+Not explicitly stated; part of the same Houdini 20.x beginner series as Parts 2-3.
 
 ### Tags
-[PENDING EXTRACTION]
+beginner, show-handle, transform-tool, translate-rotate-scale, node-creation, tab-menu, shelf-tools, radial-menu, contexts, obj-sop, flip-fluid, jordan-allen
 
 ---
 
 ## Related Tutorials
-[PENDING EXTRACTION]
+- [Houdini for Beginners - Part 3: Selection](houdini-for-beginners--part-3-selection.md) — same beginner series; that part covers component selection, this part covers the transform/handle tool and node creation.
